@@ -1,2 +1,6 @@
 # IntelliJ IDEA files
 .idea/
+*.iml
+
+# Java build files
+out/*
