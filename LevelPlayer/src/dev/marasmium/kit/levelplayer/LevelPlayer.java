@@ -1,17 +1,16 @@
-package dev.marasmium.kit.levelplayer;
+/**
+ * File:        LevelPlayer.java
+ * Author:      MarasmiumDev (info@marasmium.dev)
+ * Created:     2026.04.21
+ * Purpose:     Defines the main class and entry point of the MarasmiumKit's level player program
+ */
 
-import dev.marasmium.kit.applib.AppLib;
-import dev.marasmium.kit.assetlib.AssetLib;
-import dev.marasmium.kit.levellib.LevelLib;
+package dev.marasmium.kit.levelplayer;
 
 public class LevelPlayer {
 
     static void main() {
-        System.out.println("LevelPlayer Dependencies:");
-        AssetLib.assetLib();
-        AppLib.appLib();
-        LevelLib.levelLib();
-        System.out.println();
+        System.out.println("LevelPlayer");
     }
 
 }

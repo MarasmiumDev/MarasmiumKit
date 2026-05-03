@@ -1,0 +1,19 @@
+2026.05.02@22:09:49.300: [Logging System] [Information] Initialized logging system
+2026.05.02@22:09:49.302: [MarasmiumKit App] [Information] Initialized logging system
+2026.05.02@22:09:49.302: [MarasmiumKit App] [Information] Initialized MarasmiumKit application framework
+2026.05.02@22:09:49.302: [AppTest] [Information] Test writing message
+2026.05.02@22:09:49.302: [AppTest] [-] Test without level
+2026.05.02@22:09:49.302: [-] [Warning] Test without source
+2026.05.02@22:09:49.302: [-] [-] Test without level or source
+2026.05.02@22:09:49.302: [Logging System] [Information] Setting timestamp format: "yyyy-MM-dd HH:mm:ss"
+2026-05-02 22:09:49: [AppTest] [Information] Set valid timestamp format
+2026-05-02 22:09:49: [Logging System] [Information] Setting timestamp format: "x"
+2026-05-02 22:09:49: [Logging System] [Warning] Unsupported timestamp format
+2026-05-02 22:09:49: [AppTest] [Information] Failed to set invalid timestamp format
+2026-05-02 22:09:49: [AppTest] [Information] Disabling console output
+2026-05-02 22:09:49: [Logging System] [Information] Disabling log console output
+2026-05-02 22:09:49: [AppTest] [Information] Enabling console output
+2026-05-02 22:09:49: [Logging System] [Information] Enabling log console output
+2026-05-02 22:09:49: [AppTest] [Information] Disabling file output
+2026-05-02 22:09:49: [Logging System] [Information] Disabling log file output
+2026-05-02 22:09:49: [Logging System] [Information] Opening log file path "Test.log"
