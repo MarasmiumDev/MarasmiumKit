@@ -1,101 +1,72 @@
-2026.05.10@14:20:12.410: [Logging System] [Information] Initialized logging system
-2026.05.10@14:20:12.411: [MarasmiumKit App] [Information] Initialized logging system
-2026.05.10@14:20:12.411: [MarasmiumKit App] [Information] Initialized MarasmiumKit application framework
-2026.05.10@14:20:12.411: [-] [-] 
-
-*****     Colour Tests     *****
-
-2026.05.10@14:20:12.411: [-] [-] colour(0, 0, 0, 255), colour(255, 0, 0, 255), colour(0, 255, 0, 255), colour(0, 0, 255, 255), colour(255, 255, 255, 255)
-2026.05.10@14:20:12.413: [-] [-] colour(128, 0, 255, 128)
-2026.05.10@14:20:12.413: [-] [-] colour(10, 255, 0, 240)
-2026.05.10@14:20:12.413: [-] [-] Blend colour(128, 35, 230, 155) + colour(0, 50, 200, 50) -> colour(91, 39, 221, 174)
-2026.05.10@14:20:12.413: [-] [-] Blend colour(128, 35, 230, 155) + colour(200, 45, 30, 255) -> colour(200, 45, 30, 255)
-2026.05.10@14:20:12.413: [-] [-] colour(128, 35, 230, 155).getRGBA() = -2145130853
-2026.05.10@14:20:12.413: [-] [-] colour(128, 35, 230, 155).getRed() = 128
-2026.05.10@14:20:12.413: [-] [-] colour(128, 35, 230, 155).getGreen() = 35
-2026.05.10@14:20:12.413: [-] [-] colour(128, 35, 230, 155).getBlue() = 230
-2026.05.10@14:20:12.413: [-] [-] colour(128, 35, 230, 155).getAlpha() = 155
-2026.05.10@14:20:12.413: [-] [-] colour(128, 35, 230, 155) = colour(128, 35, 230, 155): true
-2026.05.10@14:20:12.413: [-] [-] colour(0, 50, 200, 50) = colour(128, 35, 230, 155): false
-2026.05.10@14:20:12.413: [-] [-] 
-
-*****     Angle Tests     *****
-
-2026.05.10@14:20:12.413: [-] [-] angle(0.7853981633974483rad)
-2026.05.10@14:20:12.414: [-] [-] angle(5.934119456780721rad)
-2026.05.10@14:20:12.414: [-] [-] angle(2.0420352248333655rad)
-2026.05.10@14:20:12.414: [-] [-] angle(6.5973445725385655rad)
-2026.05.10@14:20:12.414: [-] [-] angle(6.806784082777885rad) + angle(-7.853981633974483rad) = angle(-1.0471975511965974rad)
-2026.05.10@14:20:12.414: [-] [-] angle(6.806784082777885rad) - angle(-7.853981633974483rad) = angle(14.660765716752369rad)
-2026.05.10@14:20:12.414: [-] [-] angle(6.806784082777885rad) * 3.5 = angle(23.823744289722598rad)
-2026.05.10@14:20:12.414: [-] [-] angle(6.806784082777885rad) / 2.75 = angle(2.475194211919231rad)
-2026.05.10@14:20:12.414: [-] [-] Standardize: angle(6.806784082777885rad) -> angle(0.5235987755982991rad)
-2026.05.10@14:20:12.414: [-] [-] Standardize: angle(-7.853981633974483rad) -> angle(4.71238898038469rad)
-2026.05.10@14:20:12.414: [-] [-] angle(2.356194490192345rad) radians -> 2.356194490192345 radians
-2026.05.10@14:20:12.414: [-] [-] angle(2.356194490192345rad) radians -> 135.0 degrees
-2026.05.10@14:20:12.414: [-] [-] angle(2.356194490192345rad) radians -> 150.0 gradians
-2026.05.10@14:20:12.414: [-] [-] angle(2.356194490192345rad) radians -> 0.375 revolutions
-2026.05.10@14:20:12.414: [-] [-] angle(6.806784082777885rad) = 0: false
-2026.05.10@14:20:12.415: [-] [-] angle(0.0rad) = 0: true
-2026.05.10@14:20:12.415: [-] [-] angle(0.6981317007977318rad) in quadrant 1
-2026.05.10@14:20:12.415: [-] [-] angle(8.552113334772216rad) in quadrant 2
-2026.05.10@14:20:12.415: [-] [-] angle(4.1887902047863905rad) in quadrant 3
-2026.05.10@14:20:12.415: [-] [-] angle(-6.457718232379019rad) in quadrant 4
-2026.05.10@14:20:12.415: [-] [-] angle(0.0rad) coterminal to angle(14.835298641951802rad): false
-2026.05.10@14:20:12.415: [-] [-] angle(8.552113334772216rad) coterminal to angle(14.835298641951802rad): true
-2026.05.10@14:20:12.415: [-] [-] angle(8.552113334772216rad) acute: false
-2026.05.10@14:20:12.415: [-] [-] angle(0.6981317007977318rad) acute: true
-2026.05.10@14:20:12.415: [-] [-] angle(4.1887902047863905rad) right: false
-2026.05.10@14:20:12.415: [-] [-] angle(1.5707963267948966rad) right: true
-2026.05.10@14:20:12.415: [-] [-] angle(0.0rad) obtuse: false
-2026.05.10@14:20:12.415: [-] [-] angle(2.2689280275926285rad) obtuse: true
-2026.05.10@14:20:12.415: [-] [-] angle(2.356194490192345rad) straight: false
-2026.05.10@14:20:12.415: [-] [-] angle(3.141592653589793rad) straight: true
-2026.05.10@14:20:12.415: [-] [-] angle(1.5707963267948966rad) reflex: false
-2026.05.10@14:20:12.415: [-] [-] angle(4.1887902047863905rad) reflex: true
-2026.05.10@14:20:12.415: [-] [-] angle(2.2689280275926285rad) = angle(3.141592653589793rad): false
-2026.05.10@14:20:12.415: [-] [-] angle(2.2689280275926285rad) = angle(2.2689280275926285rad): true
-2026.05.10@14:20:12.415: [-] [-] 
-
-*****     Vec2D Tests     *****
-
-2026.05.10@14:20:12.416: [-] [-] vector(5.0, 3.0), vector(1.9856352982425838, -6.7124699226419695)
-2026.05.10@14:20:12.417: [-] [-] vector(5.0, 3.0) + vector(1.9856352982425838, -6.7124699226419695) = vector(6.985635298242584, -3.7124699226419695)
-2026.05.10@14:20:12.417: [-] [-] vector(5.0, 3.0) - vector(1.9856352982425838, -6.7124699226419695) = vector(3.014364701757416, 9.712469922641969)
-2026.05.10@14:20:12.418: [-] [-] -vector(5.0, 3.0) = vector(-5.0, -3.0)
-2026.05.10@14:20:12.418: [-] [-] 3.5 * vector(5.0, 3.0) = vector(17.5, 10.5)
-2026.05.10@14:20:12.418: [-] [-] vector(5.0, 3.0) / 2.0 = vector(2.5, 1.5)
-2026.05.10@14:20:12.418: [-] [-] vector(5.0, 3.0) * vector(1.9856352982425838, -6.7124699226419695) = vector(9.92817649121292, -20.13740976792591)
-2026.05.10@14:20:12.418: [-] [-] vector(5.0, 3.0) / vector(1.9856352982425838, -6.7124699226419695) = vector(2.5180857755829202, -0.44692937690203105)
-2026.05.10@14:20:12.418: [-] [-] vector(5.0, 3.0) . vector(1.9856352982425838, -6.7124699226419695) = -10.20923327671299
-2026.05.10@14:20:12.418: [-] [-] dist^2(vector(5.0, 3.0), vector(1.9856352982425838, -6.7124699226419695)) = 103.41846655342597
-2026.05.10@14:20:12.418: [-] [-] dist(vector(5.0, 3.0), vector(1.9856352982425838, -6.7124699226419695)) = 10.169487034920984
-2026.05.10@14:20:12.418: [-] [-] normalize(vector(5.0, 3.0)) = vector(0.8574929257125441, 0.5144957554275265)
-2026.05.10@14:20:12.418: [-] [-] vector(5.0, 3.0) x vector(1.9856352982425838, -6.7124699226419695) = -39.5192555079376
-2026.05.10@14:20:12.418: [-] [-] rotate(vector(5.0, 3.0), Pi/2rad) = vector(-2.9999999999999996, 5.0)
-2026.05.10@14:20:12.418: [-] [-] rotate(vector(5.0, 3.0), Pi/3rad, vector(1.9856352982425838, -6.7124699226419695)) = vector(-4.918428037378934, 0.7542814466720413)
-2026.05.10@14:20:12.418: [-] [-] angle(vector(5.0, 3.0), vector(1.9856352982425838, -6.7124699226419695)) = angle(1.8236048074501705rad)
-2026.05.10@14:20:12.418: [-] [-] reflect x(vector(5.0, 3.0)) = vector(-5.0, 3.0)
-2026.05.10@14:20:12.418: [-] [-] reflect y(vector(5.0, 3.0)) = vector(5.0, -3.0)
-2026.05.10@14:20:12.418: [-] [-] interpolate(vector(5.0, 3.0), vector(1.9856352982425838, -6.7124699226419695), 0.75) = vector(7.260773526318062, 10.284352441981476)
-2026.05.10@14:20:12.418: [-] [-] midpoint(vector(5.0, 3.0), vector(1.9856352982425838, -6.7124699226419695)) = vector(6.507182350878708, 7.856234961320984)
-2026.05.10@14:20:12.419: [-] [-] floor(vector(1.9856352982425838, -6.7124699226419695)) = vector(1.0, -7.0)
-2026.05.10@14:20:12.419: [-] [-] ceiling(vector(1.9856352982425838, -6.7124699226419695)) = vector(2.0, -6.0)
-2026.05.10@14:20:12.419: [-] [-] vector(5.0, 3.0) -> x = 5.0, y = 3.0
-2026.05.10@14:20:12.419: [-] [-] vector(5.0, 3.0) -> element sum = 8.0
-2026.05.10@14:20:12.419: [-] [-] length^2(vector(5.0, 3.0)) = 34.0
-2026.05.10@14:20:12.419: [-] [-] length(vector(5.0, 3.0)) = 5.830951894845301
-2026.05.10@14:20:12.419: [-] [-] vector(5.0, 3.0) = 0: false
-2026.05.10@14:20:12.419: [-] [-] vector(0.0, 0.0) = 0: true
-2026.05.10@14:20:12.419: [-] [-] vector(1.9856352982425838, -6.7124699226419695) normalized: false
-2026.05.10@14:20:12.419: [-] [-] vector(0.7071067811865476, 0.7071067811865475) normalized: true
-2026.05.10@14:20:12.419: [-] [-] vector(5.0, 3.0) -> angle: angle(0.5404195002705842rad)
-2026.05.10@14:20:12.419: [-] [-] vector(5.0, 3.0) || vector(1.9856352982425838, -6.7124699226419695): false
-2026.05.10@14:20:12.419: [-] [-] vector(5.0, 3.0) || vector(10.0, 6.0): true
-2026.05.10@14:20:12.419: [-] [-] vector(5.0, 3.0) T vector(1.9856352982425838, -6.7124699226419695): false
-2026.05.10@14:20:12.419: [-] [-] vector(5.0, 3.0) T vector(-3.0, 5.0): true
-2026.05.10@14:20:12.419: [-] [-] vector(5.0, 3.0) = vector(-3.000000164351073, 3.9999998767366893): false
-2026.05.10@14:20:12.419: [-] [-] vector(-3.000000164351073, 3.9999998767366893) = vector(-3.0, 4.0): true
-2026.05.10@14:20:12.419: [MarasmiumKit App] [Information] Destroying MarasmiumKit application framework
-2026.05.10@14:20:12.419: [MarasmiumKit App] [Information] Destroying logging system
-2026.05.10@14:20:12.419: [Logging System] [Information] Destroying logging system
+2026.05.24@14:17:04.218: [Logging System] [Information] Initialized logging system
+2026.05.24@14:17:04.218: [MarasmiumKit App] [Information] Initialized logging system
+2026.05.24@14:17:04.218: [Windowing System] [Information] Set fullscreen monitor index 0
+2026.05.24@14:17:04.223: [Windowing System] [Information] Generated new window frame
+2026.05.24@14:17:04.223: [Windowing System] [Information] Set window title ""
+2026.05.24@14:17:04.223: [Windowing System] [Information] Set window to windowed mode
+2026.05.24@14:17:04.288: [Windowing System] [Information] Set window title "MarasmiumKit App"
+2026.05.24@14:17:04.288: [Windowing System] [Information] Set window dimensions vector(1280.0, 720.0)
+2026.05.24@14:17:04.289: [Windowing System] [Information] Initialized windowing system
+2026.05.24@14:17:04.289: [MarasmiumKit App] [Information] Initialized windowing system
+2026.05.24@14:17:04.289: [MarasmiumKit App] [Information] Scene 0 not added
+2026.05.24@14:17:04.289: [MarasmiumKit App] [Information] Adding scene 0
+2026.05.24@14:17:04.289: [MarasmiumKit App] [Information] Scene 0 requires initialization
+2026.05.24@14:17:04.289: [Test Scene 1] [Information] Initializing test scene 1
+2026.05.24@14:17:04.289: [MarasmiumKit App] [Information] Entering new scene 0
+2026.05.24@14:17:04.290: [Test Scene 1] [Information] Entering test scene 1
+2026.05.24@14:17:04.290: [MarasmiumKit App] [Information] Set initial scene
+2026.05.24@14:17:04.290: [MarasmiumKit App] [Information] Initialized MarasmiumKit application framework
+2026.05.24@14:17:04.290: [MarasmiumKit App] [Information] Starting main application loop
+2026.05.24@14:17:05.791: [Test Scene 1] [Information] Window title: "MarasmiumKit App"
+2026.05.24@14:17:07.291: [Windowing System] [Information] Set window title "TestScene1"
+2026.05.24@14:17:07.291: [Test Scene 1] [Information] Set window title
+2026.05.24@14:17:08.791: [Test Scene 1] [Information] New window title: "TestScene1"
+2026.05.24@14:17:10.291: [Test Scene 1] [Information] Window dimensions: vector(1280.0, 720.0)
+2026.05.24@14:17:11.791: [Windowing System] [Information] Set window dimensions vector(500.0, 500.0)
+2026.05.24@14:17:11.791: [Test Scene 1] [Information] Set window dimensions
+2026.05.24@14:17:13.291: [Test Scene 1] [Information] New window dimensions: vector(500.0, 500.0)
+2026.05.24@14:17:14.791: [Test Scene 1] [Information] Window fullscreen mode: false
+2026.05.24@14:17:16.320: [Windowing System] [Information] Generated new window frame
+2026.05.24@14:17:16.344: [Windowing System] [Information] Set window dimensions vector(1710.0, 1107.0)
+2026.05.24@14:17:16.344: [Windowing System] [Information] Set window to fullscreen mode
+2026.05.24@14:17:16.344: [Test Scene 1] [Information] Set window to fullscreen mode
+2026.05.24@14:17:17.791: [Test Scene 1] [Information] Fullscreen dimensions: vector(1710.0, 1107.0)
+2026.05.24@14:17:19.326: [Windowing System] [Information] Generated new window frame
+2026.05.24@14:17:19.326: [Windowing System] [Information] Set window title "TestScene1"
+2026.05.24@14:17:19.342: [Windowing System] [Information] Set window dimensions vector(500.0, 500.0)
+2026.05.24@14:17:19.343: [Windowing System] [Information] Set window to windowed mode
+2026.05.24@14:17:19.353: [Test Scene 1] [Information] Set window to windowed mode
+2026.05.24@14:17:20.791: [Test Scene 1] [Information] Monitors:
+2026.05.24@14:17:20.791: [Test Scene 1] [Information] Monitor: Monitor 0: "Display 1" vector(1710.0, 1107.0) at vector(0.0, 0.0)
+2026.05.24@14:17:20.792: [Test Scene 1] [Information] Monitor: Monitor 1: "Display 2" vector(1920.0, 1080.0) at vector(1710.0, 0.0)
+2026.05.24@14:17:20.792: [Test Scene 1] [Information] Monitor: Monitor 2: "Display 3" vector(1920.0, 1080.0) at vector(-1920.0, 0.0)
+2026.05.24@14:17:22.291: [Test Scene 1] [Information] Current monitor: Monitor 0: "Display 1" vector(1710.0, 1107.0) at vector(0.0, 0.0)
+2026.05.24@14:17:23.791: [Windowing System] [Information] Set fullscreen monitor index 2
+2026.05.24@14:17:23.791: [Test Scene 1] [Information] Set monitor index
+2026.05.24@14:17:25.296: [Windowing System] [Information] Generated new window frame
+2026.05.24@14:17:25.318: [Windowing System] [Information] Set window dimensions vector(1920.0, 1080.0)
+2026.05.24@14:17:25.319: [Windowing System] [Information] Set window to fullscreen mode
+2026.05.24@14:17:25.319: [Test Scene 1] [Information] Set window to fullscreen mode on monitor 2
+2026.05.24@14:17:26.826: [Windowing System] [Information] Generated new window frame
+2026.05.24@14:17:26.826: [Windowing System] [Information] Set window title "TestScene1"
+2026.05.24@14:17:26.845: [Windowing System] [Information] Set window dimensions vector(500.0, 500.0)
+2026.05.24@14:17:26.845: [Windowing System] [Information] Set window to windowed mode
+2026.05.24@14:17:26.870: [Windowing System] [Information] Generated new window frame
+2026.05.24@14:17:26.891: [Windowing System] [Information] Set window dimensions vector(1710.0, 1107.0)
+2026.05.24@14:17:26.891: [Windowing System] [Information] Set window to fullscreen mode
+2026.05.24@14:17:26.891: [Windowing System] [Information] Set fullscreen monitor index 0
+2026.05.24@14:17:26.891: [Test Scene 1] [Information] Set monitor index while in fullscreen mode
+2026.05.24@14:17:28.337: [Windowing System] [Information] Generated new window frame
+2026.05.24@14:17:28.338: [Windowing System] [Information] Set window title "TestScene1"
+2026.05.24@14:17:28.358: [Windowing System] [Information] Set window dimensions vector(500.0, 500.0)
+2026.05.24@14:17:28.358: [Windowing System] [Information] Set window to windowed mode
+2026.05.24@14:17:28.368: [Test Scene 1] [Information] Set window to windowed mode from new monitor
+2026.05.24@14:17:43.995: [MarasmiumKit App] [Information] Finished main application loop
+2026.05.24@14:17:43.995: [MarasmiumKit App] [Information] Destroying MarasmiumKit application framework
+2026.05.24@14:17:43.995: [MarasmiumKit App] [Information] Freeing all scenes
+2026.05.24@14:17:43.995: [Test Scene 1] [Information] Leaving test scene 1
+2026.05.24@14:17:43.995: [Test Scene 1] [Information] Destroying test scene 1
+2026.05.24@14:17:43.996: [MarasmiumKit App] [Information] Destroying windowing system
+2026.05.24@14:17:43.996: [Windowing System] [Information] Destroying windowing system
+2026.05.24@14:17:43.996: [MarasmiumKit App] [Information] Destroying logging system
+2026.05.24@14:17:43.996: [Logging System] [Information] Destroying logging system

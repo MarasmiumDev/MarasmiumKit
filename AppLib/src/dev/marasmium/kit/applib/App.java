@@ -10,6 +10,10 @@ package dev.marasmium.kit.applib;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogManager;
 import dev.marasmium.kit.applib.logging.LogSource;
+import dev.marasmium.kit.applib.windowing.WindowManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The main, singleton class of the MarasmiumKit's application framework
@@ -20,11 +24,27 @@ public class App {
      * The application framework's logging system
      */
     public static final LogManager Log = new LogManager();
+    /**
+     * The application framework's windowing system
+     */
+    public static final WindowManager Window = new WindowManager();
 
     /**
      * Whether the application framework has been initialized
      */
     private static boolean Initialized = false;
+    /**
+     * The scenes managed by the application framework
+     */
+    private static List<Scene> Scenes = null;
+    /**
+     * The next ID to assign to a scene managed by the application framework
+     */
+    private static int NextSceneID = 0;
+    /**
+     * The application framework's current scene
+     */
+    private static Scene CurrentScene = null;
 
     /**
      * Initialize the MarasmiumKit's application framework
@@ -44,9 +64,35 @@ public class App {
             return false;
         }
         Log.write(LogSource.App, LogLevel.Info, "Initialized logging system");
+        // Initialize the windowing system
+        if (!Window.initialize(config.window)) {
+            Log.write(LogSource.App, LogLevel.Error, "Failed to initialize windowing system");
+            return false;
+        }
+        Log.write(LogSource.App, LogLevel.Info, "Initialized windowing system");
+        // Set initial scene
+        Scenes = new ArrayList<>();
+        if (!SetCurrentScene(config.initialScene)) {
+            Log.write(LogSource.App, LogLevel.Error, "Failed to set current scene");
+            return false;
+        }
+        Log.write(LogSource.App, LogLevel.Info, "Set initial scene");
         Initialized = true;
         Log.write(LogSource.App, LogLevel.Info, "Initialized MarasmiumKit application framework");
         return true;
+    }
+
+    /**
+     * Run the main loop of the MarasmiumKit application framework
+     */
+    public static void Run() {
+        Log.write(LogSource.App, LogLevel.Info, "Starting main application loop");
+        while (!Window.isCloseRequested()) {
+            if (!CurrentScene.processInput()) {
+                break;
+            }
+        }
+        Log.write(LogSource.App, LogLevel.Info, "Finished main application loop");
     }
 
     /**
@@ -59,6 +105,22 @@ public class App {
         }
         Log.write(LogSource.App, LogLevel.Info, "Destroying MarasmiumKit application framework");
         boolean success = true;
+        // Dispose of all scenes managed by the application
+        Log.write(LogSource.App, LogLevel.Info, "Freeing all scenes");
+        NextSceneID = 0;
+        CurrentScene.leave(null);
+        CurrentScene = null;
+        for (Scene scene : Scenes) {
+            scene.destroy();
+        }
+        Scenes.clear();
+        Scenes = null;
+        // Free the windowing system
+        Log.write(LogSource.App, LogLevel.Info, "Destroying windowing system");
+        if (!Window.destroy()) {
+            Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy windowing system");
+            success = false;
+        }
         // Free the logging system
         Log.write(LogSource.App, LogLevel.Info, "Destroying logging system");
         if (!Log.destroy()) {
@@ -74,6 +136,97 @@ public class App {
      */
     public static boolean IsInitialized() {
         return Initialized;
+    }
+
+    /**
+     * Add a scene to the application framework to be managed by it - the framework will be responsible for initializing
+     * and destroying the scene after it is added
+     * @param scene The scene to add to the application framework - if not initialized, this will initialize it
+     * @return Whether the scene was not already present and was initialized successfully
+     */
+    public static boolean AddScene(Scene scene) {
+        Log.write(LogSource.App, LogLevel.Info, "Adding scene ", scene.getID());
+        if (Scenes.contains(scene)) {
+            Log.write(LogSource.App, LogLevel.Warning, "Scene ", scene.getID(), " already present");
+            return false;
+        }
+        if (!scene.isInitialized()) {
+            Log.write(LogSource.App, LogLevel.Info, "Scene ", scene.getID(), " requires initialization");
+            if (!scene.initializeScene(NextSceneID++)) {
+                Log.write(LogSource.App, LogLevel.Warning, "Failed to initialize scene ", scene.getID());
+                return false;
+            }
+        }
+        Scenes.add(scene);
+        return true;
+    }
+
+    /**
+     * Remove a scene from the application framework no longer to be managed by it - the framework will no longer be
+     * responsible for initializing and destroying the scene after it is removed
+     * @param scene The scene to remove from the application framework - this will destroy it
+     * @return Whether the scene was present and was destroyed successfully
+     */
+    public static boolean RemoveScene(Scene scene) {
+        Log.write(LogSource.App, LogLevel.Info, "Removing scene ", scene.getID());
+        if (!Scenes.contains(scene)) {
+            Log.write(LogSource.App, LogLevel.Warning, "Scene ", scene.getID(), " not present");
+            return false;
+        }
+        boolean success = true;
+        if (scene.isInitialized()) {
+            Log.write(LogSource.App, LogLevel.Info, "Scene ", scene.getID(), " requires destruction");
+            if (!scene.destroyScene()) {
+                Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy scene ", scene.getID());
+                success = false;
+            }
+        }
+        Scenes.remove(scene);
+        return success;
+    }
+
+    /**
+     * Get the current scene displayed by the application framework
+     * @return The application framework's current scene
+     */
+    public static Scene GetCurrentScene() {
+        return CurrentScene;
+    }
+
+    /**
+     * Change the current scene displayed by the application framework to a new one - leaves the old scene if one was
+     * present, adds the new scene to be managed by the application framework if not already added, and enters the new
+     * scene
+     * @param scene The new scene for the application framework to display, must not be null
+     * @return Whether leaving the old scene and entering the new scene was done successfully
+     */
+    public static boolean SetCurrentScene(Scene scene) {
+        if (scene == null) {
+            Log.write(LogSource.App, LogLevel.Warning, "Failed to set new scene - null");
+            return false;
+        }
+        // Leave old scene
+        if (CurrentScene != null) {
+            Log.write(LogSource.App, LogLevel.Info, "Leaving current scene ", CurrentScene.getID());
+            if (!CurrentScene.leave(scene)) {
+                Log.write(LogSource.App, LogLevel.Error, "Failed to leave current scene ", CurrentScene.getID());
+                return false;
+            }
+        }
+        // Enter new scene
+        if (!Scenes.contains(scene)) {
+            Log.write(LogSource.App, LogLevel.Info, "Scene ", scene.getID(), " not added");
+            if (!AddScene(scene)) {
+                Log.write(LogSource.App, LogLevel.Error, "Failed to add scene ", scene.getID());
+                return false;
+            }
+        }
+        Log.write(LogSource.App, LogLevel.Info, "Entering new scene ", scene.getID());
+        if (!scene.enter(CurrentScene)) {
+            return false;
+        }
+        CurrentScene = scene;
+        return true;
     }
 
     /**
