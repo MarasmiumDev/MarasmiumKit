@@ -25,6 +25,14 @@ public record LogSource(String sourceName) {
      * Logging system message source flag for the windowing system
      */
     public static final LogSource Window = new LogSource("Windowing System");
+    /**
+     * Logging system message source flag for the user-input management system
+     */
+    public static final LogSource Input = new LogSource("User-Input Management System");
+    /**
+     * Logging system message source flag for the graphics system
+     */
+    public static final LogSource Graphics = new LogSource("Graphics System");
 
     /**
      * Construct a blank logging system message source flag record with default name "-"

@@ -12,15 +12,16 @@ import dev.marasmium.kit.applib.AppConfig;
 
 public class AppTest {
 
-    public static TestScene1 Test_Scene_1 = new TestScene1();
+    public static final TestScene1 Test_Scene_1 = new TestScene1();
+    public static final TestScene2 Test_Scene_2 = new TestScene2();
 
     static void main() {
         AppConfig config = new AppConfig(Test_Scene_1);
-        if (!App.Initialize(config)) {
+        if (App.Initialize(config)) {
+            App.Run();
+        } else {
             System.out.println("Failed to initialize app!");
-            return;
         }
-        App.Run();
         if (!App.Destroy()) {
             System.out.println("Failed to destroy app!");
         }

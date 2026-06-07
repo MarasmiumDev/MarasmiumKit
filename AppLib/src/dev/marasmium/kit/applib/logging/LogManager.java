@@ -189,6 +189,14 @@ public class LogManager {
     }
 
     /**
+     * Test whether the logging system has been initialized
+     * @return Whether the logging system is initialized
+     */
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    /**
      * Get the current format for timestamps attached to log messages
      * @return The current timestamp format
      */

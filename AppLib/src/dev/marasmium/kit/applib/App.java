@@ -7,6 +7,8 @@
 
 package dev.marasmium.kit.applib;
 
+import dev.marasmium.kit.applib.graphics.GraphicsManager;
+import dev.marasmium.kit.applib.input.InputManager;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogManager;
 import dev.marasmium.kit.applib.logging.LogSource;
@@ -28,6 +30,14 @@ public class App {
      * The application framework's windowing system
      */
     public static final WindowManager Window = new WindowManager();
+    /**
+     * The application framework's user-input management system
+     */
+    public static final InputManager Input = new InputManager();
+    /**
+     * The application framework's graphics system
+     */
+    public static final GraphicsManager Graphics = new GraphicsManager();
 
     /**
      * Whether the application framework has been initialized
@@ -70,6 +80,18 @@ public class App {
             return false;
         }
         Log.write(LogSource.App, LogLevel.Info, "Initialized windowing system");
+        // Initialize the user-input management system
+        if (!Input.initialize()) {
+            Log.write(LogSource.App, LogLevel.Error, "Failed to initialize user-input management system");
+            return false;
+        }
+        Log.write(LogSource.App, LogLevel.Info, "Initialized user-input management system");
+        // Initialize the graphics system
+        if (!Graphics.initialize(config.graphics)) {
+            Log.write(LogSource.App, LogLevel.Error, "Failed to initialize graphics system");
+            return false;
+        }
+        Log.write(LogSource.App, LogLevel.Info, "Initialized graphics system");
         // Set initial scene
         Scenes = new ArrayList<>();
         if (!SetCurrentScene(config.initialScene)) {
@@ -87,10 +109,33 @@ public class App {
      */
     public static void Run() {
         Log.write(LogSource.App, LogLevel.Info, "Starting main application loop");
+        long deltaStartMS = System.currentTimeMillis();
+        long deltaElapsedMS;
+        double deltaFrames;
+        long waitStartMS;
+        long waitElapsedMS;
+        long waitMS;
+        int count = 0;
         while (!Window.isCloseRequested()) {
+            waitStartMS = System.currentTimeMillis();
             if (!CurrentScene.processInput()) {
                 break;
             }
+            Input.update();
+            deltaElapsedMS = System.currentTimeMillis() - deltaStartMS;
+            deltaStartMS = System.currentTimeMillis();
+            deltaFrames = deltaElapsedMS * Graphics.getTargetFPMS();
+            while (count++ < Graphics.getMaxUPF() && deltaFrames > 1.0d) {
+                CurrentScene.update(1.0d);
+                deltaFrames -= 1.0d;
+            }
+            CurrentScene.update(deltaFrames);
+            count = 0;
+            waitElapsedMS = System.currentTimeMillis() - waitStartMS;
+            waitMS = (long)Graphics.getTargetMSPF() - waitElapsedMS;
+            try {
+                Thread.sleep(waitMS);
+            } catch (Exception _) {}
         }
         Log.write(LogSource.App, LogLevel.Info, "Finished main application loop");
     }
@@ -115,6 +160,18 @@ public class App {
         }
         Scenes.clear();
         Scenes = null;
+        // Free the graphics system
+        Log.write(LogSource.App, LogLevel.Info, "Destroying graphics system");
+        if (!Graphics.destroy()) {
+            Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy graphics system");
+            success = false;
+        }
+        // Free the user-input management system
+        Log.write(LogSource.App, LogLevel.Info, "Destroying user-input management system");
+        if (!Input.destroy()) {
+            Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy user-input management system");
+            success = false;
+        }
         // Free the windowing system
         Log.write(LogSource.App, LogLevel.Info, "Destroying windowing system");
         if (!Window.destroy()) {
@@ -152,7 +209,7 @@ public class App {
         }
         if (!scene.isInitialized()) {
             Log.write(LogSource.App, LogLevel.Info, "Scene ", scene.getID(), " requires initialization");
-            if (!scene.initializeScene(NextSceneID++)) {
+            if (!scene.initializeScene(++NextSceneID)) {
                 Log.write(LogSource.App, LogLevel.Warning, "Failed to initialize scene ", scene.getID());
                 return false;
             }
@@ -208,6 +265,7 @@ public class App {
         // Leave old scene
         if (CurrentScene != null) {
             Log.write(LogSource.App, LogLevel.Info, "Leaving current scene ", CurrentScene.getID());
+            Input.removeListener(CurrentScene);
             if (!CurrentScene.leave(scene)) {
                 Log.write(LogSource.App, LogLevel.Error, "Failed to leave current scene ", CurrentScene.getID());
                 return false;
@@ -223,6 +281,10 @@ public class App {
         }
         Log.write(LogSource.App, LogLevel.Info, "Entering new scene ", scene.getID());
         if (!scene.enter(CurrentScene)) {
+            return false;
+        }
+        if (!Input.addListener(scene)) {
+            Log.write(LogSource.App, LogLevel.Error, "Failed to add scene ", scene.getID(), " to input listeners");
             return false;
         }
         CurrentScene = scene;

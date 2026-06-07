@@ -16,6 +16,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -152,6 +153,14 @@ public class WindowManager {
     }
 
     /**
+     * Test whether the windowing system has been initialized
+     * @return Whether the windowing system is initialized
+     */
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    /**
      * Get the title appearing on the window when in windowed mode
      * @return The title of the window
      */
@@ -267,6 +276,8 @@ public class WindowManager {
             App.Log.write(LogSource.Window, LogLevel.Info, "Set window to windowed mode");
         }
         frame.setVisible(true);
+        frame.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.emptySet());
+        panel.requestFocus();
         return true;
     }
 

@@ -10,18 +10,15 @@ package dev.marasmium.kit.apptest;
 import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.Scene;
 import dev.marasmium.kit.applib.data.Vec2D;
+import dev.marasmium.kit.applib.input.KeyboardKey;
+import dev.marasmium.kit.applib.input.MouseButton;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
-import dev.marasmium.kit.applib.windowing.Monitor;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class TestScene1 extends Scene {
 
     private final LogSource logSource = new LogSource("Test Scene 1");
-    private long startTime = 0L;
-    private final boolean[] testFlags = new boolean[64];
+    private double deltaFrames = 0.0d;
 
     @Override
     public boolean initialize() {
@@ -31,107 +28,57 @@ public class TestScene1 extends Scene {
     @Override
     public boolean enter(Scene lastScene) {
         App.Log.write(logSource, LogLevel.Info, "Entering test scene 1");
-        startTime = System.currentTimeMillis();
-        Arrays.fill(testFlags, false);
+        deltaFrames = 0.0d;
         return true;
     }
     @Override
     public boolean processInput() {
-        if (System.currentTimeMillis() - startTime > (1500 * 1) && !testFlags[1]) {
-            App.Log.write(logSource, LogLevel.Info, "Window title: \"", App.Window.getTitle(), "\"");
-            testFlags[1] = true;
+        // Switch between scenes
+        if (App.Input.keyboard.isKeyPressed(KeyboardKey.TWO)) {
+            App.SetCurrentScene(AppTest.Test_Scene_2);
         }
-        if (System.currentTimeMillis() - startTime > (1500 * 2) && !testFlags[2]) {
-            if (App.Window.setTitle("TestScene1")) {
-                App.Log.write(logSource, LogLevel.Info, "Set window title");
-            } else {
-                App.Log.write(logSource, LogLevel.Info, "Failed to set window title");
-            }
-            testFlags[2] = true;
+        // Test synchronous user-input functions
+        if (App.Input.keyboard.isKeyDown(KeyboardKey.A)) {
+            App.Log.write(logSource, LogLevel.Info, "A key down");
         }
-        if (System.currentTimeMillis() - startTime > (1500L * 3) && !testFlags[3]) {
-            App.Log.write(logSource, LogLevel.Info, "New window title: \"", App.Window.getTitle(), "\"");
-            testFlags[3] = true;
+        if (App.Input.keyboard.isKeyPressed(KeyboardKey.S)) {
+            App.Log.write(logSource, LogLevel.Info, "S key pressed");
         }
-        if (System.currentTimeMillis() - startTime > (1500L * 4) && !testFlags[4]) {
-            App.Log.write(logSource, LogLevel.Info, "Window dimensions: ", App.Window.getDimensions());
-            testFlags[4] = true;
+        if (App.Input.keyboard.isKeyReleased(KeyboardKey.S)) {
+            App.Log.write(logSource, LogLevel.Info, "S key released");
         }
-        if (System.currentTimeMillis() - startTime > (1500L * 5) && !testFlags[5]) {
-            if (App.Window.setDimensions(Vec2D.Cartesian(500.0d, 500.0d))) {
-                App.Log.write(logSource, LogLevel.Info, "Set window dimensions");
-            } else {
-                App.Log.write(logSource, LogLevel.Info, "Failed to set window dimensions");
-            }
-            testFlags[5] = true;
+        String typedChars = App.Input.keyboard.getTypedChars();
+        if (!typedChars.isEmpty()) {
+            App.Log.write(logSource, LogLevel.Info, "Typed characters: \"", typedChars, "\"");
         }
-        if (System.currentTimeMillis() - startTime > (1500L * 6) && !testFlags[6]) {
-            App.Log.write(logSource, LogLevel.Info, "New window dimensions: ", App.Window.getDimensions());
-            testFlags[6] = true;
+        if (App.Input.mouse.isButtonDown(MouseButton.LEFT)) {
+            App.Log.write(logSource, LogLevel.Info, "Left mouse button down");
         }
-        if (System.currentTimeMillis() - startTime > (1500L * 7) && !testFlags[7]) {
-            App.Log.write(logSource, LogLevel.Info, "Window fullscreen mode: ", App.Window.isFullscreen());
-            testFlags[7] = true;
+        if (App.Input.mouse.isButtonPressed(MouseButton.RIGHT)) {
+            App.Log.write(logSource, LogLevel.Info, "Right mouse button pressed");
         }
-        if (System.currentTimeMillis() - startTime > (1500L * 8) && !testFlags[8]) {
-            if (App.Window.setFullscreen(true)) {
-                App.Log.write(logSource, LogLevel.Info, "Set window to fullscreen mode");
-            } else {
-                App.Log.write(logSource, LogLevel.Info, "Failed to set window to fullscreen mode");
-            }
-            testFlags[8] = true;
+        if (App.Input.mouse.isButtonReleased(MouseButton.RIGHT)) {
+            App.Log.write(logSource, LogLevel.Info, "Right mouse button released");
         }
-        if (System.currentTimeMillis() - startTime > (1500L * 9) && !testFlags[9]) {
-            App.Log.write(logSource, LogLevel.Info, "Fullscreen dimensions: ", App.Window.getDimensions());
-            testFlags[9] = true;
+        Vec2D cursorMovement = App.Input.mouse.getCursorMovement();
+        if (!cursorMovement.isZero()) {
+            App.Log.write(logSource, LogLevel.Info, "Cursor moved to ", App.Input.mouse.getCursorPosition(), " by ",
+                    cursorMovement);
         }
-        if (System.currentTimeMillis() - startTime > (1500L * 10) && !testFlags[10]) {
-            if (App.Window.setFullscreen(false)) {
-                App.Log.write(logSource, LogLevel.Info, "Set window to windowed mode");
-            } else {
-                App.Log.write(logSource, LogLevel.Info, "Failed to set window to windowed mode");
-            }
-            testFlags[10] = true;
-        }
-        if (System.currentTimeMillis() - startTime > (1500L * 11) && !testFlags[11]) {
-            App.Log.write(logSource, LogLevel.Info, "Monitors:");
-            List<Monitor> monitors = App.Window.getMonitors();
-            for (Monitor monitor : monitors) {
-                App.Log.write(logSource, LogLevel.Info, "Monitor: ", monitor);
-            }
-            testFlags[11] = true;
-        }
-        if (System.currentTimeMillis() - startTime > (1500L * 12) && !testFlags[12]) {
-            App.Log.write(logSource, LogLevel.Info, "Current monitor: ", App.Window.getMonitor());
-            testFlags[12] = true;
-        }
-        if (System.currentTimeMillis() - startTime > (1500L * 13) && !testFlags[13]) {
-            App.Window.setMonitor(App.Window.getMonitors().get(2));
-            App.Log.write(logSource, LogLevel.Info, "Set monitor index");
-            testFlags[13] = true;
-        }
-        if (System.currentTimeMillis() - startTime > (1500L * 14) && !testFlags[14]) {
-            if (App.Window.setFullscreen(true)) {
-                App.Log.write(logSource, LogLevel.Info, "Set window to fullscreen mode on monitor 2");
-            } else {
-                App.Log.write(logSource, LogLevel.Info, "Failed to set window to fullscreen mode on monitor 2");
-            }
-            testFlags[14] = true;
-        }
-        if (System.currentTimeMillis() - startTime > (1500L * 15) && !testFlags[15]) {
-            App.Window.setMonitor(App.Window.getMonitors().get(0));
-            App.Log.write(logSource, LogLevel.Info, "Set monitor index while in fullscreen mode");
-            testFlags[15] = true;
-        }
-        if (System.currentTimeMillis() - startTime > (1500L * 16) && !testFlags[16]) {
-            if (App.Window.setFullscreen(false)) {
-                App.Log.write(logSource, LogLevel.Info, "Set window to windowed mode from new monitor");
-            } else {
-                App.Log.write(logSource, LogLevel.Info, "Failed to set window to windowed mode from new monitor");
-            }
-            testFlags[16] = true;
+        Vec2D scrollMovement = App.Input.mouse.getScrollMovement();
+        if (!scrollMovement.isZero()) {
+            App.Log.write(logSource, LogLevel.Info, "Scroll moved by ", App.Input.mouse.getScrollMovement());
         }
         return true;
+    }
+    @Override
+    public void update(double deltaFrames) {
+        // Test timing
+        this.deltaFrames += deltaFrames;
+        if (this.deltaFrames > App.Graphics.getTargetFPS()) {
+            this.deltaFrames = 0.0d;
+            App.Log.write(logSource, LogLevel.Info, "1 second elapsed");
+        }
     }
     @Override
     public boolean leave(Scene lastScene) {
@@ -141,6 +88,7 @@ public class TestScene1 extends Scene {
     @Override
     public boolean destroy() {
         App.Log.write(logSource, LogLevel.Info, "Destroying test scene 1");
+        deltaFrames = 0.0d;
         return true;
     }
 

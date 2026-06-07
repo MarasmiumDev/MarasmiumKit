@@ -7,11 +7,13 @@
 
 package dev.marasmium.kit.applib;
 
+import dev.marasmium.kit.applib.input.InputListener;
+
 /**
  * Abstract interface for a scene within the MarasmiumKit's application framework with callbacks for application
  * processes. This class is intended to be managed (initialized and destroyed) by the framework's App class
  */
-public abstract class Scene {
+public abstract class Scene implements InputListener {
 
     /**
      * Whether this scene has been initialized
@@ -55,6 +57,12 @@ public abstract class Scene {
      * @return Whether the application should continue running
      */
     public abstract boolean processInput();
+
+    /**
+     * Update this scene's time-sensitive logic
+     * @param deltaFrames The target number of frames to have elapsed since the last update
+     */
+    public abstract void update(double deltaFrames);
 
     /**
      * Leave this scene for another scene in the application framework
