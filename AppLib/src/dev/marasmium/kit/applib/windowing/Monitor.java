@@ -12,7 +12,9 @@ import dev.marasmium.kit.applib.data.Vec2D;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 
-import java.awt.*;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.HeadlessException;
 
 /**
  * Data structure representing a monitor in the local graphics environment with a description, position, and dimensions
@@ -50,18 +52,27 @@ public class Monitor {
      * @return Whether the monitor was still available and was validated successfully
      */
     private boolean validate() {
+        // Retrieve available monitors
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice[] gds = ge.getScreenDevices();
+        GraphicsDevice[] gds;
+        try {
+            gds = ge.getScreenDevices();
+        } catch (HeadlessException _) {
+            App.Log.write(LogSource.Window, LogLevel.Error, "System is in headless mode");
+            return false;
+        }
         if (gds.length == 0) {
             App.Log.write(LogSource.Window, LogLevel.Error, "Primary monitor unavailable");
             return false;
         }
+        // Check index
         boolean success = true;
         if (index < 0 || index >= gds.length) {
             App.Log.write(LogSource.Window, LogLevel.Warning, "Monitor index ", index, " invalid");
             index = 0;
             success = false;
         }
+        // Retrieve monitor attributes
         position = Vec2D.Cartesian(gds[index].getDefaultConfiguration().getBounds().getX(),
                 gds[index].getDefaultConfiguration().getBounds().getY());
         description = gds[index].getIDstring();

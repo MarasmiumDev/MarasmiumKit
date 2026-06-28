@@ -7,10 +7,12 @@
 
 package dev.marasmium.kit.applib.data;
 
+import java.io.Serializable;
+
 /**
  * RGBA colour data structure with related constants mathematical operations
  */
-public class Colour {
+public class Colour implements Serializable {
 
     /**
      * Black colour constant
@@ -79,6 +81,9 @@ public class Colour {
      * @return This colour with c alpha-blended on top of it
      */
     public Colour blend(Colour c) {
+        if (c == null) {
+            return null;
+        }
         int aUnder = getAlpha();
         int aOver = c.getAlpha();
         int aOut255 = ((255 * aOver) + ((255 - aOver) * aUnder));

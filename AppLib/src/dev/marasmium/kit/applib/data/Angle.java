@@ -8,10 +8,12 @@
 
 package dev.marasmium.kit.applib.data;
 
+import java.io.Serializable;
+
 /**
  * Angle data structure and related constants and mathematical operations
  */
-public class Angle {
+public class Angle implements Serializable {
 
     /**
      * Small value for comparing with floating-point rounding error
@@ -84,6 +86,9 @@ public class Angle {
      * @return The sum of this angle and theta
      */
     public Angle add(Angle theta) {
+        if (theta == null) {
+            return null;
+        }
         return Angle.Radians(this.theta + theta.theta);
     }
 
@@ -93,6 +98,9 @@ public class Angle {
      * @return The difference of this angle and theta
      */
     public Angle subtract(Angle theta) {
+        if (theta == null) {
+            return null;
+        }
         return Angle.Radians(this.theta - theta.theta);
     }
 
@@ -210,11 +218,14 @@ public class Angle {
 
     /**
      * Test whether this angle is coterminal to another one
-     * @param a The angle to test
+     * @param theta The angle to test
      * @return Whether this angle is coterminal to a
      */
-    public boolean isCoterminalTo(Angle a) {
-        return standardize().equals(a.standardize());
+    public boolean isCoterminalTo(Angle theta) {
+        if (theta == null) {
+            return false;
+        }
+        return standardize().equals(theta.standardize());
     }
 
     /**

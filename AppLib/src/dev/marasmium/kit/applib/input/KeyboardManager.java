@@ -41,53 +41,52 @@ public class KeyboardManager implements KeyListener {
     }
 
     /**
-     * Whether the keyboard user-input manager has been initialized
-     */
-    private boolean initialized = false;
-    /**
      * Set of Java AWT virtual key codes mapped to their names in the MarasmiumKit application framework
      */
-    private HashMap<Integer, KeyboardKey> AWTKeyCodes = null;
+    private final HashMap<Integer, KeyboardKey> AWTKeyCodes = new HashMap<>();
     /**
      * The current and previous logic update's  states of the keys on the keyboard which have been interacted with since
      * the application framework was initialized
      */
-    private ConcurrentHashMap<KeyboardKey, KeyState> keyStates = null;
+    private final ConcurrentHashMap<KeyboardKey, KeyState> keyStates = new ConcurrentHashMap<>();
     /**
      * The set of characters typed on the keyboard since the last logic update
      */
-    private String typedChars = "";
+    private String typedChars = null;
     /**
      * Scope lock for modifying and reading the set of typed characters asynchronously
      */
-    private ReentrantLock typedCharsLock = null;
+    private final ReentrantLock typedCharsLock = new ReentrantLock();
 
     /**
      * Initialize the keyboard user-input manager's memory and subscribe to input events from the AWT window panel
      * @return Whether the keyboard user-input manager was initialized successfully
      */
     public boolean initialize() {
-        if (initialized) {
-            return false;
-        }
         // Register all keyboard keys with their AWT virtual key codes
-        AWTKeyCodes = new HashMap<>();
         for (KeyboardKey key : KeyboardKey.values()) {
+            Field field;
             try {
-                Field field = KeyEvent.class.getField(key.toString());
-                int AWTKeyCode = field.getInt(null);
-                AWTKeyCodes.put(AWTKeyCode, key);
-            } catch (Exception _) {
-                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to map \"", key, "\" key");
+                field = KeyEvent.class.getField(key.toString());
+            } catch (NoSuchFieldException _) {
+                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to map \"", key, "\" key, no AWT field");
                 return false;
             }
+            int AWTKeyCode;
+            try {
+                AWTKeyCode = field.getInt(null);
+            } catch (IllegalArgumentException | IllegalAccessException | NullPointerException
+                     | ExceptionInInitializerError _) {
+                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to map \"", key, "\" key, inaccessible ",
+                        "AWT field");
+                return false;
+            }
+            AWTKeyCodes.put(AWTKeyCode, key);
         }
         // Initialize memory and subscribe to input events
-        keyStates = new ConcurrentHashMap<>();
-        typedCharsLock = new ReentrantLock();
+        typedChars = "";
         App.Window.getPanel().addKeyListener(this);
         App.Log.write(LogSource.Input, LogLevel.Info, "Initialized keyboard user-input management system");
-        initialized = true;
         return true;
     }
 
@@ -97,12 +96,25 @@ public class KeyboardManager implements KeyListener {
     public void update() {
         // Update key up/down states
         for (Map.Entry<KeyboardKey, KeyState> entry : keyStates.entrySet()) {
-            KeyState keyState = entry.getValue();
+            KeyboardKey key;
+            try {
+                key = entry.getKey();
+            } catch (IllegalStateException _) {
+                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to retrieve keyboard key entry");
+                continue;
+            }
+            KeyState keyState;
+            try {
+                keyState = entry.getValue();
+            } catch (IllegalStateException _) {
+                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to retrieve keyboard key state entry");
+                continue;
+            }
             if (keyState.isDown != keyState.wasDown) {
                 if (keyState.isDown) {
-                    App.Input.keyboardKeyPressed(entry.getKey());
+                    App.Input.keyboardKeyPressed(key);
                 } else {
-                    App.Input.keyboardKeyReleased(entry.getKey());
+                    App.Input.keyboardKeyReleased(key);
                 }
                 keyState.wasDown = keyState.isDown;
             }
@@ -125,21 +137,14 @@ public class KeyboardManager implements KeyListener {
      * @return Whether the keyboard user-input manager was destroyed successfully
      */
     public boolean destroy() {
-        if (!initialized) {
-            return false;
-        }
         App.Log.write(LogSource.Input, LogLevel.Info, "Destroying keyboard user-input management system");
         boolean success = true;
         // Detach key listener
         App.Window.getPanel().removeKeyListener(this);
         // Free memory
         AWTKeyCodes.clear();
-        AWTKeyCodes = null;
         keyStates.clear();
-        keyStates = null;
-        typedChars = "";
-        typedCharsLock = null;
-        initialized = false;
+        typedChars = null;
         return success;
     }
 
@@ -149,18 +154,14 @@ public class KeyboardManager implements KeyListener {
      * @return Whether the given key was down in the last logic update
      */
     private boolean wasKeyDown(KeyboardKey key) {
-        if (!keyStates.containsKey(key)) {
+        if (key == null) {
             return false;
         }
-        return keyStates.get(key).wasDown;
-    }
-
-    /**
-     * Test whether the keyboard user-input management system has been initialized
-     * @return Whether the keyboard user-input management system is initialized
-     */
-    public boolean isInitialized() {
-        return initialized;
+        KeyState state = keyStates.get(key);
+        if (state == null) {
+            return false;
+        }
+        return state.wasDown;
     }
 
     /**
@@ -169,10 +170,14 @@ public class KeyboardManager implements KeyListener {
      * @return Whether the given key is currently down
      */
     public boolean isKeyDown(KeyboardKey key) {
-        if (!keyStates.containsKey(key)) {
+        if (key == null) {
             return false;
         }
-        return keyStates.get(key).isDown;
+        KeyState state = keyStates.get(key);
+        if (state == null) {
+            return false;
+        }
+        return state.isDown;
     }
 
     /**
@@ -199,6 +204,9 @@ public class KeyboardManager implements KeyListener {
      */
     public String getTypedChars() {
         typedCharsLock.lock();
+        if (typedChars == null) {
+            return "";
+        }
         String typedChars = this.typedChars;
         try {
             typedCharsLock.unlock();
@@ -214,6 +222,9 @@ public class KeyboardManager implements KeyListener {
      */
     @Override
     public void keyPressed(KeyEvent e) {
+        if (e == null) {
+            return;
+        }
         KeyboardKey key = AWTKeyCodes.get(e.getKeyCode());
         if (key == null) {
             return;
@@ -230,6 +241,9 @@ public class KeyboardManager implements KeyListener {
      */
     @Override
     public void keyReleased(KeyEvent e) {
+        if (e == null) {
+            return;
+        }
         KeyboardKey key = AWTKeyCodes.get(e.getKeyCode());
         if (key == null) {
             return;
@@ -246,7 +260,13 @@ public class KeyboardManager implements KeyListener {
      */
     @Override
     public void keyTyped(KeyEvent e) {
+        if (e == null) {
+            return;
+        }
         typedCharsLock.lock();
+        if (typedChars == null) {
+            return;
+        }
         typedChars += e.getKeyChar();
         try {
             typedCharsLock.unlock();

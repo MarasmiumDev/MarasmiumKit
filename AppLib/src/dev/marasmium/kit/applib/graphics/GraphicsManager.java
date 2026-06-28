@@ -15,10 +15,6 @@ import dev.marasmium.kit.applib.logging.LogSource;
 public class GraphicsManager {
 
     /**
-     * Whether the graphics system has been initialized by the application framework
-     */
-    private boolean initialized = false;
-    /**
      * The target (fractional) number of graphics frames to process per millisecond
      */
     private double targetFPMS = 0.0d;
@@ -37,7 +33,8 @@ public class GraphicsManager {
      * @return Whether the configuration was valid and the graphics system was initialized successfully
      */
     public boolean initialize(GraphicsManagerConfig config) {
-        if (initialized) {
+        if (config == null) {
+            App.Log.write(LogSource.Graphics, LogLevel.Error, "No configuration provided");
             return false;
         }
         if (!setTargetFPS(config.targetFPS)) {
@@ -51,7 +48,6 @@ public class GraphicsManager {
             return false;
         }
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Initialized graphics system");
-        initialized = true;
         return true;
     }
 
@@ -60,24 +56,12 @@ public class GraphicsManager {
      * @return Whether the graphics system was destroyed successfully
      */
     public boolean destroy() {
-        if (!initialized) {
-            return false;
-        }
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Destroying graphics system");
         boolean success = true;
         targetFPMS = 0.0d;
         targetMSPF = 0;
         maxUPF = 0;
-        initialized = false;
         return success;
-    }
-
-    /**
-     * Test whether the graphics system has been initialized
-     * @return Whether the graphics system is initialized
-     */
-    public boolean isInitialized() {
-        return initialized;
     }
 
     /**

@@ -12,12 +12,17 @@ import dev.marasmium.kit.applib.data.Vec2D;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 
-import java.awt.*;
+import java.awt.Frame;
+import java.awt.Panel;
+import java.awt.HeadlessException;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Dimension;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * The main class of the MarasmiumKit application framework's windowing system
@@ -25,13 +30,9 @@ import java.util.List;
 public class WindowManager {
 
     /**
-     * Whether the windowing system has been initialized by the application framework
-     */
-    private boolean initialized = false;
-    /**
      * The title to appear on the window when in windowed mode
      */
-    private String title = "";
+    private String title = null;
     /**
      * The current dimensions of the window in pixels
      */
@@ -44,6 +45,10 @@ public class WindowManager {
      * Whether the window is currently in fullscreen mode
      */
     private boolean fullscreen = false;
+    /**
+     * Whether the window's fullscreen mode has been set before
+     */
+    private boolean fullscreenSet = false;
     /**
      * The index of the monitor for the window to appear on when in fullscreen mode in the local graphics environment's
      * array of screen devices
@@ -68,7 +73,8 @@ public class WindowManager {
      * @return Whether the initial window parameters were valid and the window opened successfully
      */
     public boolean initialize(WindowManagerConfig config) {
-        if (initialized) {
+        if (config == null) {
+            App.Log.write(LogSource.Window, LogLevel.Error, "No configuration provided");
             return false;
         }
         // Set monitor and fullscreen mode
@@ -89,7 +95,6 @@ public class WindowManager {
         }
         closeRequested = false;
         App.Log.write(LogSource.Window, LogLevel.Info, "Initialized windowing system");
-        initialized = true;
         return true;
     }
 
@@ -98,16 +103,14 @@ public class WindowManager {
      * @return Whether the windowing system was destroyed safely
      */
     public boolean destroy() {
-        if (!initialized) {
-            return false;
-        }
         boolean success = true;
         App.Log.write(LogSource.Window, LogLevel.Info, "Destroying windowing system");
         // Free window parameter memory
-        title = "";
+        title = null;
         dimensions = null;
         windowedDimensions = null;
         fullscreen = false;
+        fullscreenSet = false;
         monitorIndex = 0;
         // Close the window
         if (frame != null) {
@@ -116,7 +119,6 @@ public class WindowManager {
         }
         panel = null;
         closeRequested = false;
-        initialized = false;
         return success;
     }
 
@@ -153,18 +155,13 @@ public class WindowManager {
     }
 
     /**
-     * Test whether the windowing system has been initialized
-     * @return Whether the windowing system is initialized
-     */
-    public boolean isInitialized() {
-        return initialized;
-    }
-
-    /**
      * Get the title appearing on the window when in windowed mode
      * @return The title of the window
      */
     public String getTitle() {
+        if (title == null) {
+            return "";
+        }
         return title;
     }
 
@@ -174,6 +171,10 @@ public class WindowManager {
      * @return Whether the new title could be set
      */
     public boolean setTitle(String title) {
+        if (title == null) {
+            App.Log.write(LogSource.Window, LogLevel.Warning, "No title provided");
+            return false;
+        }
         if (frame == null) {
             App.Log.write(LogSource.Window, LogLevel.Warning, "Failed to set window title, not initialized");
             return false;
@@ -189,6 +190,9 @@ public class WindowManager {
      * @return The current dimensions of the window
      */
     public Vec2D getDimensions() {
+        if (dimensions == null) {
+            return Vec2D.Cartesian(0.0d, 0.0d);
+        }
         return dimensions;
     }
 
@@ -199,7 +203,11 @@ public class WindowManager {
      * @return Whether the window dimensions could be set
      */
     public boolean setDimensions(Vec2D dimensions) {
-        if (frame == null) {
+        if (dimensions == null) {
+            App.Log.write(LogSource.Window, LogLevel.Warning, "No dimensions provided");
+            return false;
+        }
+        if (frame == null || panel == null) {
             App.Log.write(LogSource.Window, LogLevel.Warning, "Failed to set window dimensions, not initialized");
             return false;
         }
@@ -243,7 +251,13 @@ public class WindowManager {
         if (fullscreen) {
             // Switch to fullscreen mode (select monitor and validate)
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            GraphicsDevice[] gds = ge.getScreenDevices();
+            GraphicsDevice[] gds;
+            try {
+                gds = ge.getScreenDevices();
+            } catch (HeadlessException _) {
+                App.Log.write(LogSource.Window, LogLevel.Error, "System is in headless mode");
+                return false;
+            }
             if (monitorIndex < 0 || monitorIndex >= gds.length) {
                 App.Log.write(LogSource.Window, LogLevel.Warning, "Fullscreen monitor index invalid, defaulting to 0");
                 monitorIndex = 0;
@@ -261,7 +275,8 @@ public class WindowManager {
                         "monitor");
                 return false;
             }
-            if (initialized) {
+            if (!fullscreenSet) {
+                fullscreenSet = true;
                 this.windowedDimensions = windowedDimensions;
             }
             this.fullscreen = true;
@@ -270,13 +285,19 @@ public class WindowManager {
             // Switch to windowed mode (reset title and windowed mode dimensions)
             this.fullscreen = false;
             setTitle(title);
-            if (initialized) {
+            if (!fullscreenSet) {
+                fullscreenSet = true;
                 setDimensions(windowedDimensions);
             }
             App.Log.write(LogSource.Window, LogLevel.Info, "Set window to windowed mode");
         }
         frame.setVisible(true);
-        frame.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.emptySet());
+        try {
+            frame.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.emptySet());
+        } catch (IllegalArgumentException _) {
+            App.Log.write(LogSource.Window, LogLevel.Error, "Failed to disable focus tabbing");
+            return false;
+        }
         panel.requestFocus();
         return true;
     }
@@ -285,10 +306,16 @@ public class WindowManager {
      * Get the set of monitors currently available in the local graphics environment
      * @return The currently available set of monitors
      */
-    public List<Monitor> getMonitors() {
+    public ArrayList<Monitor> getMonitors() {
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice[] gds = ge.getScreenDevices();
-        List<Monitor> monitors = new ArrayList<>();
+        GraphicsDevice[] gds;
+        try {
+            gds = ge.getScreenDevices();
+        } catch (HeadlessException _) {
+            App.Log.write(LogSource.Window, LogLevel.Error, "System is in headless mode");
+            return new ArrayList<>();
+        }
+        ArrayList<Monitor> monitors = new ArrayList<>();
         for (int index = 0; index < gds.length; index++) {
             Monitor monitor = new Monitor();
             monitor.setIndex(index);
@@ -302,7 +329,7 @@ public class WindowManager {
      * @return The current monitor for the window to be displayed in fullscreen mode on
      */
     public Monitor getMonitor() {
-        List<Monitor> monitors = getMonitors();
+        ArrayList<Monitor> monitors = getMonitors();
         if (monitors.isEmpty()) {
             App.Log.write(LogSource.Window, LogLevel.Error, "System has no monitors");
         }
@@ -317,6 +344,9 @@ public class WindowManager {
      * @param monitor The new monitor for the window to appear on when in fullscreen mode
      */
     public void setMonitor(Monitor monitor) {
+        if (monitor == null) {
+            return;
+        }
         this.monitorIndex = monitor.getIndex();
         if (fullscreen) {
             setFullscreen(false);

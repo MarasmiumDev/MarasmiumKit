@@ -1,0 +1,468 @@
+2026.06.27@23:53:04.019: [Logging System] [Information] Initialized logging system
+2026.06.27@23:53:04.020: [MarasmiumKit App] [Information] Initialized logging system
+2026.06.27@23:53:04.020: [Windowing System] [Information] Set fullscreen monitor index 0
+2026.06.27@23:53:04.022: [Windowing System] [Information] Generated new window frame
+2026.06.27@23:53:04.022: [Windowing System] [Warning] No title provided
+2026.06.27@23:53:04.022: [Windowing System] [Warning] No dimensions provided
+2026.06.27@23:53:04.022: [Windowing System] [Information] Set window to windowed mode
+2026.06.27@23:53:04.085: [Windowing System] [Information] Set window title "MarasmiumKit App"
+2026.06.27@23:53:04.085: [Windowing System] [Information] Set window dimensions vector(100.0, 100.0)
+2026.06.27@23:53:04.086: [Windowing System] [Information] Initialized windowing system
+2026.06.27@23:53:04.086: [MarasmiumKit App] [Information] Initialized windowing system
+2026.06.27@23:53:04.088: [User-Input Management System] [Information] Initialized keyboard user-input management system
+2026.06.27@23:53:04.088: [User-Input Management System] [Information] Initialized mouse user-input management system
+2026.06.27@23:53:04.088: [User-Input Management System] [Information] Initialized user-input management system
+2026.06.27@23:53:04.088: [MarasmiumKit App] [Information] Initialized user-input management system
+2026.06.27@23:53:04.088: [Network Client] [Information] Set maximum messages to process per update -1
+2026.06.27@23:53:04.088: [Network Client] [Information] Initialized network client
+2026.06.27@23:53:04.088: [MarasmiumKit App] [Information] Initialized network client
+2026.06.27@23:53:04.088: [Graphics System] [Information] Target FPS set to 60 -> FPMS=0.06, MSPF=16
+2026.06.27@23:53:04.088: [Graphics System] [Information] Maximum UPF set to 8
+2026.06.27@23:53:04.088: [Graphics System] [Information] Initialized graphics system
+2026.06.27@23:53:04.088: [MarasmiumKit App] [Information] Initialized graphics system
+2026.06.27@23:53:04.088: [MarasmiumKit App] [Information] Scene 0 not added
+2026.06.27@23:53:04.088: [MarasmiumKit App] [Information] Adding scene 0
+2026.06.27@23:53:04.089: [MarasmiumKit App] [Information] Scene 0 requires initialization
+2026.06.27@23:53:04.089: [Test Scene 1] [Information] Initializing test scene 1
+2026.06.27@23:53:04.089: [MarasmiumKit App] [Information] Entering new scene 1
+2026.06.27@23:53:04.089: [Test Scene 1] [Information] Entering test scene 1
+2026.06.27@23:53:04.089: [User-Input Management System] [Information] Adding user-input listener
+2026.06.27@23:53:04.089: [Network Client] [Information] Adding network listener
+2026.06.27@23:53:04.089: [MarasmiumKit App] [Information] Set initial scene
+2026.06.27@23:53:04.089: [MarasmiumKit App] [Information] Initialized MarasmiumKit application framework
+2026.06.27@23:53:04.089: [MarasmiumKit App] [Information] Starting main application loop
+2026.06.27@23:53:14.623: [Network Client] [Information] Attempting connection to localhost:222 within 10s
+2026.06.27@23:53:14.629: [Test Scene 1] [Information] Attempting connection to server at localhost:222
+2026.06.27@23:53:14.629: [Network Client] [Information] Started connection thread
+2026.06.27@23:53:28.177: [Test Scene 1] [Warning] Cannot send messages, not connected to server
+2026.06.27@23:53:41.123: [Test Scene 1] [Warning] Cannot send messages, not connected to server
+2026.06.27@23:53:41.576: [Network Client] [Information] Attempting connection to localhost:222 within 10s
+2026.06.27@23:53:41.577: [Network Client] [Warning] Already connected to :0
+2026.06.27@23:53:41.577: [Network Client] [Information] Disconnecting network client from :0
+2026.06.27@23:53:41.577: [Network Client] [Information] Stopped connection thread
+2026.06.27@23:53:41.577: [Test Scene 1] [Information] Attempting connection to server at localhost:222
+2026.06.27@23:53:41.577: [Network Client] [Information] Started connection thread
+2026.06.27@23:53:41.594: [Network Client] [Information] Connected to localhost:222
+2026.06.27@23:53:41.594: [Test Scene 1] [Information] Network client connected
+2026.06.27@23:53:41.595: [Test Scene 1] [Information] Clients already connected: [0, 1]
+2026.06.27@23:53:42.643: [Test Scene 1] [Information] Dispatched message to server
+2026.06.27@23:53:42.873: [Test Scene 1] [Information] Dispatched message to server
+2026.06.27@23:53:43.109: [Test Scene 1] [Information] Dispatched message to server
+2026.06.27@23:53:45.549: [Test Scene 1] [Information] Client 1 gave position vector(63.0, 49.0)
+2026.06.27@23:53:45.729: [Test Scene 1] [Information] Client 1 gave position vector(63.0, 49.0)
+2026.06.27@23:53:46.110: [Test Scene 1] [Information] Client 1 gave position vector(63.0, 49.0)
+2026.06.27@23:53:46.368: [Test Scene 1] [Information] Client 1 gave position vector(63.0, 49.0)
+2026.06.27@23:53:47.192: [Test Scene 1] [Information] Client 0 gave position vector(54.0, 37.0)
+2026.06.27@23:53:47.483: [Test Scene 1] [Information] Client 0 gave position vector(75.0, 69.0)
+2026.06.27@23:53:47.850: [Test Scene 1] [Information] Client 0 gave position vector(20.0, 48.0)
+2026.06.27@23:53:48.383: [Test Scene 1] [Information] Client 1 gave position vector(36.0, 45.0)
+2026.06.27@23:53:48.856: [Test Scene 1] [Information] Client 1 gave position vector(76.0, 87.0)
+2026.06.27@23:53:49.250: [Test Scene 1] [Information] Client 1 gave position vector(74.0, 37.0)
+2026.06.27@23:53:50.290: [Test Scene 1] [Information] Client 1 disconnected from server
+2026.06.27@23:53:50.522: [Test Scene 1] [Information] New client 5 connected to server
+2026.06.27@23:53:50.731: [Test Scene 1] [Information] Client 5 disconnected from server
+2026.06.27@23:53:51.202: [Test Scene 1] [Information] New client 6 connected to server
+2026.06.27@23:53:51.416: [Test Scene 1] [Information] Client 6 disconnected from server
+2026.06.27@23:53:51.416: [Test Scene 1] [Information] New client 7 connected to server
+2026.06.27@23:53:51.756: [Test Scene 1] [Information] Client 7 disconnected from server
+2026.06.27@23:53:51.756: [Test Scene 1] [Information] New client 8 connected to server
+2026.06.27@23:53:51.948: [Test Scene 1] [Information] Client 8 disconnected from server
+2026.06.27@23:53:51.948: [Test Scene 1] [Information] New client 9 connected to server
+2026.06.27@23:53:52.124: [Test Scene 1] [Information] Client 9 disconnected from server
+2026.06.27@23:53:52.124: [Test Scene 1] [Information] New client 10 connected to server
+2026.06.27@23:53:52.789: [Test Scene 1] [Information] Dispatched message to server
+2026.06.27@23:53:53.182: [Test Scene 1] [Information] Dispatched message to server
+2026.06.27@23:53:53.537: [Test Scene 1] [Information] Dispatched message to server
+2026.06.27@23:53:54.316: [Test Scene 1] [Information] Client 10 gave position vector(54.0, 57.0)
+2026.06.27@23:53:54.522: [Test Scene 1] [Information] Client 10 gave position vector(54.0, 57.0)
+2026.06.27@23:53:54.712: [Test Scene 1] [Information] Client 10 gave position vector(54.0, 57.0)
+2026.06.27@23:53:55.058: [Test Scene 1] [Information] Client 10 gave position vector(36.0, 22.0)
+2026.06.27@23:53:55.718: [Test Scene 1] [Information] Client 0 gave position vector(63.0, 42.0)
+2026.06.27@23:53:56.067: [Test Scene 1] [Information] Client 0 gave position vector(32.0, 23.0)
+2026.06.27@23:53:59.606: [Test Scene 1] [Information] Client 0 disconnected from server
+2026.06.27@23:54:03.055: [Test Scene 1] [Information] Client 10 gave position vector(42.0, 26.0)
+2026.06.27@23:54:03.187: [Test Scene 1] [Information] Client 10 gave position vector(42.0, 26.0)
+2026.06.27@23:54:03.445: [Test Scene 1] [Information] Client 10 gave position vector(42.0, 26.0)
+2026.06.27@23:54:03.642: [Test Scene 1] [Information] Client 10 gave position vector(42.0, 26.0)
+2026.06.27@23:54:04.876: [Test Scene 1] [Information] New client 11 connected to server
+2026.06.27@23:54:05.384: [Test Scene 1] [Information] Dispatched message to server
+2026.06.27@23:54:05.596: [Test Scene 1] [Information] Dispatched message to server
+2026.06.27@23:54:05.868: [Test Scene 1] [Information] Dispatched message to server
+2026.06.27@23:54:06.124: [Test Scene 1] [Information] Dispatched message to server
+2026.06.27@23:54:07.327: [Network Client] [Information] Disconnecting network client from localhost:222
+2026.06.27@23:54:07.328: [Network Client] [Information] Stopped connection thread
+2026.06.27@23:54:07.328: [Test Scene 1] [Information] Disconnected from server
+2026.06.27@23:54:07.328: [Network Client] [Information] Disconnected
+2026.06.27@23:54:07.328: [Test Scene 1] [Information] Network client disconnected
+2026.06.27@23:54:14.256: [Test Scene 1] [Warning] Cannot send messages, not connected to server
+2026.06.27@23:54:14.590: [Network Client] [Information] Attempting connection to localhost:222 within 10s
+2026.06.27@23:54:14.591: [Test Scene 1] [Information] Attempting connection to server at localhost:222
+2026.06.27@23:54:14.591: [Network Client] [Information] Started connection thread
+2026.06.27@23:54:17.878: [Test Scene 1] [Warning] Cannot send messages, not connected to server
+2026.06.27@23:54:18.037: [Network Client] [Information] Attempting connection to localhost:222 within 10s
+2026.06.27@23:54:18.037: [Network Client] [Warning] Already connected to :0
+2026.06.27@23:54:18.037: [Network Client] [Information] Disconnecting network client from :0
+2026.06.27@23:54:18.037: [Network Client] [Information] Stopped connection thread
+2026.06.27@23:54:18.037: [Test Scene 1] [Information] Attempting connection to server at localhost:222
+2026.06.27@23:54:18.037: [Network Client] [Information] Started connection thread
+2026.06.27@23:54:18.057: [Network Client] [Information] Connected to localhost:222
+2026.06.27@23:54:18.057: [Test Scene 1] [Information] Network client connected
+2026.06.27@23:54:18.057: [Test Scene 1] [Information] Clients already connected: [10, 12]
+2026.06.27@23:54:19.203: [Test Scene 1] [Information] Sending many messages rapidly
+2026.06.27@23:54:21.524: [Test Scene 1] [Information] Client 10 gave position vector(31.0, 44.0)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 100, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 101, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 102, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 103, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 104, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 105, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 106, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 107, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 108, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 109, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 110, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 111, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 112, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 113, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 114, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 115, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 116, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 117, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 118, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 119, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 120, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 121, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 122, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 123, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 124, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 125, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 126, 81B)
+2026.06.27@23:54:21.778: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 127, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 128, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 129, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 130, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 131, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 132, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 133, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 134, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 135, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 136, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 137, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 138, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 139, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 140, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 141, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 142, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 143, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 144, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 145, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 146, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 147, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 148, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 149, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 150, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 151, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 152, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 153, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 154, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 155, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 156, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 157, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 158, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 159, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 160, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 161, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 162, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 163, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 164, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 165, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 166, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 167, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 168, 81B)
+2026.06.27@23:54:21.779: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 169, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 170, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 171, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 172, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 173, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 174, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 175, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 176, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 177, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 178, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 179, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 180, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 181, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 182, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 183, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 184, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 185, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 186, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 187, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 188, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 189, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 190, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 191, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 192, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 193, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 194, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 195, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 196, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 197, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 198, 81B)
+2026.06.27@23:54:21.798: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 199, 81B)
+2026.06.27@23:54:22.896: [Test Scene 1] [Information] Client 12 gave position vector(50.0, 44.0)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 100, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 101, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 102, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 103, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 104, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 105, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 106, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 107, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 108, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 109, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 110, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 111, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 112, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 113, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 114, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 115, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 116, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 117, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 118, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 119, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 120, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 121, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 122, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 123, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 124, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 125, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 126, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 127, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 128, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 129, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 130, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 131, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 132, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 133, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 134, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 135, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 136, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 137, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 138, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 139, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 140, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 141, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 142, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 143, 81B)
+2026.06.27@23:54:23.107: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 144, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 145, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 146, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 147, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 148, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 149, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 150, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 151, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 152, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 153, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 154, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 155, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 156, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 157, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 158, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 159, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 160, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 161, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 162, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 163, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 164, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 165, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 166, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 167, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 168, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 169, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 170, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 171, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 172, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 173, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 174, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 175, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 176, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 177, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 178, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 179, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 180, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 181, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 182, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 183, 81B)
+2026.06.27@23:54:23.108: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 184, 81B)
+2026.06.27@23:54:23.127: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 185, 81B)
+2026.06.27@23:54:23.127: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 186, 81B)
+2026.06.27@23:54:23.127: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 187, 81B)
+2026.06.27@23:54:23.127: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 188, 81B)
+2026.06.27@23:54:23.127: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 189, 81B)
+2026.06.27@23:54:23.127: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 190, 81B)
+2026.06.27@23:54:23.127: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 191, 81B)
+2026.06.27@23:54:23.127: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 192, 81B)
+2026.06.27@23:54:23.127: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 193, 81B)
+2026.06.27@23:54:23.127: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 194, 81B)
+2026.06.27@23:54:23.127: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 195, 81B)
+2026.06.27@23:54:23.127: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 196, 81B)
+2026.06.27@23:54:23.127: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 197, 81B)
+2026.06.27@23:54:23.127: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 198, 81B)
+2026.06.27@23:54:23.127: [Test Scene 1] [Warning] Unknown message type from client: 0: network message(type 199, 81B)
+2026.06.27@23:54:25.694: [Test Scene 1] [Information] Client 12 gave position vector(50.0, 44.0)
+2026.06.27@23:54:25.900: [Test Scene 1] [Information] Client 12 gave position vector(50.0, 44.0)
+2026.06.27@23:54:26.111: [Test Scene 1] [Information] Client 12 gave position vector(50.0, 44.0)
+2026.06.27@23:54:27.370: [Test Scene 1] [Information] Client 12 disconnected from server
+2026.06.27@23:54:27.370: [Test Scene 1] [Information] New client 15 connected to server
+2026.06.27@23:54:27.370: [Test Scene 1] [Information] Client 15 disconnected from server
+2026.06.27@23:54:27.371: [Test Scene 1] [Information] New client 16 connected to server
+2026.06.27@23:54:27.371: [Test Scene 1] [Information] Client 16 disconnected from server
+2026.06.27@23:54:27.371: [Test Scene 1] [Information] New client 17 connected to server
+2026.06.27@23:54:27.371: [Test Scene 1] [Information] Client 17 disconnected from server
+2026.06.27@23:54:27.371: [Test Scene 1] [Information] New client 18 connected to server
+2026.06.27@23:54:27.371: [Test Scene 1] [Information] Client 18 disconnected from server
+2026.06.27@23:54:27.390: [Test Scene 1] [Information] New client 19 connected to server
+2026.06.27@23:54:27.390: [Test Scene 1] [Information] Client 19 disconnected from server
+2026.06.27@23:54:29.585: [Test Scene 1] [Information] New client 20 connected to server
+2026.06.27@23:54:29.585: [Test Scene 1] [Information] Client 20 disconnected from server
+2026.06.27@23:54:29.585: [Test Scene 1] [Information] New client 21 connected to server
+2026.06.27@23:54:29.586: [Test Scene 1] [Information] Client 21 disconnected from server
+2026.06.27@23:54:29.586: [Test Scene 1] [Information] New client 22 connected to server
+2026.06.27@23:54:29.586: [Test Scene 1] [Information] Client 22 disconnected from server
+2026.06.27@23:54:29.586: [Test Scene 1] [Information] New client 23 connected to server
+2026.06.27@23:54:29.586: [Test Scene 1] [Information] Client 23 disconnected from server
+2026.06.27@23:54:29.586: [Test Scene 1] [Information] New client 24 connected to server
+2026.06.27@23:54:29.586: [Test Scene 1] [Information] Client 24 disconnected from server
+2026.06.27@23:54:29.973: [Test Scene 1] [Information] Client 10 gave position vector(62.0, 43.0)
+2026.06.27@23:54:30.186: [Test Scene 1] [Information] Client 10 disconnected from server
+2026.06.27@23:54:30.186: [Test Scene 1] [Information] New client 25 connected to server
+2026.06.27@23:54:30.186: [Test Scene 1] [Information] Client 25 disconnected from server
+2026.06.27@23:54:30.186: [Test Scene 1] [Information] New client 26 connected to server
+2026.06.27@23:54:30.187: [Test Scene 1] [Information] Client 26 disconnected from server
+2026.06.27@23:54:30.187: [Test Scene 1] [Information] New client 27 connected to server
+2026.06.27@23:54:30.205: [Test Scene 1] [Information] Client 27 disconnected from server
+2026.06.27@23:54:30.205: [Test Scene 1] [Information] New client 28 connected to server
+2026.06.27@23:54:30.206: [Test Scene 1] [Information] Client 28 disconnected from server
+2026.06.27@23:54:30.206: [Test Scene 1] [Information] New client 29 connected to server
+2026.06.27@23:54:30.206: [Test Scene 1] [Information] Client 29 disconnected from server
+2026.06.27@23:54:30.206: [Test Scene 1] [Information] New client 30 connected to server
+2026.06.27@23:54:30.206: [Test Scene 1] [Information] Client 30 disconnected from server
+2026.06.27@23:54:30.206: [Test Scene 1] [Information] New client 31 connected to server
+2026.06.27@23:54:30.206: [Test Scene 1] [Information] Client 31 disconnected from server
+2026.06.27@23:54:30.609: [Test Scene 1] [Information] Dispatched message to server
+2026.06.27@23:54:30.821: [Test Scene 1] [Information] Connecting/disconnecting rapidly
+2026.06.27@23:54:30.821: [Network Client] [Information] Attempting connection to localhost:222 within 10s
+2026.06.27@23:54:30.821: [Network Client] [Warning] Already connected to localhost:222
+2026.06.27@23:54:30.821: [Network Client] [Information] Disconnecting network client from localhost:222
+2026.06.27@23:54:30.822: [Network Client] [Information] Stopped connection thread
+2026.06.27@23:54:30.822: [Network Client] [Information] Disconnecting network client from :0
+2026.06.27@23:54:30.822: [Network Client] [Information] Started connection thread
+2026.06.27@23:54:30.823: [Network Client] [Information] Stopped connection thread
+2026.06.27@23:54:30.823: [Network Client] [Information] Attempting connection to localhost:222 within 10s
+2026.06.27@23:54:30.823: [Network Client] [Information] Disconnecting network client from localhost:222
+2026.06.27@23:54:30.823: [Network Client] [Information] Started connection thread
+2026.06.27@23:54:30.823: [Network Client] [Warning] Failed to connect
+2026.06.27@23:54:30.823: [Network Client] [Information] Disconnecting network client from :0
+2026.06.27@23:54:30.823: [Network Client] [Warning] Failed to join connection thread
+2026.06.27@23:54:30.823: [Network Client] [Information] Stopped connection thread
+2026.06.27@23:54:30.823: [Network Client] [Information] Stopped connection thread
+2026.06.27@23:54:30.823: [Network Client] [Information] Attempting connection to localhost:222 within 10s
+2026.06.27@23:54:30.823: [Network Client] [Information] Disconnecting network client from :0
+2026.06.27@23:54:30.823: [Network Client] [Information] Started connection thread
+2026.06.27@23:54:30.824: [Network Client] [Information] Stopped connection thread
+2026.06.27@23:54:30.824: [Network Client] [Information] Attempting connection to localhost:222 within 10s
+2026.06.27@23:54:30.824: [Network Client] [Information] Disconnecting network client from localhost:222
+2026.06.27@23:54:30.824: [Network Client] [Information] Started connection thread
+2026.06.27@23:54:30.824: [Network Client] [Warning] Failed to connect
+2026.06.27@23:54:30.824: [Network Client] [Information] Disconnecting network client from :0
+2026.06.27@23:54:30.824: [Network Client] [Warning] Failed to join connection thread
+2026.06.27@23:54:30.824: [Network Client] [Information] Stopped connection thread
+2026.06.27@23:54:30.825: [Network Client] [Information] Stopped connection thread
+2026.06.27@23:54:30.825: [Network Client] [Information] Attempting connection to localhost:222 within 10s
+2026.06.27@23:54:30.825: [Network Client] [Information] Disconnecting network client from :0
+2026.06.27@23:54:30.825: [Network Client] [Information] Started connection thread
+2026.06.27@23:54:30.826: [Network Client] [Information] Stopped connection thread
+2026.06.27@23:54:30.826: [Network Client] [Information] Attempting connection to localhost:222 within 10s
+2026.06.27@23:54:30.826: [Network Client] [Information] Disconnecting network client from localhost:222
+2026.06.27@23:54:30.826: [Network Client] [Information] Started connection thread
+2026.06.27@23:54:30.826: [Network Client] [Warning] Failed to connect
+2026.06.27@23:54:30.826: [Network Client] [Information] Disconnecting network client from :0
+2026.06.27@23:54:30.826: [Network Client] [Warning] Failed to join connection thread
+2026.06.27@23:54:30.826: [Network Client] [Information] Stopped connection thread
+2026.06.27@23:54:30.826: [Network Client] [Information] Stopped connection thread
+2026.06.27@23:54:30.826: [Network Client] [Information] Attempting connection to localhost:222 within 10s
+2026.06.27@23:54:30.826: [Network Client] [Information] Disconnecting network client from :0
+2026.06.27@23:54:30.826: [Network Client] [Information] Started connection thread
+2026.06.27@23:54:30.826: [Network Client] [Information] Stopped connection thread
+2026.06.27@23:54:30.826: [Network Client] [Information] Attempting connection to localhost:222 within 10s
+2026.06.27@23:54:30.827: [Network Client] [Information] Disconnecting network client from localhost:222
+2026.06.27@23:54:30.827: [Network Client] [Information] Started connection thread
+2026.06.27@23:54:30.827: [Network Client] [Warning] Failed to connect
+2026.06.27@23:54:30.827: [Network Client] [Information] Disconnecting network client from :0
+2026.06.27@23:54:30.827: [Network Client] [Warning] Failed to join connection thread
+2026.06.27@23:54:30.827: [Network Client] [Information] Stopped connection thread
+2026.06.27@23:54:30.827: [Network Client] [Information] Stopped connection thread
+2026.06.27@23:54:30.827: [Network Client] [Information] Attempting connection to localhost:222 within 10s
+2026.06.27@23:54:30.827: [Network Client] [Information] Disconnecting network client from :0
+2026.06.27@23:54:30.827: [Network Client] [Information] Started connection thread
+2026.06.27@23:54:30.827: [Network Client] [Information] Stopped connection thread
+2026.06.27@23:54:30.827: [Network Client] [Information] Attempting connection to localhost:222 within 10s
+2026.06.27@23:54:30.827: [Network Client] [Information] Started connection thread
+2026.06.27@23:54:30.827: [Network Client] [Information] Disconnecting network client from localhost:222
+2026.06.27@23:54:30.828: [Network Client] [Warning] Failed to connect
+2026.06.27@23:54:30.828: [Network Client] [Information] Disconnecting network client from :0
+2026.06.27@23:54:30.828: [Network Client] [Warning] Failed to join connection thread
+2026.06.27@23:54:30.828: [Network Client] [Information] Stopped connection thread
+2026.06.27@23:54:30.828: [Network Client] [Information] Stopped connection thread
+2026.06.27@23:54:30.841: [Network Client] [Information] Disconnected
+2026.06.27@23:54:30.841: [Test Scene 1] [Information] Network client disconnected
+2026.06.27@23:54:35.384: [Test Scene 1] [Warning] Cannot send messages, not connected to server
+2026.06.27@23:54:35.815: [Network Client] [Information] Disconnecting network client from :0
+2026.06.27@23:54:35.815: [Test Scene 1] [Information] Disconnected from server
+2026.06.27@23:54:36.347: [Network Client] [Information] Attempting connection to localhost:222 within 10s
+2026.06.27@23:54:36.347: [Test Scene 1] [Information] Attempting connection to server at localhost:222
+2026.06.27@23:54:36.347: [Network Client] [Information] Started connection thread
+2026.06.27@23:54:36.367: [Network Client] [Information] Connected to localhost:222
+2026.06.27@23:54:36.367: [Test Scene 1] [Information] Network client connected
+2026.06.27@23:54:36.367: [Test Scene 1] [Information] Clients already connected: [43]
+2026.06.27@23:54:37.033: [Test Scene 1] [Information] Dispatched message to server
+2026.06.27@23:54:37.209: [Test Scene 1] [Information] Dispatched message to server
+2026.06.27@23:54:37.424: [Test Scene 1] [Information] Dispatched message to server
+2026.06.27@23:54:40.284: [Test Scene 1] [Information] New client 58 connected to server
+2026.06.27@23:54:41.089: [Test Scene 1] [Information] Client 43 gave position vector(53.0, 32.0)
+2026.06.27@23:54:41.282: [Test Scene 1] [Information] Client 43 disconnected from server
+2026.06.27@23:54:41.282: [Test Scene 1] [Information] New client 59 connected to server
+2026.06.27@23:54:41.645: [Test Scene 1] [Information] Client 59 gave position vector(52.0, 32.0)
+2026.06.27@23:54:41.800: [Test Scene 1] [Information] Client 59 gave position vector(52.0, 32.0)
+2026.06.27@23:54:41.991: [Test Scene 1] [Information] Client 59 gave position vector(52.0, 32.0)
+2026.06.27@23:54:43.597: [Test Scene 1] [Information] Client 58 gave position vector(84.0, 53.0)
+2026.06.27@23:54:43.952: [Test Scene 1] [Information] Client 58 gave position vector(59.0, 38.0)
+2026.06.27@23:54:44.245: [Test Scene 1] [Information] Client 58 gave position vector(40.0, 61.0)
+2026.06.27@23:54:44.805: [Test Scene 1] [Information] Client 59 gave position vector(85.0, 33.0)
+2026.06.27@23:54:45.127: [Test Scene 1] [Information] Client 59 gave position vector(71.0, 71.0)
+2026.06.27@23:54:45.460: [Test Scene 1] [Information] Client 59 gave position vector(18.0, 29.0)
+2026.06.27@23:54:46.000: [Test Scene 1] [Information] Dispatched message to server
+2026.06.27@23:54:46.328: [Test Scene 1] [Information] Dispatched message to server
+2026.06.27@23:54:49.821: [MarasmiumKit App] [Information] Finished main application loop
+2026.06.27@23:54:49.821: [MarasmiumKit App] [Information] Destroying MarasmiumKit application framework
+2026.06.27@23:54:49.821: [MarasmiumKit App] [Information] Freeing all scenes
+2026.06.27@23:54:49.821: [Test Scene 1] [Information] Leaving test scene 1
+2026.06.27@23:54:49.821: [Test Scene 1] [Information] Destroying test scene 1
+2026.06.27@23:54:49.821: [MarasmiumKit App] [Information] Destroying graphics system
+2026.06.27@23:54:49.821: [Graphics System] [Information] Destroying graphics system
+2026.06.27@23:54:49.821: [MarasmiumKit App] [Information] Destroying network client
+2026.06.27@23:54:49.821: [Network Client] [Information] Destroying network client
+2026.06.27@23:54:49.821: [Network Client] [Warning] Currently connecting or connected to localhost:222
+2026.06.27@23:54:49.821: [Network Client] [Information] Disconnecting network client from localhost:222
+2026.06.27@23:54:49.822: [Network Client] [Information] Stopped connection thread
+2026.06.27@23:54:49.822: [Network Client] [Information] Destroyed network client
+2026.06.27@23:54:49.822: [MarasmiumKit App] [Information] Destroying user-input management system
+2026.06.27@23:54:49.822: [User-Input Management System] [Information] Destroying user-input management system
+2026.06.27@23:54:49.822: [User-Input Management System] [Information] Destroying mouse user-input management system
+2026.06.27@23:54:49.822: [User-Input Management System] [Information] Destroying keyboard user-input management system
+2026.06.27@23:54:49.822: [MarasmiumKit App] [Information] Destroying windowing system
+2026.06.27@23:54:49.822: [Windowing System] [Information] Destroying windowing system
+2026.06.27@23:54:49.823: [MarasmiumKit App] [Information] Destroying logging system
+2026.06.27@23:54:49.823: [Logging System] [Information] Destroying logging system

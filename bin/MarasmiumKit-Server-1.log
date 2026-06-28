@@ -1,0 +1,376 @@
+2026.06.27@23:52:10.259: [Network Server] [Information] Initialized logging system
+2026.06.27@23:52:10.259: [Test Server] [Information] Initialized network server
+2026.06.27@23:52:10.260: [Test Server] [Information] Initialized command-accepting thread
+2026.06.27@23:52:10.260: [Test Server] [Information] Starting server
+2026.06.27@23:52:10.260: [Test Server] [Information] Starting command-accepting thread
+2026.06.27@23:52:10.260: [Network Server] [Information] Opening server socket on port 222
+2026.06.27@23:52:10.260: [Test Server] [Information] Starting client update thread
+2026.06.27@23:52:10.268: [Network Server] [Information] Now accepting clients
+2026.06.27@23:52:10.268: [Network Server] [Information] Listening on port 222
+2026.06.27@23:53:10.617: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:53:10.618: [Network Server] [Information] Listening on port 222
+2026.06.27@23:53:10.618: [Network Server] [Information] Initializing new client connection with ID 0
+2026.06.27@23:53:10.618: [Network Server] [Information] Connecting to client
+2026.06.27@23:53:10.621: [Test Server] [Information] New client 0 connected
+2026.06.27@23:53:11.978: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:53:11.978: [Network Server] [Information] Listening on port 222
+2026.06.27@23:53:11.978: [Network Server] [Information] Initializing new client connection with ID 1
+2026.06.27@23:53:11.978: [Network Server] [Information] Connecting to client
+2026.06.27@23:53:11.978: [Test Server] [Information] New client 1 connected
+2026.06.27@23:53:13.102: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:53:13.102: [Network Server] [Information] Listening on port 222
+2026.06.27@23:53:13.102: [Network Server] [Information] Initializing new client connection with ID 2
+2026.06.27@23:53:13.103: [Network Server] [Information] Connecting to client
+2026.06.27@23:53:13.103: [Test Server] [Information] New client 2 connected
+2026.06.27@23:53:14.638: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:53:14.638: [Network Server] [Information] Listening on port 222
+2026.06.27@23:53:14.638: [Network Server] [Information] Initializing new client connection with ID 3
+2026.06.27@23:53:14.638: [Network Server] [Information] Connecting to client
+2026.06.27@23:53:14.638: [Network Server] [Warning] Maximum client count exceeded, rejecting client 3
+2026.06.27@23:53:17.967: [Test Server] [Information] Clients: [0, 1, 2]
+2026.06.27@23:53:39.693: [Test Server] [Information] Client 2 disconnected
+2026.06.27@23:53:41.579: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:53:41.579: [Network Server] [Information] Listening on port 222
+2026.06.27@23:53:41.579: [Network Server] [Information] Initializing new client connection with ID 4
+2026.06.27@23:53:41.579: [Network Server] [Information] Connecting to client
+2026.06.27@23:53:41.580: [Test Server] [Information] New client 4 connected
+2026.06.27@23:53:50.281: [Test Server] [Information] Client 1 disconnected
+2026.06.27@23:53:50.516: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:53:50.516: [Network Server] [Information] Listening on port 222
+2026.06.27@23:53:50.516: [Network Server] [Information] Initializing new client connection with ID 5
+2026.06.27@23:53:50.516: [Network Server] [Information] Connecting to client
+2026.06.27@23:53:50.517: [Test Server] [Information] New client 5 connected
+2026.06.27@23:53:50.727: [Test Server] [Information] Client 5 disconnected
+2026.06.27@23:53:51.195: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:53:51.195: [Network Server] [Information] Listening on port 222
+2026.06.27@23:53:51.195: [Network Server] [Information] Initializing new client connection with ID 6
+2026.06.27@23:53:51.195: [Network Server] [Information] Connecting to client
+2026.06.27@23:53:51.196: [Test Server] [Information] New client 6 connected
+2026.06.27@23:53:51.409: [Test Server] [Information] Client 6 disconnected
+2026.06.27@23:53:51.410: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:53:51.410: [Network Server] [Information] Listening on port 222
+2026.06.27@23:53:51.410: [Network Server] [Information] Initializing new client connection with ID 7
+2026.06.27@23:53:51.410: [Network Server] [Information] Connecting to client
+2026.06.27@23:53:51.410: [Test Server] [Information] New client 7 connected
+2026.06.27@23:53:51.745: [Test Server] [Information] Client 7 disconnected
+2026.06.27@23:53:51.747: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:53:51.747: [Network Server] [Information] Listening on port 222
+2026.06.27@23:53:51.747: [Network Server] [Information] Initializing new client connection with ID 8
+2026.06.27@23:53:51.747: [Network Server] [Information] Connecting to client
+2026.06.27@23:53:51.747: [Test Server] [Information] New client 8 connected
+2026.06.27@23:53:51.935: [Test Server] [Information] Client 8 disconnected
+2026.06.27@23:53:51.936: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:53:51.936: [Network Server] [Information] Listening on port 222
+2026.06.27@23:53:51.936: [Network Server] [Information] Initializing new client connection with ID 9
+2026.06.27@23:53:51.936: [Network Server] [Information] Connecting to client
+2026.06.27@23:53:51.936: [Test Server] [Information] New client 9 connected
+2026.06.27@23:53:52.112: [Test Server] [Information] Client 9 disconnected
+2026.06.27@23:53:52.113: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:53:52.113: [Network Server] [Information] Listening on port 222
+2026.06.27@23:53:52.113: [Network Server] [Information] Initializing new client connection with ID 10
+2026.06.27@23:53:52.113: [Network Server] [Information] Connecting to client
+2026.06.27@23:53:52.113: [Test Server] [Information] New client 10 connected
+2026.06.27@23:53:58.174: [Test Server] [Information] Clients: [0, 4, 10]
+2026.06.27@23:53:59.599: [Test Server] [Information] Client 0 disconnected
+2026.06.27@23:53:59.599: [Test Server] [Information] Removed client 0
+2026.06.27@23:54:04.862: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:04.862: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:04.862: [Network Server] [Information] Initializing new client connection with ID 11
+2026.06.27@23:54:04.862: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:04.862: [Test Server] [Information] New client 11 connected
+2026.06.27@23:54:07.327: [Test Server] [Information] Client 4 disconnected
+2026.06.27@23:54:08.518: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:08.518: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:08.518: [Network Server] [Information] Initializing new client connection with ID 12
+2026.06.27@23:54:08.518: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:08.518: [Test Server] [Information] New client 12 connected
+2026.06.27@23:54:14.594: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:14.594: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:14.594: [Network Server] [Information] Initializing new client connection with ID 13
+2026.06.27@23:54:14.594: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:14.594: [Network Server] [Warning] Maximum client count exceeded, rejecting client 13
+2026.06.27@23:54:17.395: [Test Server] [Information] Client 11 disconnected
+2026.06.27@23:54:18.038: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:18.039: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:18.039: [Network Server] [Information] Initializing new client connection with ID 14
+2026.06.27@23:54:18.039: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:18.039: [Test Server] [Information] New client 14 connected
+2026.06.27@23:54:27.363: [Test Server] [Information] Client 12 disconnected
+2026.06.27@23:54:27.366: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:27.366: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:27.366: [Network Server] [Information] Initializing new client connection with ID 15
+2026.06.27@23:54:27.366: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:27.366: [Test Server] [Information] New client 15 connected
+2026.06.27@23:54:27.366: [Test Server] [Information] Client 15 disconnected
+2026.06.27@23:54:27.367: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:27.367: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:27.367: [Network Server] [Information] Initializing new client connection with ID 16
+2026.06.27@23:54:27.367: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:27.367: [Test Server] [Information] New client 16 connected
+2026.06.27@23:54:27.367: [Test Server] [Information] Client 16 disconnected
+2026.06.27@23:54:27.368: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:27.368: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:27.368: [Network Server] [Information] Initializing new client connection with ID 17
+2026.06.27@23:54:27.368: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:27.368: [Test Server] [Information] New client 17 connected
+2026.06.27@23:54:27.369: [Test Server] [Information] Client 17 disconnected
+2026.06.27@23:54:27.369: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:27.370: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:27.370: [Network Server] [Information] Initializing new client connection with ID 18
+2026.06.27@23:54:27.370: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:27.370: [Test Server] [Information] New client 18 connected
+2026.06.27@23:54:27.370: [Test Server] [Information] Client 18 disconnected
+2026.06.27@23:54:27.371: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:27.371: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:27.371: [Network Server] [Information] Initializing new client connection with ID 19
+2026.06.27@23:54:27.371: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:27.371: [Test Server] [Information] New client 19 connected
+2026.06.27@23:54:27.371: [Test Server] [Information] Client 19 disconnected
+2026.06.27@23:54:29.570: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:29.570: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:29.570: [Network Server] [Information] Initializing new client connection with ID 20
+2026.06.27@23:54:29.571: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:29.571: [Test Server] [Information] New client 20 connected
+2026.06.27@23:54:29.571: [Test Server] [Information] Client 20 disconnected
+2026.06.27@23:54:29.572: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:29.572: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:29.572: [Network Server] [Information] Initializing new client connection with ID 21
+2026.06.27@23:54:29.572: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:29.572: [Test Server] [Information] New client 21 connected
+2026.06.27@23:54:29.573: [Test Server] [Information] Client 21 disconnected
+2026.06.27@23:54:29.574: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:29.574: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:29.574: [Network Server] [Information] Initializing new client connection with ID 22
+2026.06.27@23:54:29.574: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:29.574: [Test Server] [Information] New client 22 connected
+2026.06.27@23:54:29.574: [Test Server] [Information] Client 22 disconnected
+2026.06.27@23:54:29.575: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:29.575: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:29.575: [Network Server] [Information] Initializing new client connection with ID 23
+2026.06.27@23:54:29.575: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:29.575: [Test Server] [Information] New client 23 connected
+2026.06.27@23:54:29.576: [Test Server] [Information] Client 23 disconnected
+2026.06.27@23:54:29.577: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:29.577: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:29.577: [Network Server] [Information] Initializing new client connection with ID 24
+2026.06.27@23:54:29.577: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:29.577: [Test Server] [Information] New client 24 connected
+2026.06.27@23:54:29.577: [Test Server] [Information] Client 24 disconnected
+2026.06.27@23:54:30.183: [Test Server] [Information] Client 10 disconnected
+2026.06.27@23:54:30.184: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:30.184: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:30.184: [Network Server] [Information] Initializing new client connection with ID 25
+2026.06.27@23:54:30.184: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:30.185: [Test Server] [Information] New client 25 connected
+2026.06.27@23:54:30.185: [Test Server] [Information] Client 25 disconnected
+2026.06.27@23:54:30.185: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:30.185: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:30.185: [Network Server] [Information] Initializing new client connection with ID 26
+2026.06.27@23:54:30.185: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:30.185: [Test Server] [Information] New client 26 connected
+2026.06.27@23:54:30.186: [Test Server] [Information] Client 26 disconnected
+2026.06.27@23:54:30.186: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:30.186: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:30.186: [Network Server] [Information] Initializing new client connection with ID 27
+2026.06.27@23:54:30.186: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:30.186: [Test Server] [Information] New client 27 connected
+2026.06.27@23:54:30.186: [Test Server] [Information] Client 27 disconnected
+2026.06.27@23:54:30.187: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:30.187: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:30.187: [Network Server] [Information] Initializing new client connection with ID 28
+2026.06.27@23:54:30.187: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:30.187: [Test Server] [Information] New client 28 connected
+2026.06.27@23:54:30.187: [Test Server] [Information] Client 28 disconnected
+2026.06.27@23:54:30.188: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:30.188: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:30.188: [Network Server] [Information] Initializing new client connection with ID 29
+2026.06.27@23:54:30.188: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:30.188: [Test Server] [Information] New client 29 connected
+2026.06.27@23:54:30.188: [Test Server] [Information] Client 29 disconnected
+2026.06.27@23:54:30.189: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:30.189: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:30.189: [Network Server] [Information] Initializing new client connection with ID 30
+2026.06.27@23:54:30.189: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:30.189: [Test Server] [Information] New client 30 connected
+2026.06.27@23:54:30.189: [Test Server] [Information] Client 30 disconnected
+2026.06.27@23:54:30.190: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:30.190: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:30.190: [Network Server] [Information] Initializing new client connection with ID 31
+2026.06.27@23:54:30.190: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:30.190: [Test Server] [Information] New client 31 connected
+2026.06.27@23:54:30.190: [Test Server] [Information] Client 31 disconnected
+2026.06.27@23:54:30.822: [Test Server] [Information] Client 14 disconnected
+2026.06.27@23:54:30.822: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:30.823: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:30.823: [Network Server] [Information] Initializing new client connection with ID 32
+2026.06.27@23:54:30.823: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:30.823: [Test Server] [Information] New client 32 connected
+2026.06.27@23:54:30.823: [Test Server] [Information] Client 32 disconnected
+2026.06.27@23:54:30.823: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:30.823: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:30.824: [Network Server] [Information] Initializing new client connection with ID 33
+2026.06.27@23:54:30.824: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:30.824: [Network Server] [Warning] Failed to connect to client connection
+2026.06.27@23:54:30.824: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:30.824: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:30.824: [Network Server] [Information] Initializing new client connection with ID 34
+2026.06.27@23:54:30.824: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:30.824: [Test Server] [Information] New client 34 connected
+2026.06.27@23:54:30.824: [Test Server] [Information] Client 34 disconnected
+2026.06.27@23:54:30.825: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:30.825: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:30.825: [Network Server] [Information] Initializing new client connection with ID 35
+2026.06.27@23:54:30.825: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:30.825: [Test Server] [Information] New client 35 connected
+2026.06.27@23:54:30.826: [Test Server] [Information] Client 35 disconnected
+2026.06.27@23:54:30.826: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:30.826: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:30.826: [Network Server] [Information] Initializing new client connection with ID 36
+2026.06.27@23:54:30.826: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:30.826: [Test Server] [Information] New client 36 connected
+2026.06.27@23:54:30.827: [Test Server] [Information] Client 36 disconnected
+2026.06.27@23:54:30.827: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:30.827: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:30.827: [Network Server] [Information] Initializing new client connection with ID 37
+2026.06.27@23:54:30.827: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:30.827: [Test Server] [Information] New client 37 connected
+2026.06.27@23:54:30.828: [Test Server] [Information] Client 37 disconnected
+2026.06.27@23:54:31.332: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:31.332: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:31.332: [Network Server] [Information] Initializing new client connection with ID 38
+2026.06.27@23:54:31.332: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:31.333: [Test Server] [Information] New client 38 connected
+2026.06.27@23:54:31.333: [Test Server] [Information] Client 38 disconnected
+2026.06.27@23:54:31.334: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:31.334: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:31.334: [Network Server] [Information] Initializing new client connection with ID 39
+2026.06.27@23:54:31.334: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:31.334: [Test Server] [Information] New client 39 connected
+2026.06.27@23:54:31.334: [Test Server] [Information] Client 39 disconnected
+2026.06.27@23:54:31.335: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:31.335: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:31.335: [Network Server] [Information] Initializing new client connection with ID 40
+2026.06.27@23:54:31.335: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:31.335: [Test Server] [Information] New client 40 connected
+2026.06.27@23:54:31.335: [Test Server] [Information] Client 40 disconnected
+2026.06.27@23:54:31.336: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:31.336: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:31.336: [Network Server] [Information] Initializing new client connection with ID 41
+2026.06.27@23:54:31.336: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:31.336: [Test Server] [Information] New client 41 connected
+2026.06.27@23:54:31.336: [Test Server] [Information] Client 41 disconnected
+2026.06.27@23:54:31.338: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:31.338: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:31.338: [Network Server] [Information] Initializing new client connection with ID 42
+2026.06.27@23:54:31.338: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:31.338: [Test Server] [Information] New client 42 connected
+2026.06.27@23:54:31.338: [Test Server] [Information] Client 42 disconnected
+2026.06.27@23:54:31.339: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:31.339: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:31.339: [Network Server] [Information] Initializing new client connection with ID 43
+2026.06.27@23:54:31.339: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:31.339: [Test Server] [Information] New client 43 connected
+2026.06.27@23:54:31.854: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:31.854: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:31.854: [Network Server] [Information] Initializing new client connection with ID 44
+2026.06.27@23:54:31.855: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:31.855: [Test Server] [Information] New client 44 connected
+2026.06.27@23:54:31.855: [Test Server] [Information] Client 44 disconnected
+2026.06.27@23:54:31.856: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:31.856: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:31.856: [Network Server] [Information] Initializing new client connection with ID 45
+2026.06.27@23:54:31.856: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:31.856: [Network Server] [Warning] Failed to connect to client connection
+2026.06.27@23:54:31.856: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:31.856: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:31.856: [Network Server] [Information] Initializing new client connection with ID 46
+2026.06.27@23:54:31.856: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:31.856: [Test Server] [Information] New client 46 connected
+2026.06.27@23:54:31.857: [Test Server] [Information] Client 46 disconnected
+2026.06.27@23:54:31.857: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:31.857: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:31.857: [Network Server] [Information] Initializing new client connection with ID 47
+2026.06.27@23:54:31.857: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:31.857: [Network Server] [Warning] Failed to connect to client connection
+2026.06.27@23:54:31.858: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:31.858: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:31.858: [Network Server] [Information] Initializing new client connection with ID 48
+2026.06.27@23:54:31.858: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:31.858: [Test Server] [Information] New client 48 connected
+2026.06.27@23:54:31.858: [Test Server] [Information] Client 48 disconnected
+2026.06.27@23:54:31.859: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:31.859: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:31.859: [Network Server] [Information] Initializing new client connection with ID 49
+2026.06.27@23:54:31.859: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:31.859: [Test Server] [Information] New client 49 connected
+2026.06.27@23:54:31.859: [Test Server] [Information] Client 49 disconnected
+2026.06.27@23:54:31.860: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:31.860: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:31.860: [Network Server] [Information] Initializing new client connection with ID 50
+2026.06.27@23:54:31.860: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:31.860: [Test Server] [Information] New client 50 connected
+2026.06.27@23:54:31.860: [Test Server] [Information] Client 50 disconnected
+2026.06.27@23:54:32.493: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:32.494: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:32.494: [Network Server] [Information] Initializing new client connection with ID 51
+2026.06.27@23:54:32.494: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:32.494: [Test Server] [Information] New client 51 connected
+2026.06.27@23:54:32.494: [Test Server] [Information] Client 51 disconnected
+2026.06.27@23:54:32.495: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:32.495: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:32.495: [Network Server] [Information] Initializing new client connection with ID 52
+2026.06.27@23:54:32.495: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:32.495: [Test Server] [Information] New client 52 connected
+2026.06.27@23:54:32.495: [Test Server] [Information] Client 52 disconnected
+2026.06.27@23:54:32.495: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:32.495: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:32.496: [Network Server] [Information] Initializing new client connection with ID 53
+2026.06.27@23:54:32.496: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:32.496: [Network Server] [Warning] Failed to connect to client connection
+2026.06.27@23:54:32.496: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:32.496: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:32.496: [Network Server] [Information] Initializing new client connection with ID 54
+2026.06.27@23:54:32.496: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:32.496: [Test Server] [Information] New client 54 connected
+2026.06.27@23:54:32.497: [Test Server] [Information] Client 54 disconnected
+2026.06.27@23:54:32.497: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:32.497: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:32.497: [Network Server] [Information] Initializing new client connection with ID 55
+2026.06.27@23:54:32.497: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:32.497: [Test Server] [Information] New client 55 connected
+2026.06.27@23:54:32.497: [Test Server] [Information] Client 55 disconnected
+2026.06.27@23:54:32.498: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:32.498: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:32.498: [Network Server] [Information] Initializing new client connection with ID 56
+2026.06.27@23:54:32.498: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:32.498: [Test Server] [Information] New client 56 connected
+2026.06.27@23:54:32.498: [Test Server] [Information] Client 56 disconnected
+2026.06.27@23:54:36.350: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:36.350: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:36.350: [Network Server] [Information] Initializing new client connection with ID 57
+2026.06.27@23:54:36.350: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:36.350: [Test Server] [Information] New client 57 connected
+2026.06.27@23:54:40.267: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:40.268: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:40.268: [Network Server] [Information] Initializing new client connection with ID 58
+2026.06.27@23:54:40.268: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:40.268: [Test Server] [Information] New client 58 connected
+2026.06.27@23:54:41.280: [Test Server] [Information] Client 43 disconnected
+2026.06.27@23:54:41.281: [Network Server] [Information] Found new connection from localhost
+2026.06.27@23:54:41.281: [Network Server] [Information] Listening on port 222
+2026.06.27@23:54:41.281: [Network Server] [Information] Initializing new client connection with ID 59
+2026.06.27@23:54:41.281: [Network Server] [Information] Connecting to client
+2026.06.27@23:54:41.281: [Test Server] [Information] New client 59 connected
+2026.06.27@23:54:49.822: [Test Server] [Information] Client 57 disconnected
+2026.06.27@23:54:50.674: [Test Server] [Information] Client 59 disconnected
+2026.06.27@23:54:53.881: [Test Server] [Information] Used requested server should stop
+2026.06.27@23:54:53.881: [Test Server] [Information] Client update thread stopped
+2026.06.27@23:54:53.881: [Test Server] [Information] Destroying server
+2026.06.27@23:54:53.881: [Network Server] [Information] Destroying network server
+2026.06.27@23:54:53.881: [Network Server] [Information] Stopping server connection threads
+2026.06.27@23:54:53.881: [Network Server] [Information] Stopping server
+2026.06.27@23:54:53.881: [Network Server] [Information] Stopped server socket
+2026.06.27@23:54:53.881: [Network Server] [Warning] Failed to accept client
+2026.06.27@23:54:53.881: [Network Server] [Information] Stopped client-accepting thread
+2026.06.27@23:54:53.881: [Network Server] [Information] Disconnecting client 58
+2026.06.27@23:54:53.881: [Network Server] [Information] Destroying server log

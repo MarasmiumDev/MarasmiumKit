@@ -13,7 +13,6 @@ import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The main class of the MarasmiumKit application framework's user-input management system
@@ -21,13 +20,9 @@ import java.util.List;
 public class InputManager implements InputListener {
 
     /**
-     * Whether the user-input management system has been initialized
-     */
-    private boolean initialized = false;
-    /**
      * The set of input listeners subscribed to user-input event callbacks
      */
-    private final List<InputListener> listeners = new ArrayList<>();
+    private final ArrayList<InputListener> listeners = new ArrayList<>();
     /**
      * Keyboard user-input management subsystem
      */
@@ -42,9 +37,6 @@ public class InputManager implements InputListener {
      * @return Whether the user-input management system's subsystems was initialized successfully
      */
     public boolean initialize() {
-        if (initialized) {
-            return false;
-        }
         // Initialize the keyboard manager subsystem
         if (!keyboard.initialize()) {
             App.Log.write(LogSource.Input, LogLevel.Error, "Failed to initialize keyboard user-input manager");
@@ -56,7 +48,6 @@ public class InputManager implements InputListener {
             return false;
         }
         App.Log.write(LogSource.Input, LogLevel.Info, "Initialized user-input management system");
-        initialized = true;
         return true;
     }
 
@@ -73,11 +64,9 @@ public class InputManager implements InputListener {
      * @return Whether the user-input management system was destroyed successfully
      */
     public boolean destroy() {
-        if (!initialized) {
-            return false;
-        }
         App.Log.write(LogSource.Input, LogLevel.Info, "Destroying user-input management system");
         boolean success = true;
+        listeners.clear();
         // Free the mouse manager subsystem
         if (!mouse.destroy()) {
             App.Log.write(LogSource.Input, LogLevel.Warning, "Failed to destroy mouse user-input manager");
@@ -88,16 +77,7 @@ public class InputManager implements InputListener {
             App.Log.write(LogSource.Input, LogLevel.Warning, "Failed to destroy keyboard user-input manager");
             success = false;
         }
-        initialized = false;
         return success;
-    }
-
-    /**
-     * Test whether the user-input management system has been initialized
-     * @return Whether the user-input management system is initialized
-     */
-    public boolean isInitialized() {
-        return initialized;
     }
 
     /**
@@ -106,6 +86,9 @@ public class InputManager implements InputListener {
      * @return Whether the listener was added successfully
      */
     public boolean addListener(InputListener listener) {
+        if (listener == null) {
+            return false;
+        }
         if (listeners.contains(listener)) {
             App.Log.write(LogSource.Input, LogLevel.Warning, "Failed to add user-input listener, already present");
             return false;
@@ -121,6 +104,9 @@ public class InputManager implements InputListener {
      * @return Whether the listener was removed successfully
      */
     public boolean removeListener(InputListener listener) {
+        if (listener == null) {
+            return false;
+        }
         if (!listeners.contains(listener)) {
             App.Log.write(LogSource.Input, LogLevel.Warning, "Failed to remove user-input listener, not present");
             return false;
@@ -136,6 +122,9 @@ public class InputManager implements InputListener {
      */
     @Override
     public void keyboardKeyPressed(KeyboardKey key) {
+        if (key == null) {
+            return;
+        }
         for (InputListener listener : listeners) {
             listener.keyboardKeyPressed(key);
         }
@@ -147,6 +136,9 @@ public class InputManager implements InputListener {
      */
     @Override
     public void keyboardKeyReleased(KeyboardKey key) {
+        if (key == null) {
+            return;
+        }
         for (InputListener listener : listeners) {
             listener.keyboardKeyReleased(key);
         }
@@ -169,6 +161,9 @@ public class InputManager implements InputListener {
      */
     @Override
     public void mouseButtonPressed(MouseButton button) {
+        if (button == null) {
+            return;
+        }
         for (InputListener listener : listeners) {
             listener.mouseButtonPressed(button);
         }
@@ -180,6 +175,9 @@ public class InputManager implements InputListener {
      */
     @Override
     public void mouseButtonReleased(MouseButton button) {
+        if (button == null) {
+            return;
+        }
         for (InputListener listener : listeners) {
             listener.mouseButtonReleased(button);
         }
@@ -192,6 +190,9 @@ public class InputManager implements InputListener {
      */
     @Override
     public void mouseCursorMoved(Vec2D position, Vec2D movement) {
+        if (position == null || movement == null) {
+            return;
+        }
         for (InputListener listener : listeners) {
             listener.mouseCursorMoved(position, movement);
         }
@@ -203,6 +204,9 @@ public class InputManager implements InputListener {
      */
     @Override
     public void mouseScrollMoved(Vec2D movement) {
+        if (movement == null) {
+            return;
+        }
         for (InputListener listener : listeners) {
             listener.mouseScrollMoved(movement);
         }

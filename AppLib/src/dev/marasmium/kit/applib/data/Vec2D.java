@@ -7,10 +7,12 @@
 
 package dev.marasmium.kit.applib.data;
 
+import java.io.Serializable;
+
 /**
  * 2D vector data structure with related constants and mathematical operations
  */
-public class Vec2D {
+public class Vec2D implements Serializable {
 
     /**
      * Small value for comparing with floating-point rounding error
@@ -46,6 +48,9 @@ public class Vec2D {
      * @return A vector to the polar coordinates (length, angle)
      */
     public static Vec2D Polar(double length, Angle angle) {
+        if (angle == null) {
+            return null;
+        }
         Vec2D v = new Vec2D();
         v.setX(1.0d);
         v.setLength(length);
@@ -67,6 +72,9 @@ public class Vec2D {
      * @return The sum of this vector and v
      */
     public Vec2D add(Vec2D v) {
+        if (v == null) {
+            return null;
+        }
         return Vec2D.Cartesian(x + v.x, y + v.y);
     }
 
@@ -76,6 +84,9 @@ public class Vec2D {
      * @return The difference of this vector and v
      */
     public Vec2D subtract(Vec2D v) {
+        if (v == null) {
+            return null;
+        }
         return Vec2D.Cartesian(x - v.x, y - v.y);
     }
 
@@ -114,6 +125,9 @@ public class Vec2D {
      * @return The element-wise product of this vector and v
      */
     public Vec2D elementMultiply(Vec2D v) {
+        if (v == null) {
+            return null;
+        }
         return Vec2D.Cartesian(x * v.x, y * v.y);
     }
 
@@ -123,33 +137,45 @@ public class Vec2D {
      * @return The element-wise quotient of this vector and v
      */
     public Vec2D elementDivide(Vec2D v) {
+        if (v == null) {
+            return null;
+        }
         return Vec2D.Cartesian(x / v.x, y / v.y);
     }
 
     /**
      * Compute the dot product of this vector and another one
      * @param v The vector to multiply this vector by
-     * @return The dot product of this vector and v
+     * @return The dot product of this vector and v or 0 if v is null
      */
     public double dotMultiply(Vec2D v) {
+        if (v == null) {
+            return 0.0d;
+        }
         return Vec2D.Cartesian(x * v.x, y * v.y).getElementSum();
     }
 
     /**
      * Compute the squared distance between this vector and another one
      * @param v The vector to compare to
-     * @return The squared distance between this vector and v
+     * @return The squared distance between this vector and v or 0 if v is null
      */
     public double getDistanceToSquared(Vec2D v) {
+        if (v == null) {
+            return 0.0d;
+        }
         return subtract(v).getLengthSquared();
     }
 
     /**
      * Compute the distance between this vector and another one
      * @param v The vector to compare to
-     * @return The distance between this vector and v
+     * @return The distance between this vector and v or 0 if v is null
      */
     public double getDistanceTo(Vec2D v) {
+        if (v == null) {
+            return 0.0d;
+        }
         return Math.sqrt(getDistanceToSquared(v));
     }
 
@@ -164,9 +190,12 @@ public class Vec2D {
     /**
      * Compute the 2D cross product of this vector and another one
      * @param v The vector to multiply this vector by
-     * @return The 2D cross product of this vector and v (this x v)
+     * @return The 2D cross product of this vector and v (this x v) or 0 if v is null
      */
     public double crossMultiply(Vec2D v) {
+        if (v == null) {
+            return 0.0d;
+        }
         return (x * v.y) - (y * v.x);
     }
 
@@ -176,6 +205,9 @@ public class Vec2D {
      * @return The rotated version of this vector
      */
     public Vec2D rotate(Angle theta) {
+        if (theta == null) {
+            return null;
+        }
         return Vec2D.Cartesian((x * Math.cos(theta.getRadians())) - (y * Math.sin(theta.getRadians())),
                 (x * Math.sin(theta.getRadians())) + (y * Math.cos(theta.getRadians())));
     }
@@ -187,6 +219,9 @@ public class Vec2D {
      * @return The rotated version of this vector
      */
     public Vec2D rotateAbout(Angle theta, Vec2D o) {
+        if (theta == null || o == null) {
+            return null;
+        }
         return subtract(o).rotate(theta).add(o);
     }
 
@@ -196,6 +231,9 @@ public class Vec2D {
      * @return The angle between this vector and v
      */
     public Angle getAngleTo(Vec2D v) {
+        if (v == null) {
+            return null;
+        }
         double numerator = getLengthSquared() + v.getLengthSquared() - getDistanceToSquared(v);
         double denominator = 2.0d * getLength() * v.getLength();
         if (denominator == 0.0d) {
@@ -227,6 +265,9 @@ public class Vec2D {
      * @return The vector t% of the way from this vector to v
      */
     public Vec2D interpolate(Vec2D v, double t) {
+        if (v == null) {
+            return null;
+        }
         return add(subtract(v).scalarMultiply(t));
     }
 
@@ -236,6 +277,9 @@ public class Vec2D {
      * @return The vector at the midpoint between this vector and v
      */
     public Vec2D midpoint(Vec2D v) {
+        if (v == null) {
+            return null;
+        }
         return interpolate(v, 0.5d);
     }
 
@@ -353,6 +397,9 @@ public class Vec2D {
      * @param theta The polar angle for this vector
      */
     public void setAngle(Angle theta) {
+        if (theta == null) {
+            return;
+        }
         Vec2D tmp = this.rotate(Angle.Radians(theta.getRadians() - getAngle().getRadians()));
         this.x = tmp.x;
         this.y = tmp.y;
@@ -364,6 +411,9 @@ public class Vec2D {
      * @return Whether this vector is parallel to v
      */
     public boolean isParallelTo(Vec2D v) {
+        if (v == null) {
+            return false;
+        }
         if (isZero() || v.isZero()) {
             return false;
         }
@@ -376,6 +426,9 @@ public class Vec2D {
      * @return Whether this vector is perpendicular to v
      */
     public boolean isPerpendicularTo(Vec2D v) {
+        if (v == null) {
+            return false;
+        }
         if (isZero() || v.isZero()) {
             return false;
         }

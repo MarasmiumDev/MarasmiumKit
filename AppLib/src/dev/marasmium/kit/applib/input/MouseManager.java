@@ -12,10 +12,13 @@ import dev.marasmium.kit.applib.data.Vec2D;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 
-import java.awt.event.*;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -41,71 +44,65 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
     }
 
     /**
-     * Whether the mouse user-input manager has been initialized
-     */
-    private boolean initialized = false;
-    /**
      * Set of Java AWT virtual button codes mapped to their names in the MarasmiumKit application framework
      */
-    private HashMap<Integer, MouseButton> AWTButtonCodes = null;
+    private final HashMap<Integer, MouseButton> AWTButtonCodes = new HashMap<>();
     /**
      * The current and previous logic update's states of the buttons on the mouse which have been interacted with since
      * the application framework was initialized
      */
-    private ConcurrentHashMap<MouseButton, ButtonState> buttonStates = null;
+    private final ConcurrentHashMap<MouseButton, ButtonState> buttonStates = new ConcurrentHashMap<>();
     /**
      * The current position of the mouse cursor on the application framework's window
      */
-    private Vec2D cursorPosition = null;
+    private final Vec2D cursorPosition = Vec2D.Cartesian(0.0d, 0.0d);
     /**
      * The position of the mouse cursor on the application framework's window in the last logic update
      */
-    private Vec2D lastCursorPosition = null;
+    private final Vec2D lastCursorPosition = Vec2D.Cartesian(0.0d, 0.0d);
     /**
      * Scope lock for modifying and reading the position of the mouse cursor
      */
-    private ReentrantLock cursorPositionLock = null;
+    private final ReentrantLock cursorPositionLock = new ReentrantLock();
     /**
      * The current logic update's accumulated scroll movement
      */
-    private Vec2D scrollMovement = null;
+    private final Vec2D scrollMovement = Vec2D.Cartesian(0.0d, 0.0d);
     /**
      * Scope lock for modifying and reading the mouse's scroll movement
      */
-    private ReentrantLock scrollMovementLock = null;
+    private final ReentrantLock scrollMovementLock = new ReentrantLock();
 
     /**
      * Initialize the mouse user-input manager's memory and subscribe to input events from the AWT window panel
      * @return Whether the mouse user-input manager was initialized successfully
      */
     public boolean initialize() {
-        if (initialized) {
-            return false;
-        }
         // Register all mouse buttons with their AWT virtual button codes
-        AWTButtonCodes = new HashMap<>();
         for (MouseButton button : MouseButton.values()) {
+            Field field;
             try {
-                Field field = MouseEvent.class.getField(button.toString());
-                int AWTButtonCode = field.getInt(null);
-                AWTButtonCodes.put(AWTButtonCode, button);
-            } catch (Exception _) {
-                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to map \"", button, "\" mouse button");
+                field = MouseEvent.class.getField(button.toString());
+            } catch (NoSuchFieldException _) {
+                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to map \"", button, "\" mouse button, no AWT ",
+                        "field");
                 return false;
             }
+            int AWTButtonCode;
+            try {
+                AWTButtonCode = field.getInt(null);
+            } catch (IllegalArgumentException | IllegalAccessException _) {
+                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to map \"", button, "\" mouse button, ",
+                        "inaccessible AWT field");
+                return false;
+            }
+            AWTButtonCodes.put(AWTButtonCode, button);
         }
         // Initialize memory and subscribe to input events
-        buttonStates = new ConcurrentHashMap<>();
-        cursorPosition = Vec2D.Cartesian(0.0d, 0.0d);
-        lastCursorPosition = Vec2D.Cartesian(0.0d, 0.0d);
-        cursorPositionLock = new ReentrantLock();
-        scrollMovement = Vec2D.Cartesian(0.0d, 0.0d);
-        scrollMovementLock = new ReentrantLock();
         App.Window.getPanel().addMouseListener(this);
         App.Window.getPanel().addMouseMotionListener(this);
         App.Window.getPanel().addMouseWheelListener(this);
         App.Log.write(LogSource.Input, LogLevel.Info, "Initialized mouse user-input management system");
-        initialized = true;
         return true;
     }
 
@@ -114,13 +111,26 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
      */
     public void update() {
         // Update button up/down states
-        for (Map.Entry<MouseButton, ButtonState> entry : buttonStates.entrySet()) {
-            ButtonState buttonState = entry.getValue();
+        for (HashMap.Entry<MouseButton, ButtonState> entry : buttonStates.entrySet()) {
+            MouseButton button;
+            try {
+                button = entry.getKey();
+            } catch (IllegalStateException _) {
+                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to retrieve mouse button entry");
+                continue;
+            }
+            ButtonState buttonState;
+            try {
+                buttonState = entry.getValue();
+            } catch (IllegalStateException _) {
+                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to remove mouse button state entry");
+                continue;
+            }
             if (buttonState.isDown != buttonState.wasDown) {
                 if (buttonState.isDown) {
-                    App.Input.mouseButtonPressed(entry.getKey());
+                    App.Input.mouseButtonPressed(button);
                 } else {
-                    App.Input.mouseButtonReleased(entry.getKey());
+                    App.Input.mouseButtonReleased(button);
                 }
                 buttonState.wasDown = buttonState.isDown;
             }
@@ -129,7 +139,8 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
         cursorPositionLock.lock();
         if (!cursorPosition.equals(lastCursorPosition)) {
             App.Input.mouseCursorMoved(cursorPosition, cursorPosition.subtract(lastCursorPosition));
-            lastCursorPosition = Vec2D.Cartesian(cursorPosition.getX(), cursorPosition.getY());
+            lastCursorPosition.setX(cursorPosition.getX());
+            lastCursorPosition.setY(cursorPosition.getY());
         }
         try {
             cursorPositionLock.unlock();
@@ -140,7 +151,8 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
         scrollMovementLock.lock();
         if (!scrollMovement.isZero()) {
             App.Input.mouseScrollMoved(scrollMovement);
-            scrollMovement = Vec2D.Cartesian(0.0d, 0.0d);
+            scrollMovement.setX(0.0d);
+            scrollMovement.setY(0.0d);
         }
         try {
             scrollMovementLock.unlock();
@@ -154,9 +166,6 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
      * @return Whether the mouse user-input manager was destroyed successfully
      */
     public boolean destroy() {
-        if (!initialized) {
-            return false;
-        }
         App.Log.write(LogSource.Input, LogLevel.Info, "Destroying mouse user-input management system");
         boolean success = true;
         // Detach mouse listeners
@@ -165,15 +174,7 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
         App.Window.getPanel().removeMouseWheelListener(this);
         // Free memory
         AWTButtonCodes.clear();
-        AWTButtonCodes = null;
         buttonStates.clear();
-        buttonStates = null;
-        cursorPosition = null;
-        lastCursorPosition = null;
-        cursorPositionLock = null;
-        scrollMovement = null;
-        scrollMovementLock = null;
-        initialized = false;
         return success;
     }
 
@@ -183,18 +184,14 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
      * @return Whether the given button was down in the last logic update
      */
     private boolean wasButtonDown(MouseButton button) {
-        if (!buttonStates.containsKey(button)) {
+        if (button == null) {
             return false;
         }
-        return buttonStates.get(button).wasDown;
-    }
-
-    /**
-     * Test whether the mouse user-input management system has been initialized
-     * @return Whether the mouse user-input management system is initialized
-     */
-    public boolean isInitialized() {
-        return initialized;
+        ButtonState state = buttonStates.get(button);
+        if (state == null) {
+            return false;
+        }
+        return state.wasDown;
     }
 
     /**
@@ -203,10 +200,14 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
      * @return Whether the given button is currently down
      */
     public boolean isButtonDown(MouseButton button) {
-        if (!buttonStates.containsKey(button)) {
+        if (button == null) {
             return false;
         }
-        return buttonStates.get(button).isDown;
+        ButtonState state = buttonStates.get(button);
+        if (state == null) {
+            return false;
+        }
+        return state.isDown;
     }
 
     /**
@@ -278,6 +279,9 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
      */
     @Override
     public void mousePressed(MouseEvent e) {
+        if (e == null) {
+            return;
+        }
         MouseButton button = AWTButtonCodes.get(e.getButton());
         if (button == null) {
             return;
@@ -294,6 +298,9 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
      */
     @Override
     public void mouseReleased(MouseEvent e) {
+        if (e == null) {
+            return;
+        }
         MouseButton button = AWTButtonCodes.get(e.getButton());
         if (button == null) {
             return;
@@ -333,8 +340,12 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
      */
     @Override
     public void mouseMoved(MouseEvent e) {
+        if (e == null) {
+            return;
+        }
         cursorPositionLock.lock();
-        cursorPosition = Vec2D.Cartesian(e.getX(), App.Window.getDimensions().getY() - (double)e.getY());
+        cursorPosition.setX(e.getX());
+        cursorPosition.setY(App.Window.getDimensions().getY() - (double)e.getY());
         try {
             cursorPositionLock.unlock();
         } catch (IllegalMonitorStateException _) {
@@ -348,14 +359,20 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
      */
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
+        if (e == null) {
+            return;
+        }
+        // Choose scroll movement direction
         Vec2D movement = Vec2D.Cartesian(0.0d, 0.0d);
         if (!e.isShiftDown()) {
             movement.setY(e.getPreciseWheelRotation());
         } else {
             movement.setX(e.getPreciseWheelRotation());
         }
+        // Add movement
         scrollMovementLock.lock();
-        scrollMovement = scrollMovement.add(movement);
+        scrollMovement.setX(scrollMovement.getX() + movement.getX());
+        scrollMovement.setY(scrollMovement.getY() + movement.getY());
         try {
             scrollMovementLock.unlock();
         } catch (IllegalMonitorStateException _) {

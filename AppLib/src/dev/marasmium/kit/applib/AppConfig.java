@@ -9,6 +9,7 @@ package dev.marasmium.kit.applib;
 
 import dev.marasmium.kit.applib.graphics.GraphicsManagerConfig;
 import dev.marasmium.kit.applib.logging.LogManagerConfig;
+import dev.marasmium.kit.applib.networking.NetClientConfig;
 import dev.marasmium.kit.applib.windowing.WindowManagerConfig;
 
 /**
@@ -25,13 +26,17 @@ public class AppConfig {
      */
     public final WindowManagerConfig window;
     /**
+     * The configuration of the application framework's network client
+     */
+    public final NetClientConfig network;
+    /**
      * The configuration of the application framework's graphics system
      */
     public final GraphicsManagerConfig graphics;
     /**
      * The initial scene to be presented by the application framework
      */
-    public Scene initialScene;
+    public final Scene initialScene;
 
     /**
      * Construct an application framework configuration structure with default settings
@@ -39,6 +44,7 @@ public class AppConfig {
     public AppConfig(Scene initialScene) {
         log = new LogManagerConfig();
         window = new WindowManagerConfig();
+        network = new NetClientConfig();
         graphics = new GraphicsManagerConfig();
         this.initialScene = initialScene;
     }

@@ -21,13 +21,9 @@ import java.time.format.DateTimeFormatter;
 public class LogManager {
 
     /**
-     * Whether the logging system has been initialized
-     */
-    private boolean initialized = false;
-    /**
      * The datetime format for timestamps at the beginning of log messages
      */
-    private String timestampFormat = "";
+    private String timestampFormat = null;
     /**
      * Whether the logging system will write messages to the console
      */
@@ -39,7 +35,7 @@ public class LogManager {
     /**
      * The path of the logging system's current output file
      */
-    private String fileOutputPath = "";
+    private String fileOutputPath = null;
     /**
      * Java file handle for the logging system's current output file
      */
@@ -51,14 +47,10 @@ public class LogManager {
      * @return Whether the logging system's was successfully initialized
      */
     public boolean initialize(LogManagerConfig config) {
-        if (this != App.Log) {
+        if (config == null) {
             return false;
         }
-        if (initialized) {
-            App.Log.write(LogSource.Log, LogLevel.Warning, "Logging system cannot be initialized twice");
-            return false;
-        }
-        // Set memory in order
+        // Initialize memory
         if (!setTimestampFormat(config.timestampFormat)) {
             return false;
         }
@@ -68,7 +60,6 @@ public class LogManager {
             return false;
         }
         App.Log.write(LogSource.Log, LogLevel.Info, "Initialized logging system");
-        initialized = true;
         return true;
     }
 
@@ -88,6 +79,8 @@ public class LogManager {
         for (Object o : data) {
             if (o != null) {
                 message.append(o);
+            } else {
+                message.append("[null]");
             }
         }
         message.append("\n");
@@ -142,9 +135,6 @@ public class LogManager {
      * @return Whether the logging system was destroyed successfully and cleanly
      */
     public boolean destroy() {
-        if (!initialized) {
-            return false;
-        }
         App.Log.write(LogSource.Log, LogLevel.Info, "Destroying logging system");
         boolean success = true;
         // Reset memory
@@ -162,7 +152,6 @@ public class LogManager {
             }
             fileOutputWriter = null;
         }
-        initialized = false;
         return success;
     }
 
@@ -171,6 +160,9 @@ public class LogManager {
      * @return The current date and time as a string
      */
     private String getTimestamp() {
+        if (timestampFormat == null) {
+            return "";
+        }
         DateTimeFormatter formatter;
         // Use the current timestamp format if valid
         try {
@@ -189,18 +181,13 @@ public class LogManager {
     }
 
     /**
-     * Test whether the logging system has been initialized
-     * @return Whether the logging system is initialized
-     */
-    public boolean isInitialized() {
-        return initialized;
-    }
-
-    /**
      * Get the current format for timestamps attached to log messages
      * @return The current timestamp format
      */
     public String getTimestampFormat() {
+        if (timestampFormat == null) {
+            return "";
+        }
         return timestampFormat;
     }
 
@@ -210,16 +197,13 @@ public class LogManager {
      * @return Whether the new timestamp format was valid and could be used
      */
     public boolean setTimestampFormat(String timestampFormat) {
-        if (initialized) {
-            App.Log.write(LogSource.Log, LogLevel.Info, "Setting timestamp format: \"", timestampFormat, "\"");
+        if (timestampFormat == null) {
+            return false;
         }
         // Test whether the new format is valid
         try {
             DateTimeFormatter.ofPattern(timestampFormat);
         } catch (IllegalArgumentException _) {
-            if (initialized) {
-                App.Log.write(LogSource.Log, LogLevel.Warning, "Invalid timestamp format");
-            }
             return false;
         }
         // Test whether the new format can be used on this system
@@ -227,7 +211,6 @@ public class LogManager {
         this.timestampFormat = timestampFormat;
         if (getTimestamp().isEmpty()) {
             this.timestampFormat = current;
-            App.Log.write(LogSource.Log, LogLevel.Warning, "Unsupported timestamp format");
             return false;
         }
         return true;
@@ -246,13 +229,6 @@ public class LogManager {
      * @param consoleOutputEnabled Whether console output will be enabled
      */
     public void setConsoleOutputEnabled(boolean consoleOutputEnabled) {
-        if (initialized) {
-            if (consoleOutputEnabled) {
-                App.Log.write(LogSource.Log, LogLevel.Info, "Enabling log console output");
-            } else {
-                App.Log.write(LogSource.Log, LogLevel.Info, "Disabling log console output");
-            }
-        }
         this.consoleOutputEnabled = consoleOutputEnabled;
     }
 
@@ -269,13 +245,6 @@ public class LogManager {
      * @param fileOutputEnabled Whether writing messages to the output file will be enabled
      */
     public void setFileOutputEnabled(boolean fileOutputEnabled) {
-        if (initialized) {
-            if (fileOutputEnabled) {
-                App.Log.write(LogSource.Log, LogLevel.Info, "Enabling log file output");
-            } else {
-                App.Log.write(LogSource.Log, LogLevel.Info, "Disabling log file output");
-            }
-        }
         this.fileOutputEnabled = fileOutputEnabled;
     }
 
@@ -284,6 +253,9 @@ public class LogManager {
      * @return The output file path
      */
     public String getFileOutputPath() {
+        if (fileOutputPath == null) {
+            return "";
+        }
         return fileOutputPath;
     }
 
@@ -294,35 +266,31 @@ public class LogManager {
      * @return Whether the old file (if present) could be closed and the new file (if present) could be opened
      */
     public boolean setFileOutputPath(String fileOutputPath, boolean fileOutputAppended) {
-        if (initialized) {
-            App.Log.write(LogSource.Log, LogLevel.Info, "Opening log file path \"", fileOutputPath, "\"");
+        if (fileOutputPath == null) {
+            return false;
         }
         this.fileOutputPath = fileOutputPath;
+        boolean success = true;
         // Close the old output file
         if (fileOutputWriter != null) {
             try {
                 fileOutputWriter.flush();
                 fileOutputWriter.close();
             } catch (IOException _) {
-                if (initialized) {
-                    App.Log.write(LogSource.Log, LogLevel.Warning, "Failed to close current log file");
-                }
+                success = false;
             }
             fileOutputWriter = null;
         }
         // Open a new output file if one was given
         if (fileOutputPath.isEmpty()) {
-            return true;
+            return success;
         }
         try {
             fileOutputWriter = new FileWriter(fileOutputPath, fileOutputAppended);
         } catch (IOException _) {
-            if (initialized) {
-                App.Log.write(LogSource.Log, LogLevel.Warning, "Failed to open log file path");
-            }
-            return false;
+            success = false;
         }
-        return true;
+        return success;
     }
 
 }

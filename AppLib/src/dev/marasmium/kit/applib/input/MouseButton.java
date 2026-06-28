@@ -13,9 +13,9 @@ package dev.marasmium.kit.applib.input;
 public enum MouseButton {
 
     // Positioned buttons
-    LEFT("BUTTON1"),
-    MIDDLE("BUTTON2"),
-    RIGHT("BUTTON3");
+    Left("BUTTON1"),
+    Middle("BUTTON2"),
+    Right("BUTTON3");
 
     /**
      * The field name of the Java AWT virtual mouse button code for this button
@@ -27,6 +27,10 @@ public enum MouseButton {
      * @param AWTName The Java AWT virtual mouse button code name
      */
     MouseButton(String AWTName) {
+        if (AWTName == null) {
+            this.AWTName = "";
+            return;
+        }
         this.AWTName = AWTName;
     }
 

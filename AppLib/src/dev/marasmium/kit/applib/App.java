@@ -12,10 +12,10 @@ import dev.marasmium.kit.applib.input.InputManager;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogManager;
 import dev.marasmium.kit.applib.logging.LogSource;
+import dev.marasmium.kit.applib.networking.NetClient;
 import dev.marasmium.kit.applib.windowing.WindowManager;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The main, singleton class of the MarasmiumKit's application framework
@@ -35,26 +35,26 @@ public class App {
      */
     public static final InputManager Input = new InputManager();
     /**
+     * The application framework's network client
+     */
+    public static final NetClient Network = new NetClient();
+    /**
      * The application framework's graphics system
      */
     public static final GraphicsManager Graphics = new GraphicsManager();
 
     /**
-     * Whether the application framework has been initialized
-     */
-    private static boolean Initialized = false;
-    /**
      * The scenes managed by the application framework
      */
-    private static List<Scene> Scenes = null;
+    private static final ArrayList<Scene> Scenes = new ArrayList<>();
     /**
      * The next ID to assign to a scene managed by the application framework
      */
-    private static int NextSceneID = 0;
+    private static int Next_Scene_ID = 0;
     /**
      * The application framework's current scene
      */
-    private static Scene CurrentScene = null;
+    private static Scene Current_Scene = null;
 
     /**
      * Initialize the MarasmiumKit's application framework
@@ -62,10 +62,6 @@ public class App {
      * @return Whether the application framework was successfully initialized
      */
     public static boolean Initialize(AppConfig config) {
-        if (Initialized) {
-            Log.write(LogSource.App, LogLevel.Warning, "Application framework cannot be initialized twice");
-            return false;
-        }
         if (config == null) {
             return false;
         }
@@ -86,6 +82,12 @@ public class App {
             return false;
         }
         Log.write(LogSource.App, LogLevel.Info, "Initialized user-input management system");
+        // Initialize the network client
+        if (!Network.initialize(config.network)) {
+            Log.write(LogSource.App, LogLevel.Error, "Failed to initialize network client");
+            return false;
+        }
+        Log.write(LogSource.App, LogLevel.Info, "Initialized network client");
         // Initialize the graphics system
         if (!Graphics.initialize(config.graphics)) {
             Log.write(LogSource.App, LogLevel.Error, "Failed to initialize graphics system");
@@ -93,13 +95,11 @@ public class App {
         }
         Log.write(LogSource.App, LogLevel.Info, "Initialized graphics system");
         // Set initial scene
-        Scenes = new ArrayList<>();
         if (!SetCurrentScene(config.initialScene)) {
             Log.write(LogSource.App, LogLevel.Error, "Failed to set current scene");
             return false;
         }
         Log.write(LogSource.App, LogLevel.Info, "Set initial scene");
-        Initialized = true;
         Log.write(LogSource.App, LogLevel.Info, "Initialized MarasmiumKit application framework");
         return true;
     }
@@ -109,6 +109,10 @@ public class App {
      */
     public static void Run() {
         Log.write(LogSource.App, LogLevel.Info, "Starting main application loop");
+        if (Current_Scene == null) {
+            return;
+        }
+        // Initialize timing
         long deltaStartMS = System.currentTimeMillis();
         long deltaElapsedMS;
         double deltaFrames;
@@ -118,24 +122,30 @@ public class App {
         int count = 0;
         while (!Window.isCloseRequested()) {
             waitStartMS = System.currentTimeMillis();
-            if (!CurrentScene.processInput()) {
+            // Process input and network events
+            if (!Current_Scene.processInput()) {
                 break;
             }
             Input.update();
+            Network.update();
+            // Perform timed updates
             deltaElapsedMS = System.currentTimeMillis() - deltaStartMS;
             deltaStartMS = System.currentTimeMillis();
             deltaFrames = deltaElapsedMS * Graphics.getTargetFPMS();
             while (count++ < Graphics.getMaxUPF() && deltaFrames > 1.0d) {
-                CurrentScene.update(1.0d);
+                Current_Scene.update(1.0d);
                 deltaFrames -= 1.0d;
             }
-            CurrentScene.update(deltaFrames);
+            Current_Scene.update(deltaFrames);
             count = 0;
             waitElapsedMS = System.currentTimeMillis() - waitStartMS;
             waitMS = (long)Graphics.getTargetMSPF() - waitElapsedMS;
             try {
                 Thread.sleep(waitMS);
-            } catch (Exception _) {}
+            } catch (InterruptedException _) {
+                Log.write(LogSource.App, LogLevel.Error, "Interrupted while waiting in main application loop");
+                return;
+            } catch (IllegalArgumentException _) {}
         }
         Log.write(LogSource.App, LogLevel.Info, "Finished main application loop");
     }
@@ -145,25 +155,29 @@ public class App {
      * @return Whether the application framework was successfully/cleanly destroyed
      */
     public static boolean Destroy() {
-        if (!Initialized) {
-            return false;
-        }
         Log.write(LogSource.App, LogLevel.Info, "Destroying MarasmiumKit application framework");
         boolean success = true;
         // Dispose of all scenes managed by the application
         Log.write(LogSource.App, LogLevel.Info, "Freeing all scenes");
-        NextSceneID = 0;
-        CurrentScene.leave(null);
-        CurrentScene = null;
+        Next_Scene_ID = 0;
+        if (Current_Scene != null) {
+            Current_Scene.leave(null);
+            Current_Scene = null;
+        }
         for (Scene scene : Scenes) {
             scene.destroy();
         }
         Scenes.clear();
-        Scenes = null;
         // Free the graphics system
         Log.write(LogSource.App, LogLevel.Info, "Destroying graphics system");
         if (!Graphics.destroy()) {
             Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy graphics system");
+            success = false;
+        }
+        // Free the network client
+        Log.write(LogSource.App, LogLevel.Info, "Destroying network client");
+        if (!Network.destroy()) {
+            Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy network client");
             success = false;
         }
         // Free the user-input management system
@@ -183,16 +197,7 @@ public class App {
         if (!Log.destroy()) {
             success = false;
         }
-        Initialized = false;
         return success;
-    }
-
-    /**
-     * Test whether the MarasmiumKit's application framework has been initialized
-     * @return Whether the application framework has been initialized
-     */
-    public static boolean IsInitialized() {
-        return Initialized;
     }
 
     /**
@@ -202,15 +207,19 @@ public class App {
      * @return Whether the scene was not already present and was initialized successfully
      */
     public static boolean AddScene(Scene scene) {
-        Log.write(LogSource.App, LogLevel.Info, "Adding scene ", scene.getID());
-        if (Scenes.contains(scene)) {
-            Log.write(LogSource.App, LogLevel.Warning, "Scene ", scene.getID(), " already present");
+        if (scene == null) {
             return false;
         }
+        Log.write(LogSource.App, LogLevel.Info, "Adding scene ", scene.getSceneID());
+        if (Scenes.contains(scene)) {
+            Log.write(LogSource.App, LogLevel.Warning, "Scene ", scene.getSceneID(), " already present");
+            return false;
+        }
+        // Add the scene and initialize if necessary
         if (!scene.isInitialized()) {
-            Log.write(LogSource.App, LogLevel.Info, "Scene ", scene.getID(), " requires initialization");
-            if (!scene.initializeScene(++NextSceneID)) {
-                Log.write(LogSource.App, LogLevel.Warning, "Failed to initialize scene ", scene.getID());
+            Log.write(LogSource.App, LogLevel.Info, "Scene ", scene.getSceneID(), " requires initialization");
+            if (!scene.initializeScene(++Next_Scene_ID)) {
+                Log.write(LogSource.App, LogLevel.Warning, "Failed to initialize scene ", scene.getSceneID());
                 return false;
             }
         }
@@ -225,20 +234,27 @@ public class App {
      * @return Whether the scene was present and was destroyed successfully
      */
     public static boolean RemoveScene(Scene scene) {
-        Log.write(LogSource.App, LogLevel.Info, "Removing scene ", scene.getID());
+        if (scene == null) {
+            return false;
+        }
+        Log.write(LogSource.App, LogLevel.Info, "Removing scene ", scene.getSceneID());
         if (!Scenes.contains(scene)) {
-            Log.write(LogSource.App, LogLevel.Warning, "Scene ", scene.getID(), " not present");
+            Log.write(LogSource.App, LogLevel.Warning, "Scene ", scene.getSceneID(), " not present");
             return false;
         }
         boolean success = true;
+        // Remove the scene and destroy if necessary
         if (scene.isInitialized()) {
-            Log.write(LogSource.App, LogLevel.Info, "Scene ", scene.getID(), " requires destruction");
+            Log.write(LogSource.App, LogLevel.Info, "Scene ", scene.getSceneID(), " requires destruction");
             if (!scene.destroyScene()) {
-                Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy scene ", scene.getID());
+                Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy scene ", scene.getSceneID());
                 success = false;
             }
         }
-        Scenes.remove(scene);
+        if (!Scenes.remove(scene)) {
+            Log.write(LogSource.App, LogLevel.Warning, "Failed to remove scene ", scene.getSceneID(), " from list");
+            success = false;
+        }
         return success;
     }
 
@@ -247,13 +263,12 @@ public class App {
      * @return The application framework's current scene
      */
     public static Scene GetCurrentScene() {
-        return CurrentScene;
+        return Current_Scene;
     }
 
     /**
-     * Change the current scene displayed by the application framework to a new one - leaves the old scene if one was
-     * present, adds the new scene to be managed by the application framework if not already added, and enters the new
-     * scene
+     * Leaves the current scene if one is present, adds the given scene to be managed by the application framework if
+     * not already added, and enters the new scene
      * @param scene The new scene for the application framework to display, must not be null
      * @return Whether leaving the old scene and entering the new scene was done successfully
      */
@@ -263,31 +278,41 @@ public class App {
             return false;
         }
         // Leave old scene
-        if (CurrentScene != null) {
-            Log.write(LogSource.App, LogLevel.Info, "Leaving current scene ", CurrentScene.getID());
-            Input.removeListener(CurrentScene);
-            if (!CurrentScene.leave(scene)) {
-                Log.write(LogSource.App, LogLevel.Error, "Failed to leave current scene ", CurrentScene.getID());
+        if (Current_Scene != null) {
+            Log.write(LogSource.App, LogLevel.Info, "Leaving current scene ", Current_Scene.getSceneID());
+            if (!Input.removeListener(Current_Scene)) {
+                Log.write(LogSource.App, LogLevel.Warning, "Failed to remove scene ", Current_Scene.getSceneID(),
+                        " from user-input listeners");
+            }
+            if (!Network.removeListener(Current_Scene)) {
+                Log.write(LogSource.App, LogLevel.Warning, "Failed to remove scene ", Current_Scene.getSceneID(),
+                        " from network listeners");
+            }
+            if (!Current_Scene.leave(scene)) {
+                Log.write(LogSource.App, LogLevel.Error, "Failed to leave current scene ", Current_Scene.getSceneID());
                 return false;
             }
         }
         // Enter new scene
         if (!Scenes.contains(scene)) {
-            Log.write(LogSource.App, LogLevel.Info, "Scene ", scene.getID(), " not added");
+            Log.write(LogSource.App, LogLevel.Info, "Scene ", scene.getSceneID(), " not added");
             if (!AddScene(scene)) {
-                Log.write(LogSource.App, LogLevel.Error, "Failed to add scene ", scene.getID());
+                Log.write(LogSource.App, LogLevel.Error, "Failed to add scene ", scene.getSceneID());
                 return false;
             }
         }
-        Log.write(LogSource.App, LogLevel.Info, "Entering new scene ", scene.getID());
-        if (!scene.enter(CurrentScene)) {
+        Log.write(LogSource.App, LogLevel.Info, "Entering new scene ", scene.getSceneID());
+        if (!scene.enter(Current_Scene)) {
             return false;
         }
         if (!Input.addListener(scene)) {
-            Log.write(LogSource.App, LogLevel.Error, "Failed to add scene ", scene.getID(), " to input listeners");
+            Log.write(LogSource.App, LogLevel.Error, "Failed to add scene ", scene.getSceneID(), " to input listeners");
             return false;
         }
-        CurrentScene = scene;
+        if (!Network.addListener(scene)) {
+            Log.write(LogSource.App, LogLevel.Error, "Failed to add scene ", scene.getSceneID(), " to network listeners");
+        }
+        Current_Scene = scene;
         return true;
     }
 

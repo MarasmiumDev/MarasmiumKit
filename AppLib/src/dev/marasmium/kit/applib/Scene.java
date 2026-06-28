@@ -8,12 +8,13 @@
 package dev.marasmium.kit.applib;
 
 import dev.marasmium.kit.applib.input.InputListener;
+import dev.marasmium.kit.applib.networking.NetListener;
 
 /**
  * Abstract interface for a scene within the MarasmiumKit's application framework with callbacks for application
  * processes. This class is intended to be managed (initialized and destroyed) by the framework's App class
  */
-public abstract class Scene implements InputListener {
+public abstract class Scene implements InputListener, NetListener {
 
     /**
      * Whether this scene has been initialized
@@ -22,19 +23,19 @@ public abstract class Scene implements InputListener {
     /**
      * The ID number of this scene set by the application framework
      */
-    private int ID = 0;
+    private int sceneID = 0;
 
     /**
      * External initialization function for this scene intended to only be called by the application framework when
      * adding it to the app, assigns the scene's ID and calls its internal initialization function
-     * @param ID The ID number assigned by the application framework
+     * @param sceneID The ID number assigned by the application framework
      * @return Whether this scene was initialized successfully
      */
-    public boolean initializeScene(int ID) {
+    public boolean initializeScene(int sceneID) {
         if (initialized) {
             return false;
         }
-        this.ID = ID;
+        setSceneID(sceneID);
         initialized = initialize();
         return initialized;
     }
@@ -81,7 +82,7 @@ public abstract class Scene implements InputListener {
             return false;
         }
         boolean success = destroy();
-        ID = 0;
+        sceneID = 0;
         initialized = false;
         return success;
     }
@@ -104,8 +105,16 @@ public abstract class Scene implements InputListener {
      * Get the ID number assigned by the application framework for this scene
      * @return This scene's ID number
      */
-    public int getID() {
-        return ID;
+    public int getSceneID() {
+        return sceneID;
+    }
+
+    /**
+     * Set the ID number assigned by the application framework for this scene
+     * @param sceneID This scene's new ID number
+     */
+    public void setSceneID(int sceneID) {
+        this.sceneID = sceneID;
     }
 
     /**
@@ -118,7 +127,7 @@ public abstract class Scene implements InputListener {
         if (!(o instanceof Scene s)) {
             return false;
         }
-        return ID == s.ID;
+        return sceneID == s.sceneID;
     }
 
 }
