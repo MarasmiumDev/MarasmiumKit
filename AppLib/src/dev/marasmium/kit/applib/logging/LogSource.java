@@ -34,6 +34,10 @@ public record LogSource(String sourceName) {
      */
     public static final LogSource Network = new LogSource("Network Client");
     /**
+     * Logging system message source flag for the audio system
+     */
+    public static final LogSource Audio = new LogSource("Audio System");
+    /**
      * Logging system message source flag for the graphics system
      */
     public static final LogSource Graphics = new LogSource("Graphics System");

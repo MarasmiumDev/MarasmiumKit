@@ -7,6 +7,7 @@
 
 package dev.marasmium.kit.applib;
 
+import dev.marasmium.kit.applib.audio.AudioManager;
 import dev.marasmium.kit.applib.graphics.GraphicsManager;
 import dev.marasmium.kit.applib.input.InputManager;
 import dev.marasmium.kit.applib.logging.LogLevel;
@@ -38,6 +39,10 @@ public class App {
      * The application framework's network client
      */
     public static final NetClient Network = new NetClient();
+    /**
+     * The application framework's audio system
+     */
+    public static final AudioManager Audio = new AudioManager();
     /**
      * The application framework's graphics system
      */
@@ -88,6 +93,11 @@ public class App {
             return false;
         }
         Log.write(LogSource.App, LogLevel.Info, "Initialized network client");
+        // Initialize the audio system
+        if (!Audio.initialize(config.audio)) {
+            Log.write(LogSource.App, LogLevel.Error, "Failed to initialize audio system");
+            return false;
+        }
         // Initialize the graphics system
         if (!Graphics.initialize(config.graphics)) {
             Log.write(LogSource.App, LogLevel.Error, "Failed to initialize graphics system");
@@ -172,6 +182,12 @@ public class App {
         Log.write(LogSource.App, LogLevel.Info, "Destroying graphics system");
         if (!Graphics.destroy()) {
             Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy graphics system");
+            success = false;
+        }
+        // Free the audio system
+        Log.write(LogSource.App, LogLevel.Info, "Destroying audio system");
+        if (!Audio.destroy()) {
+            Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy audio system");
             success = false;
         }
         // Free the network client

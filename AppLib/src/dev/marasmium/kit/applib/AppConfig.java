@@ -7,6 +7,7 @@
 
 package dev.marasmium.kit.applib;
 
+import dev.marasmium.kit.applib.audio.AudioConfig;
 import dev.marasmium.kit.applib.graphics.GraphicsManagerConfig;
 import dev.marasmium.kit.applib.logging.LogManagerConfig;
 import dev.marasmium.kit.applib.networking.NetClientConfig;
@@ -30,6 +31,10 @@ public class AppConfig {
      */
     public final NetClientConfig network;
     /**
+     * The configuration of the application framework's audio system
+     */
+    public final AudioConfig audio;
+    /**
      * The configuration of the application framework's graphics system
      */
     public final GraphicsManagerConfig graphics;
@@ -45,6 +50,7 @@ public class AppConfig {
         log = new LogManagerConfig();
         window = new WindowManagerConfig();
         network = new NetClientConfig();
+        audio = new AudioConfig();
         graphics = new GraphicsManagerConfig();
         this.initialScene = initialScene;
     }

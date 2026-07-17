@@ -9,9 +9,6 @@ package dev.marasmium.kit.apptest;
 
 import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.AppConfig;
-import dev.marasmium.kit.applib.data.Vec2D;
-
-import java.util.Scanner;
 
 public class AppTest {
 
@@ -19,19 +16,8 @@ public class AppTest {
     public static final TestScene2 Test_Scene_2 = new TestScene2();
 
     static void main() {
-        // Get log file index and host address for networking test
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Log index: ");
-        String index = scanner.nextLine();
-        System.out.print("Host: ");
-        String address = scanner.nextLine();
-        String[] split = address.split(":");
-        Test_Scene_1.hostName = split[0];
-        Test_Scene_1.port = Integer.parseInt(split[1]);
         // Set up app
         AppConfig config = new AppConfig(Test_Scene_1);
-        config.window.dimensions = Vec2D.Cartesian(100.0d, 100.0d);
-        config.log.fileOutputPath = "MarasmiumKit-Client-" + index + ".log";
         if (App.Initialize(config)) {
             App.Run();
         } else {
