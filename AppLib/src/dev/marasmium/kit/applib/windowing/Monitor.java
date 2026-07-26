@@ -46,6 +46,14 @@ public class Monitor {
     }
 
     /**
+     * Construct a monitor given its index in the local graphics environment's array of screen devices
+     * @param index The index of this monitor
+     */
+    public Monitor(int index) {
+        setIndex(index);
+    }
+
+    /**
      * Check that this monitor is still available to the system and update its reported description, position, and
      * dimensions. If this monitor's current index is unavailable this will revert the structure to representing the
      * first index in the array of screen devices
@@ -59,10 +67,18 @@ public class Monitor {
             gds = ge.getScreenDevices();
         } catch (HeadlessException _) {
             App.Log.write(LogSource.Window, LogLevel.Error, "System is in headless mode");
+            index = -1;
+            description = "";
+            position = null;
+            dimensions = null;
             return false;
         }
         if (gds.length == 0) {
             App.Log.write(LogSource.Window, LogLevel.Error, "Primary monitor unavailable");
+            index = -1;
+            description = "";
+            position = null;
+            dimensions = null;
             return false;
         }
         // Check index
@@ -143,6 +159,7 @@ public class Monitor {
      */
     @Override
     public String toString() {
-        return "Monitor " + getIndex() + ": \"" + getDescription() + "\" " + getDimensions() + " at " + getPosition();
+        return "monitor(" + getIndex() + ", \"" + getDescription() + "\", " + getDimensions() + ", " + getPosition()
+                + ")";
     }
 }

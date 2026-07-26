@@ -138,6 +138,7 @@ public class App {
             }
             Input.update();
             Network.update();
+            Audio.update();
             // Perform timed updates
             deltaElapsedMS = System.currentTimeMillis() - deltaStartMS;
             deltaStartMS = System.currentTimeMillis();

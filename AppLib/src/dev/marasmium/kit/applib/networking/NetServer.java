@@ -18,30 +18,54 @@ import java.nio.channels.IllegalBlockingModeException;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-// Abstract server interface for managing many network connections from clients
+/**
+ * Abstract server interface for managing many network connections from clients
+ */
 public class NetServer implements NetListener {
 
-    // The server's logging system
+    /**
+     * The server's logging system
+     */
     private final LogManager log;
-    // Log source flag for the abstract server interface
+    /**
+     * Log source flag for the abstract server interface
+     */
     private final LogSource logSource = new LogSource("Network Server");
-    // The parent class of the server subscribed to network event callbacks
+    /**
+     * The parent class of the server subscribed to network event callbacks
+     */
     private NetListener parent = null;
-    // Port for the server to listen for new connections on
+    /**
+     * Port for the server to listen for new connections on
+     */
     private int port = 0;
-    // Socket for accepting new client connections
+    /**
+     * Socket for accepting new client connections
+     */
     private ServerSocket serverSocket = null;
-    // Whether the server is currently accepting new clients
+    /**
+     * Whether the server is currently accepting new clients
+     */
     private volatile boolean running = false;
-    // Background thread for accepting new clients
+    /**
+     * Background thread for accepting new clients
+     */
     private Thread acceptThread = null;
-    // The next ID number of assign to a new client
+    /**
+     * The next ID number of assign to a new client
+     */
     private int nextClientID = 0;
-    // The maximum number of clients allowed to connect to the server simultaneously
+    /**
+     * The maximum number of clients allowed to connect to the server simultaneously
+     */
     private int maxClients = 0;
-    // The set of clients currently connected to the server
+    /**
+     * The set of clients currently connected to the server
+     */
     private final ConcurrentLinkedDeque<NetConnection> clients = new ConcurrentLinkedDeque<>();
-    // The maximum number of incoming messages to process per logic update per client
+    /**
+     * The maximum number of incoming messages to process per logic update per client
+     */
     private int maxMPUPC = 0;
 
     /**

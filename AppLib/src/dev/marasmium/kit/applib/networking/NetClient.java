@@ -14,18 +14,30 @@ import dev.marasmium.kit.applib.logging.LogSource;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 
-// The MarasmiumKit application framework's network client
+/**
+ * The MarasmiumKit application framework's network client
+ */
 public class NetClient implements NetListener {
 
-    // The network connection managed by the network client
+    /**
+     * The network connection managed by the network client
+     */
     private final NetConnection connection = new NetConnection();
-    // The maximum number of incoming messages to process per logic update
+    /**
+     * The maximum number of incoming messages to process per logic update
+     */
     private int maxMPU = 0;
-    // Whether the network client is waiting to connect to a server
+    /**
+     * Whether the network client is waiting to connect to a server
+     */
     private volatile boolean connecting = false;
-    // Thread for waiting for the network client to connect to a server
+    /**
+     * Thread for waiting for the network client to connect to a server
+     */
     private Thread connectThread = null;
-    // The set of listeners subscribed to network event callbacks from the network client
+    /**
+     * The set of listeners subscribed to network event callbacks from the network client
+     */
     private final ArrayList<NetListener> listeners = new ArrayList<>();
 
     /**

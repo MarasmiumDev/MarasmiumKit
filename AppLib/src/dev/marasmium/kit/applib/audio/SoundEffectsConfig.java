@@ -8,12 +8,21 @@
 
 package dev.marasmium.kit.applib.audio;
 
+/**
+ * Configuration/settings structure for the sound effects audio subsystem
+ */
 public class SoundEffectsConfig {
 
-    public double volume;
+    /**
+     * The default volume to play sound effects at
+     */
+    public double defaultVolume;
 
+    /**
+     * Construct a sound effects audio subsystem configuration structure with default settings
+     */
     public SoundEffectsConfig() {
-        volume = 1.0d;
+        defaultVolume = 1.0d;
     }
 
 }

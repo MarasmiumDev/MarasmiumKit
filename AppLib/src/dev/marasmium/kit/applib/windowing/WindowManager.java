@@ -12,13 +12,13 @@ import dev.marasmium.kit.applib.data.Vec2D;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 
+import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Panel;
-import java.awt.HeadlessException;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Dimension;
+import java.awt.HeadlessException;
 import java.awt.KeyboardFocusManager;
+import java.awt.Panel;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -294,6 +294,7 @@ public class WindowManager {
         frame.setVisible(true);
         try {
             frame.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.emptySet());
+            frame.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, Collections.emptySet());
         } catch (IllegalArgumentException _) {
             App.Log.write(LogSource.Window, LogLevel.Error, "Failed to disable focus tabbing");
             return false;
@@ -332,6 +333,7 @@ public class WindowManager {
         ArrayList<Monitor> monitors = getMonitors();
         if (monitors.isEmpty()) {
             App.Log.write(LogSource.Window, LogLevel.Error, "System has no monitors");
+            return null;
         }
         if (monitorIndex < 0 || monitorIndex >= monitors.size()) {
             monitorIndex = 0;

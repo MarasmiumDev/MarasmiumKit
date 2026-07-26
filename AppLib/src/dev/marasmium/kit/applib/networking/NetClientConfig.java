@@ -7,10 +7,14 @@
 
 package dev.marasmium.kit.applib.networking;
 
-// A configuration/settings structure for the network client
+/**
+ * A configuration/settings structure for the network client
+ */
 public class NetClientConfig {
 
-    // The maximum number of messages to process per logic update (-1 for infinite)
+    /**
+     * The maximum number of messages to process per logic update (-1 for infinite)
+     */
     public int maxMPU;
 
     /**

@@ -11,7 +11,9 @@ import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 
-// The main class of the MarasmiumKit application framework's graphics system
+/**
+ * The main class of the MarasmiumKit application framework's graphics system
+ */
 public class GraphicsManager {
 
     /**
@@ -34,7 +36,7 @@ public class GraphicsManager {
      */
     public boolean initialize(GraphicsManagerConfig config) {
         if (config == null) {
-            App.Log.write(LogSource.Graphics, LogLevel.Error, "No configuration provided");
+            App.Log.write(LogSource.Graphics, LogLevel.Error, "No configuration provided for graphics system");
             return false;
         }
         if (!setTargetFPS(config.targetFPS)) {

@@ -7,46 +7,76 @@
 
 package dev.marasmium.kit.applib.networking;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.channels.IllegalBlockingModeException;
 import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
-// Intermediate class for connecting network clients and network servers
+/**
+ * Intermediate class for connecting network clients and network servers
+ */
 public class NetConnection {
 
-    // This client's parent class subscribed to network event callbacks
+    /**
+     * This client's parent class subscribed to network event callbacks
+     */
     private NetListener parent = null;
-    // This client's ID number
+    /**
+     * This client's ID number
+     */
     private int clientID = 0;
-    // This client's TCP socket
+    /**
+     * This client's TCP socket
+     */
     private Socket socket = null;
-    // Whether this client is currently connected to a remote host
+    /**
+     * Whether this client is currently connected to a remote host
+     */
     private volatile boolean connected = false;
-    // Whether this client was connected to a remote host in the last logic update
+    /**
+     * Whether this client was connected to a remote host in the last logic update
+     */
     private volatile boolean wasConnected = false;
-    // Whether a connection from this client has been rejected by its parent class
+    /**
+     * Whether a connection from this client has been rejected by its parent class
+     */
     private volatile boolean rejected = false;
-    // Thread for reading messages from this connection's remote host
+    /**
+     * Thread for reading messages from this connection's remote host
+     */
     private Thread inputThread = null;
-    // Input stream for reading messages from this connection's remote host
+    /**
+     * Input stream for reading messages from this connection's remote host
+     */
     private ObjectInputStream inputStream = null;
-    // Scope lock for managing incoming messages
+    /**
+     * Scope lock for managing incoming messages
+     */
     private final ReentrantLock inputLock = new ReentrantLock();
-    // The set of messages received by this connection since its last logic update
+    /**
+     * The set of messages received by this connection since its last logic update
+     */
     private final ArrayList<NetMessage> inputMessages = new ArrayList<>();
-    // Thread for writing messages to this connection's remote host
+    /**
+     * Thread for writing messages to this connection's remote host
+     */
     private Thread outputThread = null;
-    // Output stream for writing messages to this connection's remote host
+    /**
+     * Output stream for writing messages to this connection's remote host
+     */
     private ObjectOutputStream outputStream = null;
-    // Scope lock for managing outgoing messages
+    /**
+     * Scope lock for managing outgoing messages
+     */
     private final ReentrantLock outputLock = new ReentrantLock();
-    // The set of messages to be sent by this connection
+    /**
+     * The set of messages to be sent by this connection
+     */
     private final ArrayList<NetMessage> outputMessages = new ArrayList<>();
 
     /**

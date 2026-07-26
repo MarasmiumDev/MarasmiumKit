@@ -1,0 +1,196 @@
+2026.07.26@19:58:23.235: [Logging System] [Information] Initialized logging system
+2026.07.26@19:58:23.236: [MarasmiumKit App] [Information] Initialized logging system
+2026.07.26@19:58:23.236: [Windowing System] [Information] Set fullscreen monitor index 0
+2026.07.26@19:58:23.240: [Windowing System] [Information] Generated new window frame
+2026.07.26@19:58:23.240: [Windowing System] [Warning] No title provided
+2026.07.26@19:58:23.240: [Windowing System] [Warning] No dimensions provided
+2026.07.26@19:58:23.240: [Windowing System] [Information] Set window to windowed mode
+2026.07.26@19:58:23.313: [Windowing System] [Information] Set window title "MarasmiumKit App"
+2026.07.26@19:58:23.313: [Windowing System] [Information] Set window dimensions vector(1280.0, 720.0)
+2026.07.26@19:58:23.314: [Windowing System] [Information] Initialized windowing system
+2026.07.26@19:58:23.314: [MarasmiumKit App] [Information] Initialized windowing system
+2026.07.26@19:58:23.316: [User-Input Management System] [Information] Initialized keyboard user-input management system
+2026.07.26@19:58:23.317: [User-Input Management System] [Information] Initialized mouse user-input management system
+2026.07.26@19:58:23.317: [User-Input Management System] [Information] Initialized user-input management system
+2026.07.26@19:58:23.317: [MarasmiumKit App] [Information] Initialized user-input management system
+2026.07.26@19:58:23.317: [Network Client] [Information] Set maximum messages to process per update -1
+2026.07.26@19:58:23.317: [Network Client] [Information] Initialized network client
+2026.07.26@19:58:23.317: [MarasmiumKit App] [Information] Initialized network client
+2026.07.26@19:58:23.317: [Audio System] [Information] Setting audio output speaker speaker(0, "Port MacBook Air Microphone")
+2026.07.26@19:58:23.327: [Audio System] [Warning] Speaker not available for audio output
+2026.07.26@19:58:23.327: [Audio System] [Information] Set default sound effect volume 100%
+2026.07.26@19:58:23.327: [Audio System] [Information] Initialized sound effects audio subsystem
+2026.07.26@19:58:23.327: [Audio System] [Information] Set music volume 100%
+2026.07.26@19:58:23.328: [Audio System] [Information] Initialized music audio subsystem
+2026.07.26@19:58:23.328: [Audio System] [Information] Initialize audio system
+2026.07.26@19:58:23.328: [Graphics System] [Information] Target FPS set to 60 -> FPMS=0.06, MSPF=16
+2026.07.26@19:58:23.328: [Graphics System] [Information] Maximum UPF set to 8
+2026.07.26@19:58:23.328: [Graphics System] [Information] Initialized graphics system
+2026.07.26@19:58:23.328: [MarasmiumKit App] [Information] Initialized graphics system
+2026.07.26@19:58:23.328: [MarasmiumKit App] [Information] Scene 0 not added
+2026.07.26@19:58:23.328: [MarasmiumKit App] [Information] Adding scene 0
+2026.07.26@19:58:23.328: [MarasmiumKit App] [Information] Scene 0 requires initialization
+2026.07.26@19:58:23.328: [Test Scene 1] [Information] Initializing test scene 1
+2026.07.26@19:58:23.328: [MarasmiumKit App] [Information] Entering new scene 1
+2026.07.26@19:58:23.328: [Test Scene 1] [Information] Entering test scene 1
+2026.07.26@19:58:23.328: [User-Input Management System] [Information] Adding user-input listener
+2026.07.26@19:58:23.328: [Network Client] [Information] Adding network listener
+2026.07.26@19:58:23.328: [MarasmiumKit App] [Information] Set initial scene
+2026.07.26@19:58:23.328: [MarasmiumKit App] [Information] Initialized MarasmiumKit application framework
+2026.07.26@19:58:23.328: [MarasmiumKit App] [Information] Starting main application loop
+2026.07.26@19:58:45.786: [Test Scene 1] [Information] Speaker: speaker(3, "Default Audio Device")
+2026.07.26@19:58:45.786: [Test Scene 1] [Information] Speaker: speaker(5, "MacBook Air Speakers")
+2026.07.26@19:58:45.786: [Test Scene 1] [Information] Speaker: speaker(6, "Microsoft Teams Audio")
+2026.07.26@19:58:54.652: [Test Scene 1] [Information] Current speaker: speaker(3, "Default Audio Device")
+2026.07.26@19:58:58.491: [Audio System] [Information] Setting audio output speaker speaker(5, "MacBook Air Speakers")
+2026.07.26@19:58:58.493: [Audio System] [Information] Stopping all sound effects
+2026.07.26@19:58:58.493: [Audio System] [Information] Set audio output speaker speaker(5, "MacBook Air Speakers")
+2026.07.26@19:58:58.495: [Test Scene 1] [Information] Set speaker: speaker(5, "MacBook Air Speakers")
+2026.07.26@19:59:27.991: [Test Scene 1] [Information] Playing sound effect 1
+2026.07.26@19:59:28.619: [Test Scene 1] [Information] Playing sound effect 2
+2026.07.26@19:59:29.658: [Test Scene 1] [Information] Playing sound effect 3
+2026.07.26@19:59:31.155: [Audio System] [Information] Set music volume 90%
+2026.07.26@19:59:31.155: [Test Scene 1] [Information] Music volume: 90%
+2026.07.26@19:59:31.331: [Audio System] [Information] Set music volume 80%
+2026.07.26@19:59:31.331: [Test Scene 1] [Information] Music volume: 80%
+2026.07.26@19:59:31.504: [Audio System] [Information] Set music volume 70%
+2026.07.26@19:59:31.504: [Test Scene 1] [Information] Music volume: 70%
+2026.07.26@19:59:32.336: [Test Scene 1] [Information] Playing sound effect 1
+2026.07.26@19:59:32.943: [Audio System] [Information] Set music volume 80%
+2026.07.26@19:59:32.943: [Test Scene 1] [Information] Music volume: 80%
+2026.07.26@19:59:33.445: [Audio System] [Information] Set default sound effect volume 90%
+2026.07.26@19:59:33.446: [Test Scene 1] [Information] Sound effects volume: 90%
+2026.07.26@19:59:33.658: [Audio System] [Information] Set default sound effect volume 80%
+2026.07.26@19:59:33.658: [Test Scene 1] [Information] Sound effects volume: 80%
+2026.07.26@19:59:33.858: [Audio System] [Information] Set default sound effect volume 70%
+2026.07.26@19:59:33.858: [Test Scene 1] [Information] Sound effects volume: 70%
+2026.07.26@19:59:34.229: [Audio System] [Information] Set default sound effect volume 60%
+2026.07.26@19:59:34.229: [Test Scene 1] [Information] Sound effects volume: 60%
+2026.07.26@19:59:34.771: [Test Scene 1] [Information] Playing sound effect 2
+2026.07.26@19:59:35.844: [Test Scene 1] [Information] Playing sound effect 1
+2026.07.26@19:59:36.387: [Audio System] [Information] Set default sound effect volume 50%
+2026.07.26@19:59:36.387: [Test Scene 1] [Information] Sound effects volume: 50%
+2026.07.26@19:59:36.620: [Audio System] [Information] Set default sound effect volume 40%
+2026.07.26@19:59:36.620: [Test Scene 1] [Information] Sound effects volume: 40%
+2026.07.26@19:59:36.854: [Audio System] [Information] Set default sound effect volume 30%
+2026.07.26@19:59:36.855: [Test Scene 1] [Information] Sound effects volume: 30%
+2026.07.26@19:59:37.490: [Test Scene 1] [Information] Playing sound effect 2
+2026.07.26@19:59:38.235: [Test Scene 1] [Information] Playing sound effect 1
+2026.07.26@19:59:39.198: [Audio System] [Information] Set default sound effect volume 20%
+2026.07.26@19:59:39.199: [Test Scene 1] [Information] Sound effects volume: 20%
+2026.07.26@19:59:39.782: [Test Scene 1] [Information] Playing sound effect 1
+2026.07.26@19:59:40.633: [Audio System] [Information] Set default sound effect volume 10%
+2026.07.26@19:59:40.633: [Test Scene 1] [Information] Sound effects volume: 10%
+2026.07.26@19:59:41.077: [Test Scene 1] [Information] Playing sound effect 1
+2026.07.26@19:59:42.452: [Test Scene 1] [Information] Playing sound effect 1
+2026.07.26@19:59:43.220: [Test Scene 1] [Information] Playing sound effect 1
+2026.07.26@19:59:43.992: [Test Scene 1] [Information] Playing sound effect 1
+2026.07.26@19:59:44.774: [Test Scene 1] [Information] Playing sound effect 1
+2026.07.26@19:59:45.895: [Audio System] [Information] Set default sound effect volume 20%
+2026.07.26@19:59:45.896: [Test Scene 1] [Information] Sound effects volume: 20%
+2026.07.26@19:59:46.074: [Audio System] [Information] Set default sound effect volume 30%
+2026.07.26@19:59:46.075: [Test Scene 1] [Information] Sound effects volume: 30%
+2026.07.26@19:59:46.223: [Audio System] [Information] Set default sound effect volume 40%
+2026.07.26@19:59:46.223: [Test Scene 1] [Information] Sound effects volume: 40%
+2026.07.26@19:59:46.380: [Audio System] [Information] Set default sound effect volume 50%
+2026.07.26@19:59:46.380: [Test Scene 1] [Information] Sound effects volume: 50%
+2026.07.26@19:59:46.539: [Audio System] [Information] Set default sound effect volume 60%
+2026.07.26@19:59:46.539: [Test Scene 1] [Information] Sound effects volume: 60%
+2026.07.26@19:59:46.695: [Audio System] [Information] Set default sound effect volume 70%
+2026.07.26@19:59:46.695: [Test Scene 1] [Information] Sound effects volume: 70%
+2026.07.26@19:59:46.859: [Audio System] [Information] Set default sound effect volume 80%
+2026.07.26@19:59:46.859: [Test Scene 1] [Information] Sound effects volume: 80%
+2026.07.26@19:59:47.034: [Audio System] [Information] Set default sound effect volume 90%
+2026.07.26@19:59:47.034: [Test Scene 1] [Information] Sound effects volume: 90%
+2026.07.26@19:59:47.211: [Audio System] [Information] Set default sound effect volume 100%
+2026.07.26@19:59:47.211: [Test Scene 1] [Information] Sound effects volume: 100%
+2026.07.26@19:59:47.443: [Test Scene 1] [Information] Playing sound effect 3
+2026.07.26@19:59:51.191: [Test Scene 1] [Information] Playing music 1
+2026.07.26@19:59:51.192: [Audio System] [Information] Loaded: audio(12000Hz, 2BPS, 1 channels, 190312B, 7.929666666666667s)
+2026.07.26@19:59:51.199: [Audio System] [Information] Set music volume 80%
+2026.07.26@19:59:51.199: [Audio System] [Information] Playing music track "Assets/Audio/Music_1.audio"
+2026.07.26@19:59:52.624: [Test Scene 1] [Information] Playing music 2
+2026.07.26@19:59:52.625: [Audio System] [Information] Stopping music track "Assets/Audio/Music_1.audio"
+2026.07.26@19:59:52.678: [Audio System] [Information] Loaded: audio(12000Hz, 2BPS, 1 channels, 655084B, 27.295166666666667s)
+2026.07.26@19:59:52.681: [Audio System] [Information] Set music volume 80%
+2026.07.26@19:59:52.681: [Audio System] [Information] Playing music track "Assets/Audio/Music_2.audio"
+2026.07.26@19:59:54.319: [Test Scene 1] [Information] Playing music 1
+2026.07.26@19:59:54.320: [Audio System] [Information] Stopping music track "Assets/Audio/Music_2.audio"
+2026.07.26@19:59:54.369: [Audio System] [Information] Loaded: audio(12000Hz, 2BPS, 1 channels, 190312B, 7.929666666666667s)
+2026.07.26@19:59:54.371: [Audio System] [Information] Set music volume 80%
+2026.07.26@19:59:54.371: [Audio System] [Information] Playing music track "Assets/Audio/Music_1.audio"
+2026.07.26@19:59:55.421: [Test Scene 1] [Information] Stopping music
+2026.07.26@19:59:55.421: [Audio System] [Information] Stopping music track "Assets/Audio/Music_1.audio"
+2026.07.26@19:59:57.336: [Test Scene 1] [Information] Playing sound effect 1
+2026.07.26@19:59:57.508: [Test Scene 1] [Information] Playing sound effect 2
+2026.07.26@19:59:57.696: [Test Scene 1] [Information] Playing sound effect 3
+2026.07.26@19:59:58.142: [Test Scene 1] [Information] Stopping all sound effects
+2026.07.26@19:59:58.143: [Audio System] [Information] Stopping all sound effects
+2026.07.26@20:00:11.563: [Test Scene 1] [Information] Playing music 1
+2026.07.26@20:00:11.564: [Audio System] [Information] Loaded: audio(12000Hz, 2BPS, 1 channels, 190312B, 7.929666666666667s)
+2026.07.26@20:00:11.565: [Audio System] [Information] Set music volume 80%
+2026.07.26@20:00:11.565: [Audio System] [Information] Playing music track "Assets/Audio/Music_1.audio"
+2026.07.26@20:00:11.977: [Test Scene 1] [Information] Pausing music
+2026.07.26@20:00:11.977: [Audio System] [Information] Stopping music track "Assets/Audio/Music_1.audio"
+2026.07.26@20:00:12.030: [Audio System] [Information] Paused music track "Assets/Audio/Music_1.audio"
+2026.07.26@20:00:13.108: [Test Scene 1] [Information] Playing music
+2026.07.26@20:00:13.108: [Audio System] [Information] Loaded: audio(12000Hz, 2BPS, 1 channels, 190312B, 7.929666666666667s)
+2026.07.26@20:00:13.112: [Audio System] [Information] Set music volume 80%
+2026.07.26@20:00:13.113: [Audio System] [Information] Playing music track "Assets/Audio/Music_1.audio"
+2026.07.26@20:00:15.055: [Test Scene 1] [Information] Playing music 2
+2026.07.26@20:00:15.055: [Audio System] [Information] Stopping music track "Assets/Audio/Music_1.audio"
+2026.07.26@20:00:15.100: [Audio System] [Information] Loaded: audio(12000Hz, 2BPS, 1 channels, 655084B, 27.295166666666667s)
+2026.07.26@20:00:15.103: [Audio System] [Information] Set music volume 80%
+2026.07.26@20:00:15.104: [Audio System] [Information] Playing music track "Assets/Audio/Music_2.audio"
+2026.07.26@20:00:16.054: [Test Scene 1] [Information] Pausing music
+2026.07.26@20:00:16.055: [Audio System] [Information] Stopping music track "Assets/Audio/Music_2.audio"
+2026.07.26@20:00:16.098: [Audio System] [Information] Paused music track "Assets/Audio/Music_2.audio"
+2026.07.26@20:00:16.869: [Test Scene 1] [Information] Playing music
+2026.07.26@20:00:16.869: [Audio System] [Information] Loaded: audio(12000Hz, 2BPS, 1 channels, 655084B, 27.295166666666667s)
+2026.07.26@20:00:16.874: [Audio System] [Information] Set music volume 80%
+2026.07.26@20:00:16.874: [Audio System] [Information] Playing music track "Assets/Audio/Music_2.audio"
+2026.07.26@20:00:18.481: [Test Scene 1] [Information] Pausing music
+2026.07.26@20:00:18.481: [Audio System] [Information] Stopping music track "Assets/Audio/Music_2.audio"
+2026.07.26@20:00:18.533: [Audio System] [Information] Paused music track "Assets/Audio/Music_2.audio"
+2026.07.26@20:00:20.558: [Test Scene 1] [Information] Playing music
+2026.07.26@20:00:20.558: [Audio System] [Information] Loaded: audio(12000Hz, 2BPS, 1 channels, 655084B, 27.295166666666667s)
+2026.07.26@20:00:20.563: [Audio System] [Information] Set music volume 80%
+2026.07.26@20:00:20.563: [Audio System] [Information] Playing music track "Assets/Audio/Music_2.audio"
+2026.07.26@20:00:23.130: [Test Scene 1] [Information] Stopping music
+2026.07.26@20:00:23.130: [Audio System] [Information] Stopping music track "Assets/Audio/Music_2.audio"
+2026.07.26@20:00:23.688: [Test Scene 1] [Information] Pausing music
+2026.07.26@20:00:23.689: [Audio System] [Warning] Failed to pause music track, none playing
+2026.07.26@20:00:27.038: [Test Scene 1] [Information] Playing music 1
+2026.07.26@20:00:27.039: [Audio System] [Information] Loaded: audio(12000Hz, 2BPS, 1 channels, 190312B, 7.929666666666667s)
+2026.07.26@20:00:27.042: [Audio System] [Information] Set music volume 80%
+2026.07.26@20:00:27.042: [Audio System] [Information] Playing music track "Assets/Audio/Music_1.audio"
+2026.07.26@20:00:27.367: [Test Scene 1] [Information] Playing music 1
+2026.07.26@20:00:27.367: [Audio System] [Information] Stopping music track "Assets/Audio/Music_1.audio"
+2026.07.26@20:00:27.411: [Audio System] [Information] Loaded: audio(12000Hz, 2BPS, 1 channels, 190312B, 7.929666666666667s)
+2026.07.26@20:00:27.414: [Audio System] [Information] Set music volume 80%
+2026.07.26@20:00:27.414: [Audio System] [Information] Playing music track "Assets/Audio/Music_1.audio"
+2026.07.26@20:00:28.574: [Test Scene 1] [Information] Stopping music
+2026.07.26@20:00:28.575: [Audio System] [Information] Stopping music track "Assets/Audio/Music_1.audio"
+2026.07.26@20:00:32.043: [MarasmiumKit App] [Information] Finished main application loop
+2026.07.26@20:00:32.043: [MarasmiumKit App] [Information] Destroying MarasmiumKit application framework
+2026.07.26@20:00:32.043: [MarasmiumKit App] [Information] Freeing all scenes
+2026.07.26@20:00:32.043: [Test Scene 1] [Information] Leaving test scene 1
+2026.07.26@20:00:32.043: [Test Scene 1] [Information] Destroying test scene 1
+2026.07.26@20:00:32.043: [MarasmiumKit App] [Information] Destroying graphics system
+2026.07.26@20:00:32.044: [Graphics System] [Information] Destroying graphics system
+2026.07.26@20:00:32.044: [MarasmiumKit App] [Information] Destroying audio system
+2026.07.26@20:00:32.044: [Audio System] [Information] Destroying audio system
+2026.07.26@20:00:32.044: [Audio System] [Information] Destroying sound effects audio subsystem
+2026.07.26@20:00:32.044: [Audio System] [Information] Stopping all sound effects
+2026.07.26@20:00:32.044: [Audio System] [Information] Destroying music audio subsystem
+2026.07.26@20:00:32.044: [MarasmiumKit App] [Information] Destroying network client
+2026.07.26@20:00:32.044: [Network Client] [Information] Destroying network client
+2026.07.26@20:00:32.044: [Network Client] [Information] Destroyed network client
+2026.07.26@20:00:32.044: [MarasmiumKit App] [Information] Destroying user-input management system
+2026.07.26@20:00:32.044: [User-Input Management System] [Information] Destroying user-input management system
+2026.07.26@20:00:32.045: [User-Input Management System] [Information] Destroying mouse user-input management system
+2026.07.26@20:00:32.045: [User-Input Management System] [Information] Destroying keyboard user-input management system
+2026.07.26@20:00:32.045: [MarasmiumKit App] [Information] Destroying windowing system
+2026.07.26@20:00:32.045: [Windowing System] [Information] Destroying windowing system
+2026.07.26@20:00:32.050: [MarasmiumKit App] [Information] Destroying logging system
+2026.07.26@20:00:32.050: [Logging System] [Information] Destroying logging system

@@ -7,7 +7,9 @@
 
 package dev.marasmium.kit.applib.networking;
 
-// Abstract interface for network event callbacks
+/**
+ * Abstract interface for network event callbacks
+ */
 public interface NetListener {
 
     /**

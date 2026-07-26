@@ -7,16 +7,31 @@
 
 package dev.marasmium.kit.applib.audio;
 
+/**
+ * Configuration/settings structure for the MarasmiumKit application framework's audio system
+ */
 public class AudioConfig {
 
+    /**
+     * The initial audio output device to use
+     */
+    public final AudioDevice speaker;
+    /**
+     * The configuration of the sound effects audio subsystem
+     */
     public final SoundEffectsConfig soundEffects;
-    public final MusicConfig music;
-    public double volume;
+    /**
+     * The configuration of the music audio subsystem
+     */
+    public MusicConfig music;
 
+    /**
+     * Construct an audio system configuration with default settings
+     */
     public AudioConfig() {
+        speaker = new AudioDevice();
         soundEffects = new SoundEffectsConfig();
         music = new MusicConfig();
-        volume = 1.0d;
     }
 
 }

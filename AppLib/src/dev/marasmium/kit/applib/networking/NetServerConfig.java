@@ -9,18 +9,30 @@ package dev.marasmium.kit.applib.networking;
 
 import dev.marasmium.kit.applib.logging.LogManagerConfig;
 
-// A configuration/settings structure for MarasmiumKit network servers
+/**
+ * A configuration/settings structure for MarasmiumKit network servers
+ */
 public class NetServerConfig {
 
-    // The server log's configuration
+    /**
+     * The server log's configuration
+     */
     public final LogManagerConfig log;
-    // The parent class of the server to subscribe to network event callbacks
+    /**
+     * The parent class of the server to subscribe to network event callbacks
+     */
     public final NetListener parent;
-    // The port for the server to listen for new connections on
+    /**
+     * The port for the server to listen for new connections on
+     */
     public int port;
-    // The maximum number of incoming messages to process per update per client
+    /**
+     * The maximum number of incoming messages to process per update per client
+     */
     public int maxMPUPC;
-    // The maximum number of clients to allow to connect to the server simultaneously
+    /**
+     * The maximum number of clients to allow to connect to the server simultaneously
+     */
     public int maxClients;
 
     /**

@@ -7,7 +7,9 @@
 
 package dev.marasmium.kit.applib.graphics;
 
-// A configuration/settings structure for the MarasmiumKit application framework's graphics system
+/**
+ * A configuration/settings structure for the MarasmiumKit application framework's graphics system
+ */
 public class GraphicsManagerConfig {
 
     /**

@@ -9,17 +9,23 @@ package dev.marasmium.kit.applib.networking;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.io.IOException;
 
-// A serialized message structure to be sent and received by network connections
+/**
+ * A serialized message structure to be sent and received by network connections
+ */
 public class NetMessage implements Serializable {
 
-    // The type ID number of this message
+    /**
+     * The type ID number of this message
+     */
     private int type;
-    // The payload data of this message
+    /**
+     * The payload data of this message
+     */
     private byte[] data;
 
     /**

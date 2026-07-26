@@ -15,7 +15,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -95,7 +94,7 @@ public class KeyboardManager implements KeyListener {
      */
     public void update() {
         // Update key up/down states
-        for (Map.Entry<KeyboardKey, KeyState> entry : keyStates.entrySet()) {
+        for (HashMap.Entry<KeyboardKey, KeyState> entry : keyStates.entrySet()) {
             KeyboardKey key;
             try {
                 key = entry.getKey();
