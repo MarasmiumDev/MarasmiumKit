@@ -10,7 +10,6 @@ package dev.marasmium.kit.applib.audio;
 import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
-import dev.marasmium.kit.assetlib.audio.AudioLoader;
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
@@ -86,8 +85,6 @@ public class AudioManager {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to destroy music manager");
             success = false;
         }
-        // Free all cached audio tracks
-        AudioLoader.FreeTracks();
         return success;
     }
 

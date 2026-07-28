@@ -7,7 +7,7 @@
 
 package dev.marasmium.kit.applib.windowing;
 
-import dev.marasmium.kit.applib.data.Vec2D;
+import dev.marasmium.kit.applib.data.Vector;
 
 /**
  * Configuration/settings structure for the windowing system
@@ -21,7 +21,7 @@ public class WindowManagerConfig {
     /**
      * The initial dimensions for the window in pixels when in windowed mode
      */
-    public Vec2D dimensions;
+    public Vector dimensions;
     /**
      * Whether the window should initially appear in windowed mode
      */
@@ -36,7 +36,7 @@ public class WindowManagerConfig {
      */
     public WindowManagerConfig() {
         title = "MarasmiumKit App";
-        dimensions = Vec2D.Cartesian(1280.0d, 720.0d);
+        dimensions = Vector.Cartesian(1280.0d, 720.0d);
         fullscreen = false;
         monitor = new Monitor();
     }

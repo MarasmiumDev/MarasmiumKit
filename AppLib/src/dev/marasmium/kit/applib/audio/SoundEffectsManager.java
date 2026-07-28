@@ -8,10 +8,9 @@
 package dev.marasmium.kit.applib.audio;
 
 import dev.marasmium.kit.applib.App;
+import dev.marasmium.kit.applib.assets.AudioTrack;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
-import dev.marasmium.kit.assetlib.audio.AudioLoader;
-import dev.marasmium.kit.assetlib.audio.AudioTrack;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
@@ -73,7 +72,7 @@ public class SoundEffectsManager {
             return false;
         }
         // Load the sound effect audio track and its format
-        AudioTrack track = AudioLoader.GetTrack(filePath);
+        AudioTrack track = App.Assets.getAudioTrack(filePath);
         if (track == null) {
             return false;
         }

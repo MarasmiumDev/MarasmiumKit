@@ -7,7 +7,7 @@
 
 package dev.marasmium.kit.applib.input;
 
-import dev.marasmium.kit.applib.data.Vec2D;
+import dev.marasmium.kit.applib.data.Vector;
 
 /**
  * Abstract interface for user-input event callbacks
@@ -49,12 +49,12 @@ public interface InputListener {
      * @param position The new position of the mouse cursor on the window
      * @param movement The horizontal and vertical distance the mouse cursor travelled since the last logic update
      */
-    default void mouseCursorMoved(Vec2D position, Vec2D movement) {}
+    default void mouseCursorMoved(Vector position, Vector movement) {}
 
     /**
      * Callback for mouse scroll motion
      * @param movement The horizontal and vertical distance scrolled since the last logic update
      */
-    default void mouseScrollMoved(Vec2D movement) {}
+    default void mouseScrollMoved(Vector movement) {}
 
 }

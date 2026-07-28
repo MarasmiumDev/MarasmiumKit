@@ -7,8 +7,9 @@
 
 package dev.marasmium.kit.assetconverter;
 
-import dev.marasmium.kit.assetlib.audio.AudioLoader;
-import dev.marasmium.kit.assetlib.audio.AudioTrack;
+import dev.marasmium.kit.applib.App;
+import dev.marasmium.kit.applib.assets.AssetManagerConfig;
+import dev.marasmium.kit.applib.assets.AudioTrack;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -138,7 +139,7 @@ public class AssetConverter {
         // Write converted audio track
         AudioTrack track = new AudioTrack(sampleRate, sampleSize, channelCount, data);
         System.out.println("Generated audio track: " + track);
-        System.out.print("Output file path: ");
+        System.out.print("Output file path: " + App.Assets.getBasePath());
         String outputFilePath;
         try {
             outputFilePath = commandLine.nextLine();
@@ -146,7 +147,7 @@ public class AssetConverter {
             System.out.println("No user input available");
             return false;
         }
-        if (!AudioLoader.WriteTrack(outputFilePath, track)) {
+        if (!App.Assets.writeAudioTrack(track, outputFilePath)) {
             System.out.println("Failed to write converted audio file");
             return false;
         }
@@ -167,11 +168,26 @@ public class AssetConverter {
      * The main entry point of the AssetConverter program
      */
     static void main() {
+        System.out.println("MarasmiumKit Asset Converter");
+        // Get asset base path
         Scanner commandLine = new Scanner(System.in);
+        System.out.print("Base file path: ");
+        String basePath;
+        try {
+            basePath = commandLine.nextLine();
+        } catch (NoSuchElementException | IllegalStateException _) {
+            System.out.println("No user input available");
+            return;
+        }
+        // Initialize application framework asset manager
+        AssetManagerConfig config = new AssetManagerConfig();
+        config.basePath = basePath;
+        if (!App.Assets.initialize(config)) {
+            System.out.println("Failed to initialize asset management system");
+        }
         boolean running = true;
         while (running) {
             // Switch between audio and animation file conversion
-            System.out.println("MarasmiumKit Asset Converter");
             System.out.println("1. Audio");
             System.out.println("2. Animation");
             System.out.println("3. Exit");
@@ -210,6 +226,7 @@ public class AssetConverter {
                     break;
             }
         }
+        App.Assets.destroy();
     }
 
 }

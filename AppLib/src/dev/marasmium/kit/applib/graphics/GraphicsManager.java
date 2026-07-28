@@ -8,8 +8,14 @@
 package dev.marasmium.kit.applib.graphics;
 
 import dev.marasmium.kit.applib.App;
+import dev.marasmium.kit.applib.data.Colour;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
+
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
+import java.util.Random;
 
 /**
  * The main class of the MarasmiumKit application framework's graphics system
@@ -28,6 +34,10 @@ public class GraphicsManager {
      * The maximum number of logic updates allowed between graphics frames
      */
     private int maxUPF = 0;
+    private double frameScale = 0.0d;
+    private BufferedImage frame = null;
+    private int[] pixels = null;
+    private Colour backgroundColour = null;
 
     /**
      * Initialize the application framework's graphics system
@@ -49,8 +59,26 @@ public class GraphicsManager {
                     "UPF invalid");
             return false;
         }
+        frame = new BufferedImage((int)config.frameDimensions.getX(), (int)config.frameDimensions.getY(),
+                BufferedImage.TYPE_INT_ARGB);
+        pixels = ((DataBufferInt)frame.getRaster().getDataBuffer()).getData();
+        setBackgroundColour(config.backgroundColour);
+        App.Window.getCanvas().createBufferStrategy(2);
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Initialized graphics system");
         return true;
+    }
+
+    public void clear() {
+        int colour = backgroundColour.getARGB();
+        Random random = new Random();
+        for (int i = 0; i < pixels.length; i++) {
+            pixels[i] = random.nextInt();
+        }
+    }
+
+    public void draw() {
+        Graphics g = App.Window.getCanvas().getGraphics();
+        g.drawImage(frame, 0, 0, (int)App.Window.getDimensions().getX(), (int)App.Window.getDimensions().getY(), null);
     }
 
     /**
@@ -128,6 +156,10 @@ public class GraphicsManager {
         this.maxUPF = maxUPF;
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Maximum UPF set to ", maxUPF);
         return true;
+    }
+
+    public void setBackgroundColour(Colour backgroundColour) {
+        this.backgroundColour = backgroundColour;
     }
 
 }

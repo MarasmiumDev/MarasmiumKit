@@ -7,6 +7,7 @@
 
 package dev.marasmium.kit.applib;
 
+import dev.marasmium.kit.applib.assets.AssetManager;
 import dev.marasmium.kit.applib.audio.AudioManager;
 import dev.marasmium.kit.applib.graphics.GraphicsManager;
 import dev.marasmium.kit.applib.input.InputManager;
@@ -39,6 +40,10 @@ public class App {
      * The application framework's network client
      */
     public static final NetClient Network = new NetClient();
+    /**
+     * This application framework's asset management system
+     */
+    public static final AssetManager Assets = new AssetManager();
     /**
      * The application framework's audio system
      */
@@ -93,6 +98,12 @@ public class App {
             return false;
         }
         Log.write(LogSource.App, LogLevel.Info, "Initialized network client");
+        // Initialize the asset management system
+        if (!Assets.initialize(config.assets)) {
+            Log.write(LogSource.App, LogLevel.Error, "Failed to initialize asset management system");
+            return false;
+        }
+        Log.write(LogSource.App, LogLevel.Info, "Initialized asset management system");
         // Initialize the audio system
         if (!Audio.initialize(config.audio)) {
             Log.write(LogSource.App, LogLevel.Error, "Failed to initialize audio system");
@@ -139,6 +150,10 @@ public class App {
             Input.update();
             Network.update();
             Audio.update();
+            // Draw graphics
+            Graphics.clear();
+            Current_Scene.draw();
+            Graphics.draw();
             // Perform timed updates
             deltaElapsedMS = System.currentTimeMillis() - deltaStartMS;
             deltaStartMS = System.currentTimeMillis();
@@ -191,6 +206,9 @@ public class App {
             Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy audio system");
             success = false;
         }
+        // Free the asset management system
+        Log.write(LogSource.App, LogLevel.Info, "Destroying asset management system");
+        Assets.destroy();
         // Free the network client
         Log.write(LogSource.App, LogLevel.Info, "Destroying network client");
         if (!Network.destroy()) {

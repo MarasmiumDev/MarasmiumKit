@@ -39,6 +39,11 @@ public class TestScene2 extends Scene {
     }
 
     @Override
+    public void draw() {
+
+    }
+
+    @Override
     public void update(double deltaFrames) {
 
     }

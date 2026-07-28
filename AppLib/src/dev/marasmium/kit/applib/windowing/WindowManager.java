@@ -8,17 +8,17 @@
 package dev.marasmium.kit.applib.windowing;
 
 import dev.marasmium.kit.applib.App;
-import dev.marasmium.kit.applib.data.Vec2D;
+import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 
+import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
 import java.awt.KeyboardFocusManager;
-import java.awt.Panel;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -36,19 +36,15 @@ public class WindowManager {
     /**
      * The current dimensions of the window in pixels
      */
-    private Vec2D dimensions = null;
+    private Vector dimensions = null;
     /**
      * The dimensions of the window in pixels when in windowed mode
      */
-    private Vec2D windowedDimensions = null;
+    private Vector windowedDimensions = null;
     /**
      * Whether the window is currently in fullscreen mode
      */
     private boolean fullscreen = false;
-    /**
-     * Whether the window's fullscreen mode has been set before
-     */
-    private boolean fullscreenSet = false;
     /**
      * The index of the monitor for the window to appear on when in fullscreen mode in the local graphics environment's
      * array of screen devices
@@ -59,9 +55,9 @@ public class WindowManager {
      */
     private Frame frame = null;
     /**
-     * Panel used to draw graphics on the window
+     * Canvas used to draw graphics on the window
      */
-    private Panel panel = null;
+    private Canvas canvas = null;
     /**
      * Whether the system has requested for the window to close
      */
@@ -110,14 +106,13 @@ public class WindowManager {
         dimensions = null;
         windowedDimensions = null;
         fullscreen = false;
-        fullscreenSet = false;
         monitorIndex = 0;
         // Close the window
         if (frame != null) {
             frame.dispose();
             frame = null;
         }
-        panel = null;
+        canvas = null;
         closeRequested = false;
         return success;
     }
@@ -133,10 +128,10 @@ public class WindowManager {
         }
         // Generate new Java AWT window framework
         frame = new Frame();
-        if (panel == null) {
-            panel = new Panel();
+        if (canvas == null) {
+            canvas = new Canvas();
         }
-        frame.add(panel);
+        frame.add(canvas);
         // Set basic window parameters
         frame.setResizable(false);
         frame.addWindowListener(new WindowAdapter() {
@@ -189,9 +184,9 @@ public class WindowManager {
      * Get the current dimensions of the window in pixels
      * @return The current dimensions of the window
      */
-    public Vec2D getDimensions() {
+    public Vector getDimensions() {
         if (dimensions == null) {
-            return Vec2D.Cartesian(0.0d, 0.0d);
+            return Vector.Cartesian(0.0d, 0.0d);
         }
         return dimensions;
     }
@@ -202,12 +197,12 @@ public class WindowManager {
      * @param dimensions The new dimensions of the window in pixels
      * @return Whether the window dimensions could be set
      */
-    public boolean setDimensions(Vec2D dimensions) {
+    public boolean setDimensions(Vector dimensions) {
         if (dimensions == null) {
             App.Log.write(LogSource.Window, LogLevel.Warning, "No dimensions provided");
             return false;
         }
-        if (frame == null || panel == null) {
+        if (frame == null || canvas == null) {
             App.Log.write(LogSource.Window, LogLevel.Warning, "Failed to set window dimensions, not initialized");
             return false;
         }
@@ -218,13 +213,15 @@ public class WindowManager {
             return true;
         }
         // Set current window dimensions (in windowed mode)
-        panel.setPreferredSize(new Dimension((int)dimensions.getX(),
-                (int)dimensions.getY()));
+        canvas.setPreferredSize(new Dimension((int)dimensions.getX(), (int)dimensions.getY()));
+        canvas.setMinimumSize(new Dimension((int)dimensions.getX(), (int)dimensions.getY()));
+        canvas.setMaximumSize(new Dimension((int)dimensions.getX(), (int)dimensions.getY()));
+        canvas.setSize((int)dimensions.getX(), (int)dimensions.getY());
         frame.pack();
         // Set window location on current monitor
-        Vec2D monitorPosition = getMonitor().getPosition();
-        Vec2D monitorDimensions = getMonitor().getDimensions();
-        Vec2D windowPosition = monitorPosition
+        Vector monitorPosition = getMonitor().getPosition();
+        Vector monitorDimensions = getMonitor().getDimensions();
+        Vector windowPosition = monitorPosition
                 .add(monitorDimensions.scalarDivide(2.0d))
                 .subtract(dimensions.scalarDivide(2.0d));
         frame.setLocation((int)windowPosition.getX(), (int)windowPosition.getY());
@@ -269,26 +266,20 @@ public class WindowManager {
             }
             // Set to fullscreen on appropriate monitor in update current dimensions and windowed mode dimensions
             gd.setFullScreenWindow(frame);
-            Vec2D windowedDimensions = this.windowedDimensions;
-            if (!setDimensions(Vec2D.Cartesian(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight()))) {
+            Vector windowedDimensions = this.windowedDimensions;
+            if (!setDimensions(Vector.Cartesian(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight()))) {
                 App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set window dimensions for fullscreen ",
                         "monitor");
                 return false;
             }
-            if (!fullscreenSet) {
-                fullscreenSet = true;
-                this.windowedDimensions = windowedDimensions;
-            }
+            this.windowedDimensions = windowedDimensions;
             this.fullscreen = true;
             App.Log.write(LogSource.Window, LogLevel.Info, "Set window to fullscreen mode");
         } else {
             // Switch to windowed mode (reset title and windowed mode dimensions)
             this.fullscreen = false;
             setTitle(title);
-            if (!fullscreenSet) {
-                fullscreenSet = true;
-                setDimensions(windowedDimensions);
-            }
+            setDimensions(windowedDimensions);
             App.Log.write(LogSource.Window, LogLevel.Info, "Set window to windowed mode");
         }
         frame.setVisible(true);
@@ -299,7 +290,7 @@ public class WindowManager {
             App.Log.write(LogSource.Window, LogLevel.Error, "Failed to disable focus tabbing");
             return false;
         }
-        panel.requestFocus();
+        canvas.requestFocus();
         return true;
     }
 
@@ -358,11 +349,11 @@ public class WindowManager {
     }
 
     /**
-     * Get the window's Java AWT panel for drawing graphics
+     * Get the window's Java AWT canvas for drawing graphics
      * @return The window panel
      */
-    public Panel getPanel() {
-        return panel;
+    public Canvas getCanvas() {
+        return canvas;
     }
 
     /**

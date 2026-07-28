@@ -2,7 +2,7 @@
  * File:        Colour.java
  * Author:      MarasmiumDev (info@marasmium.dev)
  * Created:     2026.05.03
- * Purpose:     Defines an RGBA colour data structure and related conversion operations
+ * Purpose:     Defines an ARGB colour data structure and related conversion operations
  */
 
 package dev.marasmium.kit.applib.data;
@@ -10,61 +10,61 @@ package dev.marasmium.kit.applib.data;
 import java.io.Serializable;
 
 /**
- * RGBA colour data structure with related constants mathematical operations
+ * ARGB colour data structure with related constants mathematical operations
  */
 public class Colour implements Serializable {
 
     /**
      * Black colour constant
      */
-    public static final Colour Black = Colour.Bytes(0x000000FF);
+    public static final Colour Black = Colour.Bytes(0xFF000000);
     /**
      * Red colour constant
      */
-    public static final Colour Red = Colour.Bytes(0xFF0000FF);
+    public static final Colour Red = Colour.Bytes(0xFFFF0000);
     /**
      * Green colour constant
      */
-    public static final Colour Green = Colour.Bytes(0x00FF00FF);
+    public static final Colour Green = Colour.Bytes(0xFF00FF00);
     /**
      * Blue colour constant
      */
-    public static final Colour Blue = Colour.Bytes(0x0000FFFF);
+    public static final Colour Blue = Colour.Bytes(0xFF0000FF);
     /**
      * White colour constant
      */
     public static final Colour White = Colour.Bytes(0xFFFFFFFF);
 
     /**
-     * Byte representation of RGBA channels
+     * Byte representation of ARGB channels
      */
-    private int RGBA;
+    private int ARGB;
 
     /**
-     * Create a new colour from RGBA channel integer values
+     * Create a new colour from ARGB channel integer values
+     * @param alpha Alpha channel (0-255)
      * @param red Red channel (0-255)
      * @param green Green channel (0-255)
      * @param blue Blue channel (0-255)
-     * @param alpha Alpha channel (0-255)
-     * @return A colour with the given RGBA channel values
+     * @return A colour with the given ARGB channel values
      */
-    public static Colour Channels(int red, int green, int blue, int alpha) {
+    public static Colour Channels(int alpha, int green, int blue, int red) {
         Colour c = new Colour();
+        c.setAlpha(alpha);
         c.setRed(red);
         c.setGreen(green);
         c.setBlue(blue);
-        c.setAlpha(alpha);
         return c;
     }
 
     /**
-     * Create a new colour from the bytes of an RGBA integer value
-     * @param RGBA Integer with byte values of RGBA channels
-     * @return A colour with the given RGBA value
+     * Create a new colour from the bytes of an ARGB integer value
+     * @param ARGB Integer with byte values of ARGB channels
+     * @return A colour with the given ARGB value
      */
-    public static Colour Bytes(int RGBA) {
+    public static Colour Bytes(int ARGB) {
         Colour c = new Colour();
-        c.setRGBA(RGBA);
+        c.setARGB(ARGB);
         return c;
     }
 
@@ -72,7 +72,7 @@ public class Colour implements Serializable {
      * Construct a blank colour
      */
     private Colour() {
-        this.RGBA = 0x00000000;
+        this.ARGB = 0x00000000;
     }
 
     /**
@@ -95,19 +95,36 @@ public class Colour implements Serializable {
     }
 
     /**
-     * Get the integer whose bytes represent this colour's RGBA channel values
-     * @return This colour's RGBA integer representation
+     * Get the integer whose bytes represent this colour's ARGB channel values
+     * @return This colour's ARGB integer representation
      */
-    public int getRGBA() {
-        return RGBA;
+    public int getARGB() {
+        return ARGB;
     }
 
     /**
-     * Set this colour's RGBA channels by the bytes of a given integer
-     * @param RGBA This colour's new RGBA integer representation
+     * Set this colour's ARGB channels by the bytes of a given integer
+     * @param ARGB This colour's new ARGB integer representation
      */
-    public void setRGBA(int RGBA) {
-        this.RGBA = RGBA;
+    public void setARGB(int ARGB) {
+        this.ARGB = ARGB;
+    }
+
+    /**
+     * Get the alpha channel value of this colour
+     * @return The red channel of this colour
+     */
+    public int getAlpha() {
+        return (ARGB >> 24) & 0xFF;
+    }
+
+    /**
+     * Set the alpha channel value of this colour
+     * @param alpha The new red channel value for this colour (0-255)
+     */
+    public void setAlpha(int alpha) {
+        ARGB &= 0x00FFFFFF;
+        ARGB |= ((alpha << 24) & 0xFF000000);
     }
 
     /**
@@ -115,7 +132,7 @@ public class Colour implements Serializable {
      * @return The red channel of this colour
      */
     public int getRed() {
-        return (RGBA >> 24) & 0xFF;
+        return (ARGB >> 16) & 0xFF;
     }
 
     /**
@@ -123,25 +140,25 @@ public class Colour implements Serializable {
      * @param red The new red channel value for this colour (0-255)
      */
     public void setRed(int red) {
-        RGBA &= 0x00FFFFFF;
-        RGBA |= ((red << 24) & 0xFF000000);
+        ARGB &= 0xFF00FFFF;
+        ARGB |= ((red << 16) & 0x00FF0000);
     }
 
     /**
      * Get the green channel value of this colour
-     * @return The green channel of this colour
+     * @return The green channel value of this colour
      */
     public int getGreen() {
-        return (RGBA >> 16) & 0xFF;
+        return (ARGB >> 8) & 0xFF;
     }
 
     /**
      * Set the green channel value of this colour
-     * @param green The new green channel value for this colour (0-255)
+     * @param green The new green channel value of this colour (0-255)
      */
     public void setGreen(int green) {
-        RGBA &= 0xFF00FFFF;
-        RGBA |= ((green << 16) & 0x00FF0000);
+        ARGB &= 0xFFFF00FF;
+        ARGB |= ((green << 8) & 0x0000FF00);
     }
 
     /**
@@ -149,7 +166,7 @@ public class Colour implements Serializable {
      * @return The blue channel value of this colour
      */
     public int getBlue() {
-        return (RGBA >> 8) & 0xFF;
+        return ARGB & 0xFF;
     }
 
     /**
@@ -157,25 +174,8 @@ public class Colour implements Serializable {
      * @param blue The new blue channel value of this colour (0-255)
      */
     public void setBlue(int blue) {
-        RGBA &= 0xFFFF00FF;
-        RGBA |= ((blue << 8) & 0x0000FF00);
-    }
-
-    /**
-     * Get the alpha channel value of this colour
-     * @return The alpha channel value of this colour
-     */
-    public int getAlpha() {
-        return RGBA & 0xFF;
-    }
-
-    /**
-     * Set the alpha channel value of this colour
-     * @param alpha The new alpha channel value of this colour (0-255)
-     */
-    public void setAlpha(int alpha) {
-        RGBA &= 0xFFFFFF00;
-        RGBA |= (alpha & 0x000000FF);
+        ARGB &= 0xFFFFFF00;
+        ARGB |= (blue & 0x000000FF);
     }
 
     /**
@@ -188,7 +188,7 @@ public class Colour implements Serializable {
         if (!(o instanceof Colour c)) {
             return false;
         }
-        return RGBA == c.RGBA;
+        return ARGB == c.ARGB;
     }
 
     /**
@@ -197,7 +197,7 @@ public class Colour implements Serializable {
      */
     @Override
     public String toString() {
-        return "colour(" + getRed() + ", " + getGreen() + ", " + getBlue() + ", " + getAlpha() + ")";
+        return "colour(" + getAlpha() + ", " + getRed() + ", " + getGreen() + ", " + getBlue() + ")";
     }
 
 }

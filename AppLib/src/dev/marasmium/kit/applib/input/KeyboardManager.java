@@ -84,7 +84,7 @@ public class KeyboardManager implements KeyListener {
         }
         // Initialize memory and subscribe to input events
         typedChars = "";
-        App.Window.getPanel().addKeyListener(this);
+        App.Window.getCanvas().addKeyListener(this);
         App.Log.write(LogSource.Input, LogLevel.Info, "Initialized keyboard user-input management system");
         return true;
     }
@@ -139,7 +139,7 @@ public class KeyboardManager implements KeyListener {
         App.Log.write(LogSource.Input, LogLevel.Info, "Destroying keyboard user-input management system");
         boolean success = true;
         // Detach key listener
-        App.Window.getPanel().removeKeyListener(this);
+        App.Window.getCanvas().removeKeyListener(this);
         // Free memory
         AWTKeyCodes.clear();
         keyStates.clear();

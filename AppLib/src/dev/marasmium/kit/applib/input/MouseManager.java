@@ -8,7 +8,7 @@
 package dev.marasmium.kit.applib.input;
 
 import dev.marasmium.kit.applib.App;
-import dev.marasmium.kit.applib.data.Vec2D;
+import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 
@@ -55,11 +55,11 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
     /**
      * The current position of the mouse cursor on the application framework's window
      */
-    private final Vec2D cursorPosition = Vec2D.Cartesian(0.0d, 0.0d);
+    private final Vector cursorPosition = Vector.Cartesian(0.0d, 0.0d);
     /**
      * The position of the mouse cursor on the application framework's window in the last logic update
      */
-    private final Vec2D lastCursorPosition = Vec2D.Cartesian(0.0d, 0.0d);
+    private final Vector lastCursorPosition = Vector.Cartesian(0.0d, 0.0d);
     /**
      * Scope lock for modifying and reading the position of the mouse cursor
      */
@@ -67,7 +67,7 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
     /**
      * The current logic update's accumulated scroll movement
      */
-    private final Vec2D scrollMovement = Vec2D.Cartesian(0.0d, 0.0d);
+    private final Vector scrollMovement = Vector.Cartesian(0.0d, 0.0d);
     /**
      * Scope lock for modifying and reading the mouse's scroll movement
      */
@@ -99,9 +99,9 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
             AWTButtonCodes.put(AWTButtonCode, button);
         }
         // Initialize memory and subscribe to input events
-        App.Window.getPanel().addMouseListener(this);
-        App.Window.getPanel().addMouseMotionListener(this);
-        App.Window.getPanel().addMouseWheelListener(this);
+        App.Window.getCanvas().addMouseListener(this);
+        App.Window.getCanvas().addMouseMotionListener(this);
+        App.Window.getCanvas().addMouseWheelListener(this);
         App.Log.write(LogSource.Input, LogLevel.Info, "Initialized mouse user-input management system");
         return true;
     }
@@ -169,9 +169,9 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
         App.Log.write(LogSource.Input, LogLevel.Info, "Destroying mouse user-input management system");
         boolean success = true;
         // Detach mouse listeners
-        App.Window.getPanel().removeMouseListener(this);
-        App.Window.getPanel().removeMouseMotionListener(this);
-        App.Window.getPanel().removeMouseWheelListener(this);
+        App.Window.getCanvas().removeMouseListener(this);
+        App.Window.getCanvas().removeMouseMotionListener(this);
+        App.Window.getCanvas().removeMouseWheelListener(this);
         // Free memory
         AWTButtonCodes.clear();
         buttonStates.clear();
@@ -232,9 +232,9 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
      * Get the current position of the mouse cursor on the application framework's window
      * @return The current position of the mouse cursor
      */
-    public Vec2D getCursorPosition() {
+    public Vector getCursorPosition() {
         cursorPositionLock.lock();
-        Vec2D cursorPosition = this.cursorPosition;
+        Vector cursorPosition = this.cursorPosition;
         try {
             cursorPositionLock.unlock();
         } catch (IllegalMonitorStateException _) {
@@ -247,7 +247,7 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
      * Get the horizontal and vertical distance the mouse cursor has moved since the last logic update
      * @return The most recent movement of the mouse cursor
      */
-    public Vec2D getCursorMovement() {
+    public Vector getCursorMovement() {
         return getCursorPosition().subtract(lastCursorPosition);
     }
 
@@ -255,9 +255,9 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
      * Get the mouse's accumulated scroll movement since the last logic update
      * @return The most recent mouse scroll movement
      */
-    public Vec2D getScrollMovement() {
+    public Vector getScrollMovement() {
         scrollMovementLock.lock();
-        Vec2D scrollMovement = this.scrollMovement;
+        Vector scrollMovement = this.scrollMovement;
         try {
             scrollMovementLock.unlock();
         } catch (IllegalMonitorStateException _) {
@@ -363,7 +363,7 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
             return;
         }
         // Choose scroll movement direction
-        Vec2D movement = Vec2D.Cartesian(0.0d, 0.0d);
+        Vector movement = Vector.Cartesian(0.0d, 0.0d);
         if (!e.isShiftDown()) {
             movement.setY(e.getPreciseWheelRotation());
         } else {

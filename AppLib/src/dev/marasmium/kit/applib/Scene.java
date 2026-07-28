@@ -60,6 +60,11 @@ public abstract class Scene implements InputListener, NetListener {
     public abstract boolean processInput();
 
     /**
+     * Draw this scene's graphics
+     */
+    public abstract void draw();
+
+    /**
      * Update this scene's time-sensitive logic
      * @param deltaFrames The target number of frames to have elapsed since the last update
      */

@@ -6,7 +6,7 @@
  *              framework
  */
 
-package dev.marasmium.kit.assetlib.audio;
+package dev.marasmium.kit.applib.assets;
 
 /**
  * Data structure representing an audio track to be played by the MarasmiumKit application framework

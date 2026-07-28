@@ -8,7 +8,7 @@
 package dev.marasmium.kit.applib.input;
 
 import dev.marasmium.kit.applib.App;
-import dev.marasmium.kit.applib.data.Vec2D;
+import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 
@@ -189,7 +189,7 @@ public class InputManager implements InputListener {
      * @param movement The horizontal and vertical distance the mouse cursor travelled since the last logic update
      */
     @Override
-    public void mouseCursorMoved(Vec2D position, Vec2D movement) {
+    public void mouseCursorMoved(Vector position, Vector movement) {
         if (position == null || movement == null) {
             return;
         }
@@ -203,7 +203,7 @@ public class InputManager implements InputListener {
      * @param movement The horizontal and vertical distance scrolled since the last logic update
      */
     @Override
-    public void mouseScrollMoved(Vec2D movement) {
+    public void mouseScrollMoved(Vector movement) {
         if (movement == null) {
             return;
         }

@@ -8,7 +8,7 @@
 package dev.marasmium.kit.applib.windowing;
 
 import dev.marasmium.kit.applib.App;
-import dev.marasmium.kit.applib.data.Vec2D;
+import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 
@@ -32,11 +32,11 @@ public class Monitor {
     /**
      * The default position of this monitor in pixels in the local graphics environment
      */
-    private Vec2D position;
+    private Vector position;
     /**
      * The default dimensions of this monitor in pixels
      */
-    private Vec2D dimensions;
+    private Vector dimensions;
 
     /**
      * Construct a default monitor from the first index in the local graphics environment's array of screen devices
@@ -89,10 +89,10 @@ public class Monitor {
             success = false;
         }
         // Retrieve monitor attributes
-        position = Vec2D.Cartesian(gds[index].getDefaultConfiguration().getBounds().getX(),
+        position = Vector.Cartesian(gds[index].getDefaultConfiguration().getBounds().getX(),
                 gds[index].getDefaultConfiguration().getBounds().getY());
         description = gds[index].getIDstring();
-        dimensions = Vec2D.Cartesian(gds[index].getDefaultConfiguration().getBounds().getWidth(),
+        dimensions = Vector.Cartesian(gds[index].getDefaultConfiguration().getBounds().getWidth(),
                 gds[index].getDefaultConfiguration().getBounds().getHeight());
         return success;
     }
@@ -135,7 +135,7 @@ public class Monitor {
      * screen devices
      * @return This monitor's position or the default's
      */
-    public Vec2D getPosition() {
+    public Vector getPosition() {
         validate();
         return position;
     }
@@ -145,7 +145,7 @@ public class Monitor {
      * this will revert the structure to representing the first index in the array of screen devices
      * @return This monitor's dimensions or the default's
      */
-    public Vec2D getDimensions() {
+    public Vector getDimensions() {
         validate();
         return dimensions;
     }

@@ -1,5 +1,5 @@
 /**
- * File:        Vec2D.java
+ * File:        Vector.java
  * Author:      MarasmiumDev (info@marasmium.dev)
  * Created:     2026.05.03
  * Purpose:     Defines a 2D vector data structure and related mathematical operations
@@ -12,7 +12,7 @@ import java.io.Serializable;
 /**
  * 2D vector data structure with related constants and mathematical operations
  */
-public class Vec2D implements Serializable {
+public class Vector implements Serializable {
 
     /**
      * Small value for comparing with floating-point rounding error
@@ -34,8 +34,8 @@ public class Vec2D implements Serializable {
      * @param y The vertical coordinate for this vector
      * @return A vector to the Cartesian point (x, y)
      */
-    public static Vec2D Cartesian(double x, double y) {
-        Vec2D v = new Vec2D();
+    public static Vector Cartesian(double x, double y) {
+        Vector v = new Vector();
         v.setX(x);
         v.setY(y);
         return v;
@@ -47,11 +47,11 @@ public class Vec2D implements Serializable {
      * @param angle The angle/direction for the vector
      * @return A vector to the polar coordinates (length, angle)
      */
-    public static Vec2D Polar(double length, Angle angle) {
+    public static Vector Polar(double length, Angle angle) {
         if (angle == null) {
             return null;
         }
-        Vec2D v = new Vec2D();
+        Vector v = new Vector();
         v.setX(1.0d);
         v.setLength(length);
         v.setAngle(angle);
@@ -61,7 +61,7 @@ public class Vec2D implements Serializable {
     /**
      * Construct a zero vector
      */
-    private Vec2D() {
+    private Vector() {
         this.x = 0.0d;
         this.y = 0.0d;
     }
@@ -71,11 +71,11 @@ public class Vec2D implements Serializable {
      * @param v The vector to add to this one
      * @return The sum of this vector and v
      */
-    public Vec2D add(Vec2D v) {
+    public Vector add(Vector v) {
         if (v == null) {
             return null;
         }
-        return Vec2D.Cartesian(x + v.x, y + v.y);
+        return Vector.Cartesian(x + v.x, y + v.y);
     }
 
     /**
@@ -83,19 +83,19 @@ public class Vec2D implements Serializable {
      * @param v The vector to subtract from this one
      * @return The difference of this vector and v
      */
-    public Vec2D subtract(Vec2D v) {
+    public Vector subtract(Vector v) {
         if (v == null) {
             return null;
         }
-        return Vec2D.Cartesian(x - v.x, y - v.y);
+        return Vector.Cartesian(x - v.x, y - v.y);
     }
 
     /**
      * Compute the negative of this vector
      * @return The negative of this vector
      */
-    public Vec2D negate() {
-        return Vec2D.Cartesian(-x, -y);
+    public Vector negate() {
+        return Vector.Cartesian(-x, -y);
     }
 
     /**
@@ -103,8 +103,8 @@ public class Vec2D implements Serializable {
      * @param a The scalar to multiply this vector by
      * @return The product of this vector and a
      */
-    public Vec2D scalarMultiply(double a) {
-        return Vec2D.Cartesian(x * a, y * a);
+    public Vector scalarMultiply(double a) {
+        return Vector.Cartesian(x * a, y * a);
     }
 
     /**
@@ -112,7 +112,7 @@ public class Vec2D implements Serializable {
      * @param a The scalar to divide this vector by
      * @return The quotient of this vector and a
      */
-    public Vec2D scalarDivide(double a) {
+    public Vector scalarDivide(double a) {
         if (a == 0.0d) {
             return null;
         }
@@ -124,11 +124,11 @@ public class Vec2D implements Serializable {
      * @param v The vector to multiply this vector by
      * @return The element-wise product of this vector and v
      */
-    public Vec2D elementMultiply(Vec2D v) {
+    public Vector elementMultiply(Vector v) {
         if (v == null) {
             return null;
         }
-        return Vec2D.Cartesian(x * v.x, y * v.y);
+        return Vector.Cartesian(x * v.x, y * v.y);
     }
 
     /**
@@ -136,11 +136,11 @@ public class Vec2D implements Serializable {
      * @param v The vector to divide this vector by
      * @return The element-wise quotient of this vector and v
      */
-    public Vec2D elementDivide(Vec2D v) {
+    public Vector elementDivide(Vector v) {
         if (v == null) {
             return null;
         }
-        return Vec2D.Cartesian(x / v.x, y / v.y);
+        return Vector.Cartesian(x / v.x, y / v.y);
     }
 
     /**
@@ -148,11 +148,11 @@ public class Vec2D implements Serializable {
      * @param v The vector to multiply this vector by
      * @return The dot product of this vector and v or 0 if v is null
      */
-    public double dotMultiply(Vec2D v) {
+    public double dotMultiply(Vector v) {
         if (v == null) {
             return 0.0d;
         }
-        return Vec2D.Cartesian(x * v.x, y * v.y).getElementSum();
+        return Vector.Cartesian(x * v.x, y * v.y).getElementSum();
     }
 
     /**
@@ -160,7 +160,7 @@ public class Vec2D implements Serializable {
      * @param v The vector to compare to
      * @return The squared distance between this vector and v or 0 if v is null
      */
-    public double getDistanceToSquared(Vec2D v) {
+    public double getDistanceToSquared(Vector v) {
         if (v == null) {
             return 0.0d;
         }
@@ -172,7 +172,7 @@ public class Vec2D implements Serializable {
      * @param v The vector to compare to
      * @return The distance between this vector and v or 0 if v is null
      */
-    public double getDistanceTo(Vec2D v) {
+    public double getDistanceTo(Vector v) {
         if (v == null) {
             return 0.0d;
         }
@@ -183,7 +183,7 @@ public class Vec2D implements Serializable {
      * Compute the normalized (unit length) vector with the same direction as this one
      * @return The normalized version of this vector
      */
-    public Vec2D normalize() {
+    public Vector normalize() {
         return scalarDivide(getLength());
     }
 
@@ -192,7 +192,7 @@ public class Vec2D implements Serializable {
      * @param v The vector to multiply this vector by
      * @return The 2D cross product of this vector and v (this x v) or 0 if v is null
      */
-    public double crossMultiply(Vec2D v) {
+    public double crossMultiply(Vector v) {
         if (v == null) {
             return 0.0d;
         }
@@ -204,11 +204,11 @@ public class Vec2D implements Serializable {
      * @param theta The angle to rotate this vector by
      * @return The rotated version of this vector
      */
-    public Vec2D rotate(Angle theta) {
+    public Vector rotate(Angle theta) {
         if (theta == null) {
             return null;
         }
-        return Vec2D.Cartesian((x * Math.cos(theta.getRadians())) - (y * Math.sin(theta.getRadians())),
+        return Vector.Cartesian((x * Math.cos(theta.getRadians())) - (y * Math.sin(theta.getRadians())),
                 (x * Math.sin(theta.getRadians())) + (y * Math.cos(theta.getRadians())));
     }
 
@@ -218,7 +218,7 @@ public class Vec2D implements Serializable {
      * @param o The vector whose endpoint to rotate this vector about
      * @return The rotated version of this vector
      */
-    public Vec2D rotateAbout(Angle theta, Vec2D o) {
+    public Vector rotateAbout(Angle theta, Vector o) {
         if (theta == null || o == null) {
             return null;
         }
@@ -230,7 +230,7 @@ public class Vec2D implements Serializable {
      * @param v The vector to compare to
      * @return The angle between this vector and v
      */
-    public Angle getAngleTo(Vec2D v) {
+    public Angle getAngleTo(Vector v) {
         if (v == null) {
             return null;
         }
@@ -246,16 +246,16 @@ public class Vec2D implements Serializable {
      * Compute the horizontal reflection of this vector
      * @return The horizontal reflection of this vector
      */
-    public Vec2D reflectHorizontally() {
-        return Vec2D.Cartesian(-x, y);
+    public Vector reflectHorizontally() {
+        return Vector.Cartesian(-x, y);
     }
 
     /**
      * Compute the vertical reflection of this vector
      * @return The vertical reflection of this vector
      */
-    public Vec2D reflectVertically() {
-        return Vec2D.Cartesian(x, -y);
+    public Vector reflectVertically() {
+        return Vector.Cartesian(x, -y);
     }
 
     /**
@@ -264,7 +264,7 @@ public class Vec2D implements Serializable {
      * @param t The percentage of the distance to move between this vector and v
      * @return The vector t% of the way from this vector to v
      */
-    public Vec2D interpolate(Vec2D v, double t) {
+    public Vector interpolate(Vector v, double t) {
         if (v == null) {
             return null;
         }
@@ -276,7 +276,7 @@ public class Vec2D implements Serializable {
      * @param v The vector to compare to this
      * @return The vector at the midpoint between this vector and v
      */
-    public Vec2D midpoint(Vec2D v) {
+    public Vector midpoint(Vector v) {
         if (v == null) {
             return null;
         }
@@ -287,16 +287,16 @@ public class Vec2D implements Serializable {
      * Compute the floating-point floor of this vector
      * @return The floor of this vector
      */
-    public Vec2D floor() {
-        return Vec2D.Cartesian(Math.floor(x), Math.floor(y));
+    public Vector floor() {
+        return Vector.Cartesian(Math.floor(x), Math.floor(y));
     }
 
     /**
      * Compute the floating-point ceiling of this vector
      * @return The ceiling of this vector
      */
-    public Vec2D ceiling() {
-        return Vec2D.Cartesian(Math.ceil(x), Math.ceil(y));
+    public Vector ceiling() {
+        return Vector.Cartesian(Math.ceil(x), Math.ceil(y));
     }
 
     /**
@@ -379,7 +379,7 @@ public class Vec2D implements Serializable {
         if (isZero()) {
             return;
         }
-        Vec2D tmp = this.scalarMultiply(length / getLength());
+        Vector tmp = this.scalarMultiply(length / getLength());
         this.x = tmp.x;
         this.y = tmp.y;
     }
@@ -400,7 +400,7 @@ public class Vec2D implements Serializable {
         if (theta == null) {
             return;
         }
-        Vec2D tmp = this.rotate(Angle.Radians(theta.getRadians() - getAngle().getRadians()));
+        Vector tmp = this.rotate(Angle.Radians(theta.getRadians() - getAngle().getRadians()));
         this.x = tmp.x;
         this.y = tmp.y;
     }
@@ -410,7 +410,7 @@ public class Vec2D implements Serializable {
      * @param v The vector to compare this one to
      * @return Whether this vector is parallel to v
      */
-    public boolean isParallelTo(Vec2D v) {
+    public boolean isParallelTo(Vector v) {
         if (v == null) {
             return false;
         }
@@ -425,7 +425,7 @@ public class Vec2D implements Serializable {
      * @param v The vector to compare this one to
      * @return Whether this vector is perpendicular to v
      */
-    public boolean isPerpendicularTo(Vec2D v) {
+    public boolean isPerpendicularTo(Vector v) {
         if (v == null) {
             return false;
         }
@@ -442,7 +442,7 @@ public class Vec2D implements Serializable {
      */
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Vec2D v)) {
+        if (!(o instanceof Vector v)) {
             return false;
         }
         return Math.abs(x - v.x) < Epsilon && Math.abs(y - v.y) < Epsilon;

@@ -8,10 +8,9 @@
 package dev.marasmium.kit.applib.audio;
 
 import dev.marasmium.kit.applib.App;
+import dev.marasmium.kit.applib.assets.AudioTrack;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
-import dev.marasmium.kit.assetlib.audio.AudioLoader;
-import dev.marasmium.kit.assetlib.audio.AudioTrack;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
@@ -98,7 +97,7 @@ public class MusicManager {
         playing = true;
         paused = false;
         // Load the music track and its format
-        AudioTrack track = AudioLoader.GetTrack(filePath);
+        AudioTrack track = App.Assets.getAudioTrack(filePath);
         App.Log.write(LogSource.Audio, LogLevel.Info, "Loaded: ", track);
         if (track == null) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to load music track \"", filePath, "\"");
