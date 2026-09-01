@@ -18,26 +18,27 @@ public class AudioDevice {
     /**
      * The index of this audio device in the local audio environment's array of available devices
      */
-    private int index;
+    private int index = 0;
     /**
      * The system-reported name of this audio device
      */
-    private String name;
+    private String name = null;
 
     /**
-     * Construct a default audio device from the first index in the local audio environment's array of available audio
-     * devices
+     * Initialize this audio device with an index and validate it
+     * @param index The index of this audio device in the local audio environment array of available devices
+     * @return Whether the given index could be validated
      */
-    public AudioDevice() {
-        setIndex(0);
+    public boolean initialize(int index) {
+        return setIndex(index);
     }
 
     /**
-     * Construct an audio device given its index in the local audio environment's array of available audio devices
-     * @param index The index of this audio device
+     * Free this audio device's memory
      */
-    public AudioDevice(int index) {
-        setIndex(index);
+    public void destroy() {
+        index = 0;
+        name = null;
     }
 
     /**
@@ -97,6 +98,9 @@ public class AudioDevice {
      */
     @Override
     public String toString() {
+        if (name == null) {
+            return "speaker(null)";
+        }
         return "speaker(" + index + ", \"" + name + "\")";
     }
 

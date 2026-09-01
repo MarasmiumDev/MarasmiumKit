@@ -8,14 +8,8 @@
 package dev.marasmium.kit.applib.graphics;
 
 import dev.marasmium.kit.applib.App;
-import dev.marasmium.kit.applib.data.Colour;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
-
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
-import java.util.Random;
 
 /**
  * The main class of the MarasmiumKit application framework's graphics system
@@ -34,10 +28,10 @@ public class GraphicsManager {
      * The maximum number of logic updates allowed between graphics frames
      */
     private int maxUPF = 0;
-    private double frameScale = 0.0d;
-    private BufferedImage frame = null;
-    private int[] pixels = null;
-    private Colour backgroundColour = null;
+    /**
+     * The number of graphics frames to buffer before displaying
+     */
+    private int bufferCount = 0;
 
     /**
      * Initialize the application framework's graphics system
@@ -59,26 +53,16 @@ public class GraphicsManager {
                     "UPF invalid");
             return false;
         }
-        frame = new BufferedImage((int)config.frameDimensions.getX(), (int)config.frameDimensions.getY(),
-                BufferedImage.TYPE_INT_ARGB);
-        pixels = ((DataBufferInt)frame.getRaster().getDataBuffer()).getData();
-        setBackgroundColour(config.backgroundColour);
-        App.Window.getCanvas().createBufferStrategy(2);
+        if (!setBufferCount(config.bufferCount)) {
+            App.Log.write(LogSource.Graphics, LogLevel.Error, "Failed to initialize graphics system buffer count");
+            return false;
+        }
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Initialized graphics system");
         return true;
     }
 
-    public void clear() {
-        int colour = backgroundColour.getARGB();
-        Random random = new Random();
-        for (int i = 0; i < pixels.length; i++) {
-            pixels[i] = random.nextInt();
-        }
-    }
-
     public void draw() {
-        Graphics g = App.Window.getCanvas().getGraphics();
-        g.drawImage(frame, 0, 0, (int)App.Window.getDimensions().getX(), (int)App.Window.getDimensions().getY(), null);
+
     }
 
     /**
@@ -91,6 +75,7 @@ public class GraphicsManager {
         targetFPMS = 0.0d;
         targetMSPF = 0;
         maxUPF = 0;
+        bufferCount = 0;
         return success;
     }
 
@@ -158,8 +143,32 @@ public class GraphicsManager {
         return true;
     }
 
-    public void setBackgroundColour(Colour backgroundColour) {
-        this.backgroundColour = backgroundColour;
+    /**
+     * Get tbe number of graphics frames to buffer before displaying
+     * @return The number of graphics frames to buffer
+     */
+    public int getBufferCount() {
+        return bufferCount;
+    }
+
+    /**
+     * Set the number of graphics frames to buffer before displaying
+     * @param bufferCount The new number of graphics frames to buffer
+     * @return Whether the new buffer count was valid and was set successfully
+     */
+    public boolean setBufferCount(int bufferCount) {
+        if (bufferCount <= 0) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Invalid buffer count");
+            return false;
+        }
+        try {
+            App.Window.getCanvas().createBufferStrategy(bufferCount);
+        } catch (IllegalArgumentException | IllegalStateException _) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to create frame buffer strategy");
+            return false;
+        }
+        this.bufferCount = bufferCount;
+        return true;
     }
 
 }

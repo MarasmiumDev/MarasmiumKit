@@ -76,7 +76,7 @@ public class SoundEffectsManager {
         if (track == null) {
             return false;
         }
-        AudioFormat format = new AudioFormat(track.sampleRate(), 8 * track.sampleSize(), track.channelCount(),
+        AudioFormat format = new AudioFormat(track.getSampleRate(), 8 * track.getSampleSize(), track.getChannelCount(),
                 true, false);
         // Open a new audio line in the loaded format
         DataLine.Info playerInfo = new DataLine.Info(SourceDataLine.class, format);
@@ -125,7 +125,7 @@ public class SoundEffectsManager {
         Thread playThread = new Thread(() -> {
             player.start();
             try {
-                player.write(track.data(), 0, track.getDataSize());
+                player.write(track.getData(), 0, track.getDataSize());
             } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException _) {
                 App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to write audio data for sound effect \"",
                         filePath, "\"");

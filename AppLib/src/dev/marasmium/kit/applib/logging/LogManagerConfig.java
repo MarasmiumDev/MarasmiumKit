@@ -15,28 +15,28 @@ public class LogManagerConfig {
     /**
      * The initial format for the timestamps attached to log messages
      */
-    public String timestampFormat;
+    public String timestampFormat = null;
     /**
      * Whether output of logging system messages to the console is initially enabled
      */
-    public boolean consoleOutputEnabled;
+    public boolean consoleOutputEnabled = false;
     /**
      * Whether output of logging system messages to a log file is initially enabled
      */
-    public boolean fileOutputEnabled;
+    public boolean fileOutputEnabled = false;
     /**
      * The initial path to the logging system's output file
      */
-    public String fileOutputPath;
+    public String fileOutputPath = null;
     /**
      * Whether output of logging system messages should initially be appended to the output file
      */
-    public boolean fileOutputAppended;
+    public boolean fileOutputAppended = false;
 
     /**
-     * Construct a logging system configuration structure with default settings
+     * Apply default settings to this log configuration structure
      */
-    public LogManagerConfig() {
+    public void applyDefaults() {
         timestampFormat = "yyyy.MM.dd@HH:mm:ss.SSS";
         consoleOutputEnabled = true;
         fileOutputEnabled = true;

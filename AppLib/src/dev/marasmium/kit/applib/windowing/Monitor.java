@@ -24,33 +24,37 @@ public class Monitor {
     /**
      * The index of this monitor in the local graphics environment's array of screen devices
      */
-    private int index;
+    private int index = 0;
     /**
      * The system-provided description string of this monitor
      */
-    private String description;
+    private String description = null;
     /**
      * The default position of this monitor in pixels in the local graphics environment
      */
-    private Vector position;
+    private Vector position = null;
     /**
      * The default dimensions of this monitor in pixels
      */
-    private Vector dimensions;
+    private Vector dimensions = null;
 
     /**
-     * Construct a default monitor from the first index in the local graphics environment's array of screen devices
+     * Initialize this monitor with an index and validate it
+     * @param index The index of this monitor in the local graphics environment's array of screen devices
+     * @return Whether the index was validated and this monitor was successfully initialized
      */
-    public Monitor() {
-        setIndex(0);
+    public boolean initialize(int index) {
+        return setIndex(index);
     }
 
     /**
-     * Construct a monitor given its index in the local graphics environment's array of screen devices
-     * @param index The index of this monitor
+     * Free this monitor's memory
      */
-    public Monitor(int index) {
-        setIndex(index);
+    public void destroy() {
+        index = 0;
+        description = null;
+        position = null;
+        dimensions = null;
     }
 
     /**

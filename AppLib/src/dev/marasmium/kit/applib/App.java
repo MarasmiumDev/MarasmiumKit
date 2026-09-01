@@ -151,7 +151,6 @@ public class App {
             Network.update();
             Audio.update();
             // Draw graphics
-            Graphics.clear();
             Current_Scene.draw();
             Graphics.draw();
             // Perform timed updates

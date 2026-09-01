@@ -68,11 +68,10 @@ public class LogManager {
      * @param source The source flag for this message
      * @param level The level/severity flag for this message
      * @param data The message data to write
-     * @return Whether the message was valid and was successfully written to the console and/or output file
      */
-    public boolean write(LogSource source, LogLevel level, Object... data) {
+    public void write(LogSource source, LogLevel level, Object... data) {
         if (source == null || level == null || data == null) {
-            return false;
+            return;
         }
         // Compile message data
         StringBuilder message = new StringBuilder(getTimestamp() + ": [" + source + "] [" + level + "] ");
@@ -94,40 +93,39 @@ public class LogManager {
                     fileOutputWriter.write(message.toString());
                     fileOutputWriter.flush();
                 } catch (IOException _) {
-                    return false;
+                    fileOutputEnabled = false;
+                    fileOutputPath = null;
+                    fileOutputWriter = null;
+                    write(LogSource.Log, LogLevel.Warning, "Log file inaccessible, disabled file output");
                 }
             }
         }
-        return true;
     }
 
     /**
      * Write a log message with the default level/severity flag
      * @param source The source flag for this message
      * @param data The message data to write
-     * @return Whether the message was valid and was successfully written to the console and/or output file
      */
-    public boolean write(LogSource source, Object... data) {
-        return write(source, new LogLevel(), data);
+    public void write(LogSource source, Object... data) {
+        write(source, new LogLevel(), data);
     }
 
     /**
      * Write a log message with the default source flag
      * @param level The level/severity flag for this message
      * @param data The message data to write
-     * @return Whether the message was valid and was successfully written to the console and/or output file
      */
-    public boolean write(LogLevel level, Object... data) {
-        return write(new LogSource(), level, data);
+    public void write(LogLevel level, Object... data) {
+        write(new LogSource(), level, data);
     }
 
     /**
      * Write a log message with the default source and level/severity flag
      * @param data The message data to write
-     * @return Whether the message was valid and was successfully written to the console and/or output file
      */
-    public boolean write(Object... data) {
-        return write(new LogSource(), new LogLevel(), data);
+    public void write(Object... data) {
+        write(new LogSource(), new LogLevel(), data);
     }
 
     /**

@@ -26,7 +26,7 @@ public class NetServer implements NetListener {
     /**
      * The server's logging system
      */
-    private final LogManager log;
+    private final LogManager log = new LogManager();
     /**
      * Log source flag for the abstract server interface
      */
@@ -67,13 +67,6 @@ public class NetServer implements NetListener {
      * The maximum number of incoming messages to process per logic update per client
      */
     private int maxMPUPC = 0;
-
-    /**
-     * Construct a new network server with only a logging system
-     */
-    public NetServer() {
-        log = new LogManager();
-    }
 
     /**
      * Initialize the server's memory and prepare it to listen for client connections

@@ -7,9 +7,6 @@
 
 package dev.marasmium.kit.applib.graphics;
 
-import dev.marasmium.kit.applib.data.Colour;
-import dev.marasmium.kit.applib.data.Vector;
-
 /**
  * A configuration/settings structure for the MarasmiumKit application framework's graphics system
  */
@@ -18,28 +15,23 @@ public class GraphicsManagerConfig {
     /**
      * The target number of graphics frames and logic updates to process per second
      */
-    public int targetFPS;
+    public int targetFPS = 0;
     /**
      * The maximum number of logic updates allowed per graphics frame
      */
-    public int maxUPF;
+    public int maxUPF = 0;
     /**
-     * The dimensions of the graphics frames to draw scaled to window dimensions in pixels
+     * The number of frames to buffer before displaying
      */
-    public Vector frameDimensions;
-    /**
-     * The background colour to clear graphics frames to
-     */
-    public Colour backgroundColour;
+    public int bufferCount = 0;
 
     /**
-     * Create a graphics system configuration with default settings
+     * Apply the default settings to this graphics configuration structure
      */
-    public GraphicsManagerConfig() {
+    public void applyDefaults() {
         targetFPS = 60;
         maxUPF = 8;
-        frameDimensions = Vector.Cartesian(1280.0d, 720.0d);
-        backgroundColour = Colour.Black;
+        bufferCount = 2;
     }
 
 }

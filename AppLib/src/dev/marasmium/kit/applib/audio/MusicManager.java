@@ -103,7 +103,7 @@ public class MusicManager {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to load music track \"", filePath, "\"");
             return false;
         }
-        AudioFormat format = new AudioFormat(track.sampleRate(), 8 * track.sampleSize(), track.channelCount(),
+        AudioFormat format = new AudioFormat(track.getSampleRate(), 8 * track.getSampleSize(), track.getChannelCount(),
                 true, false);
         // Open a new audio line in the loaded format
         DataLine.Info playerInfo = new DataLine.Info(SourceDataLine.class, format);
@@ -145,8 +145,8 @@ public class MusicManager {
         App.Log.write(LogSource.Audio, LogLevel.Info, "Playing music track \"", filePath, "\"");
         playThread = new Thread(() -> {
             player.start();
-            byte[] data = track.data();
-            int chunkSize = track.sampleSize() * track.channelCount() * 64;
+            byte[] data = track.getData();
+            int chunkSize = track.getSampleSize() * track.getChannelCount() * 64;
             int written;
             int copyOffset;
             // Write audio data in chunks

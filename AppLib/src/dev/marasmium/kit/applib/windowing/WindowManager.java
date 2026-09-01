@@ -46,10 +46,9 @@ public class WindowManager {
      */
     private boolean fullscreen = false;
     /**
-     * The index of the monitor for the window to appear on when in fullscreen mode in the local graphics environment's
-     * array of screen devices
+     * The monitor for the window to appear on when in fullscreen mode
      */
-    private int monitorIndex = 0;
+    private Monitor monitor = null;
     /**
      * The Java AWT window handle for the window
      */
@@ -106,7 +105,10 @@ public class WindowManager {
         dimensions = null;
         windowedDimensions = null;
         fullscreen = false;
-        monitorIndex = 0;
+        if (monitor != null) {
+            monitor.destroy();
+            monitor = null;
+        }
         // Close the window
         if (frame != null) {
             frame.dispose();
@@ -255,11 +257,7 @@ public class WindowManager {
                 App.Log.write(LogSource.Window, LogLevel.Error, "System is in headless mode");
                 return false;
             }
-            if (monitorIndex < 0 || monitorIndex >= gds.length) {
-                App.Log.write(LogSource.Window, LogLevel.Warning, "Fullscreen monitor index invalid, defaulting to 0");
-                monitorIndex = 0;
-            }
-            GraphicsDevice gd = gds[monitorIndex];
+            GraphicsDevice gd = gds[monitor.getIndex()];
             if (!gd.isFullScreenSupported()) {
                 App.Log.write(LogSource.Window, LogLevel.Error, "Fullscreen not supported on current monitor");
                 return false;
@@ -310,8 +308,9 @@ public class WindowManager {
         ArrayList<Monitor> monitors = new ArrayList<>();
         for (int index = 0; index < gds.length; index++) {
             Monitor monitor = new Monitor();
-            monitor.setIndex(index);
-            monitors.add(monitor);
+            if (monitor.initialize(index)) {
+                monitors.add(monitor);
+            }
         }
         return monitors;
     }
@@ -321,15 +320,7 @@ public class WindowManager {
      * @return The current monitor for the window to be displayed in fullscreen mode on
      */
     public Monitor getMonitor() {
-        ArrayList<Monitor> monitors = getMonitors();
-        if (monitors.isEmpty()) {
-            App.Log.write(LogSource.Window, LogLevel.Error, "System has no monitors");
-            return null;
-        }
-        if (monitorIndex < 0 || monitorIndex >= monitors.size()) {
-            monitorIndex = 0;
-        }
-        return monitors.get(monitorIndex);
+        return monitor;
     }
 
     /**
@@ -340,12 +331,12 @@ public class WindowManager {
         if (monitor == null) {
             return;
         }
-        this.monitorIndex = monitor.getIndex();
+        this.monitor = monitor;
         if (fullscreen) {
             setFullscreen(false);
             setFullscreen(true);
         }
-        App.Log.write(LogSource.Window, LogLevel.Info, "Set fullscreen monitor index ", monitorIndex);
+        App.Log.write(LogSource.Window, LogLevel.Info, "Set fullscreen monitor index ", monitor);
     }
 
     /**

@@ -16,7 +16,6 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.Mixer;
 import javax.sound.sampled.SourceDataLine;
 import java.util.ArrayList;
-import java.util.NoSuchElementException;
 
 /**
  * The main class of the MarasmiumKit application framework's audio system
@@ -24,9 +23,9 @@ import java.util.NoSuchElementException;
 public class AudioManager {
 
     /**
-     * The index of the audio output device to play audio on
+     * The speaker to play audio on
      */
-    private int speakerIndex = 0;
+    private AudioDevice speaker = null;
     /**
      * The sound effects audio subsystem
      */
@@ -75,6 +74,11 @@ public class AudioManager {
     public boolean destroy() {
         App.Log.write(LogSource.Audio, LogLevel.Info, "Destroying audio system");
         boolean success = true;
+        // Free the speaker
+        if (speaker != null) {
+            speaker.destroy();
+            speaker = null;
+        }
         // Free the sound effect manager subsystem
         if (!soundEffects.destroy()) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to destroy sound effect manager");
@@ -111,7 +115,7 @@ public class AudioManager {
             }
             // Retrieve speaker information
             AudioDevice speaker = new AudioDevice();
-            if (!speaker.setIndex(index)) {
+            if (!speaker.initialize(index)) {
                 App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to access speaker ", index);
                 continue;
             }
@@ -125,26 +129,7 @@ public class AudioManager {
      * @return The audio system's current speaker
      */
     public AudioDevice getSpeaker() {
-        // Acquire list of available speakers
-        ArrayList<AudioDevice> speakers = getSpeakers();
-        if (speakers.isEmpty()) {
-            App.Log.write(LogSource.Audio, LogLevel.Warning, "No speakers available for audio output");
-            return null;
-        }
-        // Locate current speaker in list
-        for (AudioDevice speaker : speakers) {
-            if (speaker.getIndex() == speakerIndex) {
-                return speaker;
-            }
-        }
-        AudioDevice first;
-        try {
-            first = speakers.getFirst();
-        } catch (NoSuchElementException _) {
-            App.Log.write(LogSource.Audio, LogLevel.Warning, "No speakers available for audio output");
-            return null;
-        }
-        return first;
+        return speaker;
     }
 
     /**
@@ -153,19 +138,26 @@ public class AudioManager {
      * @return Whether the speaker was set successfully
      */
     public boolean setSpeaker(AudioDevice speaker) {
+        if (getSpeakers().isEmpty()) {
+            App.Log.write(LogSource.Audio, LogLevel.Error, "No speakers are available");
+            return false;
+        }
         // Ensure speaker availability
         if (speaker == null) {
-            App.Log.write(LogSource.Audio, LogLevel.Warning, "No speaker provided");
+            App.Log.write(LogSource.Audio, LogLevel.Warning, "No speaker provided, setting default");
+            this.speaker = getSpeakers().get(0);
             return false;
         }
         App.Log.write(LogSource.Audio, LogLevel.Info, "Setting audio output speaker ", speaker);
         if (!getSpeakers().contains(speaker)) {
-            App.Log.write(LogSource.Audio, LogLevel.Warning, "Speaker not available for audio output");
+            App.Log.write(LogSource.Audio, LogLevel.Warning, "Speaker not available for audio output, setting default");
+            this.speaker = getSpeakers().get(0);
             return false;
         }
         boolean success = true;
         // Update speaker and restart sound effects and music
-        this.speakerIndex = speaker.getIndex();
+        this.speaker.destroy();
+        this.speaker = speaker;
         if (!soundEffects.stop()) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to stop sound effects when switching speakers");
             success = false;

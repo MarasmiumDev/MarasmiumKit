@@ -22,43 +22,54 @@ public class AppConfig {
     /**
      * The configuration of the application framework's logging system
      */
-    public final LogManagerConfig log;
+    public final LogManagerConfig log = new LogManagerConfig();
     /**
      * The configuration of the application framework's windowing system
      */
-    public final WindowManagerConfig window;
+    public final WindowManagerConfig window = new WindowManagerConfig();
     /**
      * The configuration of the application framework's network client
      */
-    public final NetClientConfig network;
+    public final NetClientConfig network = new NetClientConfig();
     /**
      * The configuration of the application framework's asset management system
      */
-    public final AssetManagerConfig assets;
+    public final AssetManagerConfig assets = new AssetManagerConfig();
     /**
      * The configuration of the application framework's audio system
      */
-    public final AudioConfig audio;
+    public final AudioConfig audio = new AudioConfig();
     /**
      * The configuration of the application framework's graphics system
      */
-    public final GraphicsManagerConfig graphics;
+    public final GraphicsManagerConfig graphics = new GraphicsManagerConfig();
     /**
      * The initial scene to be presented by the application framework
      */
-    public final Scene initialScene;
+    public Scene initialScene = null;
 
     /**
-     * Construct an application framework configuration structure with default settings
+     * Construct a MarasmiumKit application with an initial scene for the application to display
+     * @param initialScene The application's initial scene
      */
     public AppConfig(Scene initialScene) {
-        log = new LogManagerConfig();
-        window = new WindowManagerConfig();
-        network = new NetClientConfig();
-        assets = new AssetManagerConfig();
-        audio = new AudioConfig();
-        graphics = new GraphicsManagerConfig();
         this.initialScene = initialScene;
+    }
+
+    /**
+     * Apply the default settings to this MarasmiumKit application configuration structure
+     * @return Whether the default settings were applied successfully
+     */
+    public boolean applyDefaults() {
+        log.applyDefaults();
+        if (!window.applyDefaults()) {
+            return false;
+        }
+        network.applyDefaults();
+        assets.applyDefaults();
+        audio.applyDefaults();
+        graphics.applyDefaults();
+        return true;
     }
 
 }

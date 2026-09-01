@@ -9,6 +9,7 @@ package dev.marasmium.kit.apptest;
 
 import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.AppConfig;
+import dev.marasmium.kit.applib.data.Colour;
 
 public class AppTest {
 
@@ -18,6 +19,10 @@ public class AppTest {
     static void main() {
         // Set up app
         AppConfig config = new AppConfig(Test_Scene_1);
+        if (!config.applyDefaults()) {
+            System.out.println("Failed to apply default settings");
+            return;
+        }
         if (App.Initialize(config)) {
             App.Run();
         } else {

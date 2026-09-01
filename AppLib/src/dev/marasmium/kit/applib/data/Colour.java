@@ -48,7 +48,7 @@ public class Colour implements Serializable {
      * @param blue Blue channel (0-255)
      * @return A colour with the given ARGB channel values
      */
-    public static Colour Channels(int alpha, int green, int blue, int red) {
+    public static Colour Channels(int alpha, int red, int green, int blue) {
         Colour c = new Colour();
         c.setAlpha(alpha);
         c.setRed(red);

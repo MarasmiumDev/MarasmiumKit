@@ -22,19 +22,43 @@ public class NetMessage implements Serializable {
     /**
      * The type ID number of this message
      */
-    private int type;
+    private int type = 0;
     /**
      * The payload data of this message
      */
-    private byte[] data;
+    private byte[] data = null;
 
     /**
      * Construct a message with a type
      * @param type The type ID number for this message
      */
-    public NetMessage(int type) {
+    public void initialize(int type) {
         setType(type);
         data = new byte[0];
+    }
+
+    /**
+     * Free this message's memory
+     */
+    public void destroy() {
+        type = 0;
+        data = null;
+    }
+
+    /**
+     * Get this message's type ID number
+     * @return This message's type ID
+     */
+    public int getType() {
+        return type;
+    }
+
+    /**
+     * Set this message's type ID number
+     * @param type This message's new type ID
+     */
+    public void setType(int type) {
+        this.type = type;
     }
 
     /**
@@ -57,14 +81,11 @@ public class NetMessage implements Serializable {
             return false;
         }
         // Append data
-        byte[] copy = this.data.clone();
+        byte[] copy = new byte[this.data.length];
+        System.arraycopy(this.data, 0, copy, 0, this.data.length);
         this.data = new byte[copy.length + bytes.length];
-        for (int i = 0; i < copy.length; i++) {
-            this.data[i] = copy[i];
-        }
-        for (int i = 0; i < bytes.length; i++) {
-            this.data[i + copy.length] = bytes[i];
-        }
+        System.arraycopy(copy, 0, this.data, 0, copy.length);
+        System.arraycopy(bytes, 0, this.data, copy.length, bytes.length);
         return true;
     }
 
@@ -90,28 +111,11 @@ public class NetMessage implements Serializable {
             return null;
         }
         // Remove data
-        byte[] copy = this.data.clone();
+        byte[] copy = new byte[this.data.length];
+        System.arraycopy(this.data, 0, copy, 0, this.data.length);
         this.data = new byte[copy.length - dataSize];
-        for (int i = 0; i < this.data.length; i++) {
-            this.data[i] = copy[dataSize + i];
-        }
+        System.arraycopy(copy, 0, this.data, 0, copy.length - dataSize);
         return data;
-    }
-
-    /**
-     * Get this message's type ID number
-     * @return This message's type ID
-     */
-    public int getType() {
-        return type;
-    }
-
-    /**
-     * Set this message's type ID number
-     * @param type This message's new type ID
-     */
-    public void setType(int type) {
-        this.type = type;
     }
 
     /**
@@ -119,6 +123,9 @@ public class NetMessage implements Serializable {
      * @return This message's size in bytes
      */
     public int getSize() {
+        if (data == null) {
+            return 0;
+        }
         return data.length;
     }
 
@@ -129,6 +136,26 @@ public class NetMessage implements Serializable {
     @Override
     public String toString() {
         return "network message(type " + type + ", " + getSize() + "B)";
+    }
+
+    /**
+     * Create a copy of this message
+     * @return A copy of this message with the same type and data
+     */
+    @Override
+    public NetMessage clone() {
+        NetMessage message = new NetMessage();
+        message.type = this.type;
+        if (data == null) {
+            return message;
+        }
+        message.data = new byte[this.data.length];
+        try {
+            System.arraycopy(this.data, 0, message.data, 0, this.data.length);
+        } catch (IndexOutOfBoundsException | ArrayStoreException | NullPointerException _) {
+            return message;
+        }
+        return message;
     }
 
 }

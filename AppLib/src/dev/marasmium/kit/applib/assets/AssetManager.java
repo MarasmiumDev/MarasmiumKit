@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.BufferOverflowException;
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.ReadOnlyBufferException;
 import java.util.HashMap;
@@ -41,6 +42,10 @@ public class AssetManager {
      * @return Whether the configuration was valid and the asset management system was initialized successfully
      */
     public boolean initialize(AssetManagerConfig config) {
+        if (config == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Error, "No configuration provided");
+            return false;
+        }
         if (!setBasePath(config.basePath)) {
             App.Log.write(LogSource.Assets, LogLevel.Error, "Invalid base asset path");
             return false;
@@ -57,6 +62,10 @@ public class AssetManager {
      */
     public boolean writeAudioTrack(AudioTrack audioTrack, String filePath) {
         // Ensure the output file is accessible
+        if (basePath == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Error, "No base asset path provided");
+            return false;
+        }
         if (audioTrack == null) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write audio track, none provided");
             return false;
@@ -94,11 +103,11 @@ public class AssetManager {
         FileOutputStream outputStream;
         try {
             outputStream = new FileOutputStream(file);
-            outputStream.write(ByteBuffer.allocate(4).putInt(audioTrack.sampleRate()).array());
-            outputStream.write(ByteBuffer.allocate(4).putInt(audioTrack.sampleSize()).array());
-            outputStream.write(ByteBuffer.allocate(4).putInt(audioTrack.channelCount()).array());
+            outputStream.write(ByteBuffer.allocate(4).putInt(audioTrack.getSampleRate()).array());
+            outputStream.write(ByteBuffer.allocate(4).putInt(audioTrack.getSampleSize()).array());
+            outputStream.write(ByteBuffer.allocate(4).putInt(audioTrack.getChannelCount()).array());
             outputStream.write(ByteBuffer.allocate(4).putInt(audioTrack.getDataSize()).array());
-            outputStream.write(audioTrack.data());
+            outputStream.write(audioTrack.getData());
             outputStream.close();
         } catch (IOException | BufferOverflowException | ReadOnlyBufferException _) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write audio track data to file at \"",
@@ -114,7 +123,13 @@ public class AssetManager {
     public void destroy() {
         App.Log.write(LogSource.Assets, LogLevel.Info, "Destroying asset management system");
         basePath = null;
+        // Free audio tracks
         App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing ", audioTracks.size(), " audio tracks");
+        for (HashMap.Entry<String, AudioTrack> entry : audioTracks.entrySet()) {
+            if (entry.getValue() != null) {
+                entry.getValue().destroy();
+            }
+        }
         audioTracks.clear();
     }
 
@@ -162,6 +177,10 @@ public class AssetManager {
      * @return The requested audio track either from memory or disk or null if the audio track could not be loaded
      */
     public AudioTrack getAudioTrack(String filePath) {
+        if (basePath == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
+            return null;
+        }
         if (filePath == null) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "No file path provided to retrieve audio track");
             return null;
@@ -187,6 +206,10 @@ public class AssetManager {
      * @return Whether the audio track was in memory and was removed successfully
      */
     public boolean freeAudioTrack(String filePath) {
+        if (basePath == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
+            return false;
+        }
         if (filePath == null) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "No file path provided to free audio track");
             return false;
@@ -195,7 +218,14 @@ public class AssetManager {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Empty file path provided to free audio track");
             return false;
         }
+        if (!audioTracks.containsKey(filePath)) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "File path provided to free audio track not loaded");
+            return false;
+        }
         App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing audio track at \"", basePath + filePath, "\"");
+        if (audioTracks.get(filePath) != null) {
+            audioTracks.get(filePath).destroy();
+        }
         return audioTracks.remove(filePath) != null;
     }
 
@@ -206,6 +236,10 @@ public class AssetManager {
      */
     private boolean loadAudioTrack(String filePath) {
         // Ensure the file path is accessible
+        if (basePath == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
+            return false;
+        }
         if (filePath == null) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "No file path provided to load audio track");
             return false;
@@ -252,35 +286,42 @@ public class AssetManager {
                     "\", file is smaller than header size");
             return false;
         }
-        for (int i = 0; i < 4; i++) {
-            buffer[i] = fileData[offset + i];
+        try {
+            System.arraycopy(fileData, offset, buffer, 0, 4);
+            offset += 4;
+            sampleRate = ByteBuffer.wrap(buffer).getInt();
+            System.arraycopy(fileData, offset, buffer, 0, 4);
+            offset += 4;
+            sampleSize = ByteBuffer.wrap(buffer).getInt();
+            System.arraycopy(fileData, offset, buffer, 0, 4);
+            offset += 4;
+            channelCount = ByteBuffer.wrap(buffer).getInt();
+            System.arraycopy(fileData, offset, buffer, 0, 4);
+            offset += 4;
+            dataSize = ByteBuffer.wrap(buffer).getInt();
+        } catch (IndexOutOfBoundsException | ArrayStoreException | NullPointerException | BufferUnderflowException _) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to parse audio data from \"", basePath + filePath,
+                    "\", data invalid");
+            return false;
         }
-        offset += 4;
-        sampleRate = ByteBuffer.wrap(buffer).getInt();
-        for (int i = 0; i < 4; i++) {
-            buffer[i] = fileData[offset + i];
-        }
-        offset += 4;
-        sampleSize = ByteBuffer.wrap(buffer).getInt();
-        for (int i = 0; i < 4; i++) {
-            buffer[i] = fileData[offset + i];
-        }
-        offset += 4;
-        channelCount = ByteBuffer.wrap(buffer).getInt();
-        for (int i = 0; i < 4; i++) {
-            buffer[i] = fileData[offset + i];
-        }
-        offset += 4;
-        dataSize = ByteBuffer.wrap(buffer).getInt();
         if (fileData.length < offset + dataSize) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to parse audio data from \"", basePath + filePath,
+                    "\", file is smaller than data size");
             return false;
         }
         data = new byte[dataSize];
-        for (int i = 0; i < dataSize; i++) {
-            data[i] = fileData[offset + i];
+        try {
+            System.arraycopy(fileData, offset, data, 0, dataSize);
+        } catch (IndexOutOfBoundsException | ArrayStoreException | NullPointerException _) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to copy audio data");
+            return false;
         }
         // Construct audio track with parsed data and place in cache
-        AudioTrack audioTrack = new AudioTrack(sampleRate, sampleSize, channelCount, data);
+        AudioTrack audioTrack = new AudioTrack();
+        if (!audioTrack.initialize(sampleRate, sampleSize, channelCount, data)) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to initialize audio track, invalid parameters");
+            return false;
+        }
         App.Log.write(LogSource.Assets, LogLevel.Info, "Loaded audio track ", audioTrack, " from \"",
                 basePath + filePath, "\"");
         audioTracks.put(filePath, audioTrack);

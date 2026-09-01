@@ -190,7 +190,9 @@ public class NetConnection {
         int i = 0;
         inputLock.lock();
         while (!inputMessages.isEmpty() && (i < maxMessages || maxMessages == -1)) {
-            parent.netMessageReceived(clientID, inputMessages.removeFirst());
+            NetMessage message = inputMessages.removeFirst();
+            parent.netMessageReceived(clientID, message);
+            message.destroy();
             i++;
         }
         try {
@@ -213,7 +215,7 @@ public class NetConnection {
         // Add message to outgoing list
         outputLock.lock();
         boolean writeRequired = outputMessages.isEmpty();
-        outputMessages.addLast(message);
+        outputMessages.addLast(message.clone());
         try {
             outputLock.unlock();
         } catch (IllegalMonitorStateException _) {
@@ -252,6 +254,9 @@ public class NetConnection {
             }
             outputThread = null;
         }
+        for (NetMessage message : outputMessages) {
+            message.destroy();
+        }
         outputMessages.clear();
         // Close input stream
         if (inputStream != null) {
@@ -270,6 +275,9 @@ public class NetConnection {
                 success = false;
             }
             inputThread = null;
+        }
+        for (NetMessage message : inputMessages) {
+            message.destroy();
         }
         inputMessages.clear();
         // Close TCP socket connection
@@ -349,16 +357,16 @@ public class NetConnection {
                     return;
                 }
                 // Retrieve and write a message
-                NetMessage nextMessage;
                 outputLock.lock();
-                nextMessage = outputMessages.removeFirst();
+                NetMessage message = outputMessages.removeFirst();
                 try {
-                    outputStream.writeObject(nextMessage);
+                    outputStream.writeObject(message);
                     outputStream.flush();
                 } catch (IOException | NullPointerException _) {
                     disconnect();
                     return;
                 }
+                //message.destroy();
                 done = outputMessages.isEmpty();
                 try {
                     outputLock.unlock();

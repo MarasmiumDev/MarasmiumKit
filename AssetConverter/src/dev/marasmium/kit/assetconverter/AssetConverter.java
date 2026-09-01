@@ -137,7 +137,11 @@ public class AssetConverter {
             return false;
         }
         // Write converted audio track
-        AudioTrack track = new AudioTrack(sampleRate, sampleSize, channelCount, data);
+        AudioTrack track = new AudioTrack();
+        if (!track.initialize(sampleRate, sampleSize, channelCount, data)) {
+            System.out.println("Failed to initialize audio track");
+            return false;
+        }
         System.out.println("Generated audio track: " + track);
         System.out.print("Output file path: " + App.Assets.getBasePath());
         String outputFilePath;
@@ -151,6 +155,7 @@ public class AssetConverter {
             System.out.println("Failed to write converted audio file");
             return false;
         }
+        track.destroy();
         return true;
     }
 
@@ -160,7 +165,6 @@ public class AssetConverter {
      * @return Whether a file was converted successfully
      */
     private static boolean convertAnimation(Scanner commandLine) {
-        System.out.println("This option is not yet available");
         return false;
     }
 
@@ -181,9 +185,11 @@ public class AssetConverter {
         }
         // Initialize application framework asset manager
         AssetManagerConfig config = new AssetManagerConfig();
+        config.applyDefaults();
         config.basePath = basePath;
         if (!App.Assets.initialize(config)) {
             System.out.println("Failed to initialize asset management system");
+            return;
         }
         boolean running = true;
         while (running) {
