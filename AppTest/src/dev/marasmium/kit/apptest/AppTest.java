@@ -14,7 +14,6 @@ import dev.marasmium.kit.applib.data.Colour;
 public class AppTest {
 
     public static final TestScene1 Test_Scene_1 = new TestScene1();
-    public static final TestScene2 Test_Scene_2 = new TestScene2();
 
     static void main() {
         // Set up app

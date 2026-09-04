@@ -7,6 +7,11 @@
 
 package dev.marasmium.kit.applib.windowing;
 
+import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.opengl.GLContext;
+import com.jogamp.opengl.GLException;
+import com.jogamp.opengl.GLProfile;
+import com.jogamp.opengl.awt.GLCanvas;
 import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.logging.LogLevel;
@@ -54,9 +59,9 @@ public class WindowManager {
      */
     private Frame frame = null;
     /**
-     * Canvas used to draw graphics on the window
+     * The JOGL canvas for drawing graphics on this window
      */
-    private Canvas canvas = null;
+    private GLCanvas canvas = null;
     /**
      * Whether the system has requested for the window to close
      */
@@ -72,6 +77,7 @@ public class WindowManager {
             App.Log.write(LogSource.Window, LogLevel.Error, "No configuration provided");
             return false;
         }
+        GLProfile.initSingleton();
         // Set monitor and fullscreen mode
         setMonitor(config.monitor);
         if (!setFullscreen(config.fullscreen)) {
@@ -110,11 +116,7 @@ public class WindowManager {
             monitor = null;
         }
         // Close the window
-        if (frame != null) {
-            frame.dispose();
-            frame = null;
-        }
-        canvas = null;
+        closeFrame();
         closeRequested = false;
         return success;
     }
@@ -122,16 +124,15 @@ public class WindowManager {
     /**
      * Close the old frame if present and generate a new one for switching between fullscreen and windowed mode
      */
-    private void regenerateFrame() {
-        // Close the old frame
-        if (frame != null) {
-            frame.dispose();
-            frame = null;
-        }
+    private boolean regenerateFrame() {
+        closeFrame();
         // Generate new Java AWT window framework
         frame = new Frame();
-        if (canvas == null) {
-            canvas = new Canvas();
+        try {
+            canvas = new GLCanvas(new GLCapabilities(GLProfile.get(GLProfile.GL3)));
+        } catch (GLException _) {
+            App.Log.write(LogSource.Window, LogLevel.Error, "Failed to initialize JOGL canvas");
+            return false;
         }
         frame.add(canvas);
         // Set basic window parameters
@@ -148,7 +149,26 @@ public class WindowManager {
             }
 
         });
+        frame.addKeyListener(App.Input.keyboard);
+        frame.addMouseListener(App.Input.mouse);
+        frame.addMouseMotionListener(App.Input.mouse);
+        frame.addMouseWheelListener(App.Input.mouse);
         App.Log.write(LogSource.Window, LogLevel.Info, "Generated new window frame");
+        return true;
+    }
+
+    /**
+     * Close any currently open AWT window frame
+     */
+    private void closeFrame() {
+        if (canvas != null) {
+            canvas.destroy();
+            canvas = null;
+        }
+        if (frame != null) {
+            frame.dispose();
+            frame = null;
+        }
     }
 
     /**
@@ -204,7 +224,7 @@ public class WindowManager {
             App.Log.write(LogSource.Window, LogLevel.Warning, "No dimensions provided");
             return false;
         }
-        if (frame == null || canvas == null) {
+        if (frame == null) {
             App.Log.write(LogSource.Window, LogLevel.Warning, "Failed to set window dimensions, not initialized");
             return false;
         }
@@ -215,10 +235,10 @@ public class WindowManager {
             return true;
         }
         // Set current window dimensions (in windowed mode)
-        canvas.setPreferredSize(new Dimension((int)dimensions.getX(), (int)dimensions.getY()));
-        canvas.setMinimumSize(new Dimension((int)dimensions.getX(), (int)dimensions.getY()));
-        canvas.setMaximumSize(new Dimension((int)dimensions.getX(), (int)dimensions.getY()));
-        canvas.setSize((int)dimensions.getX(), (int)dimensions.getY());
+        frame.setPreferredSize(new Dimension((int)dimensions.getX(), (int)dimensions.getY()));
+        frame.setMinimumSize(new Dimension((int)dimensions.getX(), (int)dimensions.getY()));
+        frame.setMaximumSize(new Dimension((int)dimensions.getX(), (int)dimensions.getY()));
+        frame.setSize((int)dimensions.getX(), (int)dimensions.getY());
         frame.pack();
         // Set window location on current monitor
         Vector monitorPosition = getMonitor().getPosition();
@@ -246,7 +266,10 @@ public class WindowManager {
      * @return Whether the window switched modes (if necessary) successfully
      */
     public boolean setFullscreen(boolean fullscreen) {
-        regenerateFrame();
+        if (!regenerateFrame()) {
+            App.Log.write(LogSource.Window, LogLevel.Error, "Failed to regenerate window frame to set fullscreen mode");
+            return false;
+        }
         if (fullscreen) {
             // Switch to fullscreen mode (select monitor and validate)
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -288,7 +311,7 @@ public class WindowManager {
             App.Log.write(LogSource.Window, LogLevel.Error, "Failed to disable focus tabbing");
             return false;
         }
-        canvas.requestFocus();
+        frame.requestFocus();
         return true;
     }
 
@@ -340,10 +363,18 @@ public class WindowManager {
     }
 
     /**
-     * Get the window's Java AWT canvas for drawing graphics
-     * @return The window panel
+     * Get the AWT frame for the window
+     * @return The AWT frame for the window
      */
-    public Canvas getCanvas() {
+    public Frame getFrame() {
+        return frame;
+    }
+
+    /**
+     * Get the JOGL canvas for the window
+     * @return The JOGL canvas for the window
+     */
+    public GLCanvas getCanvas() {
         return canvas;
     }
 

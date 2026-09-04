@@ -98,10 +98,6 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
             }
             AWTButtonCodes.put(AWTButtonCode, button);
         }
-        // Initialize memory and subscribe to input events
-        App.Window.getCanvas().addMouseListener(this);
-        App.Window.getCanvas().addMouseMotionListener(this);
-        App.Window.getCanvas().addMouseWheelListener(this);
         App.Log.write(LogSource.Input, LogLevel.Info, "Initialized mouse user-input management system");
         return true;
     }
@@ -168,10 +164,6 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
     public boolean destroy() {
         App.Log.write(LogSource.Input, LogLevel.Info, "Destroying mouse user-input management system");
         boolean success = true;
-        // Detach mouse listeners
-        App.Window.getCanvas().removeMouseListener(this);
-        App.Window.getCanvas().removeMouseMotionListener(this);
-        App.Window.getCanvas().removeMouseWheelListener(this);
         // Free memory
         AWTButtonCodes.clear();
         buttonStates.clear();

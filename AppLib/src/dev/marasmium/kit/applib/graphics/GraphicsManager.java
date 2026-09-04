@@ -28,10 +28,6 @@ public class GraphicsManager {
      * The maximum number of logic updates allowed between graphics frames
      */
     private int maxUPF = 0;
-    /**
-     * The number of graphics frames to buffer before displaying
-     */
-    private int bufferCount = 0;
 
     /**
      * Initialize the application framework's graphics system
@@ -53,10 +49,6 @@ public class GraphicsManager {
                     "UPF invalid");
             return false;
         }
-        if (!setBufferCount(config.bufferCount)) {
-            App.Log.write(LogSource.Graphics, LogLevel.Error, "Failed to initialize graphics system buffer count");
-            return false;
-        }
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Initialized graphics system");
         return true;
     }
@@ -75,7 +67,6 @@ public class GraphicsManager {
         targetFPMS = 0.0d;
         targetMSPF = 0;
         maxUPF = 0;
-        bufferCount = 0;
         return success;
     }
 
@@ -140,34 +131,6 @@ public class GraphicsManager {
         }
         this.maxUPF = maxUPF;
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Maximum UPF set to ", maxUPF);
-        return true;
-    }
-
-    /**
-     * Get tbe number of graphics frames to buffer before displaying
-     * @return The number of graphics frames to buffer
-     */
-    public int getBufferCount() {
-        return bufferCount;
-    }
-
-    /**
-     * Set the number of graphics frames to buffer before displaying
-     * @param bufferCount The new number of graphics frames to buffer
-     * @return Whether the new buffer count was valid and was set successfully
-     */
-    public boolean setBufferCount(int bufferCount) {
-        if (bufferCount <= 0) {
-            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Invalid buffer count");
-            return false;
-        }
-        try {
-            App.Window.getCanvas().createBufferStrategy(bufferCount);
-        } catch (IllegalArgumentException | IllegalStateException _) {
-            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to create frame buffer strategy");
-            return false;
-        }
-        this.bufferCount = bufferCount;
         return true;
     }
 

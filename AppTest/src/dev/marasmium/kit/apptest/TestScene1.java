@@ -10,6 +10,7 @@ package dev.marasmium.kit.apptest;
 import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.Scene;
 import dev.marasmium.kit.applib.input.KeyboardKey;
+import dev.marasmium.kit.applib.input.MouseButton;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 import dev.marasmium.kit.applib.networking.NetListener;
@@ -33,9 +34,8 @@ public class TestScene1 extends Scene implements NetListener {
 
     @Override
     public boolean processInput() {
-        // Switch to scene two on 2 key pressed
-        if (App.Input.keyboard.isKeyPressed(KeyboardKey.Two)) {
-            App.SetCurrentScene(AppTest.Test_Scene_2);
+        if (App.Input.keyboard.isKeyPressed(KeyboardKey.F)) {
+            App.Window.setFullscreen(!App.Window.isFullscreen());
         }
         return true;
     }

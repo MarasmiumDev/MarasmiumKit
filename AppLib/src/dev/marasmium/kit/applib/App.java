@@ -29,13 +29,13 @@ public class App {
      */
     public static final LogManager Log = new LogManager();
     /**
-     * The application framework's windowing system
-     */
-    public static final WindowManager Window = new WindowManager();
-    /**
      * The application framework's user-input management system
      */
     public static final InputManager Input = new InputManager();
+    /**
+     * The application framework's windowing system
+     */
+    public static final WindowManager Window = new WindowManager();
     /**
      * The application framework's network client
      */
@@ -80,18 +80,18 @@ public class App {
             return false;
         }
         Log.write(LogSource.App, LogLevel.Info, "Initialized logging system");
-        // Initialize the windowing system
-        if (!Window.initialize(config.window)) {
-            Log.write(LogSource.App, LogLevel.Error, "Failed to initialize windowing system");
-            return false;
-        }
-        Log.write(LogSource.App, LogLevel.Info, "Initialized windowing system");
         // Initialize the user-input management system
         if (!Input.initialize()) {
             Log.write(LogSource.App, LogLevel.Error, "Failed to initialize user-input management system");
             return false;
         }
         Log.write(LogSource.App, LogLevel.Info, "Initialized user-input management system");
+        // Initialize the windowing system
+        if (!Window.initialize(config.window)) {
+            Log.write(LogSource.App, LogLevel.Error, "Failed to initialize windowing system");
+            return false;
+        }
+        Log.write(LogSource.App, LogLevel.Info, "Initialized windowing system");
         // Initialize the network client
         if (!Network.initialize(config.network)) {
             Log.write(LogSource.App, LogLevel.Error, "Failed to initialize network client");
@@ -214,16 +214,16 @@ public class App {
             Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy network client");
             success = false;
         }
-        // Free the user-input management system
-        Log.write(LogSource.App, LogLevel.Info, "Destroying user-input management system");
-        if (!Input.destroy()) {
-            Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy user-input management system");
-            success = false;
-        }
         // Free the windowing system
         Log.write(LogSource.App, LogLevel.Info, "Destroying windowing system");
         if (!Window.destroy()) {
             Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy windowing system");
+            success = false;
+        }
+        // Free the user-input management system
+        Log.write(LogSource.App, LogLevel.Info, "Destroying user-input management system");
+        if (!Input.destroy()) {
+            Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy user-input management system");
             success = false;
         }
         // Free the logging system
