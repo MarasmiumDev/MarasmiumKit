@@ -1,83 +1,46 @@
-2026.09.04@01:32:05.609: [Logging System] [Information] Initialized logging system
-2026.09.04@01:32:05.610: [MarasmiumKit App] [Information] Initialized logging system
-2026.09.04@01:32:05.611: [User-Input Management System] [Information] Initialized keyboard user-input management system
-2026.09.04@01:32:05.612: [User-Input Management System] [Information] Initialized mouse user-input management system
-2026.09.04@01:32:05.612: [User-Input Management System] [Information] Initialized user-input management system
-2026.09.04@01:32:05.612: [MarasmiumKit App] [Information] Initialized user-input management system
-2026.09.04@01:32:07.363: [Windowing System] [Information] Set fullscreen monitor index monitor(0, "Display 1", vector(1920.0, 1243.0), vector(0.0, 0.0))
-2026.09.04@01:32:07.371: [Windowing System] [Information] Generated new window frame
-2026.09.04@01:32:07.371: [Windowing System] [Warning] No title provided
-2026.09.04@01:32:07.371: [Windowing System] [Warning] No dimensions provided
-2026.09.04@01:32:07.371: [Windowing System] [Information] Set window to windowed mode
-2026.09.04@01:32:07.438: [Windowing System] [Information] Set window title "MarasmiumKit App"
-2026.09.04@01:32:07.439: [Windowing System] [Information] Set window dimensions vector(1280.0, 720.0)
-2026.09.04@01:32:07.439: [Windowing System] [Information] Initialized windowing system
-2026.09.04@01:32:07.439: [MarasmiumKit App] [Information] Initialized windowing system
-2026.09.04@01:32:07.439: [Network Client] [Information] Set maximum messages to process per update -1
-2026.09.04@01:32:07.439: [Network Client] [Information] Initialized network client
-2026.09.04@01:32:07.439: [MarasmiumKit App] [Information] Initialized network client
-2026.09.04@01:32:07.439: [Asset Management System] [Information] Setting base asset path "./Assets/"
-2026.09.04@01:32:07.439: [Asset Management System] [Information] Initialized asset management system
-2026.09.04@01:32:07.439: [MarasmiumKit App] [Information] Initialized asset management system
-2026.09.04@01:32:07.446: [Audio System] [Information] Setting audio output speaker speaker(0, "Port APLAPP")
-2026.09.04@01:32:07.447: [Audio System] [Warning] Speaker not available for audio output, setting default
-2026.09.04@01:32:07.448: [Audio System] [Information] Set default sound effect volume 100%
-2026.09.04@01:32:07.448: [Audio System] [Information] Initialized sound effects audio subsystem
-2026.09.04@01:32:07.448: [Audio System] [Information] Set music volume 100%
-2026.09.04@01:32:07.448: [Audio System] [Information] Initialized music audio subsystem
-2026.09.04@01:32:07.448: [Audio System] [Information] Initialize audio system
-2026.09.04@01:32:07.448: [Graphics System] [Information] Target FPS set to 60 -> FPMS=0.06, MSPF=16
-2026.09.04@01:32:07.448: [Graphics System] [Information] Maximum UPF set to 8
-2026.09.04@01:32:07.449: [Graphics System] [Information] Initialized graphics system
-2026.09.04@01:32:07.449: [MarasmiumKit App] [Information] Initialized graphics system
-2026.09.04@01:32:07.449: [MarasmiumKit App] [Information] Scene 0 not added
-2026.09.04@01:32:07.449: [MarasmiumKit App] [Information] Adding scene 0
-2026.09.04@01:32:07.449: [MarasmiumKit App] [Information] Scene 0 requires initialization
-2026.09.04@01:32:07.449: [Test Scene 1] [Information] Initializing test scene 1
-2026.09.04@01:32:07.449: [MarasmiumKit App] [Information] Entering new scene 1
-2026.09.04@01:32:07.449: [Test Scene 1] [Information] Entering test scene 1
-2026.09.04@01:32:07.449: [User-Input Management System] [Information] Adding user-input listener
-2026.09.04@01:32:07.449: [Network Client] [Information] Adding network listener
-2026.09.04@01:32:07.449: [MarasmiumKit App] [Information] Set initial scene
-2026.09.04@01:32:07.449: [MarasmiumKit App] [Information] Initialized MarasmiumKit application framework
-2026.09.04@01:32:07.449: [MarasmiumKit App] [Information] Starting main application loop
-2026.09.04@01:32:08.346: [Windowing System] [Information] Generated new window frame
-2026.09.04@01:32:08.395: [Windowing System] [Information] Set window dimensions vector(1920.0, 1243.0)
-2026.09.04@01:32:08.395: [Windowing System] [Information] Set window to fullscreen mode
-2026.09.04@01:32:09.197: [Windowing System] [Information] Generated new window frame
-2026.09.04@01:32:09.197: [Windowing System] [Information] Set window title "MarasmiumKit App"
-2026.09.04@01:32:09.229: [Windowing System] [Information] Set window dimensions vector(1280.0, 720.0)
-2026.09.04@01:32:09.230: [Windowing System] [Information] Set window to windowed mode
-2026.09.04@01:32:10.090: [Windowing System] [Information] Generated new window frame
-2026.09.04@01:32:10.121: [Windowing System] [Information] Set window dimensions vector(1920.0, 1243.0)
-2026.09.04@01:32:10.122: [Windowing System] [Information] Set window to fullscreen mode
-2026.09.04@01:32:11.299: [Windowing System] [Information] Generated new window frame
-2026.09.04@01:32:11.300: [Windowing System] [Information] Set window title "MarasmiumKit App"
-2026.09.04@01:32:11.330: [Windowing System] [Information] Set window dimensions vector(1280.0, 720.0)
-2026.09.04@01:32:11.330: [Windowing System] [Information] Set window to windowed mode
-2026.09.04@01:32:13.925: [MarasmiumKit App] [Information] Finished main application loop
-2026.09.04@01:32:13.925: [MarasmiumKit App] [Information] Destroying MarasmiumKit application framework
-2026.09.04@01:32:13.925: [MarasmiumKit App] [Information] Freeing all scenes
-2026.09.04@01:32:13.925: [Test Scene 1] [Information] Leaving test scene 1
-2026.09.04@01:32:13.926: [Test Scene 1] [Information] Destroying test scene 1
-2026.09.04@01:32:13.926: [MarasmiumKit App] [Information] Destroying graphics system
-2026.09.04@01:32:13.926: [Graphics System] [Information] Destroying graphics system
-2026.09.04@01:32:13.926: [MarasmiumKit App] [Information] Destroying audio system
-2026.09.04@01:32:13.926: [Audio System] [Information] Destroying audio system
-2026.09.04@01:32:13.927: [Audio System] [Information] Destroying sound effects audio subsystem
-2026.09.04@01:32:13.927: [Audio System] [Information] Stopping all sound effects
-2026.09.04@01:32:13.927: [Audio System] [Information] Destroying music audio subsystem
-2026.09.04@01:32:13.927: [MarasmiumKit App] [Information] Destroying asset management system
-2026.09.04@01:32:13.927: [Asset Management System] [Information] Destroying asset management system
-2026.09.04@01:32:13.927: [Asset Management System] [Information] Freeing 0 audio tracks
-2026.09.04@01:32:13.927: [MarasmiumKit App] [Information] Destroying network client
-2026.09.04@01:32:13.928: [Network Client] [Information] Destroying network client
-2026.09.04@01:32:13.928: [Network Client] [Information] Destroyed network client
-2026.09.04@01:32:13.928: [MarasmiumKit App] [Information] Destroying windowing system
-2026.09.04@01:32:13.928: [Windowing System] [Information] Destroying windowing system
-2026.09.04@01:32:13.931: [MarasmiumKit App] [Information] Destroying user-input management system
-2026.09.04@01:32:13.931: [User-Input Management System] [Information] Destroying user-input management system
-2026.09.04@01:32:13.931: [User-Input Management System] [Information] Destroying mouse user-input management system
-2026.09.04@01:32:13.931: [User-Input Management System] [Information] Destroying keyboard user-input management system
-2026.09.04@01:32:13.931: [MarasmiumKit App] [Information] Destroying logging system
-2026.09.04@01:32:13.931: [Logging System] [Information] Destroying logging system
+2026.09.04@02:33:58.308: [Logging System] [Information] Initialized logging system
+2026.09.04@02:33:58.308: [MarasmiumKit App] [Information] Initialized logging system
+2026.09.04@02:33:58.310: [User-Input Management System] [Information] Initialized keyboard user-input management system
+2026.09.04@02:33:58.311: [User-Input Management System] [Information] Initialized mouse user-input management system
+2026.09.04@02:33:58.311: [User-Input Management System] [Information] Initialized user-input management system
+2026.09.04@02:33:58.311: [MarasmiumKit App] [Information] Initialized user-input management system
+2026.09.04@02:33:58.315: [Windowing System] [Information] Generated new window frame
+2026.09.04@02:33:58.315: [Windowing System] [Information] Set fullscreen monitor index monitor(0, "Display 1", vector(1920.0, 1243.0), vector(0.0, 0.0))
+2026.09.04@02:33:58.317: [Windowing System] [Information] Setting window to windowed mode
+2026.09.04@02:33:58.318: [Windowing System] [Warning] No title provided
+2026.09.04@02:33:58.318: [Windowing System] [Warning] No dimensions provided
+2026.09.04@02:33:58.318: [Windowing System] [Information] Set window title "MarasmiumKit App"
+2026.09.04@02:33:58.318: [Windowing System] [Information] Set window dimensions vector(1280.0, 720.0)
+2026.09.04@02:34:00.044: [Windowing System] [Information] Initialized windowing system
+2026.09.04@02:34:00.044: [MarasmiumKit App] [Information] Initialized windowing system
+2026.09.04@02:34:00.044: [Network Client] [Information] Set maximum messages to process per update -1
+2026.09.04@02:34:00.044: [Network Client] [Information] Initialized network client
+2026.09.04@02:34:00.044: [MarasmiumKit App] [Information] Initialized network client
+2026.09.04@02:34:00.044: [Asset Management System] [Information] Setting base asset path "./Assets/"
+2026.09.04@02:34:00.044: [Asset Management System] [Information] Initialized asset management system
+2026.09.04@02:34:00.044: [MarasmiumKit App] [Information] Initialized asset management system
+2026.09.04@02:34:00.053: [Audio System] [Information] Setting audio output speaker speaker(0, "Port APLAPP")
+2026.09.04@02:34:00.055: [Audio System] [Warning] Speaker not available for audio output, setting default
+2026.09.04@02:34:00.055: [Audio System] [Information] Set default sound effect volume 100%
+2026.09.04@02:34:00.055: [Audio System] [Information] Initialized sound effects audio subsystem
+2026.09.04@02:34:00.055: [Audio System] [Information] Set music volume 100%
+2026.09.04@02:34:00.055: [Audio System] [Information] Initialized music audio subsystem
+2026.09.04@02:34:00.055: [Audio System] [Information] Initialize audio system
+2026.09.04@02:34:00.055: [Graphics System] [Information] Target FPS set to 60 -> FPMS=0.06, MSPF=16
+2026.09.04@02:34:00.056: [Graphics System] [Information] Maximum UPF set to 8
+2026.09.04@02:34:00.056: [Graphics System] [Information] Initialized graphics system
+2026.09.04@02:34:00.056: [MarasmiumKit App] [Information] Initialized graphics system
+2026.09.04@02:34:00.056: [MarasmiumKit App] [Information] Scene 0 not added
+2026.09.04@02:34:00.056: [MarasmiumKit App] [Information] Adding scene 0
+2026.09.04@02:34:00.056: [MarasmiumKit App] [Information] Scene 0 requires initialization
+2026.09.04@02:34:00.056: [Test Scene 1] [Information] Initializing test scene 1
+2026.09.04@02:34:00.056: [MarasmiumKit App] [Information] Entering new scene 1
+2026.09.04@02:34:00.056: [Test Scene 1] [Information] Entering test scene 1
+2026.09.04@02:34:00.056: [User-Input Management System] [Information] Adding user-input listener
+2026.09.04@02:34:00.056: [Network Client] [Information] Adding network listener
+2026.09.04@02:34:00.056: [MarasmiumKit App] [Information] Set initial scene
+2026.09.04@02:34:00.056: [MarasmiumKit App] [Information] Initialized MarasmiumKit application framework
+2026.09.04@02:34:00.056: [MarasmiumKit App] [Information] Starting main application loop
+2026.09.04@02:34:01.216: [Windowing System] [Information] Set fullscreen monitor index monitor(2, "Display 3", vector(1920.0, 1080.0), vector(1920.0, 0.0))
+2026.09.04@02:34:02.107: [Windowing System] [Information] Setting window to fullscreen mode
+2026.09.04@02:34:02.119: [Windowing System] [Information] Set window dimensions vector(1920.0, 1080.0)

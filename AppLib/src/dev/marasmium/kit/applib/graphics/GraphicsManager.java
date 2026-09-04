@@ -7,7 +7,11 @@
 
 package dev.marasmium.kit.applib.graphics;
 
+import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.GLContext;
+import com.jogamp.opengl.GLException;
 import dev.marasmium.kit.applib.App;
+import dev.marasmium.kit.applib.data.Colour;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 
@@ -28,6 +32,10 @@ public class GraphicsManager {
      * The maximum number of logic updates allowed between graphics frames
      */
     private int maxUPF = 0;
+    /**
+     * The colour to clear the window to each frame
+     */
+    private Colour clearColour = null;
 
     /**
      * Initialize the application framework's graphics system
@@ -49,12 +57,22 @@ public class GraphicsManager {
                     "UPF invalid");
             return false;
         }
+        if (!setClearColour(config.clearColour)) {
+            App.Log.write(LogSource.Graphics, LogLevel.Error, "Failed to initialize graphics system, initial clear ",
+                    "colour invalid");
+            return false;
+        }
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Initialized graphics system");
         return true;
     }
 
     public void draw() {
-
+        App.Window.getContext().makeCurrent();
+        GL3 gl3 = App.Window.getContext().getGL().getGL3();
+        gl3.glViewport(0, 0, (int)App.Window.getDimensions().getX(), (int)App.Window.getDimensions().getY());
+        gl3.glClearColor(clearColour.getRed(), clearColour.getGreen(), clearColour.getBlue(), clearColour.getAlpha());
+        gl3.glClear(gl3.GL_COLOR_BUFFER_BIT | gl3.GL_DEPTH_BUFFER_BIT);
+        App.Window.getContext().release();
     }
 
     /**
@@ -67,6 +85,7 @@ public class GraphicsManager {
         targetFPMS = 0.0d;
         targetMSPF = 0;
         maxUPF = 0;
+        clearColour = null;
         return success;
     }
 
@@ -131,6 +150,27 @@ public class GraphicsManager {
         }
         this.maxUPF = maxUPF;
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Maximum UPF set to ", maxUPF);
+        return true;
+    }
+
+    /**
+     * Get the colour to clear the window to each frame
+     * @return The graphics system's clear colour
+     */
+    public Colour getClearColour() {
+        return clearColour;
+    }
+
+    /**
+     * Set the colour to clear the window to each frame
+     * @param clearColour The new clear colour
+     * @return Whether the given clear colour was valid
+     */
+    public boolean setClearColour(Colour clearColour) {
+        if (clearColour == null) {
+            return false;
+        }
+        this.clearColour = clearColour;
         return true;
     }
 

@@ -7,6 +7,8 @@
 
 package dev.marasmium.kit.applib.graphics;
 
+import dev.marasmium.kit.applib.data.Colour;
+
 /**
  * A configuration/settings structure for the MarasmiumKit application framework's graphics system
  */
@@ -21,9 +23,9 @@ public class GraphicsManagerConfig {
      */
     public int maxUPF = 0;
     /**
-     * The number of frames to buffer before displaying
+     * The colour to clear the window to each frame
      */
-    public int bufferCount = 0;
+    public Colour clearColour = null;
 
     /**
      * Apply the default settings to this graphics configuration structure
@@ -31,7 +33,7 @@ public class GraphicsManagerConfig {
     public void applyDefaults() {
         targetFPS = 60;
         maxUPF = 8;
-        bufferCount = 2;
+        clearColour = Colour.Black;
     }
 
 }

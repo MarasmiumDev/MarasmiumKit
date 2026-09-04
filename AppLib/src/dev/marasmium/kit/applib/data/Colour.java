@@ -15,6 +15,10 @@ import java.io.Serializable;
 public class Colour implements Serializable {
 
     /**
+     * Blank colour constant
+     */
+    public static final Colour Blank = Colour.Bytes(0x00000000);
+    /**
      * Black colour constant
      */
     public static final Colour Black = Colour.Bytes(0xFF000000);
@@ -27,9 +31,21 @@ public class Colour implements Serializable {
      */
     public static final Colour Green = Colour.Bytes(0xFF00FF00);
     /**
+     * Yellow colour constant
+     */
+    public static final Colour Yellow = Colour.Bytes(0xFFFFFF00);
+    /**
      * Blue colour constant
      */
     public static final Colour Blue = Colour.Bytes(0xFF0000FF);
+    /**
+     * Magenta colour constant
+     */
+    public static final Colour Magenta = Colour.Bytes(0xFFFF00FF);
+    /**
+     * Cyan colour constant
+     */
+    public static final Colour Cyan = Colour.Bytes(0xFF00FFFF);
     /**
      * White colour constant
      */

@@ -59,9 +59,13 @@ public class WindowManager {
      */
     private Frame frame = null;
     /**
-     * The JOGL canvas for drawing graphics on this window
+     * The JOGL canvas to draw graphics on in the window
      */
     private GLCanvas canvas = null;
+    /**
+     * The OpenGL context for the window
+     */
+    private GLContext context = null;
     /**
      * Whether the system has requested for the window to close
      */
@@ -77,24 +81,85 @@ public class WindowManager {
             App.Log.write(LogSource.Window, LogLevel.Error, "No configuration provided");
             return false;
         }
-        GLProfile.initSingleton();
-        // Set monitor and fullscreen mode
+        // Generate Java AWT window frame
+        frame = new Frame();
+        frame.setResizable(false);
+        frame.addWindowListener(new WindowAdapter() {
+
+            /**
+             * Callback for window close events
+             * @param e The event to be processed
+             */
+            @Override
+            public void windowClosing(WindowEvent e) {
+                closeRequested = true;
+            }
+
+        });
+        frame.addKeyListener(App.Input.keyboard);
+        frame.addMouseListener(App.Input.mouse);
+        frame.addMouseMotionListener(App.Input.mouse);
+        frame.addMouseWheelListener(App.Input.mouse);
+        App.Log.write(LogSource.Window, LogLevel.Info, "Generated new window frame");
+        // Set initial window parameters
         setMonitor(config.monitor);
         if (!setFullscreen(config.fullscreen)) {
             App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set window fullscreen mode");
             return false;
         }
-        // Set title for windowed mode
         if (!setTitle(config.title)) {
             App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set window title");
             return false;
         }
-        // Set dimensions for windowed mode
         if (!setDimensions(config.dimensions)) {
             App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set window dimensions");
             return false;
         }
         closeRequested = false;
+        // Open AWT window frame
+        try {
+            canvas = new GLCanvas(new GLCapabilities(GLProfile.get(GLProfile.GL3)));
+        } catch (GLException _) {
+            App.Log.write(LogSource.Window, LogLevel.Error, "Failed to initialize JOGL canvas");
+            return false;
+        }
+        frame.add(canvas);
+        frame.pack();
+        Vector monitorPosition = getMonitor().getPosition();
+        Vector monitorDimensions = getMonitor().getDimensions();
+        Vector windowPosition = monitorPosition
+                .add(monitorDimensions.scalarDivide(2.0d))
+                .subtract(dimensions.scalarDivide(2.0d));
+        frame.setLocation((int)windowPosition.getX(), (int)windowPosition.getY());
+        frame.setVisible(true);
+        try {
+            frame.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.emptySet());
+            frame.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, Collections.emptySet());
+        } catch (IllegalArgumentException _) {
+            App.Log.write(LogSource.Window, LogLevel.Error, "Failed to disable focus tabbing");
+            return false;
+        }
+        frame.requestFocus();
+        // Acquire OpenGL context
+        while (canvas.getContext() == null) {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException _) {
+                App.Log.write(LogSource.Window, LogLevel.Error, "Interrupted while waiting for OpenGL context to ",
+                        "become available");
+                return false;
+            }
+        }
+        context = canvas.getContext();
+        while (!context.isCreated()) {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException _) {
+                App.Log.write(LogSource.Window, LogLevel.Error, "Interrupted while waiting for OpenGL context to be ",
+                        "created");
+                return false;
+            }
+        }
         App.Log.write(LogSource.Window, LogLevel.Info, "Initialized windowing system");
         return true;
     }
@@ -116,51 +181,10 @@ public class WindowManager {
             monitor = null;
         }
         // Close the window
-        closeFrame();
-        closeRequested = false;
-        return success;
-    }
-
-    /**
-     * Close the old frame if present and generate a new one for switching between fullscreen and windowed mode
-     */
-    private boolean regenerateFrame() {
-        closeFrame();
-        // Generate new Java AWT window framework
-        frame = new Frame();
-        try {
-            canvas = new GLCanvas(new GLCapabilities(GLProfile.get(GLProfile.GL3)));
-        } catch (GLException _) {
-            App.Log.write(LogSource.Window, LogLevel.Error, "Failed to initialize JOGL canvas");
-            return false;
+        if (context != null) {
+            context.destroy();
+            context = null;
         }
-        frame.add(canvas);
-        // Set basic window parameters
-        frame.setResizable(false);
-        frame.addWindowListener(new WindowAdapter() {
-
-            /**
-             * Callback for window close events
-             * @param e The event to be processed
-             */
-            @Override
-            public void windowClosing(WindowEvent e) {
-                closeRequested = true;
-            }
-
-        });
-        frame.addKeyListener(App.Input.keyboard);
-        frame.addMouseListener(App.Input.mouse);
-        frame.addMouseMotionListener(App.Input.mouse);
-        frame.addMouseWheelListener(App.Input.mouse);
-        App.Log.write(LogSource.Window, LogLevel.Info, "Generated new window frame");
-        return true;
-    }
-
-    /**
-     * Close any currently open AWT window frame
-     */
-    private void closeFrame() {
         if (canvas != null) {
             canvas.destroy();
             canvas = null;
@@ -169,6 +193,8 @@ public class WindowManager {
             frame.dispose();
             frame = null;
         }
+        closeRequested = false;
+        return success;
     }
 
     /**
@@ -239,14 +265,6 @@ public class WindowManager {
         frame.setMinimumSize(new Dimension((int)dimensions.getX(), (int)dimensions.getY()));
         frame.setMaximumSize(new Dimension((int)dimensions.getX(), (int)dimensions.getY()));
         frame.setSize((int)dimensions.getX(), (int)dimensions.getY());
-        frame.pack();
-        // Set window location on current monitor
-        Vector monitorPosition = getMonitor().getPosition();
-        Vector monitorDimensions = getMonitor().getDimensions();
-        Vector windowPosition = monitorPosition
-                .add(monitorDimensions.scalarDivide(2.0d))
-                .subtract(dimensions.scalarDivide(2.0d));
-        frame.setLocation((int)windowPosition.getX(), (int)windowPosition.getY());
         this.dimensions = dimensions;
         App.Log.write(LogSource.Window, LogLevel.Info, "Set window dimensions ", dimensions);
         return true;
@@ -266,26 +284,24 @@ public class WindowManager {
      * @return Whether the window switched modes (if necessary) successfully
      */
     public boolean setFullscreen(boolean fullscreen) {
-        if (!regenerateFrame()) {
-            App.Log.write(LogSource.Window, LogLevel.Error, "Failed to regenerate window frame to set fullscreen mode");
+        // Retrieve and validate monitor
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] gds;
+        try {
+            gds = ge.getScreenDevices();
+        } catch (HeadlessException _) {
+            App.Log.write(LogSource.Window, LogLevel.Error, "System is in headless mode");
             return false;
         }
+        GraphicsDevice gd = gds[monitor.getIndex()];
+        if (!gd.isFullScreenSupported()) {
+            App.Log.write(LogSource.Window, LogLevel.Error, "Fullscreen not supported on current monitor");
+            return false;
+        }
+        // Set fullscreen mode
         if (fullscreen) {
-            // Switch to fullscreen mode (select monitor and validate)
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            GraphicsDevice[] gds;
-            try {
-                gds = ge.getScreenDevices();
-            } catch (HeadlessException _) {
-                App.Log.write(LogSource.Window, LogLevel.Error, "System is in headless mode");
-                return false;
-            }
-            GraphicsDevice gd = gds[monitor.getIndex()];
-            if (!gd.isFullScreenSupported()) {
-                App.Log.write(LogSource.Window, LogLevel.Error, "Fullscreen not supported on current monitor");
-                return false;
-            }
             // Set to fullscreen on appropriate monitor in update current dimensions and windowed mode dimensions
+            App.Log.write(LogSource.Window, LogLevel.Info, "Setting window to fullscreen mode");
             gd.setFullScreenWindow(frame);
             Vector windowedDimensions = this.windowedDimensions;
             if (!setDimensions(Vector.Cartesian(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight()))) {
@@ -295,23 +311,14 @@ public class WindowManager {
             }
             this.windowedDimensions = windowedDimensions;
             this.fullscreen = true;
-            App.Log.write(LogSource.Window, LogLevel.Info, "Set window to fullscreen mode");
         } else {
             // Switch to windowed mode (reset title and windowed mode dimensions)
+            App.Log.write(LogSource.Window, LogLevel.Info, "Setting window to windowed mode");
+            gd.setFullScreenWindow(null);
             this.fullscreen = false;
             setTitle(title);
             setDimensions(windowedDimensions);
-            App.Log.write(LogSource.Window, LogLevel.Info, "Set window to windowed mode");
         }
-        frame.setVisible(true);
-        try {
-            frame.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.emptySet());
-            frame.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, Collections.emptySet());
-        } catch (IllegalArgumentException _) {
-            App.Log.write(LogSource.Window, LogLevel.Error, "Failed to disable focus tabbing");
-            return false;
-        }
-        frame.requestFocus();
         return true;
     }
 
@@ -371,11 +378,19 @@ public class WindowManager {
     }
 
     /**
-     * Get the JOGL canvas for the window
+     * Get the JOGL canvas for rendering graphics in the window
      * @return The JOGL canvas for the window
      */
     public GLCanvas getCanvas() {
         return canvas;
+    }
+
+    /**
+     * Get the OpenGL context for the window
+     * @return The OpenGL context for the window
+     */
+    public GLContext getContext() {
+        return context;
     }
 
     /**

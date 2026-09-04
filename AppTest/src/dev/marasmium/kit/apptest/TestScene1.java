@@ -9,12 +9,14 @@ package dev.marasmium.kit.apptest;
 
 import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.Scene;
+import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.input.KeyboardKey;
 import dev.marasmium.kit.applib.input.MouseButton;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 import dev.marasmium.kit.applib.networking.NetListener;
 import dev.marasmium.kit.applib.networking.NetMessage;
+import dev.marasmium.kit.applib.windowing.Monitor;
 
 public class TestScene1 extends Scene implements NetListener {
 
@@ -34,8 +36,35 @@ public class TestScene1 extends Scene implements NetListener {
 
     @Override
     public boolean processInput() {
+        if (App.Input.keyboard.isKeyPressed(KeyboardKey.T)) {
+            App.Window.setTitle("Test 1");
+        }
+        if (App.Input.keyboard.isKeyPressed(KeyboardKey.Y)) {
+            App.Window.setTitle("Test 2");
+        }
+        if (App.Input.keyboard.isKeyPressed(KeyboardKey.A)) {
+            App.Window.setDimensions(Vector.Cartesian(400.0d, 300.0d));
+        }
+        if (App.Input.keyboard.isKeyPressed(KeyboardKey.S)) {
+            App.Window.setDimensions(Vector.Cartesian(900.0d, 700.0d));
+        }
         if (App.Input.keyboard.isKeyPressed(KeyboardKey.F)) {
             App.Window.setFullscreen(!App.Window.isFullscreen());
+        }
+        if (App.Input.keyboard.isKeyPressed(KeyboardKey.J)) {
+            Monitor m = new Monitor();
+            m.initialize(0);
+            App.Window.setMonitor(m);
+        }
+        if (App.Input.keyboard.isKeyPressed(KeyboardKey.K)) {
+            Monitor m = new Monitor();
+            m.initialize(1);
+            App.Window.setMonitor(m);
+        }
+        if (App.Input.keyboard.isKeyPressed(KeyboardKey.L)) {
+            Monitor m = new Monitor();
+            m.initialize(2);
+            App.Window.setMonitor(m);
         }
         return true;
     }
