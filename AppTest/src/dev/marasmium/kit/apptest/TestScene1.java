@@ -46,7 +46,7 @@ public class TestScene1 extends Scene implements NetListener {
             App.Window.setDimensions(Vector.Cartesian(400.0d, 300.0d));
         }
         if (App.Input.keyboard.isKeyPressed(KeyboardKey.S)) {
-            App.Window.setDimensions(Vector.Cartesian(900.0d, 700.0d));
+            App.Window.setDimensions(Vector.Cartesian(1280.0d, 720.0d));
         }
         if (App.Input.keyboard.isKeyPressed(KeyboardKey.F)) {
             App.Window.setFullscreen(!App.Window.isFullscreen());

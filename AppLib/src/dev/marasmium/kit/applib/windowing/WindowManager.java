@@ -49,6 +49,10 @@ public class WindowManager {
      */
     private Vector windowedDimensions = null;
     /**
+     * The horizontal and vertical padding around the window frame
+     */
+    private Vector windowPadding = null;
+    /**
      * Whether the window is currently in fullscreen mode
      */
     private boolean fullscreen = false;
@@ -114,14 +118,11 @@ public class WindowManager {
             }
             canvas.addGLEventListener(App.Graphics);
             frame.add(canvas);
+            frame.setVisible(true);
+            canvas.requestFocus();
         });
         App.Log.write(LogSource.Window, LogLevel.Info, "Generated new window frame");
         // Set initial window parameters
-        setMonitor(config.monitor);
-        if (!setFullscreen(config.fullscreen)) {
-            App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set window fullscreen mode");
-            return false;
-        }
         if (!setTitle(config.title)) {
             App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set window title");
             return false;
@@ -130,11 +131,12 @@ public class WindowManager {
             App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set window dimensions");
             return false;
         }
+        setMonitor(config.monitor);
+        if (!setFullscreen(config.fullscreen)) {
+            App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set window fullscreen mode");
+            return false;
+        }
         closeRequested = false;
-        SwingUtilities.invokeLater(() -> {
-            frame.setVisible(true);
-            canvas.requestFocus();
-        });
         // Acquire OpenGL context
         App.Log.write(LogSource.Window, LogLevel.Info, "Initialized windowing system");
         return true;
@@ -274,20 +276,22 @@ public class WindowManager {
             return false;
         }
         // Set fullscreen mode
-        if (fullscreen && !this.fullscreen) {
-            Vector windowedDimensions = this.windowedDimensions;
-            Vector padding = Vector.Cartesian(frame.getInsets().left + frame.getInsets().right,
-                    frame.getInsets().top + frame.getInsets().bottom);
-            setDimensions(Vector.Cartesian(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight()));
-            this.windowedDimensions = windowedDimensions.add(padding);
-            this.fullscreen = true;
-            gd.setFullScreenWindow(frame);
-        } else if (!fullscreen && this.fullscreen) {
-            gd.setFullScreenWindow(null);
-            this.fullscreen = false;
-            setDimensions(windowedDimensions);
-            dimensions = windowedDimensions;
-        }
+        SwingUtilities.invokeLater(() -> {
+            if (fullscreen && !this.fullscreen) {
+                Vector windowedDimensions = this.windowedDimensions;
+                windowPadding = Vector.Cartesian(frame.getInsets().left + frame.getInsets().right,
+                        frame.getInsets().bottom + frame.getInsets().top);
+                setDimensions(Vector.Cartesian(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight()));
+                this.windowedDimensions = windowedDimensions;
+                this.fullscreen = true;
+                gd.setFullScreenWindow(frame);
+            } else if (!fullscreen && this.fullscreen) {
+                gd.setFullScreenWindow(null);
+                this.fullscreen = false;
+                setDimensions(windowedDimensions.add(windowPadding));
+                dimensions = windowedDimensions;
+            }
+        });
         return true;
     }
 

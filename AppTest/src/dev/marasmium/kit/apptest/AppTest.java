@@ -22,6 +22,7 @@ public class AppTest {
             System.out.println("Failed to apply default settings");
             return;
         }
+        config.window.fullscreen = true;
         if (App.Initialize(config)) {
             App.Run();
         } else {

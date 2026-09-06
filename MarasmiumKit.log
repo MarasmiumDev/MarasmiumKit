@@ -1,97 +1,73 @@
-2026.09.06@00:03:47.313: [Logging System] [Information] Initialized logging system
-2026.09.06@00:03:47.314: [MarasmiumKit App] [Information] Initialized logging system
-2026.09.06@00:03:47.316: [User-Input Management System] [Information] Initialized keyboard user-input management system
-2026.09.06@00:03:47.316: [User-Input Management System] [Information] Initialized mouse user-input management system
-2026.09.06@00:03:47.316: [User-Input Management System] [Information] Initialized user-input management system
-2026.09.06@00:03:47.317: [MarasmiumKit App] [Information] Initialized user-input management system
-2026.09.06@00:03:47.317: [Graphics System] [Information] Target FPS set to 60 -> FPMS=0.06, MSPF=16
-2026.09.06@00:03:47.317: [Graphics System] [Information] Maximum UPF set to 8
-2026.09.06@00:03:47.317: [Graphics System] [Information] Initialized graphics system
-2026.09.06@00:03:47.317: [MarasmiumKit App] [Information] Initialized graphics system
-2026.09.06@00:03:47.318: [Windowing System] [Information] Generated new window frame
-2026.09.06@00:03:47.318: [Windowing System] [Information] Set fullscreen monitor index monitor(0, "Display 1", vector(1920.0, 1243.0), vector(0.0, 0.0))
-2026.09.06@00:03:47.321: [Windowing System] [Information] Set window title "MarasmiumKit App"
-2026.09.06@00:03:47.322: [Windowing System] [Information] Set window dimensions vector(1280.0, 720.0)
-2026.09.06@00:03:47.322: [Windowing System] [Information] Initialized windowing system
-2026.09.06@00:03:47.322: [MarasmiumKit App] [Information] Initialized windowing system
-2026.09.06@00:03:47.322: [Network Client] [Information] Set maximum messages to process per update -1
-2026.09.06@00:03:47.322: [Network Client] [Information] Initialized network client
-2026.09.06@00:03:47.322: [MarasmiumKit App] [Information] Initialized network client
-2026.09.06@00:03:47.322: [Asset Management System] [Information] Setting base asset path "./Assets/"
-2026.09.06@00:03:47.322: [Asset Management System] [Information] Initialized asset management system
-2026.09.06@00:03:47.322: [MarasmiumKit App] [Information] Initialized asset management system
-2026.09.06@00:03:47.330: [Audio System] [Information] Setting audio output speaker speaker(0, "Port MacBook Air Microphone")
-2026.09.06@00:03:47.332: [Audio System] [Warning] Speaker not available for audio output, setting default
-2026.09.06@00:03:47.333: [Audio System] [Information] Set default sound effect volume 100%
-2026.09.06@00:03:47.333: [Audio System] [Information] Initialized sound effects audio subsystem
-2026.09.06@00:03:47.333: [Audio System] [Information] Set music volume 100%
-2026.09.06@00:03:47.333: [Audio System] [Information] Initialized music audio subsystem
-2026.09.06@00:03:47.333: [Audio System] [Information] Initialize audio system
-2026.09.06@00:03:47.333: [MarasmiumKit App] [Information] Scene 0 not added
-2026.09.06@00:03:47.333: [MarasmiumKit App] [Information] Adding scene 0
-2026.09.06@00:03:47.333: [MarasmiumKit App] [Information] Scene 0 requires initialization
-2026.09.06@00:03:47.333: [Test Scene 1] [Information] Initializing test scene 1
-2026.09.06@00:03:47.333: [MarasmiumKit App] [Information] Entering new scene 1
-2026.09.06@00:03:47.333: [Test Scene 1] [Information] Entering test scene 1
-2026.09.06@00:03:47.333: [User-Input Management System] [Information] Adding user-input listener
-2026.09.06@00:03:47.333: [Network Client] [Information] Adding network listener
-2026.09.06@00:03:47.334: [MarasmiumKit App] [Information] Set initial scene
-2026.09.06@00:03:47.334: [MarasmiumKit App] [Information] Initialized MarasmiumKit application framework
-2026.09.06@00:03:47.334: [MarasmiumKit App] [Information] Starting main application loop
-2026.09.06@00:03:49.084: [Graphics System] [Information] Initializing OpenGL parameters
-2026.09.06@00:03:49.086: [Graphics System] [Information] OpenGL version "4.1 Metal - 90.5"
-2026.09.06@00:03:49.086: [Graphics System] [Information] Reshaping OpenGL canvas to 2560x1440pixels, scaling: 2.0x2.0
-2026.09.06@00:03:53.417: [Windowing System] [Information] Set window dimensions vector(1920.0, 1243.0)
-2026.09.06@00:03:53.426: [Graphics System] [Information] Reshaping OpenGL canvas to 3840x2430pixels, scaling: 2.0x1.9549477071600965
-2026.09.06@00:03:53.432: [Graphics System] [Information] Reshaping OpenGL canvas to 3840x2430pixels, scaling: 2.0x1.9549477071600965
-2026.09.06@00:03:53.448: [Graphics System] [Information] Reshaping OpenGL canvas to 3840x2430pixels, scaling: 2.0x1.9549477071600965
-2026.09.06@00:03:53.462: [Graphics System] [Information] Reshaping OpenGL canvas to 3840x2486pixels, scaling: 2.0x2.0
-2026.09.06@00:03:54.088: [Windowing System] [Information] Set window dimensions vector(1280.0, 748.0)
-2026.09.06@00:03:54.092: [Graphics System] [Information] Reshaping OpenGL canvas to 2560x1496pixels, scaling: 2.0x2.0
-2026.09.06@00:03:54.106: [Graphics System] [Information] Reshaping OpenGL canvas to 3840x2486pixels, scaling: 3.0x3.323529411764706
-2026.09.06@00:03:54.132: [Graphics System] [Information] Reshaping OpenGL canvas to 2560x1440pixels, scaling: 2.0x1.9251336898395721
-2026.09.06@00:04:04.060: [Windowing System] [Information] Set window dimensions vector(1920.0, 1243.0)
-2026.09.06@00:04:04.067: [Graphics System] [Information] Reshaping OpenGL canvas to 3840x2430pixels, scaling: 2.0x1.9549477071600965
-2026.09.06@00:04:04.078: [Graphics System] [Information] Reshaping OpenGL canvas to 3840x2430pixels, scaling: 2.0x1.9549477071600965
-2026.09.06@00:04:04.101: [Graphics System] [Information] Reshaping OpenGL canvas to 3840x2430pixels, scaling: 2.0x1.9549477071600965
-2026.09.06@00:04:04.104: [Graphics System] [Information] Reshaping OpenGL canvas to 3840x2486pixels, scaling: 2.0x2.0
-2026.09.06@00:04:04.736: [Windowing System] [Information] Set window dimensions vector(1280.0, 776.0)
-2026.09.06@00:04:04.738: [Graphics System] [Information] Reshaping OpenGL canvas to 2560x1552pixels, scaling: 2.0x2.0
-2026.09.06@00:04:04.753: [Graphics System] [Information] Reshaping OpenGL canvas to 3840x2486pixels, scaling: 3.0x3.2036082474226806
-2026.09.06@00:04:04.781: [Graphics System] [Information] Reshaping OpenGL canvas to 2560x1496pixels, scaling: 2.0x1.9278350515463918
-2026.09.06@00:04:07.273: [Windowing System] [Information] Set window dimensions vector(1920.0, 1243.0)
-2026.09.06@00:04:07.277: [Graphics System] [Information] Reshaping OpenGL canvas to 3840x2430pixels, scaling: 2.0x1.9549477071600965
-2026.09.06@00:04:07.288: [Graphics System] [Information] Reshaping OpenGL canvas to 3840x2430pixels, scaling: 2.0x1.9549477071600965
-2026.09.06@00:04:07.309: [Graphics System] [Information] Reshaping OpenGL canvas to 3840x2430pixels, scaling: 2.0x1.9549477071600965
-2026.09.06@00:04:07.311: [Graphics System] [Information] Reshaping OpenGL canvas to 3840x2486pixels, scaling: 2.0x2.0
-2026.09.06@00:04:07.807: [Windowing System] [Information] Set window dimensions vector(1280.0, 804.0)
-2026.09.06@00:04:07.809: [Graphics System] [Information] Reshaping OpenGL canvas to 2560x1608pixels, scaling: 2.0x2.0
-2026.09.06@00:04:07.825: [Graphics System] [Information] Reshaping OpenGL canvas to 3840x2486pixels, scaling: 3.0x3.0920398009950247
-2026.09.06@00:04:07.848: [Graphics System] [Information] Reshaping OpenGL canvas to 2560x1552pixels, scaling: 2.0x1.9303482587064678
-2026.09.06@00:04:12.115: [MarasmiumKit App] [Information] Finished main application loop
-2026.09.06@00:04:12.115: [MarasmiumKit App] [Information] Destroying MarasmiumKit application framework
-2026.09.06@00:04:12.115: [MarasmiumKit App] [Information] Freeing all scenes
-2026.09.06@00:04:12.116: [Test Scene 1] [Information] Leaving test scene 1
-2026.09.06@00:04:12.116: [Test Scene 1] [Information] Destroying test scene 1
-2026.09.06@00:04:12.116: [MarasmiumKit App] [Information] Destroying audio system
-2026.09.06@00:04:12.116: [Audio System] [Information] Destroying audio system
-2026.09.06@00:04:12.116: [Audio System] [Information] Destroying sound effects audio subsystem
-2026.09.06@00:04:12.116: [Audio System] [Information] Stopping all sound effects
-2026.09.06@00:04:12.116: [Audio System] [Information] Destroying music audio subsystem
-2026.09.06@00:04:12.117: [MarasmiumKit App] [Information] Destroying asset management system
-2026.09.06@00:04:12.117: [Asset Management System] [Information] Destroying asset management system
-2026.09.06@00:04:12.117: [Asset Management System] [Information] Freeing 0 audio tracks
-2026.09.06@00:04:12.117: [MarasmiumKit App] [Information] Destroying network client
-2026.09.06@00:04:12.117: [Network Client] [Information] Destroying network client
-2026.09.06@00:04:12.117: [Network Client] [Information] Destroyed network client
-2026.09.06@00:04:12.118: [MarasmiumKit App] [Information] Destroying windowing system
-2026.09.06@00:04:12.118: [Windowing System] [Information] Destroying windowing system
-2026.09.06@00:04:12.119: [Graphics System] [Information] Disposing of OpenGL parameters
-2026.09.06@00:04:12.140: [MarasmiumKit App] [Information] Destroying graphics system
-2026.09.06@00:04:12.140: [Graphics System] [Information] Destroying graphics system
-2026.09.06@00:04:12.141: [MarasmiumKit App] [Information] Destroying user-input management system
-2026.09.06@00:04:12.141: [User-Input Management System] [Information] Destroying user-input management system
-2026.09.06@00:04:12.141: [User-Input Management System] [Information] Destroying mouse user-input management system
-2026.09.06@00:04:12.141: [User-Input Management System] [Information] Destroying keyboard user-input management system
-2026.09.06@00:04:12.141: [MarasmiumKit App] [Information] Destroying logging system
-2026.09.06@00:04:12.141: [Logging System] [Information] Destroying logging system
+2026.09.06@00:49:47.799: [Logging System] [Information] Initialized logging system
+2026.09.06@00:49:47.799: [MarasmiumKit App] [Information] Initialized logging system
+2026.09.06@00:49:47.801: [User-Input Management System] [Information] Initialized keyboard user-input management system
+2026.09.06@00:49:47.802: [User-Input Management System] [Information] Initialized mouse user-input management system
+2026.09.06@00:49:47.802: [User-Input Management System] [Information] Initialized user-input management system
+2026.09.06@00:49:47.802: [MarasmiumKit App] [Information] Initialized user-input management system
+2026.09.06@00:49:47.802: [Graphics System] [Information] Target FPS set to 60 -> FPMS=0.06, MSPF=16
+2026.09.06@00:49:47.802: [Graphics System] [Information] Maximum UPF set to 8
+2026.09.06@00:49:47.802: [Graphics System] [Information] Initialized graphics system
+2026.09.06@00:49:47.802: [MarasmiumKit App] [Information] Initialized graphics system
+2026.09.06@00:49:47.803: [Windowing System] [Information] Generated new window frame
+2026.09.06@00:49:47.804: [Windowing System] [Information] Set window title "MarasmiumKit App"
+2026.09.06@00:49:47.804: [Windowing System] [Information] Set window dimensions vector(1280.0, 720.0)
+2026.09.06@00:49:47.805: [Windowing System] [Information] Set fullscreen monitor index monitor(0, "Display 1", vector(1920.0, 1243.0), vector(0.0, 0.0))
+2026.09.06@00:49:47.807: [Windowing System] [Information] Initialized windowing system
+2026.09.06@00:49:47.807: [MarasmiumKit App] [Information] Initialized windowing system
+2026.09.06@00:49:47.807: [Network Client] [Information] Set maximum messages to process per update -1
+2026.09.06@00:49:47.807: [Network Client] [Information] Initialized network client
+2026.09.06@00:49:47.807: [MarasmiumKit App] [Information] Initialized network client
+2026.09.06@00:49:47.807: [Asset Management System] [Information] Setting base asset path "./Assets/"
+2026.09.06@00:49:47.807: [Asset Management System] [Information] Initialized asset management system
+2026.09.06@00:49:47.807: [MarasmiumKit App] [Information] Initialized asset management system
+2026.09.06@00:49:47.815: [Audio System] [Information] Setting audio output speaker speaker(0, "Port MacBook Air Microphone")
+2026.09.06@00:49:47.817: [Audio System] [Warning] Speaker not available for audio output, setting default
+2026.09.06@00:49:47.817: [Audio System] [Information] Set default sound effect volume 100%
+2026.09.06@00:49:47.817: [Audio System] [Information] Initialized sound effects audio subsystem
+2026.09.06@00:49:47.817: [Audio System] [Information] Set music volume 100%
+2026.09.06@00:49:47.817: [Audio System] [Information] Initialized music audio subsystem
+2026.09.06@00:49:47.817: [Audio System] [Information] Initialize audio system
+2026.09.06@00:49:47.817: [MarasmiumKit App] [Information] Scene 0 not added
+2026.09.06@00:49:47.817: [MarasmiumKit App] [Information] Adding scene 0
+2026.09.06@00:49:47.817: [MarasmiumKit App] [Information] Scene 0 requires initialization
+2026.09.06@00:49:47.817: [Test Scene 1] [Information] Initializing test scene 1
+2026.09.06@00:49:47.817: [MarasmiumKit App] [Information] Entering new scene 1
+2026.09.06@00:49:47.818: [Test Scene 1] [Information] Entering test scene 1
+2026.09.06@00:49:47.818: [User-Input Management System] [Information] Adding user-input listener
+2026.09.06@00:49:47.818: [Network Client] [Information] Adding network listener
+2026.09.06@00:49:47.818: [MarasmiumKit App] [Information] Set initial scene
+2026.09.06@00:49:47.818: [MarasmiumKit App] [Information] Initialized MarasmiumKit application framework
+2026.09.06@00:49:47.818: [MarasmiumKit App] [Information] Starting main application loop
+2026.09.06@00:49:49.281: [Windowing System] [Information] Set window dimensions vector(1920.0, 1243.0)
+2026.09.06@00:49:49.345: [Graphics System] [Information] Initializing OpenGL parameters
+2026.09.06@00:49:49.346: [Graphics System] [Information] OpenGL version "4.1 Metal - 90.5"
+2026.09.06@00:49:53.332: [Windowing System] [Warning] Can't directly set dimensions in fullscreen mode
+2026.09.06@00:49:54.379: [Windowing System] [Information] Set window dimensions vector(400.0, 328.0)
+2026.09.06@00:49:55.177: [Windowing System] [Information] Set window dimensions vector(400.0, 300.0)
+2026.09.06@00:49:56.726: [MarasmiumKit App] [Information] Finished main application loop
+2026.09.06@00:49:56.727: [MarasmiumKit App] [Information] Destroying MarasmiumKit application framework
+2026.09.06@00:49:56.727: [MarasmiumKit App] [Information] Freeing all scenes
+2026.09.06@00:49:56.727: [Test Scene 1] [Information] Leaving test scene 1
+2026.09.06@00:49:56.727: [Test Scene 1] [Information] Destroying test scene 1
+2026.09.06@00:49:56.727: [MarasmiumKit App] [Information] Destroying audio system
+2026.09.06@00:49:56.727: [Audio System] [Information] Destroying audio system
+2026.09.06@00:49:56.728: [Audio System] [Information] Destroying sound effects audio subsystem
+2026.09.06@00:49:56.728: [Audio System] [Information] Stopping all sound effects
+2026.09.06@00:49:56.728: [Audio System] [Information] Destroying music audio subsystem
+2026.09.06@00:49:56.728: [MarasmiumKit App] [Information] Destroying asset management system
+2026.09.06@00:49:56.728: [Asset Management System] [Information] Destroying asset management system
+2026.09.06@00:49:56.728: [Asset Management System] [Information] Freeing 0 audio tracks
+2026.09.06@00:49:56.729: [MarasmiumKit App] [Information] Destroying network client
+2026.09.06@00:49:56.729: [Network Client] [Information] Destroying network client
+2026.09.06@00:49:56.729: [Network Client] [Information] Destroyed network client
+2026.09.06@00:49:56.729: [MarasmiumKit App] [Information] Destroying windowing system
+2026.09.06@00:49:56.729: [Windowing System] [Information] Destroying windowing system
+2026.09.06@00:49:56.730: [Graphics System] [Information] Disposing of OpenGL parameters
+2026.09.06@00:49:56.746: [MarasmiumKit App] [Information] Destroying graphics system
+2026.09.06@00:49:56.746: [Graphics System] [Information] Destroying graphics system
+2026.09.06@00:49:56.746: [MarasmiumKit App] [Information] Destroying user-input management system
+2026.09.06@00:49:56.746: [User-Input Management System] [Information] Destroying user-input management system
+2026.09.06@00:49:56.746: [User-Input Management System] [Information] Destroying mouse user-input management system
+2026.09.06@00:49:56.746: [User-Input Management System] [Information] Destroying keyboard user-input management system
+2026.09.06@00:49:56.746: [MarasmiumKit App] [Information] Destroying logging system
+2026.09.06@00:49:56.746: [Logging System] [Information] Destroying logging system
