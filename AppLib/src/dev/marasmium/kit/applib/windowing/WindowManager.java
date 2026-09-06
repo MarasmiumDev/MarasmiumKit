@@ -351,6 +351,14 @@ public class WindowManager {
     }
 
     /**
+     * Get the JOGL canvas for the window
+     * @return The JOGL canvas for the window
+     */
+    public GLCanvas getCanvas() {
+        return canvas;
+    }
+
+    /**
      * Test whether the user/system has requested for the window to close
      * @return Whether the window (and application) should close
      */

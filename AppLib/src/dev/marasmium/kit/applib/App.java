@@ -151,9 +151,18 @@ public class App {
             Network.update();
             Audio.update();
             // Draw graphics
-            Graphics.beginFrame();
+            if (!Graphics.beginFrame()) {
+                Log.write(LogSource.App, LogLevel.Error, "Failed to begin graphics frame");
+                break;
+            }
             Current_Scene.draw();
-            Graphics.endFrame();
+            if (!Graphics.endFrame()) {
+                Log.write(LogSource.App, LogLevel.Warning, "Failed to end graphics frame");
+                break;
+            }
+            if (Window.getCanvas() != null) {
+                Window.getCanvas().display();
+            }
             // Perform timed updates
             deltaElapsedMS = System.currentTimeMillis() - deltaStartMS;
             deltaStartMS = System.currentTimeMillis();

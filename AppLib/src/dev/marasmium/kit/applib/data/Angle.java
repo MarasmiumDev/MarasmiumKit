@@ -298,4 +298,15 @@ public class Angle implements Serializable {
         return "angle(" + theta + "rad)";
     }
 
+    /**
+     * Make a copy of this angle
+     * @return A copy of this angle
+     */
+    @Override
+    public Angle clone() {
+        Angle a = new Angle();
+        a.theta = theta;
+        return a;
+    }
+
 }

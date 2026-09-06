@@ -457,4 +457,16 @@ public class Vector implements Serializable {
         return "vector(" + x + ", " + y + ")";
     }
 
+    /**
+     * Make a copy of this vector
+     * @return A copy of this vector
+     */
+    @Override
+    public Vector clone() {
+        Vector v = new Vector();
+        v.x = x;
+        v.y = y;
+        return v;
+    }
+
 }

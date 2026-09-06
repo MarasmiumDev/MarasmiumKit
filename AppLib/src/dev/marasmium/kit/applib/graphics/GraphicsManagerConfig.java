@@ -33,7 +33,7 @@ public class GraphicsManagerConfig {
     public void applyDefaults() {
         targetFPS = 60;
         maxUPF = 8;
-        clearColour = Colour.Red;
+        clearColour = Colour.Yellow;
     }
 
 }

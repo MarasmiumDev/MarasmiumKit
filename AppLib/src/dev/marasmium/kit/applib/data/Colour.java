@@ -74,6 +74,23 @@ public class Colour implements Serializable {
     }
 
     /**
+     * Create a new colour from ARGB channel double values
+     * @param alpha Alpha channel (0.0-1.0)
+     * @param red Red channel (0.0-1.0)
+     * @param green Green channel (0.0-1.0)
+     * @param blue Blue channel (0.0-1.0)
+     * @return A colour with the given ARGB channel values
+     */
+    public static Colour Channels(double alpha, double red, double green, double blue) {
+        Colour c = new Colour();
+        c.setAlpha((int)(256.0d * alpha));
+        c.setRed((int)(256.0d * red));
+        c.setGreen((int)(256.0d * green));
+        c.setBlue((int)(256.0d * blue));
+        return c;
+    }
+
+    /**
      * Create a new colour from the bytes of an ARGB integer value
      * @param ARGB Integer with byte values of ARGB channels
      * @return A colour with the given ARGB value
@@ -89,25 +106,6 @@ public class Colour implements Serializable {
      */
     private Colour() {
         this.ARGB = 0x00000000;
-    }
-
-    /**
-     * Compute the colour given by alpha-blending another colour on top of it
-     * @param c A colour to blend over this one
-     * @return This colour with c alpha-blended on top of it
-     */
-    public Colour blend(Colour c) {
-        if (c == null) {
-            return null;
-        }
-        int aUnder = getAlpha();
-        int aOver = c.getAlpha();
-        int aOut255 = ((255 * aOver) + ((255 - aOver) * aUnder));
-        return Colour.Channels(
-                ((255 * c.getRed() * aOver) + ((255 - aOver) * getRed() * aUnder)) / (aOut255),
-                ((255 * c.getGreen() * aOver) + ((255 - aOver) * getGreen() * aUnder)) / (aOut255),
-                ((255 * c.getBlue() * aOver) + ((255 - aOver) * getBlue() * aUnder)) / (aOut255),
-                aOut255 / 255);
     }
 
     /**
@@ -214,6 +212,17 @@ public class Colour implements Serializable {
     @Override
     public String toString() {
         return "colour(" + getAlpha() + ", " + getRed() + ", " + getGreen() + ", " + getBlue() + ")";
+    }
+
+    /**
+     * Make a copy of this colour
+     * @return A copy of this colour
+     */
+    @Override
+    public Colour clone() {
+        Colour c = new Colour();
+        c.ARGB = ARGB;
+        return c;
     }
 
 }
