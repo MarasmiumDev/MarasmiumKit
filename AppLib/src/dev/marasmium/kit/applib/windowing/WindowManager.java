@@ -7,6 +7,7 @@
 
 package dev.marasmium.kit.applib.windowing;
 
+import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLContext;
 import com.jogamp.opengl.GLException;
@@ -17,6 +18,7 @@ import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 
+import javax.swing.SwingUtilities;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -63,10 +65,6 @@ public class WindowManager {
      */
     private GLCanvas canvas = null;
     /**
-     * The OpenGL context for the window
-     */
-    private GLContext context = null;
-    /**
      * Whether the system has requested for the window to close
      */
     private volatile boolean closeRequested = false;
@@ -82,24 +80,41 @@ public class WindowManager {
             return false;
         }
         // Generate Java AWT window frame
-        frame = new Frame();
-        frame.setResizable(false);
-        frame.addWindowListener(new WindowAdapter() {
+        SwingUtilities.invokeLater(() -> {
+            frame = new Frame();
+            frame.setResizable(false);
+            frame.addWindowListener(new WindowAdapter() {
 
-            /**
-             * Callback for window close events
-             * @param e The event to be processed
-             */
-            @Override
-            public void windowClosing(WindowEvent e) {
-                closeRequested = true;
+                /**
+                 * Callback for window close events
+                 * @param e The event to be processed
+                 */
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    closeRequested = true;
+                }
+
+            });
+            try {
+                canvas = new GLCanvas(new GLCapabilities(GLProfile.get(GLProfile.GL3)));
+            } catch (GLException _) {
+                App.Log.write(LogSource.Window, LogLevel.Error, "Failed to initialize JOGL canvas");
+                return;
             }
-
+            canvas.addKeyListener(App.Input.keyboard);
+            canvas.addMouseListener(App.Input.mouse);
+            canvas.addMouseMotionListener(App.Input.mouse);
+            canvas.addMouseWheelListener(App.Input.mouse);
+            try {
+                canvas.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.emptySet());
+                canvas.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, Collections.emptySet());
+            } catch (IllegalArgumentException _) {
+                App.Log.write(LogSource.Window, LogLevel.Error, "Failed to disable focus tabbing");
+                return;
+            }
+            canvas.addGLEventListener(App.Graphics);
+            frame.add(canvas);
         });
-        frame.addKeyListener(App.Input.keyboard);
-        frame.addMouseListener(App.Input.mouse);
-        frame.addMouseMotionListener(App.Input.mouse);
-        frame.addMouseWheelListener(App.Input.mouse);
         App.Log.write(LogSource.Window, LogLevel.Info, "Generated new window frame");
         // Set initial window parameters
         setMonitor(config.monitor);
@@ -116,50 +131,11 @@ public class WindowManager {
             return false;
         }
         closeRequested = false;
-        // Open AWT window frame
-        try {
-            canvas = new GLCanvas(new GLCapabilities(GLProfile.get(GLProfile.GL3)));
-        } catch (GLException _) {
-            App.Log.write(LogSource.Window, LogLevel.Error, "Failed to initialize JOGL canvas");
-            return false;
-        }
-        frame.add(canvas);
-        frame.pack();
-        Vector monitorPosition = getMonitor().getPosition();
-        Vector monitorDimensions = getMonitor().getDimensions();
-        Vector windowPosition = monitorPosition
-                .add(monitorDimensions.scalarDivide(2.0d))
-                .subtract(dimensions.scalarDivide(2.0d));
-        frame.setLocation((int)windowPosition.getX(), (int)windowPosition.getY());
-        frame.setVisible(true);
-        try {
-            frame.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.emptySet());
-            frame.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, Collections.emptySet());
-        } catch (IllegalArgumentException _) {
-            App.Log.write(LogSource.Window, LogLevel.Error, "Failed to disable focus tabbing");
-            return false;
-        }
-        frame.requestFocus();
+        SwingUtilities.invokeLater(() -> {
+            frame.setVisible(true);
+            canvas.requestFocus();
+        });
         // Acquire OpenGL context
-        while (canvas.getContext() == null) {
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException _) {
-                App.Log.write(LogSource.Window, LogLevel.Error, "Interrupted while waiting for OpenGL context to ",
-                        "become available");
-                return false;
-            }
-        }
-        context = canvas.getContext();
-        while (!context.isCreated()) {
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException _) {
-                App.Log.write(LogSource.Window, LogLevel.Error, "Interrupted while waiting for OpenGL context to be ",
-                        "created");
-                return false;
-            }
-        }
         App.Log.write(LogSource.Window, LogLevel.Info, "Initialized windowing system");
         return true;
     }
@@ -181,10 +157,6 @@ public class WindowManager {
             monitor = null;
         }
         // Close the window
-        if (context != null) {
-            context.destroy();
-            context = null;
-        }
         if (canvas != null) {
             canvas.destroy();
             canvas = null;
@@ -218,11 +190,9 @@ public class WindowManager {
             App.Log.write(LogSource.Window, LogLevel.Warning, "No title provided");
             return false;
         }
-        if (frame == null) {
-            App.Log.write(LogSource.Window, LogLevel.Warning, "Failed to set window title, not initialized");
-            return false;
-        }
-        frame.setTitle(title);
+        SwingUtilities.invokeLater(() -> {
+            frame.setTitle(title);
+        });
         this.title = title;
         App.Log.write(LogSource.Window, LogLevel.Info, "Set window title \"", title, "\"");
         return true;
@@ -250,10 +220,6 @@ public class WindowManager {
             App.Log.write(LogSource.Window, LogLevel.Warning, "No dimensions provided");
             return false;
         }
-        if (frame == null) {
-            App.Log.write(LogSource.Window, LogLevel.Warning, "Failed to set window dimensions, not initialized");
-            return false;
-        }
         // Update windowed mode dimensions
         windowedDimensions = dimensions;
         if (fullscreen) {
@@ -261,10 +227,19 @@ public class WindowManager {
             return true;
         }
         // Set current window dimensions (in windowed mode)
-        frame.setPreferredSize(new Dimension((int)dimensions.getX(), (int)dimensions.getY()));
-        frame.setMinimumSize(new Dimension((int)dimensions.getX(), (int)dimensions.getY()));
-        frame.setMaximumSize(new Dimension((int)dimensions.getX(), (int)dimensions.getY()));
-        frame.setSize((int)dimensions.getX(), (int)dimensions.getY());
+        SwingUtilities.invokeLater(() -> {
+            canvas.setPreferredSize(new Dimension((int)dimensions.getX(), (int)dimensions.getY()));
+            canvas.setMinimumSize(new Dimension((int)dimensions.getX(), (int)dimensions.getY()));
+            canvas.setMaximumSize(new Dimension((int)dimensions.getX(), (int)dimensions.getY()));
+            canvas.setSize((int)dimensions.getX(), (int)dimensions.getY());
+            frame.pack();
+            Vector monitorPosition = getMonitor().getPosition();
+            Vector monitorDimensions = getMonitor().getDimensions();
+            Vector windowPosition = monitorPosition
+                    .add(monitorDimensions.scalarDivide(2.0d))
+                    .subtract(dimensions.scalarDivide(2.0d));
+            frame.setLocation((int)windowPosition.getX(), (int)windowPosition.getY());
+        });
         this.dimensions = dimensions;
         App.Log.write(LogSource.Window, LogLevel.Info, "Set window dimensions ", dimensions);
         return true;
@@ -299,25 +274,19 @@ public class WindowManager {
             return false;
         }
         // Set fullscreen mode
-        if (fullscreen) {
-            // Set to fullscreen on appropriate monitor in update current dimensions and windowed mode dimensions
-            App.Log.write(LogSource.Window, LogLevel.Info, "Setting window to fullscreen mode");
-            gd.setFullScreenWindow(frame);
+        if (fullscreen && !this.fullscreen) {
             Vector windowedDimensions = this.windowedDimensions;
-            if (!setDimensions(Vector.Cartesian(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight()))) {
-                App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set window dimensions for fullscreen ",
-                        "monitor");
-                return false;
-            }
-            this.windowedDimensions = windowedDimensions;
+            Vector padding = Vector.Cartesian(frame.getInsets().left + frame.getInsets().right,
+                    frame.getInsets().top + frame.getInsets().bottom);
+            setDimensions(Vector.Cartesian(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight()));
+            this.windowedDimensions = windowedDimensions.add(padding);
             this.fullscreen = true;
-        } else {
-            // Switch to windowed mode (reset title and windowed mode dimensions)
-            App.Log.write(LogSource.Window, LogLevel.Info, "Setting window to windowed mode");
+            gd.setFullScreenWindow(frame);
+        } else if (!fullscreen && this.fullscreen) {
             gd.setFullScreenWindow(null);
             this.fullscreen = false;
-            setTitle(title);
             setDimensions(windowedDimensions);
+            dimensions = windowedDimensions;
         }
         return true;
     }
@@ -375,22 +344,6 @@ public class WindowManager {
      */
     public Frame getFrame() {
         return frame;
-    }
-
-    /**
-     * Get the JOGL canvas for rendering graphics in the window
-     * @return The JOGL canvas for the window
-     */
-    public GLCanvas getCanvas() {
-        return canvas;
-    }
-
-    /**
-     * Get the OpenGL context for the window
-     * @return The OpenGL context for the window
-     */
-    public GLContext getContext() {
-        return context;
     }
 
     /**

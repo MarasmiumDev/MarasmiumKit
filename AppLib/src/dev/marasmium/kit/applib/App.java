@@ -86,6 +86,12 @@ public class App {
             return false;
         }
         Log.write(LogSource.App, LogLevel.Info, "Initialized user-input management system");
+        // Initialize the graphics system
+        if (!Graphics.initialize(config.graphics)) {
+            Log.write(LogSource.App, LogLevel.Error, "Failed to initialize graphics system");
+            return false;
+        }
+        Log.write(LogSource.App, LogLevel.Info, "Initialized graphics system");
         // Initialize the windowing system
         if (!Window.initialize(config.window)) {
             Log.write(LogSource.App, LogLevel.Error, "Failed to initialize windowing system");
@@ -109,12 +115,6 @@ public class App {
             Log.write(LogSource.App, LogLevel.Error, "Failed to initialize audio system");
             return false;
         }
-        // Initialize the graphics system
-        if (!Graphics.initialize(config.graphics)) {
-            Log.write(LogSource.App, LogLevel.Error, "Failed to initialize graphics system");
-            return false;
-        }
-        Log.write(LogSource.App, LogLevel.Info, "Initialized graphics system");
         // Set initial scene
         if (!SetCurrentScene(config.initialScene)) {
             Log.write(LogSource.App, LogLevel.Error, "Failed to set current scene");
@@ -151,8 +151,9 @@ public class App {
             Network.update();
             Audio.update();
             // Draw graphics
+            Graphics.beginFrame();
             Current_Scene.draw();
-            Graphics.draw();
+            Graphics.endFrame();
             // Perform timed updates
             deltaElapsedMS = System.currentTimeMillis() - deltaStartMS;
             deltaStartMS = System.currentTimeMillis();
@@ -193,12 +194,6 @@ public class App {
             scene.destroy();
         }
         Scenes.clear();
-        // Free the graphics system
-        Log.write(LogSource.App, LogLevel.Info, "Destroying graphics system");
-        if (!Graphics.destroy()) {
-            Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy graphics system");
-            success = false;
-        }
         // Free the audio system
         Log.write(LogSource.App, LogLevel.Info, "Destroying audio system");
         if (!Audio.destroy()) {
@@ -218,6 +213,12 @@ public class App {
         Log.write(LogSource.App, LogLevel.Info, "Destroying windowing system");
         if (!Window.destroy()) {
             Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy windowing system");
+            success = false;
+        }
+        // Free the graphics system
+        Log.write(LogSource.App, LogLevel.Info, "Destroying graphics system");
+        if (!Graphics.destroy()) {
+            Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy graphics system");
             success = false;
         }
         // Free the user-input management system

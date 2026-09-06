@@ -8,17 +8,19 @@
 package dev.marasmium.kit.applib.graphics;
 
 import com.jogamp.opengl.GL3;
-import com.jogamp.opengl.GLContext;
-import com.jogamp.opengl.GLException;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLEventListener;
 import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.data.Colour;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * The main class of the MarasmiumKit application framework's graphics system
  */
-public class GraphicsManager {
+public class GraphicsManager implements GLEventListener {
 
     /**
      * The target (fractional) number of graphics frames to process per millisecond
@@ -36,6 +38,10 @@ public class GraphicsManager {
      * The colour to clear the window to each frame
      */
     private Colour clearColour = null;
+    /**
+     * Scope lock for thread-safety modifying/reading the window clear colour
+     */
+    private final ReentrantLock clearColourLock = new ReentrantLock();
 
     /**
      * Initialize the application framework's graphics system
@@ -66,13 +72,12 @@ public class GraphicsManager {
         return true;
     }
 
-    public void draw() {
-        App.Window.getContext().makeCurrent();
-        GL3 gl3 = App.Window.getContext().getGL().getGL3();
-        gl3.glViewport(0, 0, (int)App.Window.getDimensions().getX(), (int)App.Window.getDimensions().getY());
-        gl3.glClearColor(clearColour.getRed(), clearColour.getGreen(), clearColour.getBlue(), clearColour.getAlpha());
-        gl3.glClear(gl3.GL_COLOR_BUFFER_BIT | gl3.GL_DEPTH_BUFFER_BIT);
-        App.Window.getContext().release();
+    public void beginFrame() {
+
+    }
+
+    public void endFrame() {
+
     }
 
     /**
@@ -158,6 +163,13 @@ public class GraphicsManager {
      * @return The graphics system's clear colour
      */
     public Colour getClearColour() {
+        clearColourLock.lock();
+        Colour clearColour = this.clearColour;
+        try {
+            clearColourLock.unlock();
+        } catch (IllegalMonitorStateException _) {
+            return null;
+        }
         return clearColour;
     }
 
@@ -170,8 +182,42 @@ public class GraphicsManager {
         if (clearColour == null) {
             return false;
         }
+        clearColourLock.lock();
         this.clearColour = clearColour;
+        try {
+            clearColourLock.unlock();
+        } catch (IllegalMonitorStateException _) {
+            return false;
+        }
         return true;
+    }
+
+    @Override
+    public void init(GLAutoDrawable drawable) {
+        GL3 gl3 = drawable.getGL().getGL3();
+        App.Log.write(LogSource.Graphics, LogLevel.Info, "Initializing OpenGL parameters");
+        String OpenGLVersion = gl3.glGetString(GL3.GL_VERSION);
+        App.Log.write(LogSource.Graphics, LogLevel.Info, "OpenGL version \"", OpenGLVersion, "\"");
+
+    }
+
+    @Override
+    public void display(GLAutoDrawable drawable) {
+        GL3 gl3 = drawable.getGL().getGL3();
+        Colour clearColour = getClearColour();
+        gl3.glClearColor(clearColour.getRed(), clearColour.getGreen(), clearColour.getBlue(), clearColour.getAlpha());
+        gl3.glClear(GL3.GL_COLOR_BUFFER_BIT | GL3.GL_DEPTH_BUFFER_BIT);
+    }
+
+    @Override
+    public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
+        GL3 gl3 = drawable.getGL().getGL3();
+        gl3.glViewport(0, 0, width, height);
+    }
+
+    @Override
+    public void dispose(GLAutoDrawable drawable) {
+        App.Log.write(LogSource.Graphics, LogLevel.Info, "Disposing of OpenGL parameters");
     }
 
 }
