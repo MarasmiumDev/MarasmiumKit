@@ -88,6 +88,20 @@ public class TestScene1 extends Scene implements NetListener {
         } else {
             player.getGrowth().setY(0.0d);
         }
+        if (App.Input.keyboard.isKeyPressed(KeyboardKey.H)) {
+            player.setFlippedHorizontally(!player.isFlippedHorizontally());
+        }
+        if (App.Input.keyboard.isKeyPressed(KeyboardKey.V)) {
+            player.setFlippedVertically(!player.isFlippedVertically());
+        }
+        if (App.Input.mouse.isButtonPressed(MouseButton.Left)) {
+            Vector pos = App.Input.mouse.getCursorPosition().elementDivide(App.Window.getDimensions())
+                    .scalarMultiply(2.0d).subtract(Vector.Cartesian(1.0d, 1.0d));
+            Sprite s = new Sprite();
+            s.initialize(pos, 0.0d, Vector.Cartesian(0.25d, 0.25d), Angle.Radians(0.0d),
+                    "Animation/Animation_2.animation");
+            sprites.add(s);
+        }
         return true;
     }
 
@@ -101,6 +115,9 @@ public class TestScene1 extends Scene implements NetListener {
     @Override
     public void update(double deltaFrames) {
         player.update(deltaFrames);
+        for (Sprite sprite : sprites) {
+            sprite.update(deltaFrames);
+        }
         if (frameTimer > App.Graphics.getTargetFPS()) {
             App.Log.write(logSource, LogLevel.Info, "Rendered ", frames, " frames");
             frameTimer = 0.0d;

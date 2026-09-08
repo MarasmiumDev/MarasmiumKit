@@ -112,14 +112,14 @@ public class Animation {
         this.textureID = textureID;
     }
 
-    public Vector getFrameTextureCoordinates(int frameIndex) {
+    public Vector getTexturePosition(int frameIndex) {
         int sheetX = frameIndex % ((int)sheetDimensions.getX());
         int sheetY = (frameIndex - sheetX) / (int)sheetDimensions.getX();
-        Vector textureDimensions = getFrameTextureDimensions();
+        Vector textureDimensions = getTextureDimensions();
         return Vector.Cartesian(sheetX * textureDimensions.getX(), sheetY * textureDimensions.getY());
     }
 
-    public Vector getFrameTextureDimensions() {
+    public Vector getTextureDimensions() {
         return Vector.Cartesian(1.0d / sheetDimensions.getX(), 1.0d / sheetDimensions.getY());
     }
 

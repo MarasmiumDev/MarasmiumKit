@@ -21,6 +21,8 @@ public class Sprite {
     private Angle angle = null;
     private Angle rotation = null;
     private String animationFilePath = null;
+    private boolean flippedHorizontally = false;
+    private boolean flippedVertically = false;
 
     public boolean initialize(Vector position, double depth, Vector dimensions, Angle angle, String animationFilePath) {
         if (!setPosition(position)) {
@@ -45,6 +47,8 @@ public class Sprite {
         if (!setAnimationFilePath(animationFilePath)) {
             return false;
         }
+        setFlippedHorizontally(false);
+        setFlippedVertically(false);
         return true;
     }
 
@@ -62,6 +66,9 @@ public class Sprite {
         growth = null;
         angle = null;
         rotation = null;
+        animationFilePath = null;
+        flippedVertically = false;
+        flippedHorizontally = false;
     }
 
     public Vector getPosition() {
@@ -157,6 +164,22 @@ public class Sprite {
         }
         this.animationFilePath = animationFilePath;
         return true;
+    }
+
+    public boolean isFlippedHorizontally() {
+        return flippedHorizontally;
+    }
+
+    public void setFlippedHorizontally(boolean flippedHorizontally) {
+        this.flippedHorizontally = flippedHorizontally;
+    }
+
+    public boolean isFlippedVertically() {
+        return flippedVertically;
+    }
+
+    public void setFlippedVertically(boolean flippedVertically) {
+        this.flippedVertically = flippedVertically;
     }
 
 }
