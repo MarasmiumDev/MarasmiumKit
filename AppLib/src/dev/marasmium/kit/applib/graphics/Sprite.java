@@ -7,6 +7,7 @@
 
 package dev.marasmium.kit.applib.graphics;
 
+import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.data.Angle;
 import dev.marasmium.kit.applib.data.Colour;
 import dev.marasmium.kit.applib.data.Vector;
@@ -21,6 +22,9 @@ public class Sprite {
     private Angle angle = null;
     private Angle rotation = null;
     private String animationFilePath = null;
+    private int animationFrame = 0;
+    private boolean animationPlaying = false;
+    private double animationTimer = 0.0d;
     private boolean flippedHorizontally = false;
     private boolean flippedVertically = false;
 
@@ -47,6 +51,7 @@ public class Sprite {
         if (!setAnimationFilePath(animationFilePath)) {
             return false;
         }
+        stopAnimation();
         setFlippedHorizontally(false);
         setFlippedVertically(false);
         return true;
@@ -56,6 +61,16 @@ public class Sprite {
         position = position.add(velocity.scalarMultiply(deltaFrames));
         dimensions = dimensions.add(growth.scalarMultiply(deltaFrames));
         angle = angle.add(rotation.scalarMultiply(deltaFrames));
+        if (animationPlaying) {
+            final double targetFPS = App.Assets.getAnimation(animationFilePath).getTargetFPS();
+            final double animationFrameTime = (double)App.Graphics.getTargetFPS() / targetFPS;
+            animationTimer += deltaFrames;
+            if (animationTimer >= animationFrameTime) {
+                animationFrame += 1;
+                animationFrame %= App.Assets.getAnimation(animationFilePath).getFrameCount();
+                animationTimer = 0.0d;
+            }
+        }
     }
 
     public void destroy() {
@@ -67,6 +82,9 @@ public class Sprite {
         angle = null;
         rotation = null;
         animationFilePath = null;
+        animationFrame = 0;
+        animationPlaying = false;
+        animationTimer = 0.0d;
         flippedVertically = false;
         flippedHorizontally = false;
     }
@@ -164,6 +182,36 @@ public class Sprite {
         }
         this.animationFilePath = animationFilePath;
         return true;
+    }
+
+    public int getAnimationFrame() {
+        return animationFrame;
+    }
+
+    public boolean setAnimationFrame(int animationFrame) {
+        if (animationFrame < 0 || animationFrame >= App.Assets.getAnimation(animationFilePath).getFrameCount()) {
+            return false;
+        }
+        this.animationFrame = animationFrame;
+        return true;
+    }
+
+    public boolean isAnimationPlaying() {
+        return animationPlaying;
+    }
+
+    public void playAnimation() {
+        animationPlaying = true;
+    }
+
+    public void pauseAnimation() {
+        animationPlaying = false;
+    }
+
+    public void stopAnimation() {
+        animationPlaying = false;
+        animationFrame = 0;
+        animationTimer = 0.0d;
     }
 
     public boolean isFlippedHorizontally() {

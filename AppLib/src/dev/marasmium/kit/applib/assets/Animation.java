@@ -15,10 +15,12 @@ public class Animation {
     private int targetFPS = 0;
     private Vector sheetDimensions = null;
     private Vector frameDimensions = null;
+    private int frameCount = 0;
     private Colour[] data = null;
     private int textureID = 0;
 
-    public boolean initialize(int targetFPS, Vector sheetDimensions, Vector frameDimensions, Colour[] data) {
+    public boolean initialize(int targetFPS, Vector sheetDimensions, Vector frameDimensions, int frameCount,
+                              Colour[] data) {
         if (!setTargetFPS(targetFPS)) {
             return false;
         }
@@ -26,6 +28,9 @@ public class Animation {
             return false;
         }
         if (!setFrameDimensions(frameDimensions)) {
+            return false;
+        }
+        if (!setFrameCount(frameCount)) {
             return false;
         }
         if (!setData(data)) {
@@ -38,6 +43,7 @@ public class Animation {
         targetFPS = 0;
         sheetDimensions = null;
         frameDimensions = null;
+        frameCount = 0;
         data = null;
         textureID = 0;
     }
@@ -81,6 +87,18 @@ public class Animation {
             return false;
         }
         this.frameDimensions = frameDimensions;
+        return true;
+    }
+
+    public int getFrameCount() {
+        return frameCount;
+    }
+
+    public boolean setFrameCount(int frameCount) {
+        if (frameCount <= 0 || frameCount > (int)sheetDimensions.getElementProduct()) {
+            return false;
+        }
+        this.frameCount = frameCount;
         return true;
     }
 

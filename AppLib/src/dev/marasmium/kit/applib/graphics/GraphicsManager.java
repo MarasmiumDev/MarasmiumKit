@@ -464,7 +464,7 @@ public class GraphicsManager implements GLEventListener {
                 }
                 textureID = sAnimation.getTextureID();
             }
-            Vector tPosition = sAnimation.getTexturePosition(0);
+            Vector tPosition = sAnimation.getTexturePosition(sprite.getAnimationFrame());
             Vector tDimensions = sAnimation.getTextureDimensions();
             Vector tBL = Vector.Cartesian(tPosition.getX(), tPosition.getY());
             Vector tBR = Vector.Cartesian(tPosition.getX() + tDimensions.getX(), tPosition.getY());

@@ -46,6 +46,7 @@ public class TestScene1 extends Scene implements NetListener {
                 "Animation/Animation_1.animation")) {
             return false;
         }
+        player.playAnimation();
         return true;
     }
 
@@ -100,6 +101,7 @@ public class TestScene1 extends Scene implements NetListener {
             Sprite s = new Sprite();
             s.initialize(pos, 0.0d, Vector.Cartesian(0.25d, 0.25d), Angle.Radians(0.0d),
                     "Animation/Animation_2.animation");
+            s.playAnimation();
             sprites.add(s);
         }
         return true;

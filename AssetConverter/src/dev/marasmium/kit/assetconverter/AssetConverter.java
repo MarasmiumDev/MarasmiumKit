@@ -242,6 +242,21 @@ public class AssetConverter {
             System.out.println("Failed to parse new sheet height");
             return false;
         }
+        System.out.print("Output frame count: ");
+        String frameCountStr;
+        try {
+            frameCountStr = commandLine.nextLine();
+        } catch (NoSuchElementException | IllegalStateException _) {
+            System.out.println("No user input available");
+            return false;
+        }
+        int frameCount;
+        try {
+            frameCount = Integer.parseInt(frameCountStr);
+        } catch (NumberFormatException _) {
+            System.out.println("Failed to parse new frame count");
+            return false;
+        }
         // Convert data to output format
         int imageWidth = inputImage.getWidth();
         int imageHeight = inputImage.getHeight();
@@ -265,7 +280,7 @@ public class AssetConverter {
         // Write converted animation
         Animation animation = new Animation();
         if (!animation.initialize(targetFPS, Vector.Cartesian(sheetWidth, sheetHeight),
-                Vector.Cartesian(imageWidth / sheetWidth, imageHeight / sheetHeight), data)) {
+                Vector.Cartesian(imageWidth / sheetWidth, imageHeight / sheetHeight), frameCount, data)) {
             System.out.println("Failed to initialize animation");
             return false;
         }

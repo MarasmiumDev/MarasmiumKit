@@ -168,6 +168,7 @@ public class AssetManager {
         int sheetHeight = (int)animation.getSheetDimensions().getY();
         int frameWidth = (int)animation.getFrameDimensions().getX();
         int frameHeight = (int)animation.getFrameDimensions().getY();
+        int frameCount = animation.getFrameCount();
         Colour[] data = animation.getData();
         FileOutputStream outputStream;
         try {
@@ -177,6 +178,7 @@ public class AssetManager {
             outputStream.write(ByteBuffer.allocate(Integer.BYTES).putInt(sheetHeight).array());
             outputStream.write(ByteBuffer.allocate(Integer.BYTES).putInt(frameWidth).array());
             outputStream.write(ByteBuffer.allocate(Integer.BYTES).putInt(frameHeight).array());
+            outputStream.write(ByteBuffer.allocate(Integer.BYTES).putInt(frameCount).array());
             for (Colour c : data) {
                 outputStream.write(ByteBuffer.allocate(Integer.BYTES).putInt(c.getRGBA()).array());
             }
@@ -499,10 +501,11 @@ public class AssetManager {
         int targetFPS;
         Vector sheetDimensions = Vector.Cartesian(0.0d, 0.0d);
         Vector frameDimensions = Vector.Cartesian(0.0d, 0.0d);
+        int frameCount;
         Colour[] data;
         byte[] buffer = new byte[Integer.BYTES];
         int offset = 0;
-        if (fileData.length < 5 * Integer.BYTES) {
+        if (fileData.length < 6 * Integer.BYTES) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to parse animation data from \"",
                     basePath + filePath, "\", file is smaller than header size");
             return false;
@@ -523,6 +526,9 @@ public class AssetManager {
             System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
             offset += Integer.BYTES;
             frameDimensions.setY(ByteBuffer.wrap(buffer).getInt());
+            System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
+            offset += Integer.BYTES;
+            frameCount = ByteBuffer.wrap(buffer).getInt();
         } catch (IndexOutOfBoundsException | ArrayStoreException | NullPointerException | BufferUnderflowException _) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to parse animation data from \"",
                     basePath + filePath, "\", data invalid");
@@ -542,7 +548,7 @@ public class AssetManager {
         }
         // Construct animation with parsed data and place in cache
         Animation animation = new Animation();
-        if (!animation.initialize(targetFPS, sheetDimensions, frameDimensions, data)) {
+        if (!animation.initialize(targetFPS, sheetDimensions, frameDimensions, frameCount, data)) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to initialize animation, invalid parameters");
             return false;
         }
