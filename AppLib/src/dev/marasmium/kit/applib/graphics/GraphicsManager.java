@@ -83,6 +83,10 @@ public class GraphicsManager implements GLEventListener {
      * The GLSL shader program ID used by the graphics system
      */
     private int shaderID = 0;
+    /**
+     * The set of IDs of textures uploaded to OpenGL video memory
+     */
+    private final ArrayList<Integer> textureIDs = new ArrayList<>();
 
     /**
      * Initialize the application framework's graphics system
@@ -279,10 +283,8 @@ public class GraphicsManager implements GLEventListener {
                 """
                     #version 330 core
                     layout (location = 0) in vec3 inPosition;
-                    layout (location = 1) in vec4 spriteColour;
                     out vec4 vertexColour;
                     void main() {
-                        vertexColour = spriteColour;
                         gl_Position = vec4(inPosition, 1.0);
                     }
                 """,
@@ -307,10 +309,9 @@ public class GraphicsManager implements GLEventListener {
         final String[] fragmentSources = {
                 """
                     #version 330 core
-                    in vec4 vertexColour;
                     out vec4 outColour;
                     void main() {
-                        outColour = vertexColour;
+                        outColour = vec4(1.0, 1.0, 1.0, 1.0);
                     }
                 """,
         };
@@ -347,10 +348,8 @@ public class GraphicsManager implements GLEventListener {
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Generated VAO ", VAOIDs[0], ", VBO ", VBOIDs[0], ", and IBO ",
                 IBOIDs[0]);
         // Configure vertex attributes
-        gl3.glVertexAttribPointer(0, 3, GL3.GL_DOUBLE, false, 7 * Double.BYTES, 0);
-        gl3.glVertexAttribPointer(1, 4, GL3.GL_DOUBLE, false, 7 * Double.BYTES, 3 * Double.BYTES);
+        gl3.glVertexAttribPointer(0, 3, GL3.GL_DOUBLE, false, 3 * Double.BYTES, 0);
         gl3.glEnableVertexAttribArray(0);
-        gl3.glEnableVertexAttribArray(1);
         gl3.glBindVertexArray(0);
     }
 
@@ -360,7 +359,7 @@ public class GraphicsManager implements GLEventListener {
         // Gather geometry
         int spriteCount = sprites.size();
         final int verticesPerSprite = 4;
-        final int doublesPerVertex = 7;
+        final int doublesPerVertex = 3;
         final int indicesPerSprite = 6;
         final double[] vertices = new double[verticesPerSprite * doublesPerVertex * spriteCount];
         final int[] indices = new int[indicesPerSprite * spriteCount];
@@ -371,24 +370,19 @@ public class GraphicsManager implements GLEventListener {
             Vector dimensions = sprite.getDimensions();
             Angle angle = sprite.getAngle();
             Vector midpoint = position.add(dimensions.scalarMultiply(0.5d));
-            Vector BL = Vector.Cartesian(position.getX(), position.getY());
-            BL = BL.rotateAbout(angle, midpoint);
-            Vector BR = Vector.Cartesian(position.getX() + dimensions.getX(), position.getY());
-            BR = BR.rotateAbout(angle, midpoint);
-            Vector TR = Vector.Cartesian(position.getX() + dimensions.getX(), position.getY() + dimensions.getY());
-            TR = TR.rotateAbout(angle, midpoint);
-            Vector TL = Vector.Cartesian(position.getX(), position.getY() + dimensions.getY());
-            TL = TL.rotateAbout(angle, midpoint);
-            Colour colour = sprite.getColour();
+            Vector SBL = Vector.Cartesian(position.getX(), position.getY());
+            SBL = SBL.rotateAbout(angle, midpoint);
+            Vector SBR = Vector.Cartesian(position.getX() + dimensions.getX(), position.getY());
+            SBR = SBR.rotateAbout(angle, midpoint);
+            Vector STR = Vector.Cartesian(position.getX() + dimensions.getX(), position.getY() + dimensions.getY());
+            STR = STR.rotateAbout(angle, midpoint);
+            Vector STL = Vector.Cartesian(position.getX(), position.getY() + dimensions.getY());
+            STL = STL.rotateAbout(angle, midpoint);
             double[] sVertices = {
-                    BL.getX(), BL.getY(), depth,
-                    (double)colour.getRed() / 255.0d, (double)colour.getGreen() / 255.0d, (double)colour.getBlue() / 255.0d, (double)colour.getAlpha() / 255.0d,
-                    BR.getX(), BR.getY(), depth,
-                    (double)colour.getRed() / 255.0d, (double)colour.getGreen() / 255.0d, (double)colour.getBlue() / 255.0d, (double)colour.getAlpha() / 255.0d,
-                    TR.getX(), TR.getY(), depth,
-                    (double)colour.getRed() / 255.0d, (double)colour.getGreen() / 255.0d, (double)colour.getBlue() / 255.0d, (double)colour.getAlpha() / 255.0d,
-                    TL.getX(), TL.getY(), depth,
-                    (double)colour.getRed() / 255.0d, (double)colour.getGreen() / 255.0d, (double)colour.getBlue() / 255.0d, (double)colour.getAlpha() / 255.0d,
+                    SBL.getX(), SBL.getY(), depth,
+                    SBR.getX(), SBR.getY(), depth,
+                    STR.getX(), STR.getY(), depth,
+                    STL.getX(), STL.getY(), depth,
             };
             System.arraycopy(sVertices, 0, vertices, sIndex * sVertices.length, sVertices.length);
             int[] sIndices = {

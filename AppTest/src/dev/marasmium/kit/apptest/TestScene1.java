@@ -9,6 +9,7 @@ package dev.marasmium.kit.apptest;
 
 import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.Scene;
+import dev.marasmium.kit.applib.assets.Animation;
 import dev.marasmium.kit.applib.data.Angle;
 import dev.marasmium.kit.applib.data.Colour;
 import dev.marasmium.kit.applib.data.Vector;
@@ -27,11 +28,10 @@ import java.util.Random;
 public class TestScene1 extends Scene implements NetListener {
 
     private final LogSource logSource = new LogSource("Test Scene 1");
-    private final ArrayList<Sprite> sprites = new ArrayList<>();
     private final Sprite player = new Sprite();
+    private final ArrayList<Sprite> sprites = new ArrayList<>();
     private int frames = 0;
     private double frameTimer = 0.0d;
-    private double spriteTimer = 0.0d;
 
     @Override
     public boolean initialize() {
@@ -42,8 +42,10 @@ public class TestScene1 extends Scene implements NetListener {
     @Override
     public boolean enter(Scene lastScene) {
         App.Log.write(logSource, LogLevel.Info, "Entering test scene 1");
-        player.initialize(Vector.Cartesian(0.0d, 0.0d), 1.0d, Vector.Cartesian(0.25d, 0.25d), Angle.Radians(0.0d),
-                Colour.Blue);
+        if (!player.initialize(Vector.Cartesian(0.0d, 0.0d), 1.0d, Vector.Cartesian(0.25d, 0.25d), Angle.Radians(0.0d),
+                "Animation/Animation_1.animation")) {
+            return false;
+        }
         return true;
     }
 
@@ -91,35 +93,20 @@ public class TestScene1 extends Scene implements NetListener {
 
     @Override
     public void draw() {
-        App.Graphics.submit(sprites);
         App.Graphics.submit(player);
+        App.Graphics.submit(sprites);
         frames++;
     }
 
     @Override
     public void update(double deltaFrames) {
-        for (Sprite sprite : sprites) {
-            sprite.update(deltaFrames);
-        }
         player.update(deltaFrames);
         if (frameTimer > App.Graphics.getTargetFPS()) {
-            App.Log.write(logSource, LogLevel.Info, "Rendered ", frames, " frames of ", sprites.size(), " sprites");
+            App.Log.write(logSource, LogLevel.Info, "Rendered ", frames, " frames");
             frameTimer = 0.0d;
             frames = 0;
         }
-        if (spriteTimer > App.Graphics.getTargetFPS()) {
-            Sprite sprite = new Sprite();
-            sprite.initialize(Vector.Cartesian(Math.random() * 2.0d - 1.0d, Math.random() * 2.0d - 1.0d), 0.0d,
-                    Vector.Cartesian(Math.random() * 0.75d, Math.random() * 0.75d), Angle.Radians(0.0d),
-                    Colour.Channels(Math.random(), Math.random(), Math.random(), Math.random()));
-            sprite.setVelocity(Vector.Cartesian(Math.random() * 0.02d - 0.01d, Math.random() * 0.02d - 0.01d));
-            sprite.setGrowth(Vector.Cartesian(Math.random() * 0.02d - 0.01d, Math.random() * 0.02d - 0.01d));
-            sprite.setRotation(Angle.Radians(Math.random() * 0.01d - 0.005d));
-            sprites.add(sprite);
-            spriteTimer = 0.0d;
-        }
         frameTimer += deltaFrames;
-        spriteTimer += deltaFrames;
     }
 
     @Override

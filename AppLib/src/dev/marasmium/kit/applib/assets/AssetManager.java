@@ -8,6 +8,8 @@
 package dev.marasmium.kit.applib.assets;
 
 import dev.marasmium.kit.applib.App;
+import dev.marasmium.kit.applib.data.Colour;
+import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 
@@ -35,6 +37,10 @@ public class AssetManager {
      * The set of audio tracks cached in memory mapped to their file paths
      */
     private final HashMap<String, AudioTrack> audioTracks = new HashMap<>();
+    /**
+     * The set of animations cached in memory mapped to their file paths
+     */
+    private final HashMap<String, Animation> animations = new HashMap<>();
 
     /**
      * Initialize the MarasmiumKit application framework's asset management system
@@ -103,14 +109,80 @@ public class AssetManager {
         FileOutputStream outputStream;
         try {
             outputStream = new FileOutputStream(file);
-            outputStream.write(ByteBuffer.allocate(4).putInt(audioTrack.getSampleRate()).array());
-            outputStream.write(ByteBuffer.allocate(4).putInt(audioTrack.getSampleSize()).array());
-            outputStream.write(ByteBuffer.allocate(4).putInt(audioTrack.getChannelCount()).array());
-            outputStream.write(ByteBuffer.allocate(4).putInt(audioTrack.getDataSize()).array());
+            outputStream.write(ByteBuffer.allocate(Integer.BYTES).putInt(audioTrack.getSampleRate()).array());
+            outputStream.write(ByteBuffer.allocate(Integer.BYTES).putInt(audioTrack.getSampleSize()).array());
+            outputStream.write(ByteBuffer.allocate(Integer.BYTES).putInt(audioTrack.getChannelCount()).array());
+            outputStream.write(ByteBuffer.allocate(Integer.BYTES).putInt(audioTrack.getDataSize()).array());
             outputStream.write(audioTrack.getData());
             outputStream.close();
         } catch (IOException | BufferOverflowException | ReadOnlyBufferException _) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write audio track data to file at \"",
+                    basePath + filePath, "\"");
+            return false;
+        }
+        return true;
+    }
+
+    public boolean writeAnimation(Animation animation, String filePath) {
+        // Ensure output file is accessible
+        if (basePath == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
+            return false;
+        }
+        if (animation == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write animation, none provided");
+            return false;
+        }
+        if (filePath == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write animation, no file path provided");
+            return false;
+        }
+        if (filePath.isEmpty()) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write animation, empty file path provided");
+            return false;
+        }
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Writing animation ", animation, " to \"", basePath + filePath,
+                "\"");
+        File file = new File(basePath + filePath);
+        if (!file.exists()) {
+            try {
+                if (!file.createNewFile()) {
+                    App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to create new file for animation at \"",
+                            basePath + filePath, "\"");
+                    return false;
+                }
+            } catch (IOException _) {
+                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to create new file for animation at\"",
+                        basePath + filePath, "\"");
+                return false;
+            }
+        }
+        if (!file.canWrite()) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Cannot write animation to file at \"",
+                    basePath + filePath, "\"");
+            return false;
+        }
+        // Write animation contents
+        int targetFPS = animation.getTargetFPS();
+        int sheetWidth = (int)animation.getSheetDimensions().getX();
+        int sheetHeight = (int)animation.getSheetDimensions().getY();
+        int frameWidth = (int)animation.getFrameDimensions().getX();
+        int frameHeight = (int)animation.getFrameDimensions().getY();
+        Colour[] data = animation.getData();
+        FileOutputStream outputStream;
+        try {
+            outputStream = new FileOutputStream(file);
+            outputStream.write(ByteBuffer.allocate(Integer.BYTES).putInt(targetFPS).array());
+            outputStream.write(ByteBuffer.allocate(Integer.BYTES).putInt(sheetWidth).array());
+            outputStream.write(ByteBuffer.allocate(Integer.BYTES).putInt(sheetHeight).array());
+            outputStream.write(ByteBuffer.allocate(Integer.BYTES).putInt(frameWidth).array());
+            outputStream.write(ByteBuffer.allocate(Integer.BYTES).putInt(frameHeight).array());
+            for (Colour c : data) {
+                outputStream.write(ByteBuffer.allocate(Integer.BYTES).putInt(c.getRGBA()).array());
+            }
+            outputStream.close();
+        } catch (IOException | BufferOverflowException | ReadOnlyBufferException _) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write animation data to file at \"",
                     basePath + filePath, "\"");
             return false;
         }
@@ -126,6 +198,14 @@ public class AssetManager {
         // Free audio tracks
         App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing ", audioTracks.size(), " audio tracks");
         for (HashMap.Entry<String, AudioTrack> entry : audioTracks.entrySet()) {
+            if (entry.getValue() != null) {
+                entry.getValue().destroy();
+            }
+        }
+        audioTracks.clear();
+        // Free animations
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing ", animations.size(), " animations");
+        for (HashMap.Entry<String, Animation> entry : animations.entrySet()) {
             if (entry.getValue() != null) {
                 entry.getValue().destroy();
             }
@@ -200,6 +280,30 @@ public class AssetManager {
         return audioTracks.get(filePath);
     }
 
+    public Animation getAnimation(String filePath) {
+        if (basePath == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
+            return null;
+        }
+        if (filePath == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "No file path provided to retrieve animation");
+            return null;
+        }
+        if (filePath.isEmpty()) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Empty file path provided to retrieve animation");
+            return null;
+        }
+        // Load if not in memory
+        if (!animations.containsKey(filePath)) {
+            if (!loadAnimation(filePath)) {
+                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to load animation track from \"",
+                        basePath + filePath, "\"");
+                return null;
+            }
+        }
+        return animations.get(filePath);
+    }
+
     /**
      * Remove an audio track from the asset management system's cache
      * @param filePath The file path of the audio track to free in the base asset path
@@ -227,6 +331,30 @@ public class AssetManager {
             audioTracks.get(filePath).destroy();
         }
         return audioTracks.remove(filePath) != null;
+    }
+
+    public boolean freeAnimation(String filePath) {
+        if (basePath == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
+            return false;
+        }
+        if (filePath == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "No file path provided to free animation");
+            return false;
+        }
+        if (filePath.isEmpty()) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Empty file path provided to free animation");
+            return false;
+        }
+        if (!animations.containsKey(filePath)) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "File path provided to free animation not loaded");
+            return false;
+        }
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing animation at \"", basePath + filePath, "\"");
+        if (animations.get(filePath) != null) {
+            animations.get(filePath).destroy();
+        }
+        return animations.remove(filePath) != null;
     }
 
     /**
@@ -279,25 +407,25 @@ public class AssetManager {
         int channelCount;
         int dataSize;
         byte[] data;
-        byte[] buffer = new byte[4];
+        byte[] buffer = new byte[Integer.BYTES];
         int offset = 0;
-        if (fileData.length < 16) {
+        if (fileData.length < 4 * Integer.BYTES) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to parse audio data from \"", basePath + filePath,
                     "\", file is smaller than header size");
             return false;
         }
         try {
-            System.arraycopy(fileData, offset, buffer, 0, 4);
-            offset += 4;
+            System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
+            offset += Integer.BYTES;
             sampleRate = ByteBuffer.wrap(buffer).getInt();
-            System.arraycopy(fileData, offset, buffer, 0, 4);
-            offset += 4;
+            System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
+            offset += Integer.BYTES;
             sampleSize = ByteBuffer.wrap(buffer).getInt();
-            System.arraycopy(fileData, offset, buffer, 0, 4);
-            offset += 4;
+            System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
+            offset += Integer.BYTES;
             channelCount = ByteBuffer.wrap(buffer).getInt();
-            System.arraycopy(fileData, offset, buffer, 0, 4);
-            offset += 4;
+            System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
+            offset += Integer.BYTES;
             dataSize = ByteBuffer.wrap(buffer).getInt();
         } catch (IndexOutOfBoundsException | ArrayStoreException | NullPointerException | BufferUnderflowException _) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to parse audio data from \"", basePath + filePath,
@@ -325,6 +453,102 @@ public class AssetManager {
         App.Log.write(LogSource.Assets, LogLevel.Info, "Loaded audio track ", audioTrack, " from \"",
                 basePath + filePath, "\"");
         audioTracks.put(filePath, audioTrack);
+        return true;
+    }
+
+    public boolean loadAnimation(String filePath) {
+        // Ensure the file path is accessible
+        if (basePath == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
+            return false;
+        }
+        if (filePath == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "No file path provided to load animation");
+            return false;
+        }
+        if (filePath.isEmpty()) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Empty file path provided to load animation");
+            return false;
+        }
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Loading animation from \"", basePath + filePath, "\"");
+        File file = new File(basePath + filePath);
+        if (!file.canRead()) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to load animation at \"", basePath + filePath,
+                    "\", cannot read from file");
+            return false;
+        }
+        // Read all file data into memory
+        FileInputStream inputStream;
+        try {
+            inputStream = new FileInputStream(file);
+        } catch (FileNotFoundException _) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to load animation at \"", basePath + filePath,
+                    "\", cannot open file");
+            return false;
+        }
+        byte[] fileData;
+        try {
+            fileData = inputStream.readAllBytes();
+            inputStream.close();
+        } catch (IOException _) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to read animation data from \"",
+                    basePath + filePath, "\"");
+            return false;
+        }
+        // Parse file data
+        int targetFPS;
+        Vector sheetDimensions = Vector.Cartesian(0.0d, 0.0d);
+        Vector frameDimensions = Vector.Cartesian(0.0d, 0.0d);
+        Colour[] data;
+        byte[] buffer = new byte[Integer.BYTES];
+        int offset = 0;
+        if (fileData.length < 5 * Integer.BYTES) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to parse animation data from \"",
+                    basePath + filePath, "\", file is smaller than header size");
+            return false;
+        }
+        try {
+            System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
+            offset += Integer.BYTES;
+            targetFPS = ByteBuffer.wrap(buffer).getInt();
+            System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
+            offset += Integer.BYTES;
+            sheetDimensions.setX(ByteBuffer.wrap(buffer).getInt());
+            System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
+            offset += Integer.BYTES;
+            sheetDimensions.setY(ByteBuffer.wrap(buffer).getInt());
+            System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
+            offset += Integer.BYTES;
+            frameDimensions.setX(ByteBuffer.wrap(buffer).getInt());
+            System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
+            offset += Integer.BYTES;
+            frameDimensions.setY(ByteBuffer.wrap(buffer).getInt());
+        } catch (IndexOutOfBoundsException | ArrayStoreException | NullPointerException | BufferUnderflowException _) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to parse animation data from \"",
+                    basePath + filePath, "\", data invalid");
+            return false;
+        }
+        int dataSize = Integer.BYTES * (int)(sheetDimensions.getElementProduct() * frameDimensions.getElementProduct());
+        if (fileData.length < offset + dataSize) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to parse animation data from \"",
+                    basePath + filePath, "\", file is smaller than data size");
+            return false;
+        }
+        data = new Colour[dataSize / Integer.BYTES];
+        for (int i = 0; i < data.length; i++) {
+            System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
+            offset += Integer.BYTES;
+            data[i] = Colour.Bytes(ByteBuffer.wrap(buffer).getInt());
+        }
+        // Construct animation with parsed data and place in cache
+        Animation animation = new Animation();
+        if (!animation.initialize(targetFPS, sheetDimensions, frameDimensions, data)) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to initialize animation, invalid parameters");
+            return false;
+        }
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Loaded animation ", animation, " from \"", basePath + filePath,
+                "\"");
+        animations.put(filePath, animation);
         return true;
     }
 

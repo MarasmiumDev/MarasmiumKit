@@ -333,10 +333,18 @@ public class Vector implements Serializable {
 
     /**
      * Get the sum of the Cartesian coordinates of this vector
-     * @return The sum of this vector coordinates
+     * @return The sum of this vector's coordinates
      */
     public double getElementSum() {
         return x + y;
+    }
+
+    /**
+     * Get the product of the Cartesian coordinates of this vector
+     * @return The product of this vector's coordinates
+     */
+    public double getElementProduct() {
+        return x * y;
     }
 
     /**

@@ -20,9 +20,9 @@ public class Sprite {
     private Vector growth = null;
     private Angle angle = null;
     private Angle rotation = null;
-    private Colour colour = null;
+    private String animationFilePath = null;
 
-    public boolean initialize(Vector position, double depth, Vector dimensions, Angle angle, Colour colour) {
+    public boolean initialize(Vector position, double depth, Vector dimensions, Angle angle, String animationFilePath) {
         if (!setPosition(position)) {
             return false;
         }
@@ -42,7 +42,7 @@ public class Sprite {
         if (!setRotation(Angle.Radians(0.0d))) {
             return false;
         }
-        if (!setColour(colour)) {
+        if (!setAnimationFilePath(animationFilePath)) {
             return false;
         }
         return true;
@@ -144,15 +144,18 @@ public class Sprite {
         return true;
     }
 
-    public Colour getColour() {
-        return colour;
+    public String getAnimationFilePath() {
+        return animationFilePath;
     }
 
-    public boolean setColour(Colour colour) {
-        if (colour == null) {
+    public boolean setAnimationFilePath(String animationFilePath) {
+        if (animationFilePath == null) {
             return false;
         }
-        this.colour = colour;
+        if (animationFilePath.isEmpty()) {
+            return false;
+        }
+        this.animationFilePath = animationFilePath;
         return true;
     }
 
