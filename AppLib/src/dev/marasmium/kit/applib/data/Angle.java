@@ -75,6 +75,14 @@ public class Angle implements Serializable {
 
     /**
      * Construct a zero angle
+     * @return The zero angle
+     */
+    public static Angle Zero() {
+        return new Angle();
+    }
+
+    /**
+     * Construct a zero angle
      */
     private Angle() {
         this.theta = 0.0d;

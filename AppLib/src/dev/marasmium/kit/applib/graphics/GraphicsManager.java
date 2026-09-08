@@ -21,10 +21,10 @@ import dev.marasmium.kit.applib.logging.LogSource;
 
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -56,11 +56,11 @@ public class GraphicsManager implements GLEventListener {
     /**
      * The set of sprites to be rendered in the current frame
      */
-    private final ArrayList<Sprite> sprites = new ArrayList<>();
+    private final HashMap<Camera, ArrayList<Sprite>> spriteGroups = new HashMap<>();
     /**
      * Scope lock for thread-safety modifying/reading the set of sprites in the current frame
      */
-    private final ReentrantLock spritesLock = new ReentrantLock();
+    private final ReentrantLock spriteGroupsLock = new ReentrantLock();
     /**
      * The set of OpenGL vertex array object IDs used by the graphics system
      */
@@ -120,25 +120,30 @@ public class GraphicsManager implements GLEventListener {
     }
 
     public boolean beginFrame() {
-        spritesLock.lock();
-        sprites.clear();
+        spriteGroupsLock.lock();
+        spriteGroups.clear();
         return true;
     }
 
-    public void submit(Sprite sprite) {
-        sprites.add(sprite);
+    public void submit(Camera camera, Sprite sprite) {
+        if (!spriteGroups.containsKey(camera)) {
+            spriteGroups.put(camera, new ArrayList<>());
+        }
+        spriteGroups.get(camera).add(sprite);
     }
 
-    public void submit(List<Sprite> sprites) {
+    public void submit(Camera camera, List<Sprite> sprites) {
         for (Sprite sprite : sprites) {
-            submit(sprite);
+            submit(camera, sprite);
         }
     }
 
     public boolean endFrame() {
-        sprites.sort(Comparator.comparingDouble(Sprite::getDepth));
+        for (HashMap.Entry<Camera, ArrayList<Sprite>> entry : spriteGroups.entrySet()) {
+            entry.getValue().sort(Comparator.comparingDouble(Sprite::getDepth));
+        }
         try {
-            spritesLock.unlock();
+            spriteGroupsLock.unlock();
         } catch (IllegalMonitorStateException _) {
             return false;
         }
@@ -162,10 +167,10 @@ public class GraphicsManager implements GLEventListener {
         } catch (IllegalMonitorStateException _) {
             success = false;
         }
-        spritesLock.lock();
-        sprites.clear();
+        spriteGroupsLock.lock();
+        spriteGroups.clear();
         try {
-            spritesLock.unlock();
+            spriteGroupsLock.unlock();
         } catch (IllegalMonitorStateException _) {
             success = false;
         }
@@ -203,7 +208,8 @@ public class GraphicsManager implements GLEventListener {
         return true;
     }
 
-    private void draw(GL3 gl3, int spriteCount, int textureID, DoubleBuffer vertices, IntBuffer indices) {
+    private void draw(GL3 gl3, int spriteCount, int textureID, float[] cameraMatrix, DoubleBuffer vertices,
+                      IntBuffer indices) {
         final int verticesPerSprite = 4;
         final int doublesPerVertex = 5;
         final int indicesPerSprite = 6;
@@ -224,9 +230,12 @@ public class GraphicsManager implements GLEventListener {
             gl3.glBufferData(GL3.GL_ELEMENT_ARRAY_BUFFER, indexBufferSize, null, GL3.GL_DYNAMIC_DRAW);
         }
         gl3.glBufferSubData(GL3.GL_ELEMENT_ARRAY_BUFFER, 0, indicesSize, indices);
-        // Draw geometry
+        // Set texture and camera matrix
         gl3.glBindTexture(GL3.GL_TEXTURE_2D, textureID);
         gl3.glUseProgram(shaderID);
+        int cameraUniformLocation = gl3.glGetUniformLocation(shaderID, "camera");
+        gl3.glUniformMatrix4fv(cameraUniformLocation, 1, false, cameraMatrix, 0);
+        // Draw geometry
         gl3.glDrawElements(GL3.GL_TRIANGLES, indicesPerSprite * spriteCount, GL3.GL_UNSIGNED_INT, 0);
         gl3.glBindBuffer(GL3.GL_ARRAY_BUFFER, 0);
         gl3.glBindBuffer(GL3.GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -347,10 +356,11 @@ public class GraphicsManager implements GLEventListener {
                     #version 330 core
                     layout (location = 0) in vec3 inSpritePosition;
                     layout (location = 1) in vec2 inTexturePosition;
+                    uniform mat4 camera;
                     out vec2 texturePosition;
                     void main() {
                         texturePosition = inTexturePosition;
-                        gl_Position = vec4(inSpritePosition, 1.0);
+                        gl_Position = camera * vec4(inSpritePosition, 1.0);
                     }
                 """,
         };
@@ -424,7 +434,7 @@ public class GraphicsManager implements GLEventListener {
 
     @Override
     public void display(GLAutoDrawable drawable) {
-        spritesLock.lock();
+        spriteGroupsLock.lock();
         // Clear screen
         GL3 gl3 = drawable.getGL().getGL3();
         Colour clearColour = getClearColour();
@@ -436,86 +446,91 @@ public class GraphicsManager implements GLEventListener {
         int textureID = 0;
         DoubleBuffer vertices = Buffers.newDirectDoubleBuffer(0);
         IntBuffer indices = Buffers.newDirectIntBuffer(0);
-        for (Sprite sprite : sprites) {
-            Vector sPosition = sprite.getPosition();
-            double sDepth = sprite.getDepth();
-            Vector sDimensions = sprite.getDimensions();
-            Angle sAngle = sprite.getAngle();
-            Vector sMidpoint = sPosition.add(sDimensions.scalarMultiply(0.5d));
-            Vector sBL = Vector.Cartesian(sPosition.getX(), sPosition.getY());
-            sBL = sBL.rotateAbout(sAngle, sMidpoint);
-            Vector sBR = Vector.Cartesian(sPosition.getX() + sDimensions.getX(), sPosition.getY());
-            sBR = sBR.rotateAbout(sAngle, sMidpoint);
-            Vector sTR = Vector.Cartesian(sPosition.getX() + sDimensions.getX(), sPosition.getY() + sDimensions.getY());
-            sTR = sTR.rotateAbout(sAngle, sMidpoint);
-            Vector sTL = Vector.Cartesian(sPosition.getX(), sPosition.getY() + sDimensions.getY());
-            sTL = sTL.rotateAbout(sAngle, sMidpoint);
-            Animation sAnimation = App.Assets.getAnimation(sprite.getAnimationFilePath());
-            if (sAnimation.getTextureID() != textureID && spriteCount > 0) {
-                draw(gl3, spriteCount, textureID, vertices, indices);
-                spriteCount = 0;
-                vertices = Buffers.newDirectDoubleBuffer(0);
-                indices = Buffers.newDirectIntBuffer(0);
-            }
-            textureID = sAnimation.getTextureID();
-            if (textureID == 0) {
-                if (!loadTextureID(gl3, sAnimation)) {
-                    continue;
+        for (HashMap.Entry<Camera, ArrayList<Sprite>> entry : spriteGroups.entrySet()) {
+            Camera camera = entry.getKey();
+            ArrayList<Sprite> sprites = entry.getValue();
+            for (Sprite sprite : sprites) {
+                Vector sPosition = sprite.getPosition();
+                double sDepth = sprite.getDepth();
+                Vector sDimensions = sprite.getDimensions();
+                Angle sAngle = sprite.getAngle();
+                Vector sMidpoint = sPosition.add(sDimensions.scalarMultiply(0.5d));
+                Vector sBL = Vector.Cartesian(sPosition.getX(), sPosition.getY());
+                sBL = sBL.rotateAbout(sAngle, sMidpoint);
+                Vector sBR = Vector.Cartesian(sPosition.getX() + sDimensions.getX(), sPosition.getY());
+                sBR = sBR.rotateAbout(sAngle, sMidpoint);
+                Vector sTR = Vector.Cartesian(sPosition.getX() + sDimensions.getX(),
+                        sPosition.getY() + sDimensions.getY());
+                sTR = sTR.rotateAbout(sAngle, sMidpoint);
+                Vector sTL = Vector.Cartesian(sPosition.getX(), sPosition.getY() + sDimensions.getY());
+                sTL = sTL.rotateAbout(sAngle, sMidpoint);
+                Animation sAnimation = App.Assets.getAnimation(sprite.getAnimationFilePath());
+                if (sAnimation.getTextureID() != textureID && spriteCount > 0) {
+                    draw(gl3, spriteCount, textureID, camera.getProjectionMatrix(), vertices, indices);
+                    spriteCount = 0;
+                    vertices = Buffers.newDirectDoubleBuffer(0);
+                    indices = Buffers.newDirectIntBuffer(0);
                 }
                 textureID = sAnimation.getTextureID();
+                if (textureID == 0) {
+                    if (!loadTextureID(gl3, sAnimation)) {
+                        continue;
+                    }
+                    textureID = sAnimation.getTextureID();
+                }
+                Vector tPosition = sAnimation.getTexturePosition(sprite.getAnimationFrame());
+                Vector tDimensions = sAnimation.getTextureDimensions();
+                Vector tBL = Vector.Cartesian(tPosition.getX(), tPosition.getY());
+                Vector tBR = Vector.Cartesian(tPosition.getX() + tDimensions.getX(), tPosition.getY());
+                Vector tTR = Vector.Cartesian(tPosition.getX() + tDimensions.getX(), tPosition.getY() + tDimensions.getY());
+                Vector tTL = Vector.Cartesian(tPosition.getX(), tPosition.getY() + tDimensions.getY());
+                if (sprite.isFlippedHorizontally()) {
+                    Vector copy = tBR.clone();
+                    tBR = tBL.clone();
+                    tBL = copy.clone();
+                    copy = tTR.clone();
+                    tTR = tTL.clone();
+                    tTL = copy.clone();
+                }
+                if (sprite.isFlippedVertically()) {
+                    Vector copy = tBR.clone();
+                    tBR = tTR.clone();
+                    tTR = copy.clone();
+                    copy = tBL.clone();
+                    tBL = tTL.clone();
+                    tTL = copy.clone();
+                }
+                double[] sVertices = {
+                        sBL.getX(), sBL.getY(), sDepth,
+                        tBL.getX(), tBL.getY(),
+                        sBR.getX(), sBR.getY(), sDepth,
+                        tBR.getX(), tBR.getY(),
+                        sTR.getX(), sTR.getY(), sDepth,
+                        tTR.getX(), tTR.getY(),
+                        sTL.getX(), sTL.getY(), sDepth,
+                        tTL.getX(), tTL.getY(),
+                };
+                DoubleBuffer newVertices = Buffers.newDirectDoubleBuffer(vertices.capacity() + sVertices.length);
+                newVertices.put(vertices);
+                newVertices.put(sVertices);
+                vertices = newVertices;
+                vertices.flip();
+                int[] sIndices = {
+                        (spriteCount * 4) + 0, (spriteCount * 4) + 1, (spriteCount * 4) + 2,
+                        (spriteCount * 4) + 2, (spriteCount * 4) + 3, (spriteCount * 4) + 0,
+                };
+                IntBuffer newIndices = Buffers.newDirectIntBuffer(indices.capacity() + sIndices.length);
+                newIndices.put(indices);
+                newIndices.put(sIndices);
+                indices = newIndices;
+                indices.flip();
+                spriteCount++;
             }
-            Vector tPosition = sAnimation.getTexturePosition(sprite.getAnimationFrame());
-            Vector tDimensions = sAnimation.getTextureDimensions();
-            Vector tBL = Vector.Cartesian(tPosition.getX(), tPosition.getY());
-            Vector tBR = Vector.Cartesian(tPosition.getX() + tDimensions.getX(), tPosition.getY());
-            Vector tTR = Vector.Cartesian(tPosition.getX() + tDimensions.getX(), tPosition.getY() + tDimensions.getY());
-            Vector tTL = Vector.Cartesian(tPosition.getX(), tPosition.getY() + tDimensions.getY());
-            if (sprite.isFlippedHorizontally()) {
-                Vector copy = tBR.clone();
-                tBR = tBL.clone();
-                tBL = copy.clone();
-                copy = tTR.clone();
-                tTR = tTL.clone();
-                tTL = copy.clone();
-            }
-            if (sprite.isFlippedVertically()) {
-                Vector copy = tBR.clone();
-                tBR = tTR.clone();
-                tTR = copy.clone();
-                copy = tBL.clone();
-                tBL = tTL.clone();
-                tTL = copy.clone();
-            }
-            double[] sVertices = {
-                    sBL.getX(), sBL.getY(), sDepth,
-                    tBL.getX(), tBL.getY(),
-                    sBR.getX(), sBR.getY(), sDepth,
-                    tBR.getX(), tBR.getY(),
-                    sTR.getX(), sTR.getY(), sDepth,
-                    tTR.getX(), tTR.getY(),
-                    sTL.getX(), sTL.getY(), sDepth,
-                    tTL.getX(), tTL.getY(),
-            };
-            DoubleBuffer newVertices = Buffers.newDirectDoubleBuffer(vertices.capacity() + sVertices.length);
-            newVertices.put(vertices);
-            newVertices.put(sVertices);
-            vertices = newVertices;
-            vertices.flip();
-            int[] sIndices = {
-                    (spriteCount * 4) + 0, (spriteCount * 4) + 1, (spriteCount * 4) + 2,
-                    (spriteCount * 4) + 2, (spriteCount * 4) + 3, (spriteCount * 4) + 0,
-            };
-            IntBuffer newIndices = Buffers.newDirectIntBuffer(indices.capacity() + sIndices.length);
-            newIndices.put(indices);
-            newIndices.put(sIndices);
-            indices = newIndices;
-            indices.flip();
-            spriteCount++;
+            draw(gl3, spriteCount, textureID, camera.getProjectionMatrix(), vertices, indices);
+            gl3.glBindVertexArray(0);
         }
-        draw(gl3, spriteCount, textureID, vertices, indices);
-        gl3.glBindVertexArray(0);
         try {
-            spritesLock.unlock();
+            spriteGroupsLock.unlock();
         } catch (IllegalMonitorStateException _) {
             App.Log.write(LogSource.Graphics, LogLevel.Error, "Failed to unlock sprite scope lock");
         }

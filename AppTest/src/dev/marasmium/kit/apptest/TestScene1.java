@@ -13,6 +13,7 @@ import dev.marasmium.kit.applib.assets.Animation;
 import dev.marasmium.kit.applib.data.Angle;
 import dev.marasmium.kit.applib.data.Colour;
 import dev.marasmium.kit.applib.data.Vector;
+import dev.marasmium.kit.applib.graphics.Camera;
 import dev.marasmium.kit.applib.graphics.Sprite;
 import dev.marasmium.kit.applib.input.KeyboardKey;
 import dev.marasmium.kit.applib.input.MouseButton;
@@ -28,7 +29,7 @@ import java.util.Random;
 public class TestScene1 extends Scene implements NetListener {
 
     private final LogSource logSource = new LogSource("Test Scene 1");
-    private final Sprite player = new Sprite();
+    private final Camera camera = new Camera();
     private final ArrayList<Sprite> sprites = new ArrayList<>();
     private int frames = 0;
     private double frameTimer = 0.0d;
@@ -42,59 +43,13 @@ public class TestScene1 extends Scene implements NetListener {
     @Override
     public boolean enter(Scene lastScene) {
         App.Log.write(logSource, LogLevel.Info, "Entering test scene 1");
-        if (!player.initialize(Vector.Cartesian(0.0d, 0.0d), 1.0d, Vector.Cartesian(0.25d, 0.25d), Angle.Radians(0.0d),
-                "Animation/Animation_1.animation")) {
-            return false;
-        }
-        player.playAnimation();
+        camera.initialize(Vector.Zero(), 1.0d, Angle.Zero());
         return true;
     }
 
     @Override
     public boolean processInput() {
         // Control the player
-        final double speed = 0.01d;
-        if (App.Input.keyboard.isKeyDown(KeyboardKey.A)) {
-            player.getVelocity().setX(-speed);
-        } else if (App.Input.keyboard.isKeyDown(KeyboardKey.D)) {
-            player.getVelocity().setX(speed);
-        } else {
-            player.getVelocity().setX(0.0d);
-        }
-        if (App.Input.keyboard.isKeyDown(KeyboardKey.S)) {
-            player.getVelocity().setY(-speed);
-        } else if (App.Input.keyboard.isKeyDown(KeyboardKey.W)) {
-            player.getVelocity().setY(speed);
-        } else {
-            player.getVelocity().setY(0.0d);
-        }
-        if (App.Input.keyboard.isKeyDown(KeyboardKey.N)) {
-            player.setRotation(Angle.Radians(-speed));
-        } else if (App.Input.keyboard.isKeyDown(KeyboardKey.M)) {
-            player.setRotation(Angle.Radians(speed));
-        } else {
-            player.setRotation(Angle.Radians(0.0d));
-        }
-        if (App.Input.keyboard.isKeyDown(KeyboardKey.Left)) {
-            player.getGrowth().setX(-speed);
-        } else if (App.Input.keyboard.isKeyDown(KeyboardKey.Right)) {
-            player.getGrowth().setX(speed);
-        } else {
-            player.getGrowth().setX(0.0d);
-        }
-        if (App.Input.keyboard.isKeyDown(KeyboardKey.Down)) {
-            player.getGrowth().setY(-speed);
-        } else if (App.Input.keyboard.isKeyDown(KeyboardKey.Up)) {
-            player.getGrowth().setY(speed);
-        } else {
-            player.getGrowth().setY(0.0d);
-        }
-        if (App.Input.keyboard.isKeyPressed(KeyboardKey.H)) {
-            player.setFlippedHorizontally(!player.isFlippedHorizontally());
-        }
-        if (App.Input.keyboard.isKeyPressed(KeyboardKey.V)) {
-            player.setFlippedVertically(!player.isFlippedVertically());
-        }
         if (App.Input.mouse.isButtonPressed(MouseButton.Left)) {
             Vector pos = App.Input.mouse.getCursorPosition().elementDivide(App.Window.getDimensions())
                     .scalarMultiply(2.0d).subtract(Vector.Cartesian(1.0d, 1.0d));
@@ -109,14 +64,12 @@ public class TestScene1 extends Scene implements NetListener {
 
     @Override
     public void draw() {
-        App.Graphics.submit(player);
-        App.Graphics.submit(sprites);
+        App.Graphics.submit(camera, sprites);
         frames++;
     }
 
     @Override
     public void update(double deltaFrames) {
-        player.update(deltaFrames);
         for (Sprite sprite : sprites) {
             sprite.update(deltaFrames);
         }

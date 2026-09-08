@@ -59,6 +59,14 @@ public class Vector implements Serializable {
     }
 
     /**
+     * Create a zero vector
+     * @return The zero vector
+     */
+    public static Vector Zero() {
+        return new Vector();
+    }
+
+    /**
      * Construct a zero vector
      */
     private Vector() {
