@@ -68,7 +68,7 @@ public abstract class Scene implements InputListener, NetListener {
      * Update this scene's time-sensitive logic
      * @param deltaFrames The target number of frames to have elapsed since the last update
      */
-    public abstract void update(double deltaFrames);
+    public abstract void update(float deltaFrames);
 
     /**
      * Leave this scene for another scene in the application framework

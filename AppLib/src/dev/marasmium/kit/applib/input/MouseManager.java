@@ -8,7 +8,9 @@
 package dev.marasmium.kit.applib.input;
 
 import dev.marasmium.kit.applib.App;
+import dev.marasmium.kit.applib.data.Angle;
 import dev.marasmium.kit.applib.data.Vector;
+import dev.marasmium.kit.applib.graphics.Camera;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 
@@ -55,11 +57,11 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
     /**
      * The current position of the mouse cursor on the application framework's window
      */
-    private final Vector cursorPosition = Vector.Cartesian(0.0d, 0.0d);
+    private final Vector cursorPosition = Vector.Zero();
     /**
      * The position of the mouse cursor on the application framework's window in the last logic update
      */
-    private final Vector lastCursorPosition = Vector.Cartesian(0.0d, 0.0d);
+    private final Vector lastCursorPosition = Vector.Zero();
     /**
      * Scope lock for modifying and reading the position of the mouse cursor
      */
@@ -67,7 +69,7 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
     /**
      * The current logic update's accumulated scroll movement
      */
-    private final Vector scrollMovement = Vector.Cartesian(0.0d, 0.0d);
+    private final Vector scrollMovement = Vector.Zero();
     /**
      * Scope lock for modifying and reading the mouse's scroll movement
      */
@@ -147,8 +149,8 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
         scrollMovementLock.lock();
         if (!scrollMovement.isZero()) {
             App.Input.mouseScrollMoved(scrollMovement);
-            scrollMovement.setX(0.0d);
-            scrollMovement.setY(0.0d);
+            scrollMovement.setX(0.0f);
+            scrollMovement.setY(0.0f);
         }
         try {
             scrollMovementLock.unlock();
@@ -233,6 +235,28 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
             App.Log.write(LogSource.Input, LogLevel.Error, "Failed to release cursor position scope lock");
         }
         return cursorPosition;
+    }
+
+    /**
+     * Get the current position of the mouse in world coordinates projected by a camera
+     * @param camera The camera the cursor coordinates are projected through
+     * @return The current position of the mouse cursor in world coordinates
+     */
+    public Vector getCursorPosition(Camera camera) {
+        Vector cursorPos = getCursorPosition();
+        Vector camPos = camera.getPosition();
+        float camScale = camera.getScale();
+        Angle camAngle = camera.getAngle();
+        Vector winDims = App.Window.getDimensions();
+        Vector NDC = Vector.Cartesian((2.0f * cursorPos.getX() / winDims.getX()) - 1.0f,
+                (2.0f * cursorPos.getY() / winDims.getY()) - 1.0f);
+        Vector scalePos = Vector.Cartesian(NDC.getX() * winDims.getX() / (2.0f * camScale),
+                NDC.getY() * winDims.getY() / (2.0f * camScale));
+        float c = (float)Math.cos(camAngle.getRadians());
+        float q = (float)Math.sin(camAngle.getRadians());
+        Vector rotPos = Vector.Cartesian(scalePos.getX() * c - scalePos.getY() * q,
+                scalePos.getX() * q + scalePos.getY() * c);
+        return rotPos.add(camPos);
     }
 
     /**
@@ -337,7 +361,7 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
         }
         cursorPositionLock.lock();
         cursorPosition.setX(e.getX());
-        cursorPosition.setY(App.Window.getDimensions().getY() - (double)e.getY());
+        cursorPosition.setY(App.Window.getDimensions().getY() - (float)e.getY());
         try {
             cursorPositionLock.unlock();
         } catch (IllegalMonitorStateException _) {
@@ -355,11 +379,11 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
             return;
         }
         // Choose scroll movement direction
-        Vector movement = Vector.Cartesian(0.0d, 0.0d);
+        Vector movement = Vector.Zero();
         if (!e.isShiftDown()) {
-            movement.setY(e.getPreciseWheelRotation());
+            movement.setY((float)e.getPreciseWheelRotation());
         } else {
-            movement.setX(e.getPreciseWheelRotation());
+            movement.setX((float)e.getPreciseWheelRotation());
         }
         // Add movement
         scrollMovementLock.lock();

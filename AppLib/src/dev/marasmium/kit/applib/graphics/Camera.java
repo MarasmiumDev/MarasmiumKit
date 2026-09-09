@@ -11,65 +11,53 @@ import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.data.Angle;
 import dev.marasmium.kit.applib.data.Vector;
 
-public class Camera {
+public class Camera extends Body {
 
-    private Vector position = null;
-    private double scale = 0.0d;
-    private Angle angle = null;
+    private float scale = 0.0f;
+    private float zoom = 0.0f;
 
-    public boolean initialize(Vector position, double scale, Angle angle) {
-        if (!setPosition(position)) {
+    public boolean initialize(Vector position, float scale, Angle angle) {
+        if (!super.initialize(position, angle)) {
             return false;
         }
         if (!setScale(scale)) {
             return false;
         }
-        if (setAngle(angle)) {
-            return false;
-        }
+        setZoom(0.0f);
         return true;
+    }
+
+    public void update(float deltaFrames) {
+        super.update(deltaFrames);
+        scale += zoom * deltaFrames;
+        if (scale < 0.0f) {
+            scale = 0.0f;
+        }
     }
 
     public void destroy() {
-        position = null;
-        scale = 0.0d;
-        angle = null;
+        super.destroy();
+        scale = 0.0f;
     }
 
-    public Vector getPosition() {
-        return position;
-    }
-
-    public boolean setPosition(Vector position) {
-        if (position == null) {
-            return false;
-        }
-        this.position = position;
-        return true;
-    }
-
-    public double getScale() {
+    public float getScale() {
         return scale;
     }
 
-    public boolean setScale(double scale) {
-        if (scale <= 0.0d) {
+    public boolean setScale(float scale) {
+        if (scale < 0.0f) {
             return false;
         }
         this.scale = scale;
         return true;
     }
 
-    public Angle getAngle() {
-        return angle;
+    public float getZoom() {
+        return zoom;
     }
 
-    public boolean setAngle(Angle angle) {
-        if (angle == null) {
-            return false;
-        }
-        this.angle = angle;
-        return true;
+    public void setZoom(float zoom) {
+        this.zoom = zoom;
     }
 
     public float[] getProjectionMatrix() {
@@ -81,8 +69,8 @@ public class Camera {
         float height = (float)App.Window.getDimensions().getY();
         float c = (float)Math.cos(theta);
         float q = (float)Math.sin(theta);
-        float sx = (float)(2.0d * scale / width);
-        float sy = (float)(2.0d * scale / height);
+        float sx = (float)(2.0f * scale / width);
+        float sy = (float)(2.0f * scale / height);
         return new float[] {
                 sx * c, -sy * q, 0.0f, 0.0f,
                 sx * q, sy * c, 0.0f, 0.0f,

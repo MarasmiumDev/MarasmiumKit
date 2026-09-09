@@ -145,14 +145,14 @@ public class AudioTrack {
      * Get the duration of this audio track played at its frame rate in seconds
      * @return This audio track's duration in seconds
      */
-    public double getDuration() {
+    public float getDuration() {
         if (data == null) {
             return 0;
         }
         if (sampleRate <= 0 || sampleSize <= 0 || channelCount <= 0) {
             return 0;
         }
-        return (double)data.length / (double)(sampleRate * sampleSize * channelCount);
+        return (float)data.length / (float)(sampleRate * sampleSize * channelCount);
     }
 
     /**

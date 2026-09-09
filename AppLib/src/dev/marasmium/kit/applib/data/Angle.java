@@ -18,23 +18,23 @@ public class Angle implements Serializable {
     /**
      * Small value for comparing with floating-point rounding error
      */
-    public static final double Epsilon = 1.0E-6d;
+    public static final float Epsilon = 0.0001f;
     /**
      * Circle constant
      */
-    public static final double Pi = 3.141592653589793d;
+    public static final float Pi = 3.14159265f;
 
     /**
      * The value of this angle in radians
      */
-    private double theta;
+    private float theta;
 
     /**
      * Create an angle with a measure in radians
      * @param theta The measure of the angle in radians
      * @return An angle with the given measure
      */
-    public static Angle Radians(double theta) {
+    public static Angle Radians(float theta) {
         Angle a = new Angle();
         a.setRadians(theta);
         return a;
@@ -45,7 +45,7 @@ public class Angle implements Serializable {
      * @param theta The measure of the angle in degrees
      * @return An angle with the given measure
      */
-    public static Angle Degrees(double theta) {
+    public static Angle Degrees(float theta) {
         Angle a = new Angle();
         a.setDegrees(theta);
         return a;
@@ -56,7 +56,7 @@ public class Angle implements Serializable {
      * @param theta The measure of the angle in gradians
      * @return An angle with the given measure
      */
-    public static Angle Gradians(double theta) {
+    public static Angle Gradians(float theta) {
         Angle a = new Angle();
         a.setGradians(theta);
         return a;
@@ -67,7 +67,7 @@ public class Angle implements Serializable {
      * @param theta The measure of the angle in revolutions
      * @return An angle with the given measure
      */
-    public static Angle Revolutions(double theta) {
+    public static Angle Revolutions(float theta) {
         Angle a = new Angle();
         a.setRevolutions(theta);
         return a;
@@ -85,7 +85,7 @@ public class Angle implements Serializable {
      * Construct a zero angle
      */
     private Angle() {
-        this.theta = 0.0d;
+        this.theta = 0.0f;
     }
 
     /**
@@ -117,7 +117,7 @@ public class Angle implements Serializable {
      * @param a The scalar to multiply this angle by
      * @return The scaled angle
      */
-    public Angle scalarMultiply(double a) {
+    public Angle scalarMultiply(float a) {
         return Angle.Radians(this.theta * a);
     }
 
@@ -126,7 +126,7 @@ public class Angle implements Serializable {
      * @param a The scalar to divide this angle by
      * @return The scaled angle
      */
-    public Angle scalarDivide(double a) {
+    public Angle scalarDivide(float a) {
         return Angle.Radians(this.theta / a);
     }
 
@@ -140,13 +140,13 @@ public class Angle implements Serializable {
         if (a.isZero()) {
             return a;
         }
-        if (a.theta < 0.0d) {
-            while (a.theta < 0.0d) {
-                a.theta += 2.0d * Pi;
+        if (a.theta < 0.0f) {
+            while (a.theta < 0.0f) {
+                a.theta += 2.0f * Pi;
             }
         } else {
-            while (a.theta > 2.0d * Pi) {
-                a.theta -= 2.0d * Pi;
+            while (a.theta > 2.0f * Pi) {
+                a.theta -= 2.0f * Pi;
             }
         }
         return a;
@@ -156,7 +156,7 @@ public class Angle implements Serializable {
      * Get the measure of this angle in radians
      * @return The measure of this angle in radians
      */
-    public double getRadians() {
+    public float getRadians() {
         return theta;
     }
 
@@ -164,7 +164,7 @@ public class Angle implements Serializable {
      * Set the measure of this angle in radians
      * @param theta The new measure for this angle in radians
      */
-    public void setRadians(double theta) {
+    public void setRadians(float theta) {
         this.theta = theta;
     }
 
@@ -172,48 +172,48 @@ public class Angle implements Serializable {
      * Get the measure of this angle in degrees
      * @return The measure of this angle in degrees
      */
-    public double getDegrees() {
-        return (theta * 180.0d) / Pi;
+    public float getDegrees() {
+        return (theta * 180.0f) / Pi;
     }
 
     /**
      * Set the measure of this angle in degrees
      * @param theta The new measure for this angle in degrees
      */
-    public void setDegrees(double theta) {
-        this.theta = theta * (Pi / 180.0d);
+    public void setDegrees(float theta) {
+        this.theta = theta * (Pi / 180.0f);
     }
 
     /**
      * Get the measure of this angle in gradians
      * @return The measure of this angle in gradians
      */
-    public double getGradians() {
-        return (theta * 200.0d) / Pi;
+    public float getGradians() {
+        return (theta * 200.0f) / Pi;
     }
 
     /**
      * Set the measure of this angle in gradians
      * @param theta The new measure for this angle in gradians
      */
-    public void setGradians(double theta) {
-        this.theta = theta * (Pi / 200.0d);
+    public void setGradians(float theta) {
+        this.theta = theta * (Pi / 200.0f);
     }
 
     /**
      * Get the measure of this angle in revolutions
      * @return The measure of this angle in revolutions
      */
-    public double getRevolutions() {
-        return theta / (2.0d * Pi);
+    public float getRevolutions() {
+        return theta / (2.0f * Pi);
     }
 
     /**
      * Set the measure of this angle in revolutions
      * @param theta The new measure for this angle in revolutions
      */
-    public void setRevolutions(double theta) {
-        this.theta = theta * 2.0d * Pi;
+    public void setRevolutions(float theta) {
+        this.theta = theta * 2.0f * Pi;
     }
 
     /**
@@ -242,7 +242,7 @@ public class Angle implements Serializable {
      */
     public int getQuadrant() {
         Angle a = standardize();
-        return ((int)(a.getRevolutions() * 4.0d)) + 1;
+        return ((int)(a.getRevolutions() * 4.0f)) + 1;
     }
 
     /**
@@ -250,14 +250,14 @@ public class Angle implements Serializable {
      * @return Whether this angle is acute
      */
     public boolean isAcute() {
-        return theta > 0.0d && theta < Pi / 2.0d;
+        return theta > 0.0f && theta < Pi / 2.0f;
     }
     /**
      * Test whether this angle is right (90 degrees)
      * @return Whether this angle is right
      */
     public boolean isRight() {
-        return Math.abs(theta - (Pi / 2.0d)) < Epsilon;
+        return Math.abs(theta - (Pi / 2.0f)) < Epsilon;
     }
 
     /**
@@ -265,7 +265,7 @@ public class Angle implements Serializable {
      * @return Whether this angle is obtuse
      */
     public boolean isObtuse() {
-        return theta > Pi / 2.0d && theta < Pi;
+        return theta > Pi / 2.0f && theta < Pi;
     }
 
     /**
@@ -281,7 +281,7 @@ public class Angle implements Serializable {
      * @return Whether this angle is reflex
      */
     public boolean isReflex() {
-        return theta > Pi && theta < 2.0d * Pi;
+        return theta > Pi && theta < 2.0f * Pi;
     }
 
     /**

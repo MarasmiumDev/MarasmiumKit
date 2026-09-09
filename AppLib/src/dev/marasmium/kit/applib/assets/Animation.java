@@ -138,7 +138,7 @@ public class Animation {
     }
 
     public Vector getTextureDimensions() {
-        return Vector.Cartesian(1.0d / sheetDimensions.getX(), 1.0d / sheetDimensions.getY());
+        return Vector.Cartesian(1.0f / sheetDimensions.getX(), 1.0f / sheetDimensions.getY());
     }
 
     @Override

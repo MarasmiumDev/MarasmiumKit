@@ -20,7 +20,7 @@ import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 
 import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -36,7 +36,7 @@ public class GraphicsManager implements GLEventListener {
     /**
      * The target (fractional) number of graphics frames to process per millisecond
      */
-    private double targetFPMS = 0.0d;
+    private float targetFPMS = 0.0f;
     /**
      * The target number of milliseconds which should elapse per graphics frame
      */
@@ -157,7 +157,7 @@ public class GraphicsManager implements GLEventListener {
     public boolean destroy() {
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Destroying graphics system");
         boolean success = true;
-        targetFPMS = 0.0d;
+        targetFPMS = 0.0f;
         targetMSPF = 0;
         maxUPF = 0;
         clearColourLock.lock();
@@ -208,14 +208,14 @@ public class GraphicsManager implements GLEventListener {
         return true;
     }
 
-    private void draw(GL3 gl3, int spriteCount, int textureID, float[] cameraMatrix, DoubleBuffer vertices,
+    private void draw(GL3 gl3, int spriteCount, int textureID, float[] cameraMatrix, FloatBuffer vertices,
                       IntBuffer indices) {
         final int verticesPerSprite = 4;
-        final int doublesPerVertex = 5;
+        final int floatsPerVertex = 5;
         final int indicesPerSprite = 6;
         // Upload geometry
         gl3.glBindBuffer(GL3.GL_ARRAY_BUFFER, VBOIDs[0]);
-        int verticesSize = doublesPerVertex * Double.BYTES * verticesPerSprite * spriteCount;
+        int verticesSize = floatsPerVertex * Float.BYTES * verticesPerSprite * spriteCount;
         if (verticesSize > vertexBufferSize) {
             vertexBufferSize = Math.max(verticesSize, vertexBufferSize * 2);
             App.Log.write(LogSource.Graphics, LogLevel.Info, "Resizing vertex buffer to ", vertexBufferSize, "B");
@@ -246,7 +246,7 @@ public class GraphicsManager implements GLEventListener {
      * Get the target (fractional) number of graphics frames to process per millisecond
      * @return The target number of frames per millisecond
      */
-    public double getTargetFPMS() {
+    public float getTargetFPMS() {
         return targetFPMS;
     }
 
@@ -276,7 +276,7 @@ public class GraphicsManager implements GLEventListener {
             App.Log.write(LogSource.Graphics, LogLevel.Warning, "Target FPS ", targetFPS, " invalid");
             return false;
         }
-        targetFPMS = (double)targetFPS / 1000.0d;
+        targetFPMS = (float)targetFPS / 1000.0f;
         targetMSPF = (int)(1.0d / targetFPMS);
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Target FPS set to ", targetFPS, " -> FPMS=", targetFPMS, ", ",
                 "MSPF=", targetMSPF);
@@ -425,8 +425,8 @@ public class GraphicsManager implements GLEventListener {
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Generated VAO ", VAOIDs[0], ", VBO ", VBOIDs[0], ", and IBO ",
                 IBOIDs[0]);
         // Configure vertex attributes
-        gl3.glVertexAttribPointer(0, 3, GL3.GL_DOUBLE, false, 5 * Double.BYTES, 0);
-        gl3.glVertexAttribPointer(1, 2, GL3.GL_DOUBLE, false, 5 * Double.BYTES, 3 * Double.BYTES);
+        gl3.glVertexAttribPointer(0, 3, GL3.GL_FLOAT, false, 5 * Float.BYTES, 0);
+        gl3.glVertexAttribPointer(1, 2, GL3.GL_FLOAT, false, 5 * Float.BYTES, 3 * Float.BYTES);
         gl3.glEnableVertexAttribArray(0);
         gl3.glEnableVertexAttribArray(1);
         gl3.glBindVertexArray(0);
@@ -444,17 +444,17 @@ public class GraphicsManager implements GLEventListener {
         // Define data metrics
         int spriteCount = 0;
         int textureID = 0;
-        DoubleBuffer vertices = Buffers.newDirectDoubleBuffer(0);
+        FloatBuffer vertices = Buffers.newDirectFloatBuffer(0);
         IntBuffer indices = Buffers.newDirectIntBuffer(0);
         for (HashMap.Entry<Camera, ArrayList<Sprite>> entry : spriteGroups.entrySet()) {
             Camera camera = entry.getKey();
             ArrayList<Sprite> sprites = entry.getValue();
             for (Sprite sprite : sprites) {
                 Vector sPosition = sprite.getPosition();
-                double sDepth = sprite.getDepth();
+                float sDepth = sprite.getDepth();
                 Vector sDimensions = sprite.getDimensions();
                 Angle sAngle = sprite.getAngle();
-                Vector sMidpoint = sPosition.add(sDimensions.scalarMultiply(0.5d));
+                Vector sMidpoint = sPosition.add(sDimensions.scalarMultiply(0.5f));
                 Vector sBL = Vector.Cartesian(sPosition.getX(), sPosition.getY());
                 sBL = sBL.rotateAbout(sAngle, sMidpoint);
                 Vector sBR = Vector.Cartesian(sPosition.getX() + sDimensions.getX(), sPosition.getY());
@@ -468,7 +468,7 @@ public class GraphicsManager implements GLEventListener {
                 if (sAnimation.getTextureID() != textureID && spriteCount > 0) {
                     draw(gl3, spriteCount, textureID, camera.getProjectionMatrix(), vertices, indices);
                     spriteCount = 0;
-                    vertices = Buffers.newDirectDoubleBuffer(0);
+                    vertices = Buffers.newDirectFloatBuffer(0);
                     indices = Buffers.newDirectIntBuffer(0);
                 }
                 textureID = sAnimation.getTextureID();
@@ -482,7 +482,8 @@ public class GraphicsManager implements GLEventListener {
                 Vector tDimensions = sAnimation.getTextureDimensions();
                 Vector tBL = Vector.Cartesian(tPosition.getX(), tPosition.getY());
                 Vector tBR = Vector.Cartesian(tPosition.getX() + tDimensions.getX(), tPosition.getY());
-                Vector tTR = Vector.Cartesian(tPosition.getX() + tDimensions.getX(), tPosition.getY() + tDimensions.getY());
+                Vector tTR = Vector.Cartesian(tPosition.getX() + tDimensions.getX(),
+                        tPosition.getY() + tDimensions.getY());
                 Vector tTL = Vector.Cartesian(tPosition.getX(), tPosition.getY() + tDimensions.getY());
                 if (sprite.isFlippedHorizontally()) {
                     Vector copy = tBR.clone();
@@ -500,7 +501,7 @@ public class GraphicsManager implements GLEventListener {
                     tBL = tTL.clone();
                     tTL = copy.clone();
                 }
-                double[] sVertices = {
+                float[] sVertices = {
                         sBL.getX(), sBL.getY(), sDepth,
                         tBL.getX(), tBL.getY(),
                         sBR.getX(), sBR.getY(), sDepth,
@@ -510,7 +511,7 @@ public class GraphicsManager implements GLEventListener {
                         sTL.getX(), sTL.getY(), sDepth,
                         tTL.getX(), tTL.getY(),
                 };
-                DoubleBuffer newVertices = Buffers.newDirectDoubleBuffer(vertices.capacity() + sVertices.length);
+                FloatBuffer newVertices = Buffers.newDirectFloatBuffer(vertices.capacity() + sVertices.length);
                 newVertices.put(vertices);
                 newVertices.put(sVertices);
                 vertices = newVertices;

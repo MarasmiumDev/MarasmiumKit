@@ -499,8 +499,8 @@ public class AssetManager {
         }
         // Parse file data
         int targetFPS;
-        Vector sheetDimensions = Vector.Cartesian(0.0d, 0.0d);
-        Vector frameDimensions = Vector.Cartesian(0.0d, 0.0d);
+        Vector sheetDimensions = Vector.Zero();
+        Vector frameDimensions = Vector.Zero();
         int frameCount;
         Colour[] data;
         byte[] buffer = new byte[Integer.BYTES];

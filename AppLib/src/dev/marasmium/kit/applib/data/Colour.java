@@ -74,19 +74,19 @@ public class Colour implements Serializable {
     }
 
     /**
-     * Create a new colour from RGBA channel double values
+     * Create a new colour from RGBA channel float values
      * @param red Red channel (0.0-1.0)
      * @param green Green channel (0.0-1.0)
      * @param blue Blue channel (0.0-1.0)
      * @param alpha Alpha channel (0.0-1.0)
      * @return A colour with the given RGBA channel values
      */
-    public static Colour Channels(double red, double green, double blue, double alpha) {
+    public static Colour Channels(float red, float green, float blue, float alpha) {
         Colour c = new Colour();
-        c.setRed((int)(256.0d * red));
-        c.setGreen((int)(256.0d * green));
-        c.setBlue((int)(256.0d * blue));
-        c.setAlpha((int)(256.0d * alpha));
+        c.setRed((int)(256.0f * red));
+        c.setGreen((int)(256.0f * green));
+        c.setBlue((int)(256.0f * blue));
+        c.setAlpha((int)(256.0f * alpha));
         return c;
     }
 

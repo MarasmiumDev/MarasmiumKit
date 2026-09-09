@@ -28,7 +28,7 @@ public class MusicManager {
     /**
      * The current volume to play music at
      */
-    private double volume = 0.0d;
+    private float volume = 0.0f;
     /**
      * Whether a music track is currently playing
      */
@@ -252,7 +252,7 @@ public class MusicManager {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to stop current music track");
             success = false;
         }
-        volume = 0.0d;
+        volume = 0.0f;
         return success;
     }
 
@@ -260,7 +260,7 @@ public class MusicManager {
      * Get the current music volume
      * @return The current music volume
      */
-    public double getVolume() {
+    public float getVolume() {
         return volume;
     }
 
@@ -269,8 +269,8 @@ public class MusicManager {
      * @param volume The new music volume (0.0 - 1.0)
      * @return Whether the music volume was valid and could be set
      */
-    public boolean setVolume(double volume) {
-        if (volume < 0.0d || volume > 1.0d) {
+    public boolean setVolume(float volume) {
+        if (volume < 0.0f || volume > 1.0f) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Invalid music volume");
             return false;
         }
@@ -293,7 +293,7 @@ public class MusicManager {
             }
         }
         this.volume = volume;
-        App.Log.write(LogSource.Audio, LogLevel.Info, "Set music volume ", (int)(volume * 100.0d), "%");
+        App.Log.write(LogSource.Audio, LogLevel.Info, "Set music volume ", (int)(volume * 100.0f), "%");
         return true;
     }
 

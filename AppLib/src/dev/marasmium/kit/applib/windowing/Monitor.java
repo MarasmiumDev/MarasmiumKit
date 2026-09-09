@@ -93,11 +93,11 @@ public class Monitor {
             success = false;
         }
         // Retrieve monitor attributes
-        position = Vector.Cartesian(gds[index].getDefaultConfiguration().getBounds().getX(),
-                gds[index].getDefaultConfiguration().getBounds().getY());
+        position = Vector.Cartesian((float)gds[index].getDefaultConfiguration().getBounds().getX(),
+                (float)gds[index].getDefaultConfiguration().getBounds().getY());
         description = gds[index].getIDstring();
-        dimensions = Vector.Cartesian(gds[index].getDefaultConfiguration().getBounds().getWidth(),
-                gds[index].getDefaultConfiguration().getBounds().getHeight());
+        dimensions = Vector.Cartesian((float)gds[index].getDefaultConfiguration().getBounds().getWidth(),
+                (float)gds[index].getDefaultConfiguration().getBounds().getHeight());
         return success;
     }
 

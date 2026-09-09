@@ -17,16 +17,16 @@ public class Vector implements Serializable {
     /**
      * Small value for comparing with floating-point rounding error
      */
-    public static final double Epsilon = 1.0E-6d;
+    public static final float Epsilon = 0.0001f;
 
     /**
      * The horizontal component of this vector on the Cartesian plane
      */
-    private double x;
+    private float x;
     /**
      * The vertical component of this vector on the Cartesian plane
      */
-    private double y;
+    private float y;
 
     /**
      * Create a vector given coordinates on the Cartesian plane
@@ -34,7 +34,7 @@ public class Vector implements Serializable {
      * @param y The vertical coordinate for this vector
      * @return A vector to the Cartesian point (x, y)
      */
-    public static Vector Cartesian(double x, double y) {
+    public static Vector Cartesian(float x, float y) {
         Vector v = new Vector();
         v.setX(x);
         v.setY(y);
@@ -47,12 +47,12 @@ public class Vector implements Serializable {
      * @param angle The angle/direction for the vector
      * @return A vector to the polar coordinates (length, angle)
      */
-    public static Vector Polar(double length, Angle angle) {
+    public static Vector Polar(float length, Angle angle) {
         if (angle == null) {
             return null;
         }
         Vector v = new Vector();
-        v.setX(1.0d);
+        v.setX(1.0f);
         v.setLength(length);
         v.setAngle(angle);
         return v;
@@ -70,8 +70,8 @@ public class Vector implements Serializable {
      * Construct a zero vector
      */
     private Vector() {
-        this.x = 0.0d;
-        this.y = 0.0d;
+        this.x = 0.0f;
+        this.y = 0.0f;
     }
 
     /**
@@ -111,7 +111,7 @@ public class Vector implements Serializable {
      * @param a The scalar to multiply this vector by
      * @return The product of this vector and a
      */
-    public Vector scalarMultiply(double a) {
+    public Vector scalarMultiply(float a) {
         return Vector.Cartesian(x * a, y * a);
     }
 
@@ -120,11 +120,11 @@ public class Vector implements Serializable {
      * @param a The scalar to divide this vector by
      * @return The quotient of this vector and a
      */
-    public Vector scalarDivide(double a) {
-        if (a == 0.0d) {
+    public Vector scalarDivide(float a) {
+        if (a == 0.0f) {
             return null;
         }
-        return scalarMultiply(1.0d / a);
+        return scalarMultiply(1.0f / a);
     }
 
     /**
@@ -156,9 +156,9 @@ public class Vector implements Serializable {
      * @param v The vector to multiply this vector by
      * @return The dot product of this vector and v or 0 if v is null
      */
-    public double dotMultiply(Vector v) {
+    public float dotMultiply(Vector v) {
         if (v == null) {
-            return 0.0d;
+            return 0.0f;
         }
         return Vector.Cartesian(x * v.x, y * v.y).getElementSum();
     }
@@ -168,9 +168,9 @@ public class Vector implements Serializable {
      * @param v The vector to compare to
      * @return The squared distance between this vector and v or 0 if v is null
      */
-    public double getDistanceToSquared(Vector v) {
+    public float getDistanceToSquared(Vector v) {
         if (v == null) {
-            return 0.0d;
+            return 0.0f;
         }
         return subtract(v).getLengthSquared();
     }
@@ -180,11 +180,11 @@ public class Vector implements Serializable {
      * @param v The vector to compare to
      * @return The distance between this vector and v or 0 if v is null
      */
-    public double getDistanceTo(Vector v) {
+    public float getDistanceTo(Vector v) {
         if (v == null) {
-            return 0.0d;
+            return 0.0f;
         }
-        return Math.sqrt(getDistanceToSquared(v));
+        return (float)Math.sqrt(getDistanceToSquared(v));
     }
 
     /**
@@ -200,9 +200,9 @@ public class Vector implements Serializable {
      * @param v The vector to multiply this vector by
      * @return The 2D cross product of this vector and v (this x v) or 0 if v is null
      */
-    public double crossMultiply(Vector v) {
+    public float crossMultiply(Vector v) {
         if (v == null) {
-            return 0.0d;
+            return 0.0f;
         }
         return (x * v.y) - (y * v.x);
     }
@@ -216,8 +216,8 @@ public class Vector implements Serializable {
         if (theta == null) {
             return null;
         }
-        return Vector.Cartesian((x * Math.cos(theta.getRadians())) - (y * Math.sin(theta.getRadians())),
-                (x * Math.sin(theta.getRadians())) + (y * Math.cos(theta.getRadians())));
+        return Vector.Cartesian((x * (float)Math.cos(theta.getRadians())) - (y * (float)Math.sin(theta.getRadians())),
+                (x * (float)Math.sin(theta.getRadians())) + (y * (float)Math.cos(theta.getRadians())));
     }
 
     /**
@@ -242,12 +242,12 @@ public class Vector implements Serializable {
         if (v == null) {
             return null;
         }
-        double numerator = getLengthSquared() + v.getLengthSquared() - getDistanceToSquared(v);
-        double denominator = 2.0d * getLength() * v.getLength();
-        if (denominator == 0.0d) {
-            return Angle.Radians(0.0d);
+        float numerator = getLengthSquared() + v.getLengthSquared() - getDistanceToSquared(v);
+        float denominator = 2.0f * getLength() * v.getLength();
+        if (denominator == 0.0f) {
+            return Angle.Radians(0.0f);
         }
-        return Angle.Radians(Math.acos(numerator / denominator));
+        return Angle.Radians((float)Math.acos(numerator / denominator));
     }
 
     /**
@@ -272,7 +272,7 @@ public class Vector implements Serializable {
      * @param t The percentage of the distance to move between this vector and v
      * @return The vector t% of the way from this vector to v
      */
-    public Vector interpolate(Vector v, double t) {
+    public Vector interpolate(Vector v, float t) {
         if (v == null) {
             return null;
         }
@@ -288,7 +288,7 @@ public class Vector implements Serializable {
         if (v == null) {
             return null;
         }
-        return interpolate(v, 0.5d);
+        return interpolate(v, 0.5f);
     }
 
     /**
@@ -296,7 +296,7 @@ public class Vector implements Serializable {
      * @return The floor of this vector
      */
     public Vector floor() {
-        return Vector.Cartesian(Math.floor(x), Math.floor(y));
+        return Vector.Cartesian((float)Math.floor(x), (float)Math.floor(y));
     }
 
     /**
@@ -304,14 +304,14 @@ public class Vector implements Serializable {
      * @return The ceiling of this vector
      */
     public Vector ceiling() {
-        return Vector.Cartesian(Math.ceil(x), Math.ceil(y));
+        return Vector.Cartesian((float)Math.ceil(x), (float)Math.ceil(y));
     }
 
     /**
      * Get the horizontal coordinate of this vector on the Cartesian plane
      * @return The horizontal coordinate of this vector
      */
-    public double getX() {
+    public float getX() {
         return x;
     }
 
@@ -319,7 +319,7 @@ public class Vector implements Serializable {
      * Set the horizontal coordinate of this vector on the Cartesian plane
      * @param x The new horizontal coordinate for this vector
      */
-    public void setX(double x) {
+    public void setX(float x) {
         this.x = x;
     }
 
@@ -327,7 +327,7 @@ public class Vector implements Serializable {
      * Get the vertical coordinate of this vector on the Cartesian plane
      * @return The vertical coordinate of this vector
      */
-    public double getY() {
+    public float getY() {
         return y;
     }
 
@@ -335,7 +335,7 @@ public class Vector implements Serializable {
      * Set the vertical coordinate of this vector on the Cartesian plane
      * @param y The new vertical coordinate for this vector
      */
-    public void setY(double y) {
+    public void setY(float y) {
         this.y = y;
     }
 
@@ -343,7 +343,7 @@ public class Vector implements Serializable {
      * Get the sum of the Cartesian coordinates of this vector
      * @return The sum of this vector's coordinates
      */
-    public double getElementSum() {
+    public float getElementSum() {
         return x + y;
     }
 
@@ -351,7 +351,7 @@ public class Vector implements Serializable {
      * Get the product of the Cartesian coordinates of this vector
      * @return The product of this vector's coordinates
      */
-    public double getElementProduct() {
+    public float getElementProduct() {
         return x * y;
     }
 
@@ -359,7 +359,7 @@ public class Vector implements Serializable {
      * Get the squared length/magnitude of this vector
      * @return The squared length of this vector
      */
-    public double getLengthSquared() {
+    public float getLengthSquared() {
         return (x * x) + (y * y);
     }
 
@@ -367,8 +367,8 @@ public class Vector implements Serializable {
      * Get the length/magnitude of this vector
      * @return The length of this vector
      */
-    public double getLength() {
-        return Math.sqrt(getLengthSquared());
+    public float getLength() {
+        return (float)Math.sqrt(getLengthSquared());
     }
 
     /**
@@ -384,14 +384,14 @@ public class Vector implements Serializable {
      * @return Whether this vector is normalized
      */
     public boolean isNormalized() {
-        return Math.abs(getLength() - 1.0d) < Epsilon;
+        return Math.abs(getLength() - 1.0f) < Epsilon;
     }
 
     /**
      * Set the length/magnitude of this vector
      * @param length The new length for this vector
      */
-    public void setLength(double length) {
+    public void setLength(float length) {
         if (isZero()) {
             return;
         }
@@ -405,7 +405,7 @@ public class Vector implements Serializable {
      * @return The polar angle of this vector
      */
     public Angle getAngle() {
-        return Angle.Radians(Math.atan2(y, x));
+        return Angle.Radians((float)Math.atan2(y, x));
     }
 
     /**

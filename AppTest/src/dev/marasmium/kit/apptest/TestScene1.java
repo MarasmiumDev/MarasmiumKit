@@ -30,6 +30,7 @@ public class TestScene1 extends Scene implements NetListener {
 
     private final LogSource logSource = new LogSource("Test Scene 1");
     private final Camera camera = new Camera();
+    private Sprite center = new Sprite();
     private final ArrayList<Sprite> sprites = new ArrayList<>();
     private int frames = 0;
     private double frameTimer = 0.0d;
@@ -43,18 +44,50 @@ public class TestScene1 extends Scene implements NetListener {
     @Override
     public boolean enter(Scene lastScene) {
         App.Log.write(logSource, LogLevel.Info, "Entering test scene 1");
-        camera.initialize(Vector.Zero(), 1.0d, Angle.Zero());
+        center.initialize(Vector.Zero(), 0.0f, Vector.Cartesian(10.0f, 10.0f), Angle.Zero(),
+                "Animation/Animation_1.animation");
+        camera.initialize(Vector.Zero(), 1.0f, Angle.Zero());
         return true;
     }
 
     @Override
     public boolean processInput() {
-        // Control the player
+        // Control camera
+        float translateSpeed = 1.0f;
+        if (App.Input.keyboard.isKeyDown(KeyboardKey.A)) {
+            camera.getVelocity().setX(-translateSpeed);
+        } else if (App.Input.keyboard.isKeyDown(KeyboardKey.D)) {
+            camera.getVelocity().setX(translateSpeed);
+        } else {
+            camera.getVelocity().setX(0.0f);
+        }
+        if (App.Input.keyboard.isKeyDown(KeyboardKey.S)) {
+            camera.getVelocity().setY(-translateSpeed);
+        } else if (App.Input.keyboard.isKeyDown(KeyboardKey.W)) {
+            camera.getVelocity().setY(translateSpeed);
+        } else {
+            camera.getVelocity().setY(0.0f);
+        }
+        float zoomSpeed = 0.01f;
+        if (App.Input.keyboard.isKeyDown(KeyboardKey.Q)) {
+            camera.setZoom(-zoomSpeed);
+        } else if (App.Input.keyboard.isKeyDown(KeyboardKey.E)) {
+            camera.setZoom(zoomSpeed);
+        } else {
+            camera.setZoom(0.0f);
+        }
+        float rotateSpeed = 0.01f;
+        if (App.Input.keyboard.isKeyDown(KeyboardKey.R)) {
+            camera.setRotation(Angle.Radians(-rotateSpeed));
+        } else if (App.Input.keyboard.isKeyDown(KeyboardKey.T)) {
+            camera.setRotation(Angle.Radians(rotateSpeed));
+        } else {
+            camera.setRotation(Angle.Zero());
+        }
+        // Add sprites
         if (App.Input.mouse.isButtonPressed(MouseButton.Left)) {
-            Vector pos = App.Input.mouse.getCursorPosition().elementDivide(App.Window.getDimensions())
-                    .scalarMultiply(2.0d).subtract(Vector.Cartesian(1.0d, 1.0d));
             Sprite s = new Sprite();
-            s.initialize(pos, 0.0d, Vector.Cartesian(0.25d, 0.25d), Angle.Radians(0.0d),
+            s.initialize(App.Input.mouse.getCursorPosition(camera), 0.0f, Vector.Cartesian(50.0f, 50.0f), Angle.Zero(),
                     "Animation/Animation_2.animation");
             s.playAnimation();
             sprites.add(s);
@@ -65,11 +98,13 @@ public class TestScene1 extends Scene implements NetListener {
     @Override
     public void draw() {
         App.Graphics.submit(camera, sprites);
+        App.Graphics.submit(camera, center);
         frames++;
     }
 
     @Override
-    public void update(double deltaFrames) {
+    public void update(float deltaFrames) {
+        camera.update(deltaFrames);
         for (Sprite sprite : sprites) {
             sprite.update(deltaFrames);
         }

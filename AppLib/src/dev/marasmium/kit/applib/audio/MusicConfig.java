@@ -15,13 +15,13 @@ public class MusicConfig {
     /**
      * The initial volume to play music at
      */
-    public double volume = 0.0d;
+    public float volume = 0.0f;
 
     /**
      * Apply the default settings to this music configuration structure
      */
     public void applyDefaults() {
-        volume = 1.0d;
+        volume = 1.0f;
     }
 
 }

@@ -12,40 +12,27 @@ import dev.marasmium.kit.applib.data.Angle;
 import dev.marasmium.kit.applib.data.Colour;
 import dev.marasmium.kit.applib.data.Vector;
 
-public class Sprite {
+public class Sprite extends Body {
 
-    private Vector position = null;
-    private double depth = 0.0d;
-    private Vector velocity = null;
+    private float depth = 0.0f;
     private Vector dimensions = null;
     private Vector growth = null;
-    private Angle angle = null;
-    private Angle rotation = null;
     private String animationFilePath = null;
     private int animationFrame = 0;
     private boolean animationPlaying = false;
-    private double animationTimer = 0.0d;
+    private float animationTimer = 0.0f;
     private boolean flippedHorizontally = false;
     private boolean flippedVertically = false;
 
-    public boolean initialize(Vector position, double depth, Vector dimensions, Angle angle, String animationFilePath) {
-        if (!setPosition(position)) {
+    public boolean initialize(Vector position, float depth, Vector dimensions, Angle angle, String animationFilePath) {
+        if (!super.initialize(position, angle)) {
             return false;
         }
         setDepth(depth);
-        if (!setVelocity(Vector.Cartesian(0.0d, 0.0d))) {
-            return false;
-        }
         if (!setDimensions(dimensions)) {
             return false;
         }
-        if (!setGrowth(Vector.Cartesian(0.0d, 0.0d))) {
-            return false;
-        }
-        if (!setAngle(angle)) {
-            return false;
-        }
-        if (!setRotation(Angle.Radians(0.0d))) {
+        if (!setGrowth(Vector.Zero())) {
             return false;
         }
         if (!setAnimationFilePath(animationFilePath)) {
@@ -57,68 +44,40 @@ public class Sprite {
         return true;
     }
 
-    public void update(double deltaFrames) {
-        position = position.add(velocity.scalarMultiply(deltaFrames));
+    public void update(float deltaFrames) {
+        super.update(deltaFrames);
         dimensions = dimensions.add(growth.scalarMultiply(deltaFrames));
-        angle = angle.add(rotation.scalarMultiply(deltaFrames));
         if (animationPlaying) {
-            final double targetFPS = App.Assets.getAnimation(animationFilePath).getTargetFPS();
-            final double animationFrameTime = (double)App.Graphics.getTargetFPS() / targetFPS;
+            final float targetFPS = App.Assets.getAnimation(animationFilePath).getTargetFPS();
+            final float animationFrameTime = (float)App.Graphics.getTargetFPS() / targetFPS;
             animationTimer += deltaFrames;
             if (animationTimer >= animationFrameTime) {
                 animationFrame += 1;
                 animationFrame %= App.Assets.getAnimation(animationFilePath).getFrameCount();
-                animationTimer = 0.0d;
+                animationTimer = 0.0f;
             }
         }
     }
 
     public void destroy() {
-        position = null;
-        depth = 0.0d;
-        velocity = null;
+        super.destroy();
+        depth = 0.0f;
         dimensions = null;
         growth = null;
-        angle = null;
-        rotation = null;
         animationFilePath = null;
         animationFrame = 0;
         animationPlaying = false;
-        animationTimer = 0.0d;
+        animationTimer = 0.0f;
         flippedVertically = false;
         flippedHorizontally = false;
     }
 
-    public Vector getPosition() {
-        return position;
-    }
-
-    public boolean setPosition(Vector position) {
-        if (position == null) {
-            return false;
-        }
-        this.position = position;
-        return true;
-    }
-
-    public double getDepth() {
+    public float getDepth() {
         return depth;
     }
 
-    public void setDepth(double depth) {
+    public void setDepth(float depth) {
         this.depth = depth;
-    }
-
-    public Vector getVelocity() {
-        return velocity;
-    }
-
-    public boolean setVelocity(Vector velocity) {
-        if (velocity == null) {
-            return false;
-        }
-        this.velocity = velocity;
-        return true;
     }
 
     public Vector getDimensions() {
@@ -142,30 +101,6 @@ public class Sprite {
             return false;
         }
         this.growth = growth;
-        return true;
-    }
-
-    public Angle getAngle() {
-        return angle;
-    }
-
-    public boolean setAngle(Angle angle) {
-        if (angle == null) {
-            return false;
-        }
-        this.angle = angle;
-        return true;
-    }
-
-    public Angle getRotation() {
-        return rotation;
-    }
-
-    public boolean setRotation(Angle rotation) {
-        if (rotation == null) {
-            return false;
-        }
-        this.rotation = rotation;
         return true;
     }
 
@@ -211,7 +146,7 @@ public class Sprite {
     public void stopAnimation() {
         animationPlaying = false;
         animationFrame = 0;
-        animationTimer = 0.0d;
+        animationTimer = 0.0f;
     }
 
     public boolean isFlippedHorizontally() {

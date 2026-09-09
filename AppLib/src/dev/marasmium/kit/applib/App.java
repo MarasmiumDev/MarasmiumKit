@@ -136,7 +136,7 @@ public class App {
         // Initialize timing
         long deltaStartMS = System.currentTimeMillis();
         long deltaElapsedMS;
-        double deltaFrames;
+        float deltaFrames;
         long waitStartMS;
         long waitElapsedMS;
         long waitMS;
@@ -167,9 +167,9 @@ public class App {
             deltaElapsedMS = System.currentTimeMillis() - deltaStartMS;
             deltaStartMS = System.currentTimeMillis();
             deltaFrames = deltaElapsedMS * Graphics.getTargetFPMS();
-            while (count++ < Graphics.getMaxUPF() && deltaFrames > 1.0d) {
-                Current_Scene.update(1.0d);
-                deltaFrames -= 1.0d;
+            while (count++ < Graphics.getMaxUPF() && deltaFrames > 1.0f) {
+                Current_Scene.update(1.0f);
+                deltaFrames -= 1.0f;
             }
             Current_Scene.update(deltaFrames);
             count = 0;

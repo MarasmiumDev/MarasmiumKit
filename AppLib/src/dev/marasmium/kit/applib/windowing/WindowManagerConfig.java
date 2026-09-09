@@ -37,7 +37,7 @@ public class WindowManagerConfig {
      */
     public boolean applyDefaults() {
         title = "MarasmiumKit App";
-        dimensions = Vector.Cartesian(1280.0d, 720.0d);
+        dimensions = Vector.Cartesian(1280.0f, 720.0f);
         fullscreen = false;
         if (!monitor.initialize(0)) {
             return false;

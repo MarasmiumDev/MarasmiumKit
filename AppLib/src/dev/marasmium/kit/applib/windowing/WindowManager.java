@@ -206,7 +206,7 @@ public class WindowManager {
      */
     public Vector getDimensions() {
         if (dimensions == null) {
-            return Vector.Cartesian(0.0d, 0.0d);
+            return Vector.Zero();
         }
         return dimensions;
     }
@@ -238,8 +238,8 @@ public class WindowManager {
             Vector monitorPosition = getMonitor().getPosition();
             Vector monitorDimensions = getMonitor().getDimensions();
             Vector windowPosition = monitorPosition
-                    .add(monitorDimensions.scalarDivide(2.0d))
-                    .subtract(dimensions.scalarDivide(2.0d));
+                    .add(monitorDimensions.scalarDivide(2.0f))
+                    .subtract(dimensions.scalarDivide(2.0f));
             frame.setLocation((int)windowPosition.getX(), (int)windowPosition.getY());
         });
         this.dimensions = dimensions;

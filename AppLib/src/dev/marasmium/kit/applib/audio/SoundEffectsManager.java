@@ -29,7 +29,7 @@ public class SoundEffectsManager {
     /**
      * The default volume to play sound effects at
      */
-    private double defaultVolume = 0.0d;
+    private float defaultVolume = 0.0f;
     /**
      * The collection of audio output streams mapped to the background threads playing them
      */
@@ -61,7 +61,7 @@ public class SoundEffectsManager {
      * @param volume The volume to play the sound effect at (0.0 - 1.0)
      * @return Whether the sound effect could be started
      */
-    public boolean play(String filePath, double volume) {
+    public boolean play(String filePath, float volume) {
         // Ensure given file path is populated
         if (filePath == null) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "No file path provided for sound effect");
@@ -112,7 +112,7 @@ public class SoundEffectsManager {
                     filePath, "\"");
             return false;
         }
-        float gain = volume == 0.0d ? gainControl.getMinimum() : 20.0f * (float)Math.log10(volume);
+        float gain = volume == 0.0f ? gainControl.getMinimum() : 20.0f * (float)Math.log10(volume);
         gain = Math.max(gainControl.getMinimum(), gain);
         gain = Math.min(gainControl.getMaximum(), gain);
         try {
@@ -187,7 +187,7 @@ public class SoundEffectsManager {
     public boolean destroy() {
         App.Log.write(LogSource.Audio, LogLevel.Info, "Destroying sound effects audio subsystem");
         boolean success = true;
-        defaultVolume = 0.0d;
+        defaultVolume = 0.0f;
         if (!stop()) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to stop all playback threads");
             success = false;
@@ -199,7 +199,7 @@ public class SoundEffectsManager {
      * Get the default volume to play sound effects at
      * @return The default sound effects' volume
      */
-    public double getDefaultVolume() {
+    public float getDefaultVolume() {
         return defaultVolume;
     }
 
@@ -208,13 +208,13 @@ public class SoundEffectsManager {
      * @param defaultVolume The new default volume to play sound effects at (0.0 - 1.0)
      * @return Whether the given volume was valid
      */
-    public boolean setDefaultVolume(double defaultVolume) {
-        if (defaultVolume < 0.0d || defaultVolume > 1.0d) {
+    public boolean setDefaultVolume(float defaultVolume) {
+        if (defaultVolume < 0.0f || defaultVolume > 1.0f) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Invalid default sound effect volume");
             return false;
         }
         this.defaultVolume = defaultVolume;
-        App.Log.write(LogSource.Audio, LogLevel.Info, "Set default sound effect volume ", (int)(defaultVolume * 100.0d),
+        App.Log.write(LogSource.Audio, LogLevel.Info, "Set default sound effect volume ", (int)(defaultVolume * 100.0f),
                 "%");
         return true;
     }

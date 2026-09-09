@@ -16,13 +16,13 @@ public class SoundEffectsConfig {
     /**
      * The default volume to play sound effects at
      */
-    public double defaultVolume = 0.0d;
+    public float defaultVolume = 0.0f;
 
     /**
      * Apply the default settings to this sound effects configuration structure
      */
     public void applyDefaults() {
-        defaultVolume = 1.0d;
+        defaultVolume = 1.0f;
     }
 
 }
