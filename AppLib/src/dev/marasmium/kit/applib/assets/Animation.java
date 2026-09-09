@@ -36,6 +36,7 @@ public class Animation {
         if (!setData(data)) {
             return false;
         }
+        setTextureID(0);
         return true;
     }
 
@@ -130,14 +131,14 @@ public class Animation {
         this.textureID = textureID;
     }
 
-    public Vector getTexturePosition(int frameIndex) {
-        int sheetX = frameIndex % ((int)sheetDimensions.getX());
-        int sheetY = (frameIndex - sheetX) / (int)sheetDimensions.getX();
-        Vector textureDimensions = getTextureDimensions();
-        return Vector.Cartesian(sheetX * textureDimensions.getX(), sheetY * textureDimensions.getY());
+    public Vector getFrameTexturePosition(int frameIndex) {
+        int xSheet = frameIndex % ((int)sheetDimensions.getX());
+        int ySheet = (frameIndex - xSheet) / (int)sheetDimensions.getX();
+        Vector textureDimensions = getFrameTextureDimensions();
+        return Vector.Cartesian(xSheet * textureDimensions.getX(), ySheet * textureDimensions.getY());
     }
 
-    public Vector getTextureDimensions() {
+    public Vector getFrameTextureDimensions() {
         return Vector.Cartesian(1.0f / sheetDimensions.getX(), 1.0f / sheetDimensions.getY());
     }
 

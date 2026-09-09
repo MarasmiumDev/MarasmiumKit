@@ -53,7 +53,7 @@ public class TestScene1 extends Scene implements NetListener {
     @Override
     public boolean processInput() {
         // Control camera
-        float translateSpeed = 1.0f;
+        float translateSpeed = 5.0f / camera.getScale();
         if (App.Input.keyboard.isKeyDown(KeyboardKey.A)) {
             camera.getVelocity().setX(-translateSpeed);
         } else if (App.Input.keyboard.isKeyDown(KeyboardKey.D)) {
@@ -68,7 +68,7 @@ public class TestScene1 extends Scene implements NetListener {
         } else {
             camera.getVelocity().setY(0.0f);
         }
-        float zoomSpeed = 0.01f;
+        float zoomSpeed = 0.05f * camera.getScale();
         if (App.Input.keyboard.isKeyDown(KeyboardKey.Q)) {
             camera.setZoom(-zoomSpeed);
         } else if (App.Input.keyboard.isKeyDown(KeyboardKey.E)) {

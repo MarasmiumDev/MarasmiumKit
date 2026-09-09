@@ -243,20 +243,15 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
      * @return The current position of the mouse cursor in world coordinates
      */
     public Vector getCursorPosition(Camera camera) {
-        Vector cursorPos = getCursorPosition();
-        Vector camPos = camera.getPosition();
-        float camScale = camera.getScale();
-        Angle camAngle = camera.getAngle();
-        Vector winDims = App.Window.getDimensions();
-        Vector NDC = Vector.Cartesian((2.0f * cursorPos.getX() / winDims.getX()) - 1.0f,
-                (2.0f * cursorPos.getY() / winDims.getY()) - 1.0f);
-        Vector scalePos = Vector.Cartesian(NDC.getX() * winDims.getX() / (2.0f * camScale),
-                NDC.getY() * winDims.getY() / (2.0f * camScale));
-        float c = (float)Math.cos(camAngle.getRadians());
-        float q = (float)Math.sin(camAngle.getRadians());
-        Vector rotPos = Vector.Cartesian(scalePos.getX() * c - scalePos.getY() * q,
-                scalePos.getX() * q + scalePos.getY() * c);
-        return rotPos.add(camPos);
+        Vector cursorPosition = getCursorPosition();
+        Vector cameraPosition = camera.getPosition();
+        float cameraScale = camera.getScale();
+        Angle cameraAngle = camera.getAngle();
+        Vector windowDimensions = App.Window.getDimensions();
+        return cursorPosition.scalarMultiply(2.0f).elementDivide(windowDimensions)
+                .subtract(Vector.Cartesian(1.0f, 1.0f)).elementMultiply(windowDimensions)
+                .elementDivide(Vector.Cartesian(2.0f, 2.0f).scalarMultiply(cameraScale)).rotate(cameraAngle)
+                .add(cameraPosition);
     }
 
     /**

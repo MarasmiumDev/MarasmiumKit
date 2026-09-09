@@ -48,7 +48,7 @@ public class MusicManager {
     /**
      * The byte offset in the current music track's data
      */
-    private volatile int offset = 0;
+    private volatile int trackOffset = 0;
     /**
      * Whether the current music track is paused
      */
@@ -152,15 +152,15 @@ public class MusicManager {
             // Write audio data in chunks
             while (playing) {
                 try {
-                    written = player.write(data, offset, data.length > offset + chunkSize
-                            ? chunkSize : data.length - offset);
+                    written = player.write(data, trackOffset, data.length > trackOffset + chunkSize
+                            ? chunkSize : data.length - trackOffset);
                 } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException _) {
                     App.Log.write(LogSource.Audio, LogLevel.Warning, "Playback failed for music track \"", filePath,
                             "\"");
                     break;
                 }
-                copyOffset = (offset + written) % data.length;
-                offset = copyOffset;
+                copyOffset = (trackOffset + written) % data.length;
+                trackOffset = copyOffset;
             }
             player.flush();
             player.close();
@@ -198,13 +198,13 @@ public class MusicManager {
         }
         // Save the current music track and stop it
         String filePath = this.filePath;
-        int offset = this.offset;
+        int offset = this.trackOffset;
         if (!stop()) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to stop music track \"", filePath, "\" to pause");
             return false;
         }
         this.filePath = filePath;
-        this.offset = offset;
+        this.trackOffset = offset;
         paused = true;
         App.Log.write(LogSource.Audio, LogLevel.Info, "Paused music track \"", filePath, "\"");
         return true;
@@ -237,7 +237,7 @@ public class MusicManager {
         }
         player = null;
         filePath = null;
-        offset = 0;
+        trackOffset = 0;
         return success;
     }
 

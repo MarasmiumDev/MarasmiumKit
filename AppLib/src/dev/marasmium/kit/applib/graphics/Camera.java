@@ -61,21 +61,19 @@ public class Camera extends Body {
     }
 
     public float[] getProjectionMatrix() {
-        float tx = (float)position.getX();
-        float ty = (float)position.getY();
-        float scale = (float)this.scale;
-        float theta = (float)angle.getRadians();
-        float width = (float)App.Window.getDimensions().getX();
-        float height = (float)App.Window.getDimensions().getY();
-        float c = (float)Math.cos(theta);
-        float q = (float)Math.sin(theta);
-        float sx = (float)(2.0f * scale / width);
-        float sy = (float)(2.0f * scale / height);
+        float positionX = position.getX();
+        float positionY = position.getY();
+        float scale = this.scale;
+        float angle = this.angle.getRadians();
+        float width = App.Window.getDimensions().getX();
+        float height = App.Window.getDimensions().getY();
+        float cos = (float)Math.cos(angle);
+        float sin = (float)Math.sin(angle);
+        float scaleX = (2.0f * scale) / width;
+        float scaleY = (2.0f * scale) / height;
         return new float[] {
-                sx * c, -sy * q, 0.0f, 0.0f,
-                sx * q, sy * c, 0.0f, 0.0f,
-                0.0f, 0.0f, 1.0f, 0.0f,
-                -sx * (c * tx + q * ty), sy * (q * tx - c * ty), 0.0f, 1.0f,
+                scaleX * cos, -scaleY * sin, 0.0f, 0.0f, scaleX * sin, scaleY * cos, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+                -scaleX * (cos * positionX + sin * positionY), scaleY * (sin * positionX - cos * positionY), 0.0f, 1.0f,
         };
     }
 

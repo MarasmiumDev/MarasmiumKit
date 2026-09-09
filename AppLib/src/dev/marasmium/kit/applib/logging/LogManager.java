@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * The main class of the application framework's logging system
@@ -40,6 +41,10 @@ public class LogManager {
      * Java file handle for the logging system's current output file
      */
     private FileWriter fileOutputWriter = null;
+    /**
+     * Scope lock for thread-safety while writing logs
+     */
+    private final ReentrantLock logLock = new ReentrantLock();
 
     /**
      * Initialize the application framework's logging system
@@ -73,6 +78,7 @@ public class LogManager {
         if (source == null || level == null || data == null) {
             return;
         }
+        logLock.lock();
         // Compile message data
         StringBuilder message = new StringBuilder(getTimestamp() + ": [" + source + "] [" + level + "] ");
         for (Object o : data) {
@@ -99,6 +105,11 @@ public class LogManager {
                     write(LogSource.Log, LogLevel.Warning, "Log file inaccessible, disabled file output");
                 }
             }
+        }
+        try {
+            logLock.unlock();
+        } catch (IllegalMonitorStateException _) {
+            System.out.println("Failed to unlock logging system scope lock");
         }
     }
 
