@@ -145,13 +145,13 @@ public class AudioManager {
         // Ensure speaker availability
         if (speaker == null) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "No speaker provided, setting default");
-            this.speaker = getSpeakers().get(0);
+            this.speaker = getSpeakers().getFirst();
             return false;
         }
         App.Log.write(LogSource.Audio, LogLevel.Info, "Setting audio output speaker ", speaker);
         if (!getSpeakers().contains(speaker)) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Speaker not available for audio output, setting default");
-            this.speaker = getSpeakers().get(0);
+            this.speaker = getSpeakers().getFirst();
             return false;
         }
         boolean success = true;

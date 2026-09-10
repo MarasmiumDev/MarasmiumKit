@@ -12,7 +12,9 @@ package dev.marasmium.kit.applib.input;
  */
 public enum MouseButton {
 
-    // Positioned buttons
+    /**
+     * Positioned buttons
+     */
     Left("BUTTON1"),
     Middle("BUTTON2"),
     Right("BUTTON3");

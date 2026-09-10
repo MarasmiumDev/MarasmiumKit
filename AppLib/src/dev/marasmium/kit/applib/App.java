@@ -151,10 +151,7 @@ public class App {
             Network.update();
             Audio.update();
             // Draw graphics
-            if (!Graphics.beginFrame()) {
-                Log.write(LogSource.App, LogLevel.Error, "Failed to begin graphics frame");
-                break;
-            }
+            Graphics.beginFrame();
             Current_Scene.draw();
             if (!Graphics.endFrame()) {
                 Log.write(LogSource.App, LogLevel.Warning, "Failed to end graphics frame");

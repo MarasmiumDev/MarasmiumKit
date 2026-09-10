@@ -123,6 +123,12 @@ public class AssetManager {
         return true;
     }
 
+    /**
+     * Write the contents of an animation to a file on disk
+     * @param animation The animation to write
+     * @param filePath The destination file path to write to in the base asset path
+     * @return Whether the animation was successfully written to the given file path
+     */
     public boolean writeAnimation(Animation animation, String filePath) {
         // Ensure output file is accessible
         if (basePath == null) {
@@ -282,6 +288,11 @@ public class AssetManager {
         return audioTracks.get(filePath);
     }
 
+    /**
+     * Retrieve a cached animation from memory or attempt to load it from disk by its file path
+     * @param filePath The file path of the animation to retrieve in the base asset path
+     * @return The requested animation from memory or disk or null if the animation could not be loaded
+     */
     public Animation getAnimation(String filePath) {
         if (basePath == null) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
@@ -335,6 +346,11 @@ public class AssetManager {
         return audioTracks.remove(filePath) != null;
     }
 
+    /**
+     * Remove an animation from the asset management system's cache
+     * @param filePath The file path of the animation to free in the base asset path
+     * @return Whether the animation was in memory and was removed successfully
+     */
     public boolean freeAnimation(String filePath) {
         if (basePath == null) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
@@ -458,6 +474,11 @@ public class AssetManager {
         return true;
     }
 
+    /**
+     * Attempt to load an animation from the disk by its file path and place it in the asset management system's cache
+     * @param filePath The file path to load the animation from in the base asset path
+     * @return Whether the animation was successfully loaded from the given file path
+     */
     public boolean loadAnimation(String filePath) {
         // Ensure the file path is accessible
         if (basePath == null) {

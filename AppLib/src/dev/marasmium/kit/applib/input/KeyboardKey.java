@@ -12,7 +12,9 @@ package dev.marasmium.kit.applib.input;
  */
 public enum KeyboardKey {
 
-    // Function keys
+    /**
+     * Function keys
+     */
     F1("VK_F1"),
     F2("VK_F2"),
     F3("VK_F3"),
@@ -25,7 +27,9 @@ public enum KeyboardKey {
     F10("VK_F10"),
     F11("VK_F11"),
     F12("VK_F12"),
-    // Number keys
+    /**
+     * Number keys
+     */
     One("VK_1"),
     Two("VK_2"),
     Three("VK_3"),
@@ -36,7 +40,9 @@ public enum KeyboardKey {
     Eight("VK_8"),
     Nine("VK_9"),
     Zero("VK_0"),
-    // Alphabet keys
+    /**
+     * Letter keys
+     */
     A("VK_A"),
     B("VK_B"),
     C("VK_C"),
@@ -63,7 +69,9 @@ public enum KeyboardKey {
     X("VK_X"),
     Y("VK_Y"),
     Z("VK_Z"),
-    // Symbol keys
+    /**
+     * Symbol keys
+     */
     Grave("VK_BACK_QUOTE"),
     Minus("VK_MINUS"),
     Equals("VK_EQUALS"),
@@ -75,14 +83,18 @@ public enum KeyboardKey {
     Period("VK_PERIOD"),
     Comma("VK_COMMA"),
     Slash("VK_SLASH"),
-    // Text control keys
+    /**
+     * Text control keys
+     */
     Tab("VK_TAB"),
     Backspace("VK_BACK_SPACE"),
     Enter("VK_ENTER"),
     Caps_Lock("VK_CAPS_LOCK"),
     Shift("VK_SHIFT"),
     Space("VK_SPACE"),
-    // System control keys
+    /**
+     * System control keys
+     */
     Escape("VK_ESCAPE"),
     Control("VK_CONTROL"),
     Alt("VK_ALT"),
@@ -99,7 +111,9 @@ public enum KeyboardKey {
     Down("VK_DOWN"),
     Left("VK_LEFT"),
     Right("VK_RIGHT"),
-    // Keypad keys
+    /**
+     * Keypad keys
+     */
     Num_Lock("VK_NUM_LOCK"),
     Divide("VK_DIVIDE"),
     Multiply("VK_MULTIPLY"),

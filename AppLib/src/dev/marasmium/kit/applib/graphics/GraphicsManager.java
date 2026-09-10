@@ -33,10 +33,18 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class GraphicsManager implements GLEventListener {
 
+    /**
+     * The number of vertices of a sprite to be rendered by the graphics system
+     */
     public static final int VerticesPerSprite = 4;
+    /**
+     * The number of floating point values per vertex in a sprite to be rendered by the graphics system
+     */
     public static final int FloatsPerVertex = 5;
+    /**
+     * The number of indices of sprite vertex data to process when rendering sprites
+     */
     public static final int IndicesPerSprite = 6;
-    public static final int IntsPerIndex = 1;
 
     /**
      * The target (fractional) number of graphics frames to process per millisecond
@@ -124,12 +132,19 @@ public class GraphicsManager implements GLEventListener {
         return true;
     }
 
-    public boolean beginFrame() {
+    /**
+     * Make the graphics system thread safe to submit sprites for rendering
+     */
+    public void beginFrame() {
         spriteGroupsLock.lock();
         spriteGroups.clear();
-        return true;
     }
 
+    /**
+     * Submit a sprite to the graphics system for rendering
+     * @param camera The camera to render this sprite through
+     * @param sprite The sprite to render
+     */
     public void submit(Camera camera, Sprite sprite) {
         if (!spriteGroups.containsKey(camera)) {
             spriteGroups.put(camera, new ArrayList<>());
@@ -137,12 +152,21 @@ public class GraphicsManager implements GLEventListener {
         spriteGroups.get(camera).add(sprite);
     }
 
+    /**
+     * Submit a set of sprites to the graphics system for rendering
+     * @param camera The camera to render these sprites through
+     * @param sprites The sprites to render
+     */
     public void submit(Camera camera, List<Sprite> sprites) {
         for (Sprite sprite : sprites) {
             submit(camera, sprite);
         }
     }
 
+    /**
+     * Sort the sprites submitted this frame by their depth and make the graphics system thread safe for rendering
+     * @return Whether the graphics system could be made thread safe
+     */
     public boolean endFrame() {
         for (HashMap.Entry<Camera, ArrayList<Sprite>> entry : spriteGroups.entrySet()) {
             entry.getValue().sort(Comparator.comparingDouble(Sprite::getDepth));
@@ -182,7 +206,14 @@ public class GraphicsManager implements GLEventListener {
         return success;
     }
 
+    /**
+     * Load an animation's texture data into OpenGL video memory
+     * @param gl3 An instance of OpenGL to upload texture data to
+     * @param animation The animation to upload the texture from
+     * @return Whether the texture was loaded successfully
+     */
     private boolean loadTextureID(GL3 gl3, Animation animation) {
+        // Get the dimensions and colour data of the animation's texture
         int width = (int)(animation.getSheetDimensions().getX() * animation.getFrameDimensions().getX());
         int height = (int)(animation.getSheetDimensions().getY() * animation.getFrameDimensions().getY());
         ByteBuffer pixels = Buffers.newDirectByteBuffer(width * height * Integer.BYTES);
@@ -193,6 +224,7 @@ public class GraphicsManager implements GLEventListener {
             pixels.put((byte)pixel.getAlpha());
         }
         pixels.flip();
+        // Upload the texture to OpenGL
         int[] textureIDs = new int[1];
         gl3.glGenTextures(1, textureIDs, 0);
         gl3.glBindTexture(GL3.GL_TEXTURE_2D, textureIDs[0]);
@@ -208,6 +240,15 @@ public class GraphicsManager implements GLEventListener {
         return true;
     }
 
+    /**
+     * Render the set of sprites currently cached in the graphics system's memory
+     * @param gl3 An instance of OpenGL to render sprites with
+     * @param spriteCount The number of sprites to be rendered
+     * @param textureID The texture ID to display on the sprites
+     * @param cameraMatrix The camera matrix to display sprites through
+     * @param vertices The vertex data of the sprites to render
+     * @param indices The indices of the vertex data to render
+     */
     private void draw(GL3 gl3, int spriteCount, int textureID, float[] cameraMatrix, FloatBuffer vertices,
                       IntBuffer indices) {
         // Upload geometry
@@ -220,7 +261,7 @@ public class GraphicsManager implements GLEventListener {
         }
         gl3.glBufferSubData(GL3.GL_ARRAY_BUFFER, 0, verticesSize, vertices);
         gl3.glBindBuffer(GL3.GL_ELEMENT_ARRAY_BUFFER, IBOIDs[0]);
-        int indicesSize = spriteCount * IndicesPerSprite * IntsPerIndex * Integer.BYTES;
+        int indicesSize = spriteCount * IndicesPerSprite * Integer.BYTES;
         if (indicesSize > indexBufferSize) {
             indexBufferSize = Math.max(indicesSize, indexBufferSize * 2);
             App.Log.write(LogSource.Graphics, LogLevel.Info, "Resizing index buffer to ", indexBufferSize, "B");
@@ -338,6 +379,10 @@ public class GraphicsManager implements GLEventListener {
         return true;
     }
 
+    /**
+     * Set up OpenGL rendering parameters, VAO, VBO, IBO, and shaders
+     * @param drawable An instance of the OpenGL context
+     */
     @Override
     public void init(GLAutoDrawable drawable) {
         GL3 gl3 = drawable.getGL().getGL3();
@@ -430,6 +475,10 @@ public class GraphicsManager implements GLEventListener {
         gl3.glBindVertexArray(0);
     }
 
+    /**
+     * Draw the sprites currently in the graphics system's memory
+     * @param drawable An instance of the OpenGL context
+     */
     @Override
     public void display(GLAutoDrawable drawable) {
         spriteGroupsLock.lock();
@@ -439,7 +488,7 @@ public class GraphicsManager implements GLEventListener {
         gl3.glClearColor(clearColour.getRed(), clearColour.getGreen(), clearColour.getBlue(), clearColour.getAlpha());
         gl3.glClear(GL3.GL_COLOR_BUFFER_BIT | GL3.GL_DEPTH_BUFFER_BIT);
         gl3.glBindVertexArray(VAOIDs[0]);
-        // Define data metrics
+        // Define sprite group metrics
         int spriteCount = 0;
         int textureID = 0;
         FloatBuffer vertices = Buffers.newDirectFloatBuffer(0);
@@ -448,6 +497,7 @@ public class GraphicsManager implements GLEventListener {
             Camera camera = spriteGroup.getKey();
             ArrayList<Sprite> sprites = spriteGroup.getValue();
             for (Sprite sprite : sprites) {
+                // Copy sprite metrics
                 Vector spritePosition = sprite.getPosition();
                 float spriteDepth = sprite.getDepth();
                 Vector spriteDimensions = sprite.getDimensions();
@@ -461,6 +511,7 @@ public class GraphicsManager implements GLEventListener {
                         spritePosition.getY() + spriteDimensions.getY()).rotateAbout(spriteAngle, spriteCentre);
                 Vector spriteTopLeft = Vector.Cartesian(spritePosition.getX(),
                         spritePosition.getY() + spriteDimensions.getY()).rotateAbout(spriteAngle, spriteCentre);
+                // Copy animation metrics and upload texture if necessary
                 Animation animation = App.Assets.getAnimation(sprite.getAnimationFilePath());
                 if (animation.getTextureID() != textureID && spriteCount > 0) {
                     draw(gl3, spriteCount, textureID, camera.getProjectionMatrix(), vertices, indices);
@@ -475,6 +526,7 @@ public class GraphicsManager implements GLEventListener {
                     }
                     textureID = animation.getTextureID();
                 }
+                // Copy texture positioning metrics
                 Vector texturePosition = animation.getFrameTexturePosition(sprite.getAnimationFrame());
                 Vector textureDimensions = animation.getFrameTextureDimensions();
                 Vector textureBottomLeft = Vector.Cartesian(texturePosition.getX(), texturePosition.getY());
@@ -500,6 +552,7 @@ public class GraphicsManager implements GLEventListener {
                     textureBottomLeft = textureTopLeft.clone();
                     textureTopLeft = copy.clone();
                 }
+                // Allocate vertices and indices
                 float[] sVertices = {
                         spriteBottomLeft.getX(), spriteBottomLeft.getY(), spriteDepth,
                         textureBottomLeft.getX(), textureBottomLeft.getY(),
@@ -536,12 +589,24 @@ public class GraphicsManager implements GLEventListener {
         }
     }
 
+    /**
+     * Resize the OpenGL context in the application framework's window
+     * @param drawable An instance of the OpenGL context
+     * @param x The x-coordinate of the bottom-left corner of the window
+     * @param y The y-coordinate of the bottom-left corner of the window
+     * @param width The width of the window
+     * @param height The height of the window
+     */
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
         GL3 gl3 = drawable.getGL().getGL3();
         gl3.glViewport(0, 0, width, height);
     }
 
+    /**
+     * Dispose of the OpenGL resources loaded by the graphics system
+     * @param drawable An instance of the OpenGL context
+     */
     @Override
     public void dispose(GLAutoDrawable drawable) {
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Disposing of OpenGL parameters");
