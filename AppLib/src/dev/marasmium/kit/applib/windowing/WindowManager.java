@@ -7,9 +7,7 @@
 
 package dev.marasmium.kit.applib.windowing;
 
-import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLCapabilities;
-import com.jogamp.opengl.GLContext;
 import com.jogamp.opengl.GLException;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
@@ -19,7 +17,6 @@ import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 
 import javax.swing.SwingUtilities;
-import java.awt.Canvas;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -373,7 +370,7 @@ public class WindowManager {
         if (mouseCursorVisible) {
             canvas.setCursor(Cursor.getDefaultCursor());
             App.Log.write(LogSource.Window, LogLevel.Info, "Set mouse cursor visible");
-        } else if (!mouseCursorVisible) {
+        } else {
             try {
                 canvas.setCursor(Toolkit.getDefaultToolkit().createCustomCursor(
                         new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB), new Point(0, 0), "invisible"));

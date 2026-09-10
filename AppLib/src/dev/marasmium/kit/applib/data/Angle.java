@@ -312,7 +312,12 @@ public class Angle implements Serializable {
      */
     @Override
     public Angle clone() {
-        Angle a = new Angle();
+        Angle a;
+        try {
+            a = (Angle)super.clone();
+        } catch (CloneNotSupportedException _) {
+            return null;
+        }
         a.theta = theta;
         return a;
     }

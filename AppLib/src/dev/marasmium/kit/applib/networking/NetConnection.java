@@ -474,11 +474,8 @@ public class NetConnection {
      * @return The set of incoming messages
      */
     public ArrayList<NetMessage> getMessages() {
-        ArrayList<NetMessage> messages = new ArrayList<>();
         inputLock.lock();
-        for (NetMessage message : inputMessages) {
-            messages.add(message);
-        }
+        ArrayList<NetMessage> messages = new ArrayList<>(inputMessages);
         try {
             inputLock.unlock();
         } catch (IllegalMonitorStateException _) {

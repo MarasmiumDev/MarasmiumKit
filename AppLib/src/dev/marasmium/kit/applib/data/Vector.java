@@ -479,7 +479,12 @@ public class Vector implements Serializable {
      */
     @Override
     public Vector clone() {
-        Vector v = new Vector();
+        Vector v;
+        try {
+            v = (Vector)super.clone();
+        } catch (CloneNotSupportedException _) {
+            return null;
+        }
         v.x = x;
         v.y = y;
         return v;

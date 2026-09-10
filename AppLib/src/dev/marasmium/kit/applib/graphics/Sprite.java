@@ -10,7 +10,6 @@ package dev.marasmium.kit.applib.graphics;
 import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.assets.Animation;
 import dev.marasmium.kit.applib.data.Angle;
-import dev.marasmium.kit.applib.data.Colour;
 import dev.marasmium.kit.applib.data.Vector;
 
 /**

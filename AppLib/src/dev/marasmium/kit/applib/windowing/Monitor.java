@@ -7,10 +7,7 @@
 
 package dev.marasmium.kit.applib.windowing;
 
-import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.data.Vector;
-import dev.marasmium.kit.applib.logging.LogLevel;
-import dev.marasmium.kit.applib.logging.LogSource;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;

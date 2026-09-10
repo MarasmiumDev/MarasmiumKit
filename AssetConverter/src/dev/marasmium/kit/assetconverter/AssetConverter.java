@@ -19,7 +19,6 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -280,7 +279,8 @@ public class AssetConverter {
         // Write converted animation
         Animation animation = new Animation();
         if (!animation.initialize(targetFPS, Vector.Cartesian(sheetWidth, sheetHeight),
-                Vector.Cartesian(imageWidth / sheetWidth, imageHeight / sheetHeight), frameCount, data)) {
+                Vector.Cartesian((float)(imageWidth / sheetWidth), (float)(imageHeight / sheetHeight)), frameCount,
+                data)) {
             System.out.println("Failed to initialize animation");
             return false;
         }

@@ -144,18 +144,23 @@ public class NetMessage implements Serializable {
      */
     @Override
     public NetMessage clone() {
-        NetMessage message = new NetMessage();
-        message.type = this.type;
-        if (data == null) {
-            return message;
-        }
-        message.data = new byte[this.data.length];
+        NetMessage m;
         try {
-            System.arraycopy(this.data, 0, message.data, 0, this.data.length);
-        } catch (IndexOutOfBoundsException | ArrayStoreException | NullPointerException _) {
-            return message;
+            m = (NetMessage)super.clone();
+        } catch (CloneNotSupportedException _) {
+            return null;
         }
-        return message;
+        m.type = this.type;
+        if (data == null) {
+            return m;
+        }
+        m.data = new byte[this.data.length];
+        try {
+            System.arraycopy(this.data, 0, m.data, 0, this.data.length);
+        } catch (IndexOutOfBoundsException | ArrayStoreException | NullPointerException _) {
+            return m;
+        }
+        return m;
     }
 
 }

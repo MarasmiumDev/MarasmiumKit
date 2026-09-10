@@ -220,7 +220,12 @@ public class Colour implements Serializable {
      */
     @Override
     public Colour clone() {
-        Colour c = new Colour();
+        Colour c;
+        try {
+            c = (Colour)super.clone();
+        } catch (CloneNotSupportedException _) {
+            return null;
+        }
         c.RGBA = RGBA;
         return c;
     }

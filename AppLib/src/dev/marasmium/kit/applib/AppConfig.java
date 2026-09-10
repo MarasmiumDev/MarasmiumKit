@@ -46,7 +46,7 @@ public class AppConfig {
     /**
      * The initial scene to be presented by the application framework
      */
-    public Scene initialScene = null;
+    public Scene initialScene;
 
     /**
      * Construct a MarasmiumKit application with an initial scene for the application to display
