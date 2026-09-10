@@ -20,14 +20,18 @@ import dev.marasmium.kit.applib.logging.LogSource;
 
 import javax.swing.SwingUtilities;
 import java.awt.Canvas;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
 import java.awt.KeyboardFocusManager;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -61,6 +65,10 @@ public class WindowManager {
      */
     private Monitor monitor = null;
     /**
+     * Whether the mouse cursor is visible on the window
+     */
+    private boolean mouseCursorVisible = false;
+    /**
      * The Java AWT window handle for the window
      */
     private Frame frame = null;
@@ -84,6 +92,12 @@ public class WindowManager {
             return false;
         }
         // Generate Java AWT window frame
+        try {
+            canvas = new GLCanvas(new GLCapabilities(GLProfile.get(GLProfile.GL3)));
+        } catch (GLException _) {
+            App.Log.write(LogSource.Window, LogLevel.Error, "Failed to initialize JOGL canvas");
+            return false;
+        }
         SwingUtilities.invokeLater(() -> {
             frame = new Frame();
             frame.setResizable(false);
@@ -99,12 +113,6 @@ public class WindowManager {
                 }
 
             });
-            try {
-                canvas = new GLCanvas(new GLCapabilities(GLProfile.get(GLProfile.GL3)));
-            } catch (GLException _) {
-                App.Log.write(LogSource.Window, LogLevel.Error, "Failed to initialize JOGL canvas");
-                return;
-            }
             canvas.addKeyListener(App.Input.keyboard);
             canvas.addMouseListener(App.Input.mouse);
             canvas.addMouseMotionListener(App.Input.mouse);
@@ -134,6 +142,10 @@ public class WindowManager {
         setMonitor(config.monitor);
         if (!setFullscreen(config.fullscreen)) {
             App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set window fullscreen mode");
+            return false;
+        }
+        if (!setMouseCursorVisible(config.mouseCursorVisible)) {
+            App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set mouse cursor visibility");
             return false;
         }
         closeRequested = false;
@@ -248,6 +260,54 @@ public class WindowManager {
     }
 
     /**
+     * Get the set of monitors currently available in the local graphics environment
+     * @return The currently available set of monitors
+     */
+    public ArrayList<Monitor> getMonitors() {
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] gds;
+        try {
+            gds = ge.getScreenDevices();
+        } catch (HeadlessException _) {
+            App.Log.write(LogSource.Window, LogLevel.Error, "System is in headless mode");
+            return new ArrayList<>();
+        }
+        ArrayList<Monitor> monitors = new ArrayList<>();
+        for (int index = 0; index < gds.length; index++) {
+            Monitor monitor = new Monitor();
+            if (monitor.initialize(index)) {
+                monitors.add(monitor);
+            }
+        }
+        return monitors;
+    }
+
+    /**
+     * Get the current monitor for the window to be displayed on when in fullscreen mode
+     * @return The current monitor for the window to be displayed in fullscreen mode on
+     */
+    public Monitor getMonitor() {
+        return monitor;
+    }
+
+    /**
+     * Set the monitor for the window to appear on when in fullscreen mode
+     * @param monitor The new monitor for the window to appear on when in fullscreen mode
+     */
+    public void setMonitor(Monitor monitor) {
+        if (monitor == null) {
+            App.Log.write(LogSource.Window, LogLevel.Warning, "No monitor provided");
+            return;
+        }
+        this.monitor = monitor;
+        if (fullscreen) {
+            setFullscreen(false);
+            setFullscreen(true);
+        }
+        App.Log.write(LogSource.Window, LogLevel.Info, "Set fullscreen monitor index ", monitor);
+    }
+
+    /**
      * Test whether the window is currently appearing in fullscreen mode
      * @return Whether the window is in fullscreen mode
      */
@@ -298,51 +358,33 @@ public class WindowManager {
     }
 
     /**
-     * Get the set of monitors currently available in the local graphics environment
-     * @return The currently available set of monitors
+     * Test whether the mouse cursor is visible on the window
+     * @return Whether the mouse cursor is currently visible
      */
-    public ArrayList<Monitor> getMonitors() {
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice[] gds;
-        try {
-            gds = ge.getScreenDevices();
-        } catch (HeadlessException _) {
-            App.Log.write(LogSource.Window, LogLevel.Error, "System is in headless mode");
-            return new ArrayList<>();
-        }
-        ArrayList<Monitor> monitors = new ArrayList<>();
-        for (int index = 0; index < gds.length; index++) {
-            Monitor monitor = new Monitor();
-            if (monitor.initialize(index)) {
-                monitors.add(monitor);
+    public boolean isMouseCursorVisible() {
+        return mouseCursorVisible;
+    }
+
+    /**
+     * Set whether the mouse cursor is visible on the window
+     * @param mouseCursorVisible Whether the mouse cursor should be visible
+     */
+    public boolean setMouseCursorVisible(boolean mouseCursorVisible) {
+        if (mouseCursorVisible) {
+            canvas.setCursor(Cursor.getDefaultCursor());
+            App.Log.write(LogSource.Window, LogLevel.Info, "Set mouse cursor visible");
+        } else if (!mouseCursorVisible) {
+            try {
+                canvas.setCursor(Toolkit.getDefaultToolkit().createCustomCursor(
+                        new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB), new Point(0, 0), "invisible"));
+            } catch (IndexOutOfBoundsException | HeadlessException _) {
+                App.Log.write(LogSource.Window, LogLevel.Warning, "Failed to set mouse cursor invisible");
+                return false;
             }
+            App.Log.write(LogSource.Window, LogLevel.Info, "Set mouse cursor invisible");
         }
-        return monitors;
-    }
-
-    /**
-     * Get the current monitor for the window to be displayed on when in fullscreen mode
-     * @return The current monitor for the window to be displayed in fullscreen mode on
-     */
-    public Monitor getMonitor() {
-        return monitor;
-    }
-
-    /**
-     * Set the monitor for the window to appear on when in fullscreen mode
-     * @param monitor The new monitor for the window to appear on when in fullscreen mode
-     */
-    public void setMonitor(Monitor monitor) {
-        if (monitor == null) {
-            App.Log.write(LogSource.Window, LogLevel.Warning, "No monitor provided");
-            return;
-        }
-        this.monitor = monitor;
-        if (fullscreen) {
-            setFullscreen(false);
-            setFullscreen(true);
-        }
-        App.Log.write(LogSource.Window, LogLevel.Info, "Set fullscreen monitor index ", monitor);
+        this.mouseCursorVisible = mouseCursorVisible;
+        return true;
     }
 
     /**

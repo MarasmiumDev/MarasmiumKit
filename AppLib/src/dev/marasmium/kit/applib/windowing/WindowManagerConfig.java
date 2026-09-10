@@ -30,6 +30,10 @@ public class WindowManagerConfig {
      * The initial monitor for the window to appear on when in fullscreen mode
      */
     public final Monitor monitor = new Monitor();
+    /**
+     * Whether the mouse cursor is visible on the window
+     */
+    public boolean mouseCursorVisible = false;
 
     /**
      * Apply default settings to this window configuration structure
@@ -42,6 +46,7 @@ public class WindowManagerConfig {
         if (!monitor.initialize(0)) {
             return false;
         }
+        mouseCursorVisible = true;
         return true;
     }
 
