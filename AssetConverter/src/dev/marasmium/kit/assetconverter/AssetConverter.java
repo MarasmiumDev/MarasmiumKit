@@ -261,7 +261,7 @@ public class AssetConverter {
         int imageWidth = inputImage.getWidth();
         int imageHeight = inputImage.getHeight();
         BufferedImage convertedImage = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = (Graphics2D)convertedImage.createGraphics();
+        Graphics2D g = convertedImage.createGraphics();
         g.drawImage(inputImage, 0, 0, imageWidth, imageHeight, null);
         g.dispose();
         Colour[] data = new Colour[imageWidth * imageHeight];

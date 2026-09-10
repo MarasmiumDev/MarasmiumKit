@@ -100,7 +100,7 @@ public class MusicManager {
         AudioTrack track = App.Assets.getAudioTrack(filePath);
         App.Log.write(LogSource.Audio, LogLevel.Info, "Loaded: ", track);
         if (track == null) {
-            App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to load music track \"", filePath, "\"");
+            App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to retrieve audio track \"", filePath, "\"");
             return false;
         }
         AudioFormat format = new AudioFormat(track.getSampleRate(), 8 * track.getSampleSize(), track.getChannelCount(),

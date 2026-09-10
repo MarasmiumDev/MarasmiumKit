@@ -190,13 +190,16 @@ public class Animation {
         if (data == null) {
             return false;
         }
+        if (sheetDimensions == null || frameDimensions == null) {
+            return false;
+        }
         if (data.length != (int)(sheetDimensions.getElementProduct() * frameDimensions.getElementProduct())) {
             return false;
         }
         this.data = new Colour[data.length];
         try {
             System.arraycopy(data, 0, this.data, 0, data.length);
-        } catch (IndexOutOfBoundsException | ArrayStoreException | NullPointerException _) {
+        } catch (IndexOutOfBoundsException | ArrayStoreException _) {
             return false;
         }
         return true;
@@ -224,9 +227,21 @@ public class Animation {
      * @return The OpenGL texture coordinates of the given frame in this animation's texture
      */
     public Vector getFrameTexturePosition(int frameIndex) {
+        if (frameIndex < 0 || frameIndex >= frameCount) {
+            return null;
+        }
+        if (sheetDimensions == null) {
+            return null;
+        }
+        if (sheetDimensions.getX() <= 1.0f) {
+            return null;
+        }
         int xSheet = frameIndex % ((int)sheetDimensions.getX());
         int ySheet = (frameIndex - xSheet) / (int)sheetDimensions.getX();
         Vector textureDimensions = getFrameTextureDimensions();
+        if (textureDimensions == null) {
+            return null;
+        }
         return Vector.Cartesian(xSheet * textureDimensions.getX(), ySheet * textureDimensions.getY());
     }
 
@@ -235,6 +250,12 @@ public class Animation {
      * @return The dimensions of this animation's frames in OpenGL texture coordinates
      */
     public Vector getFrameTextureDimensions() {
+        if (sheetDimensions == null) {
+            return null;
+        }
+        if (sheetDimensions.getX() <= 1.0f || sheetDimensions.getY() <= 1.0f) {
+            return null;
+        }
         return Vector.Cartesian(1.0f / sheetDimensions.getX(), 1.0f / sheetDimensions.getY());
     }
 

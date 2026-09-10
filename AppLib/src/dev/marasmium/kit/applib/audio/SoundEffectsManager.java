@@ -74,6 +74,7 @@ public class SoundEffectsManager {
         // Load the sound effect audio track and its format
         AudioTrack track = App.Assets.getAudioTrack(filePath);
         if (track == null) {
+            App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to retrieve audio track \"", filePath, "\"");
             return false;
         }
         AudioFormat format = new AudioFormat(track.getSampleRate(), 8 * track.getSampleSize(), track.getChannelCount(),
@@ -167,11 +168,11 @@ public class SoundEffectsManager {
         App.Log.write(LogSource.Audio, LogLevel.Info, "Stopping all sound effects");
         boolean success = true;
         for (HashMap.Entry<Thread, SourceDataLine> entry : playThreads.entrySet()) {
-            entry.getValue().close();
-            entry.getKey().interrupt();
             try {
+                entry.getValue().close();
+                entry.getKey().interrupt();
                 entry.getKey().join();
-            } catch (InterruptedException _) {
+            } catch (IllegalStateException | InterruptedException _) {
                 App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to stop sound effect playback thread");
                 success = false;
             }

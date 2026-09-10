@@ -131,6 +131,9 @@ public class Camera extends Body {
         if (!(o instanceof Camera c)) {
             return false;
         }
+        if (position == null || angle == null) {
+            return false;
+        }
         return c.position.equals(position) && c.scale == scale && c.angle.equals(angle);
     }
 

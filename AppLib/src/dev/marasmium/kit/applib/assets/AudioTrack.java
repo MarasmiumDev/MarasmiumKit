@@ -175,13 +175,16 @@ public class AudioTrack {
         if (data.length == 0) {
             return false;
         }
+        if (sampleSize <= 0 || channelCount <= 0) {
+            return false;
+        }
         if (data.length % (sampleSize * channelCount) != 0) {
             return false;
         }
         this.data = new byte[data.length];
         try {
             System.arraycopy(data, 0, this.data, 0, data.length);
-        } catch (IndexOutOfBoundsException | ArrayStoreException | NullPointerException _) {
+        } catch (IndexOutOfBoundsException | ArrayStoreException _) {
             return false;
         }
         return true;

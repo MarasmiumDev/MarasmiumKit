@@ -11,6 +11,7 @@ import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
+import com.jogamp.opengl.GLException;
 import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.assets.Animation;
 import dev.marasmium.kit.applib.data.Angle;
@@ -19,9 +20,11 @@ import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.ReadOnlyBufferException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -36,15 +39,23 @@ public class GraphicsManager implements GLEventListener {
     /**
      * The number of vertices of a sprite to be rendered by the graphics system
      */
-    public static final int VerticesPerSprite = 4;
+    private static final int VerticesPerSprite = 4;
     /**
      * The number of floating point values per vertex in a sprite to be rendered by the graphics system
      */
-    public static final int FloatsPerVertex = 5;
+    private static final int FloatsPerVertex = 5;
     /**
      * The number of indices of sprite vertex data to process when rendering sprites
      */
-    public static final int IndicesPerSprite = 6;
+    private static final int IndicesPerSprite = 6;
+    /**
+     * The vertex data offset for sprite position information
+     */
+    private static final int SpritePositionOffset = 0;
+    /**
+     * The vertex data offset for texture positioning information
+     */
+    private static final int TexturePositionOffset = 3;
 
     /**
      * The target (fractional) number of graphics frames to process per millisecond
@@ -169,11 +180,17 @@ public class GraphicsManager implements GLEventListener {
      */
     public boolean endFrame() {
         for (HashMap.Entry<Camera, ArrayList<Sprite>> entry : spriteGroups.entrySet()) {
-            entry.getValue().sort(Comparator.comparingDouble(Sprite::getDepth));
+            try {
+                entry.getValue().sort(Comparator.comparingDouble(Sprite::getDepth));
+            } catch (IllegalStateException _) {
+                App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to retrieve sprites from group for ",
+                        "rendering");
+            }
         }
         try {
             spriteGroupsLock.unlock();
         } catch (IllegalMonitorStateException _) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to unlock sprite groups to end graphics frame");
             return false;
         }
         return true;
@@ -194,6 +211,7 @@ public class GraphicsManager implements GLEventListener {
         try {
             clearColourLock.unlock();
         } catch (IllegalMonitorStateException _) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to unlock clear colour");
             success = false;
         }
         spriteGroupsLock.lock();
@@ -201,6 +219,7 @@ public class GraphicsManager implements GLEventListener {
         try {
             spriteGroupsLock.unlock();
         } catch (IllegalMonitorStateException _) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to unlock sprite groups");
             success = false;
         }
         return success;
@@ -214,9 +233,8 @@ public class GraphicsManager implements GLEventListener {
      */
     private boolean loadTextureID(GL3 gl3, Animation animation) {
         // Get the dimensions and colour data of the animation's texture
-        int width = (int)(animation.getSheetDimensions().getX() * animation.getFrameDimensions().getX());
-        int height = (int)(animation.getSheetDimensions().getY() * animation.getFrameDimensions().getY());
-        ByteBuffer pixels = Buffers.newDirectByteBuffer(width * height * Integer.BYTES);
+        Vector dimensions = animation.getSheetDimensions().elementMultiply(animation.getFrameDimensions());
+        ByteBuffer pixels = Buffers.newDirectByteBuffer((int)(dimensions.getX() * dimensions.getY()) * Integer.BYTES);
         for (Colour pixel : animation.getData()) {
             pixels.put((byte)pixel.getRed());
             pixels.put((byte)pixel.getGreen());
@@ -227,17 +245,32 @@ public class GraphicsManager implements GLEventListener {
         // Upload the texture to OpenGL
         int[] textureIDs = new int[1];
         gl3.glGenTextures(1, textureIDs, 0);
+        if (textureIDs[0] == 0) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to generate texture ID for animation ",
+                    animation);
+            return false;
+        }
+        App.Log.write(LogSource.Graphics, LogLevel.Info, "Generated texture ID ", textureIDs[0], " for animation ",
+                animation);
         gl3.glBindTexture(GL3.GL_TEXTURE_2D, textureIDs[0]);
         gl3.glPixelStorei(GL3.GL_UNPACK_ALIGNMENT, 1);
         gl3.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_NEAREST);
         gl3.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_NEAREST);
         gl3.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_WRAP_S, GL3.GL_CLAMP_TO_EDGE);
         gl3.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_WRAP_T, GL3.GL_CLAMP_TO_EDGE);
-        gl3.glTexImage2D(GL3.GL_TEXTURE_2D, 0, GL3.GL_RGBA8, width, height, 0, GL3.GL_RGBA, GL3.GL_UNSIGNED_BYTE,
-                pixels);
+        gl3.glTexImage2D(GL3.GL_TEXTURE_2D, 0, GL3.GL_RGBA8, (int)dimensions.getX(), (int)dimensions.getY(), 0,
+                GL3.GL_RGBA, GL3.GL_UNSIGNED_BYTE, pixels);
+        boolean success = true;
+        if (gl3.glGetError() != GL3.GL_NO_ERROR) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to upload texture data for animation ",
+                    animation);
+            gl3.glDeleteTextures(1, textureIDs, 0);
+            textureIDs[0] = 0;
+            success = false;
+        }
         gl3.glBindTexture(GL3.GL_TEXTURE_2D, 0);
         animation.setTextureID(textureIDs[0]);
-        return true;
+        return success;
     }
 
     /**
@@ -256,7 +289,8 @@ public class GraphicsManager implements GLEventListener {
         int verticesSize = spriteCount * VerticesPerSprite * FloatsPerVertex * Float.BYTES;
         if (verticesSize > vertexBufferSize) {
             vertexBufferSize = Math.max(verticesSize, vertexBufferSize * 2);
-            App.Log.write(LogSource.Graphics, LogLevel.Info, "Resizing vertex buffer to ", vertexBufferSize, "B");
+            App.Log.write(LogSource.Graphics, LogLevel.Info, "Resizing OpenGL vertex buffer to ", vertexBufferSize,
+                    "B");
             gl3.glBufferData(GL3.GL_ARRAY_BUFFER, vertexBufferSize, null, GL3.GL_DYNAMIC_DRAW);
         }
         gl3.glBufferSubData(GL3.GL_ARRAY_BUFFER, 0, verticesSize, vertices);
@@ -264,7 +298,7 @@ public class GraphicsManager implements GLEventListener {
         int indicesSize = spriteCount * IndicesPerSprite * Integer.BYTES;
         if (indicesSize > indexBufferSize) {
             indexBufferSize = Math.max(indicesSize, indexBufferSize * 2);
-            App.Log.write(LogSource.Graphics, LogLevel.Info, "Resizing index buffer to ", indexBufferSize, "B");
+            App.Log.write(LogSource.Graphics, LogLevel.Info, "Resizing OpenGL index buffer to ", indexBufferSize, "B");
             gl3.glBufferData(GL3.GL_ELEMENT_ARRAY_BUFFER, indexBufferSize, null, GL3.GL_DYNAMIC_DRAW);
         }
         gl3.glBufferSubData(GL3.GL_ELEMENT_ARRAY_BUFFER, 0, indicesSize, indices);
@@ -355,6 +389,7 @@ public class GraphicsManager implements GLEventListener {
         try {
             clearColourLock.unlock();
         } catch (IllegalMonitorStateException _) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to unlock clear colour lock");
             return null;
         }
         return clearColour;
@@ -367,6 +402,7 @@ public class GraphicsManager implements GLEventListener {
      */
     public boolean setClearColour(Colour clearColour) {
         if (clearColour == null) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Clear colour invalid");
             return false;
         }
         clearColourLock.lock();
@@ -374,8 +410,10 @@ public class GraphicsManager implements GLEventListener {
         try {
             clearColourLock.unlock();
         } catch (IllegalMonitorStateException _) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to unlock clear colour lock");
             return false;
         }
+        App.Log.write(LogSource.Graphics, LogLevel.Info, "Set clear colour to ", clearColour);
         return true;
     }
 
@@ -385,7 +423,13 @@ public class GraphicsManager implements GLEventListener {
      */
     @Override
     public void init(GLAutoDrawable drawable) {
-        GL3 gl3 = drawable.getGL().getGL3();
+        GL3 gl3;
+        try {
+            gl3 = drawable.getGL().getGL3();
+        } catch (GLException _) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to get OpenGL instance");
+            return;
+        }
         // Set OpenGL flags
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Initializing OpenGL parameters");
         String OpenGLVersion = gl3.glGetString(GL3.GL_VERSION);
@@ -423,6 +467,7 @@ public class GraphicsManager implements GLEventListener {
                     new String(vertexLog));
             return;
         }
+        App.Log.write(LogSource.Graphics, LogLevel.Info, "Compiled vertex shader ", vertexShaderID);
         int fragmentShaderID = gl3.glCreateShader(GL3.GL_FRAGMENT_SHADER);
         final String[] fragmentSources = {
                 """
@@ -451,10 +496,21 @@ public class GraphicsManager implements GLEventListener {
                     new String(fragmentLog));
             return;
         }
+        App.Log.write(LogSource.Graphics, LogLevel.Info, "Compiled fragment shader ", fragmentShaderID);
         shaderID = gl3.glCreateProgram();
         gl3.glAttachShader(shaderID, vertexShaderID);
         gl3.glAttachShader(shaderID, fragmentShaderID);
         gl3.glLinkProgram(shaderID);
+        int[] linkStatuses = new int[1];
+        gl3.glGetProgramiv(shaderID, GL3.GL_LINK_STATUS, linkStatuses, 0);
+        if (linkStatuses[0] == GL3.GL_FALSE) {
+            int[] linkLogLengths = new int[1];
+            gl3.glGetProgramiv(shaderID, GL3.GL_INFO_LOG_LENGTH, linkLogLengths, 0);
+            byte[] linkLog = new byte[linkLogLengths[0]];
+            gl3.glGetProgramInfoLog(shaderID, linkLogLengths[0], null, 0, linkLog, 0);
+            App.Log.write(LogSource.Graphics, LogLevel.Error, "Failed to link shader, message:\n", new String(linkLog));
+            return;
+        }
         gl3.glDeleteShader(vertexShaderID);
         gl3.glDeleteShader(fragmentShaderID);
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Generated shader program ", shaderID);
@@ -468,8 +524,10 @@ public class GraphicsManager implements GLEventListener {
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Generated VAO ", VAOIDs[0], ", VBO ", VBOIDs[0], ", and IBO ",
                 IBOIDs[0]);
         // Configure vertex attributes
-        gl3.glVertexAttribPointer(0, 3, GL3.GL_FLOAT, false, FloatsPerVertex * Float.BYTES, 0);
-        gl3.glVertexAttribPointer(1, 2, GL3.GL_FLOAT, false, FloatsPerVertex * Float.BYTES, 3 * Float.BYTES);
+        gl3.glVertexAttribPointer(0, 3, GL3.GL_FLOAT, false, FloatsPerVertex * Float.BYTES,
+                SpritePositionOffset * Float.BYTES);
+        gl3.glVertexAttribPointer(1, 2, GL3.GL_FLOAT, false, FloatsPerVertex * Float.BYTES,
+                TexturePositionOffset * Float.BYTES);
         gl3.glEnableVertexAttribArray(0);
         gl3.glEnableVertexAttribArray(1);
         gl3.glBindVertexArray(0);
@@ -483,7 +541,13 @@ public class GraphicsManager implements GLEventListener {
     public void display(GLAutoDrawable drawable) {
         spriteGroupsLock.lock();
         // Clear screen
-        GL3 gl3 = drawable.getGL().getGL3();
+        GL3 gl3;
+        try {
+            gl3 = drawable.getGL().getGL3();
+        } catch (GLException _) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to retrieve OpenGL instance");
+            return;
+        }
         Colour clearColour = getClearColour();
         gl3.glClearColor(clearColour.getRed(), clearColour.getGreen(), clearColour.getBlue(), clearColour.getAlpha());
         gl3.glClear(GL3.GL_COLOR_BUFFER_BIT | GL3.GL_DEPTH_BUFFER_BIT);
@@ -494,8 +558,15 @@ public class GraphicsManager implements GLEventListener {
         FloatBuffer vertices = Buffers.newDirectFloatBuffer(0);
         IntBuffer indices = Buffers.newDirectIntBuffer(0);
         for (HashMap.Entry<Camera, ArrayList<Sprite>> spriteGroup : spriteGroups.entrySet()) {
-            Camera camera = spriteGroup.getKey();
-            ArrayList<Sprite> sprites = spriteGroup.getValue();
+            Camera camera;
+            ArrayList<Sprite> sprites;
+            try {
+                camera = spriteGroup.getKey();
+                sprites = spriteGroup.getValue();
+            } catch (IllegalStateException _) {
+                App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to get camera and sprites from group");
+                continue;
+            }
             for (Sprite sprite : sprites) {
                 // Copy sprite metrics
                 Vector spritePosition = sprite.getPosition();
@@ -525,6 +596,7 @@ public class GraphicsManager implements GLEventListener {
                         continue;
                     }
                     textureID = animation.getTextureID();
+                    textureIDs.add(textureID);
                 }
                 // Copy texture positioning metrics
                 Vector texturePosition = animation.getFrameTexturePosition(sprite.getAnimationFrame());
@@ -564,8 +636,13 @@ public class GraphicsManager implements GLEventListener {
                         textureTopLeft.getX(), textureTopLeft.getY(),
                 };
                 FloatBuffer newVertices = Buffers.newDirectFloatBuffer(vertices.capacity() + sVertices.length);
-                newVertices.put(vertices);
-                newVertices.put(sVertices);
+                try {
+                    newVertices.put(vertices);
+                    newVertices.put(sVertices);
+                } catch (BufferOverflowException | IllegalArgumentException | ReadOnlyBufferException _) {
+                    App.Log.write(LogSource.Graphics, LogLevel.Info, "Failed to add sprite vertex data to buffer");
+                    continue;
+                }
                 vertices = newVertices;
                 vertices.flip();
                 int[] sIndices = {
@@ -573,8 +650,13 @@ public class GraphicsManager implements GLEventListener {
                         (spriteCount * 4) + 2, (spriteCount * 4) + 3, (spriteCount * 4) + 0,
                 };
                 IntBuffer newIndices = Buffers.newDirectIntBuffer(indices.capacity() + sIndices.length);
-                newIndices.put(indices);
-                newIndices.put(sIndices);
+                try {
+                    newIndices.put(indices);
+                    newIndices.put(sIndices);
+                } catch (BufferOverflowException | IllegalArgumentException | ReadOnlyBufferException _) {
+                    App.Log.write(LogSource.Graphics, LogLevel.Info, "Failed to add sprite index data to buffer");
+                    continue;
+                }
                 indices = newIndices;
                 indices.flip();
                 spriteCount++;
@@ -599,8 +681,15 @@ public class GraphicsManager implements GLEventListener {
      */
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-        GL3 gl3 = drawable.getGL().getGL3();
+        GL3 gl3;
+        try {
+            gl3 = drawable.getGL().getGL3();
+        } catch (GLException _) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to retrieve OpenGL instance");
+            return;
+        }
         gl3.glViewport(0, 0, width, height);
+        App.Log.write(LogSource.Graphics, LogLevel.Info, "Resized OpenGL viewport ", width, "x", height);
     }
 
     /**
@@ -609,16 +698,24 @@ public class GraphicsManager implements GLEventListener {
      */
     @Override
     public void dispose(GLAutoDrawable drawable) {
-        App.Log.write(LogSource.Graphics, LogLevel.Info, "Disposing of OpenGL parameters");
-        GL3 gl3 = drawable.getGL().getGL3();
+        GL3 gl3;
+        try {
+            gl3 = drawable.getGL().getGL3();
+        } catch (GLException _) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to retrieve OpenGL instance");
+            return;
+        }
+        int textureCount = textureIDs.size();
         for (int textureID : textureIDs) {
             int[] IDs = { textureID };
             gl3.glDeleteTextures(1, IDs, 0);
         }
+        App.Log.write(LogSource.Graphics, LogLevel.Info, "Disposed of ", textureCount, " OpenGL texture IDs");
         gl3.glDeleteVertexArrays(1, VAOIDs, 0);
         gl3.glDeleteBuffers(1, VBOIDs, 0);
         gl3.glDeleteBuffers(1, IBOIDs, 0);
         gl3.glDeleteProgram(shaderID);
+        App.Log.write(LogSource.Graphics, LogLevel.Info, "Disposed of OpenGL utilities");
     }
 
 }

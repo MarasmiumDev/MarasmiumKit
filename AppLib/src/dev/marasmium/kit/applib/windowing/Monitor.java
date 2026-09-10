@@ -70,7 +70,6 @@ public class Monitor {
         try {
             gds = ge.getScreenDevices();
         } catch (HeadlessException _) {
-            App.Log.write(LogSource.Window, LogLevel.Error, "System is in headless mode");
             index = -1;
             description = "";
             position = null;
@@ -78,7 +77,6 @@ public class Monitor {
             return false;
         }
         if (gds.length == 0) {
-            App.Log.write(LogSource.Window, LogLevel.Error, "Primary monitor unavailable");
             index = -1;
             description = "";
             position = null;
@@ -88,7 +86,6 @@ public class Monitor {
         // Check index
         boolean success = true;
         if (index < 0 || index >= gds.length) {
-            App.Log.write(LogSource.Window, LogLevel.Warning, "Monitor index ", index, " invalid");
             index = 0;
             success = false;
         }

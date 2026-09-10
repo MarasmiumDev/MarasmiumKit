@@ -200,25 +200,38 @@ public class AssetManager {
     /**
      * Dispose of all assets and free the asset management system's memory
      */
-    public void destroy() {
+    public boolean destroy() {
+        boolean success = true;
         App.Log.write(LogSource.Assets, LogLevel.Info, "Destroying asset management system");
         basePath = null;
         // Free audio tracks
         App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing ", audioTracks.size(), " audio tracks");
         for (HashMap.Entry<String, AudioTrack> entry : audioTracks.entrySet()) {
-            if (entry.getValue() != null) {
-                entry.getValue().destroy();
+            try {
+                if (entry.getValue() != null) {
+                    entry.getValue().destroy();
+                }
+            } catch (IllegalStateException _) {
+                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to retrieve value to destroy in audio ",
+                        "tracks");
+                success = false;
             }
         }
         audioTracks.clear();
         // Free animations
         App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing ", animations.size(), " animations");
         for (HashMap.Entry<String, Animation> entry : animations.entrySet()) {
-            if (entry.getValue() != null) {
-                entry.getValue().destroy();
+            try {
+                if (entry.getValue() != null) {
+                    entry.getValue().destroy();
+                }
+            } catch (IllegalStateException _) {
+                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to retrieve value to destroy in animations");
+                success = false;
             }
         }
         audioTracks.clear();
+        return success;
     }
 
     /**
@@ -445,7 +458,7 @@ public class AssetManager {
             System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
             offset += Integer.BYTES;
             dataSize = ByteBuffer.wrap(buffer).getInt();
-        } catch (IndexOutOfBoundsException | ArrayStoreException | NullPointerException | BufferUnderflowException _) {
+        } catch (IndexOutOfBoundsException | ArrayStoreException | BufferUnderflowException _) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to parse audio data from \"", basePath + filePath,
                     "\", data invalid");
             return false;
@@ -458,7 +471,7 @@ public class AssetManager {
         data = new byte[dataSize];
         try {
             System.arraycopy(fileData, offset, data, 0, dataSize);
-        } catch (IndexOutOfBoundsException | ArrayStoreException | NullPointerException _) {
+        } catch (IndexOutOfBoundsException | ArrayStoreException _) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to copy audio data");
             return false;
         }
@@ -550,8 +563,8 @@ public class AssetManager {
             System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
             offset += Integer.BYTES;
             frameCount = ByteBuffer.wrap(buffer).getInt();
-        } catch (IndexOutOfBoundsException | ArrayStoreException | NullPointerException | BufferUnderflowException _) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to parse animation data from \"",
+        } catch (IndexOutOfBoundsException | ArrayStoreException | BufferUnderflowException _) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to parse animation header data from \"",
                     basePath + filePath, "\", data invalid");
             return false;
         }
@@ -563,9 +576,15 @@ public class AssetManager {
         }
         data = new Colour[dataSize / Integer.BYTES];
         for (int i = 0; i < data.length; i++) {
-            System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
-            offset += Integer.BYTES;
-            data[i] = Colour.Bytes(ByteBuffer.wrap(buffer).getInt());
+            try {
+                System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
+                offset += Integer.BYTES;
+                data[i] = Colour.Bytes(ByteBuffer.wrap(buffer).getInt());
+            } catch (IndexOutOfBoundsException | ArrayStoreException | BufferUnderflowException _) {
+                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to prase animation pixel data from \"",
+                        basePath + filePath, "\", data invalid");
+                return false;
+            }
         }
         // Construct animation with parsed data and place in cache
         Animation animation = new Animation();

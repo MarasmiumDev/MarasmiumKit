@@ -120,8 +120,8 @@ public class WindowManager {
             frame.add(canvas);
             frame.setVisible(true);
             canvas.requestFocus();
+            App.Log.write(LogSource.Window, LogLevel.Info, "Generated new window frame");
         });
-        App.Log.write(LogSource.Window, LogLevel.Info, "Generated new window frame");
         // Set initial window parameters
         if (!setTitle(config.title)) {
             App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set window title");
@@ -241,9 +241,9 @@ public class WindowManager {
                     .add(monitorDimensions.scalarDivide(2.0f))
                     .subtract(dimensions.scalarDivide(2.0f));
             frame.setLocation((int)windowPosition.getX(), (int)windowPosition.getY());
+            App.Log.write(LogSource.Window, LogLevel.Info, "Set window dimensions ", dimensions);
         });
         this.dimensions = dimensions;
-        App.Log.write(LogSource.Window, LogLevel.Info, "Set window dimensions ", dimensions);
         return true;
     }
 
@@ -285,11 +285,13 @@ public class WindowManager {
                 this.windowedDimensions = windowedDimensions;
                 this.fullscreen = true;
                 gd.setFullScreenWindow(frame);
+                App.Log.write(LogSource.Window, LogLevel.Info, "Set window to fullscreen mode");
             } else if (!fullscreen && this.fullscreen) {
                 gd.setFullScreenWindow(null);
                 this.fullscreen = false;
                 setDimensions(windowedDimensions.add(windowPadding));
                 dimensions = windowedDimensions;
+                App.Log.write(LogSource.Window, LogLevel.Info, "Set window to windowed mode");
             }
         });
         return true;
@@ -332,6 +334,7 @@ public class WindowManager {
      */
     public void setMonitor(Monitor monitor) {
         if (monitor == null) {
+            App.Log.write(LogSource.Window, LogLevel.Warning, "No monitor provided");
             return;
         }
         this.monitor = monitor;
