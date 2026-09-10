@@ -59,7 +59,7 @@ public class MusicManager {
      * @param config The configuration for the subsystem
      * @return Whether the subsystem was initialized successfully
      */
-    public boolean initialize(MusicConfig config) {
+    public boolean initialize(MusicManagerConfig config) {
         if (config == null) {
             App.Log.write(LogSource.Audio, LogLevel.Error, "No configuration provided for music audio subsystem");
             return false;
@@ -98,11 +98,11 @@ public class MusicManager {
         paused = false;
         // Load the music track and its format
         AudioTrack track = App.Assets.getAudioTrack(filePath);
-        App.Log.write(LogSource.Audio, LogLevel.Info, "Loaded: ", track);
         if (track == null) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to retrieve audio track \"", filePath, "\"");
             return false;
         }
+        App.Log.write(LogSource.Audio, LogLevel.Info, "Loaded music track: ", track);
         AudioFormat format = new AudioFormat(track.getSampleRate(), 8 * track.getSampleSize(), track.getChannelCount(),
                 true, false);
         // Open a new audio line in the loaded format

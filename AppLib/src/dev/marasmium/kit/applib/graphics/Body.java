@@ -59,8 +59,12 @@ public class Body {
      * @param deltaFrames The number of frames elapsed since the last call to update
      */
     public void update(float deltaFrames) {
-        position = position.add(velocity.scalarMultiply(deltaFrames));
-        angle = angle.add(rotation.scalarMultiply(deltaFrames));
+        if (position != null) {
+            position = position.add(velocity.scalarMultiply(deltaFrames));
+        }
+        if (angle != null) {
+            angle = angle.add(rotation.scalarMultiply(deltaFrames));
+        }
     }
 
     /**

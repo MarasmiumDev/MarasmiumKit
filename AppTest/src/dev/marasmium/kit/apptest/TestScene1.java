@@ -10,6 +10,7 @@ package dev.marasmium.kit.apptest;
 import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.Scene;
 import dev.marasmium.kit.applib.assets.Animation;
+import dev.marasmium.kit.applib.audio.AudioDevice;
 import dev.marasmium.kit.applib.data.Angle;
 import dev.marasmium.kit.applib.data.Colour;
 import dev.marasmium.kit.applib.data.Vector;
@@ -47,6 +48,7 @@ public class TestScene1 extends Scene implements NetListener {
         center.initialize(Vector.Zero(), 0.0f, Vector.Cartesian(10.0f, 10.0f), Angle.Zero(),
                 "Animation/Animation_1.animation");
         camera.initialize(Vector.Zero(), 1.0f, Angle.Zero());
+        AudioDevice ad = new AudioDevice();
         return true;
     }
 

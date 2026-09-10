@@ -243,11 +243,17 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
      * @return The current position of the mouse cursor in world coordinates
      */
     public Vector getCursorPosition(Camera camera) {
+        if (camera == null) {
+            return null;
+        }
         Vector cursorPosition = getCursorPosition();
         Vector cameraPosition = camera.getPosition();
         float cameraScale = camera.getScale();
         Angle cameraAngle = camera.getAngle();
         Vector windowDimensions = App.Window.getDimensions();
+        if (cameraPosition == null || cameraAngle == null || windowDimensions == null) {
+            return null;
+        }
         return cursorPosition.scalarMultiply(2.0f).elementDivide(windowDimensions)
                 .subtract(Vector.Cartesian(1.0f, 1.0f)).elementMultiply(windowDimensions)
                 .elementDivide(Vector.Cartesian(2.0f, 2.0f).scalarMultiply(cameraScale)).rotate(cameraAngle)
@@ -259,7 +265,8 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
      * @return The most recent movement of the mouse cursor
      */
     public Vector getCursorMovement() {
-        return getCursorPosition().subtract(lastCursorPosition);
+        Vector cursorPosition = getCursorPosition();
+        return cursorPosition.subtract(lastCursorPosition);
     }
 
     /**
@@ -356,7 +363,7 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
         }
         cursorPositionLock.lock();
         cursorPosition.setX(e.getX());
-        cursorPosition.setY(App.Window.getDimensions().getY() - (float)e.getY());
+        cursorPosition.setY(App.Window.getDimensions().getY() - (float) e.getY());
         try {
             cursorPositionLock.unlock();
         } catch (IllegalMonitorStateException _) {

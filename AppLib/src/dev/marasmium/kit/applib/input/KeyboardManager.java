@@ -118,10 +118,12 @@ public class KeyboardManager implements KeyListener {
         }
         // Update typed characters
         typedCharsLock.lock();
-        for (char c : typedChars.toCharArray()) {
-            App.Input.keyboardCharTyped(c);
+        if (typedChars != null) {
+            for (char c : typedChars.toCharArray()) {
+                App.Input.keyboardCharTyped(c);
+            }
+            typedChars = "";
         }
-        typedChars = "";
         try {
             typedCharsLock.unlock();
         } catch (IllegalMonitorStateException _) {
@@ -199,10 +201,10 @@ public class KeyboardManager implements KeyListener {
      */
     public String getTypedChars() {
         typedCharsLock.lock();
-        if (typedChars == null) {
-            return "";
-        }
         String typedChars = this.typedChars;
+        if (typedChars == null) {
+            typedChars = "";
+        }
         try {
             typedCharsLock.unlock();
         } catch (IllegalMonitorStateException _) {
@@ -260,7 +262,7 @@ public class KeyboardManager implements KeyListener {
         }
         typedCharsLock.lock();
         if (typedChars == null) {
-            return;
+            typedChars = "";
         }
         typedChars += e.getKeyChar();
         try {

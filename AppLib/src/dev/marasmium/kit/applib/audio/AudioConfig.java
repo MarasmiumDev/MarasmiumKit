@@ -19,11 +19,11 @@ public class AudioConfig {
     /**
      * The configuration of the sound effects audio subsystem
      */
-    public final SoundEffectsConfig soundEffects = new SoundEffectsConfig();
+    public final SoundEffectsManagerConfig soundEffects = new SoundEffectsManagerConfig();
     /**
      * The configuration of the music audio subsystem
      */
-    public final MusicConfig music = new MusicConfig();
+    public final MusicManagerConfig music = new MusicManagerConfig();
 
     /**
      * Apply the default settings to this audio configuration structure

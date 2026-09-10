@@ -40,7 +40,7 @@ public class SoundEffectsManager {
      * @param config The configuration for the subsystem
      * @return Whether the subsystem was initialized successfully
      */
-    public boolean initialize(SoundEffectsConfig config) {
+    public boolean initialize(SoundEffectsManagerConfig config) {
         if (config == null) {
             App.Log.write(LogSource.Audio, LogLevel.Error, "No configuration provided for sound effects audio ",
                     "subsystem");
@@ -169,9 +169,11 @@ public class SoundEffectsManager {
         boolean success = true;
         for (HashMap.Entry<Thread, SourceDataLine> entry : playThreads.entrySet()) {
             try {
-                entry.getValue().close();
-                entry.getKey().interrupt();
-                entry.getKey().join();
+                if (entry.getValue() != null) {
+                    entry.getValue().close();
+                    entry.getKey().interrupt();
+                    entry.getKey().join();
+                }
             } catch (IllegalStateException | InterruptedException _) {
                 App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to stop sound effect playback thread");
                 success = false;

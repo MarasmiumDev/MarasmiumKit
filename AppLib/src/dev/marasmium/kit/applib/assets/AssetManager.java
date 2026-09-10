@@ -106,14 +106,23 @@ public class AssetManager {
             return false;
         }
         // Write audio track contents
+        int sampleRate = audioTrack.getSampleRate();
+        int sampleSize = audioTrack.getSampleSize();
+        int channelCount = audioTrack.getChannelCount();
+        int dataSize = audioTrack.getDataSize();
+        byte[] data = audioTrack.getData();
+        if (dataSize == 0 || data == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write audio track, no data provided");
+            return false;
+        }
         FileOutputStream outputStream;
         try {
             outputStream = new FileOutputStream(file);
-            outputStream.write(ByteBuffer.allocate(Integer.BYTES).putInt(audioTrack.getSampleRate()).array());
-            outputStream.write(ByteBuffer.allocate(Integer.BYTES).putInt(audioTrack.getSampleSize()).array());
-            outputStream.write(ByteBuffer.allocate(Integer.BYTES).putInt(audioTrack.getChannelCount()).array());
-            outputStream.write(ByteBuffer.allocate(Integer.BYTES).putInt(audioTrack.getDataSize()).array());
-            outputStream.write(audioTrack.getData());
+            outputStream.write(ByteBuffer.allocate(Integer.BYTES).putInt(sampleRate).array());
+            outputStream.write(ByteBuffer.allocate(Integer.BYTES).putInt(sampleSize).array());
+            outputStream.write(ByteBuffer.allocate(Integer.BYTES).putInt(channelCount).array());
+            outputStream.write(ByteBuffer.allocate(Integer.BYTES).putInt(dataSize).array());
+            outputStream.write(data);
             outputStream.close();
         } catch (IOException | BufferOverflowException | ReadOnlyBufferException _) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write audio track data to file at \"",
@@ -176,6 +185,10 @@ public class AssetManager {
         int frameHeight = (int)animation.getFrameDimensions().getY();
         int frameCount = animation.getFrameCount();
         Colour[] data = animation.getData();
+        if (sheetWidth == 0 || sheetHeight == 0 || frameWidth == 0 || frameHeight == 0 || data == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write animation, no data provided");
+            return false;
+        }
         FileOutputStream outputStream;
         try {
             outputStream = new FileOutputStream(file);

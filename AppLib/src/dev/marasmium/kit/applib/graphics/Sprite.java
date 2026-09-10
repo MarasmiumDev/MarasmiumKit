@@ -8,6 +8,7 @@
 package dev.marasmium.kit.applib.graphics;
 
 import dev.marasmium.kit.applib.App;
+import dev.marasmium.kit.applib.assets.Animation;
 import dev.marasmium.kit.applib.data.Angle;
 import dev.marasmium.kit.applib.data.Colour;
 import dev.marasmium.kit.applib.data.Vector;
@@ -89,15 +90,19 @@ public class Sprite extends Body {
      */
     public void update(float deltaFrames) {
         super.update(deltaFrames);
-        dimensions = dimensions.add(growth.scalarMultiply(deltaFrames));
+        if (dimensions != null) {
+            dimensions = dimensions.add(growth.scalarMultiply(deltaFrames));
+        }
         if (animationPlaying) {
-            final float targetFPS = App.Assets.getAnimation(animationFilePath).getTargetFPS();
-            final float animationFrameTime = (float)App.Graphics.getTargetFPS() / targetFPS;
-            animationTimer += deltaFrames;
-            if (animationTimer >= animationFrameTime) {
-                animationFrame += 1;
-                animationFrame %= App.Assets.getAnimation(animationFilePath).getFrameCount();
-                animationTimer = 0.0f;
+            Animation animation = App.Assets.getAnimation(animationFilePath);
+            if (animation != null) {
+                float animationFrameTime = (float)App.Graphics.getTargetFPS() / animation.getTargetFPS();
+                animationTimer += deltaFrames;
+                if (animationTimer >= animationFrameTime) {
+                    animationFrame += 1;
+                    animationFrame %= animation.getFrameCount();
+                    animationTimer = 0.0f;
+                }
             }
         }
     }
@@ -217,7 +222,11 @@ public class Sprite extends Body {
      * @return Whether the given animation frame is valid
      */
     public boolean setAnimationFrame(int animationFrame) {
-        if (animationFrame < 0 || animationFrame >= App.Assets.getAnimation(animationFilePath).getFrameCount()) {
+        Animation animation = App.Assets.getAnimation(animationFilePath);
+        if (animation == null) {
+            return false;
+        }
+        if (animationFrame < 0 || animationFrame >= animation.getFrameCount()) {
             return false;
         }
         this.animationFrame = animationFrame;

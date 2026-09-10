@@ -102,9 +102,12 @@ public class Camera extends Body {
 
     /**
      * Get the orthographic projection matrix for this camera's position, scale, and angle
-     * @return This camera's projection matrix
+     * @return This camera's projection matrix or null if this camera has not yet been initialized
      */
     public float[] getProjectionMatrix() {
+        if (position == null || angle == null) {
+            return null;
+        }
         float positionX = position.getX();
         float positionY = position.getY();
         float scale = this.scale;

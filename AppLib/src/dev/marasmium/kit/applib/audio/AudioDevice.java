@@ -51,7 +51,7 @@ public class AudioDevice {
         // Ensure that there are audio devices available
         if (mixers.length == 0) {
             index = -1;
-            name = "";
+            name = null;
             return false;
         }
         // Check the index and set the audio device name
@@ -66,7 +66,7 @@ public class AudioDevice {
 
     /**
      * Get the index of this audio device in the local audio environment's array of available devices
-     * @return This audio device's index
+     * @return This audio device's index or -1 if this audio device was invalidated
      */
     public int getIndex() {
         validate();
@@ -85,7 +85,7 @@ public class AudioDevice {
 
     /**
      * Get the system-reported name of this audio device
-     * @return This audio device's name
+     * @return This audio device's name or null if this audio device was invalidated
      */
     public String getName() {
         validate();
@@ -110,6 +110,9 @@ public class AudioDevice {
      */
     @Override
     public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
         if (!(o instanceof AudioDevice)) {
             return false;
         }

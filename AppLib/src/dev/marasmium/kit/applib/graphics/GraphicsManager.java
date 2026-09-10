@@ -155,23 +155,36 @@ public class GraphicsManager implements GLEventListener {
      * Submit a sprite to the graphics system for rendering
      * @param camera The camera to render this sprite through
      * @param sprite The sprite to render
+     * @return Whether the sprite was submitted successfully
      */
-    public void submit(Camera camera, Sprite sprite) {
+    public boolean submit(Camera camera, Sprite sprite) {
+        if (camera == null || sprite == null) {
+            return false;
+        }
         if (!spriteGroups.containsKey(camera)) {
             spriteGroups.put(camera, new ArrayList<>());
         }
         spriteGroups.get(camera).add(sprite);
+        return true;
     }
 
     /**
      * Submit a set of sprites to the graphics system for rendering
      * @param camera The camera to render these sprites through
      * @param sprites The sprites to render
+     * @return Whether the sprites were submitted successfully
      */
-    public void submit(Camera camera, List<Sprite> sprites) {
-        for (Sprite sprite : sprites) {
-            submit(camera, sprite);
+    public boolean submit(Camera camera, List<Sprite> sprites) {
+        if (sprites == null) {
+            return false;
         }
+        boolean success = true;
+        for (Sprite sprite : sprites) {
+            if (!submit(camera, sprite)) {
+                success = false;
+            }
+        }
+        return success;
     }
 
     /**
@@ -232,8 +245,17 @@ public class GraphicsManager implements GLEventListener {
      * @return Whether the texture was loaded successfully
      */
     private boolean loadTextureID(GL3 gl3, Animation animation) {
+        if (gl3 == null || animation == null) {
+            return false;
+        }
         // Get the dimensions and colour data of the animation's texture
+        if (animation.getSheetDimensions() == null) {
+            return false;
+        }
         Vector dimensions = animation.getSheetDimensions().elementMultiply(animation.getFrameDimensions());
+        if (dimensions == null) {
+            return false;
+        }
         ByteBuffer pixels = Buffers.newDirectByteBuffer((int)(dimensions.getX() * dimensions.getY()) * Integer.BYTES);
         for (Colour pixel : animation.getData()) {
             pixels.put((byte)pixel.getRed());
@@ -284,6 +306,10 @@ public class GraphicsManager implements GLEventListener {
      */
     private void draw(GL3 gl3, int spriteCount, int textureID, float[] cameraMatrix, FloatBuffer vertices,
                       IntBuffer indices) {
+        if (gl3 == null || spriteCount <= 0 || textureID <= 0 || cameraMatrix == null || vertices == null
+                || indices == null) {
+            return;
+        }
         // Upload geometry
         gl3.glBindBuffer(GL3.GL_ARRAY_BUFFER, VBOIDs[0]);
         int verticesSize = spriteCount * VerticesPerSprite * FloatsPerVertex * Float.BYTES;
@@ -350,7 +376,10 @@ public class GraphicsManager implements GLEventListener {
             return false;
         }
         targetFPMS = (float)targetFPS / 1000.0f;
-        targetMSPF = (int)(1.0d / targetFPMS);
+        if (targetFPMS <= 0.0f) {
+            return false;
+        }
+        targetMSPF = (int)(1.0f / targetFPMS);
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Target FPS set to ", targetFPS, " -> FPMS=", targetFPMS, ", ",
                 "MSPF=", targetMSPF);
         return true;
@@ -430,10 +459,18 @@ public class GraphicsManager implements GLEventListener {
             App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to get OpenGL instance");
             return;
         }
+        if (gl3 == null) {
+            App.Log.write(LogSource.Graphics, LogLevel.Error, "Retrieved invalid OpenGL instance from context");
+            return;
+        }
         // Set OpenGL flags
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Initializing OpenGL parameters");
         String OpenGLVersion = gl3.glGetString(GL3.GL_VERSION);
-        App.Log.write(LogSource.Graphics, LogLevel.Info, "OpenGL version \"", OpenGLVersion, "\"");
+        if (OpenGLVersion == null) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to get OpenGL version");
+        } else {
+            App.Log.write(LogSource.Graphics, LogLevel.Info, "OpenGL version \"", OpenGLVersion, "\"");
+        }
         gl3.glEnable(GL3.GL_BLEND);
         gl3.glBlendFunc(GL3.GL_SRC_ALPHA, GL3.GL_ONE_MINUS_SRC_ALPHA);
         // Create shader program
@@ -548,7 +585,15 @@ public class GraphicsManager implements GLEventListener {
             App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to retrieve OpenGL instance");
             return;
         }
+        if (gl3 == null) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Retrieved invalid OpenGL instance from context");
+            return;
+        }
         Colour clearColour = getClearColour();
+        if (clearColour == null) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Clear colour invalid");
+            return;
+        }
         gl3.glClearColor(clearColour.getRed(), clearColour.getGreen(), clearColour.getBlue(), clearColour.getAlpha());
         gl3.glClear(GL3.GL_COLOR_BUFFER_BIT | GL3.GL_DEPTH_BUFFER_BIT);
         gl3.glBindVertexArray(VAOIDs[0]);
@@ -567,12 +612,21 @@ public class GraphicsManager implements GLEventListener {
                 App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to get camera and sprites from group");
                 continue;
             }
+            if (camera == null || sprites == null) {
+                continue;
+            }
             for (Sprite sprite : sprites) {
                 // Copy sprite metrics
+                if (sprite == null) {
+                    continue;
+                }
                 Vector spritePosition = sprite.getPosition();
                 float spriteDepth = sprite.getDepth();
                 Vector spriteDimensions = sprite.getDimensions();
                 Angle spriteAngle = sprite.getAngle();
+                if (spritePosition == null || spriteDimensions == null || spriteAngle == null) {
+                    continue;
+                }
                 Vector spriteCentre = spritePosition.add(spriteDimensions.scalarMultiply(0.5f));
                 Vector spriteBottomLeft = Vector.Cartesian(spritePosition.getX(), spritePosition.getY())
                         .rotateAbout(spriteAngle, spriteCentre);
@@ -584,6 +638,9 @@ public class GraphicsManager implements GLEventListener {
                         spritePosition.getY() + spriteDimensions.getY()).rotateAbout(spriteAngle, spriteCentre);
                 // Copy animation metrics and upload texture if necessary
                 Animation animation = App.Assets.getAnimation(sprite.getAnimationFilePath());
+                if (animation == null) {
+                    continue;
+                }
                 if (animation.getTextureID() != textureID && spriteCount > 0) {
                     draw(gl3, spriteCount, textureID, camera.getProjectionMatrix(), vertices, indices);
                     spriteCount = 0;
@@ -601,6 +658,9 @@ public class GraphicsManager implements GLEventListener {
                 // Copy texture positioning metrics
                 Vector texturePosition = animation.getFrameTexturePosition(sprite.getAnimationFrame());
                 Vector textureDimensions = animation.getFrameTextureDimensions();
+                if (texturePosition == null || textureDimensions == null) {
+                    continue;
+                }
                 Vector textureBottomLeft = Vector.Cartesian(texturePosition.getX(), texturePosition.getY());
                 Vector textureBottomRight = Vector.Cartesian(texturePosition.getX() + textureDimensions.getX(),
                         texturePosition.getY());
@@ -688,6 +748,10 @@ public class GraphicsManager implements GLEventListener {
             App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to retrieve OpenGL instance");
             return;
         }
+        if (gl3 == null) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Retrieved invalid OpenGL instance from context");
+            return;
+        }
         gl3.glViewport(0, 0, width, height);
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Resized OpenGL viewport ", width, "x", height);
     }
@@ -703,6 +767,10 @@ public class GraphicsManager implements GLEventListener {
             gl3 = drawable.getGL().getGL3();
         } catch (GLException _) {
             App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to retrieve OpenGL instance");
+            return;
+        }
+        if (gl3 == null) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Retrieved invalid OpenGL instance from context");
             return;
         }
         int textureCount = textureIDs.size();

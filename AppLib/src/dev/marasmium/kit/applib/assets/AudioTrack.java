@@ -195,6 +195,9 @@ public class AudioTrack {
      * @return The size of this track's audio data in bytes
      */
     public int getDataSize() {
+        if (data == null) {
+            return 0;
+        }
         return data.length;
     }
 

@@ -45,7 +45,10 @@ public class AudioManager {
             App.Log.write(LogSource.Audio, LogLevel.Error, "No configuration provided for audio system");
             return false;
         }
-        setSpeaker(config.speaker);
+        if (!setSpeaker(config.speaker)) {
+            App.Log.write(LogSource.Audio, LogLevel.Error, "Failed to set speaker");
+            return false;
+        }
         // Initialize the sound effect manager subsystem
         if (!soundEffects.initialize(config.soundEffects)) {
             App.Log.write(LogSource.Audio, LogLevel.Error, "Failed to initialize sound effects audio subsystem");
@@ -152,11 +155,13 @@ public class AudioManager {
         if (!getSpeakers().contains(speaker)) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Speaker not available for audio output, setting default");
             this.speaker = getSpeakers().getFirst();
-            return false;
+            return true;
         }
         boolean success = true;
         // Update speaker and restart sound effects and music
-        this.speaker.destroy();
+        if (this.speaker != null) {
+            this.speaker.destroy();
+        }
         this.speaker = speaker;
         if (!soundEffects.stop()) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to stop sound effects when switching speakers");
