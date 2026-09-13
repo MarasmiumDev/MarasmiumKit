@@ -23,7 +23,6 @@ public class AppTest {
             System.out.println("Failed to apply default settings");
             return;
         }
-        config.window.dimensions = Vector.Cartesian(800.0f, 800.0f);
         if (App.Initialize(config)) {
             App.Run();
         } else {

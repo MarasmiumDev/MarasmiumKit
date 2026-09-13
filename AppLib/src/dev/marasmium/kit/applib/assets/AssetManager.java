@@ -292,22 +292,17 @@ public class AssetManager {
      */
     public AudioTrack getAudioTrack(String filePath) {
         if (basePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
             return null;
         }
         if (filePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No file path provided to retrieve audio track");
             return null;
         }
         if (filePath.isEmpty()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Empty file path provided to retrieve audio track");
             return null;
         }
         // Load if not in memory
         if (!audioTracks.containsKey(filePath)) {
             if (!loadAudioTrack(filePath)) {
-                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to load audio track from \"",
-                        basePath + filePath, "\"");
                 return null;
             }
         }
@@ -321,22 +316,17 @@ public class AssetManager {
      */
     public Animation getAnimation(String filePath) {
         if (basePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
             return null;
         }
         if (filePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No file path provided to retrieve animation");
             return null;
         }
         if (filePath.isEmpty()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Empty file path provided to retrieve animation");
             return null;
         }
         // Load if not in memory
         if (!animations.containsKey(filePath)) {
             if (!loadAnimation(filePath)) {
-                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to load animation track from \"",
-                        basePath + filePath, "\"");
                 return null;
             }
         }
