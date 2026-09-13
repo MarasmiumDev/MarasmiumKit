@@ -93,6 +93,7 @@ public class TestScene1 extends Scene implements NetListener {
                     "Animation/Animation_2.animation");
             s.playAnimation();
             sprites.add(s);
+            App.Audio.soundEffects.play("Audio/Sound_Effect_1.audio");
         }
         return true;
     }
