@@ -61,238 +61,11 @@ public class AssetManager {
     }
 
     /**
-     * Write the contents of an audio track to a file on disk
-     * @param audioTrack The audio track to write
-     * @param filePath The destination file path to write to in the base asset path
-     * @return Whether the audio track was successfully written to the given file path
-     */
-    public boolean writeAudioTrack(AudioTrack audioTrack, String filePath) {
-        // Ensure the output file is accessible
-        if (basePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Error, "No base asset path provided");
-            return false;
-        }
-        if (audioTrack == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write audio track, none provided");
-            return false;
-        }
-        if (filePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write audio track, no file path provided");
-            return false;
-        }
-        if (filePath.isEmpty()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write audio track, empty file path provided");
-            return false;
-        }
-        App.Log.write(LogSource.Assets, LogLevel.Info, "Writing audio track ", audioTrack, " to \"",
-                basePath + filePath, "\"");
-        File file = new File(basePath + filePath);
-        if (!file.exists()) {
-            try {
-                if (!file.createNewFile()) {
-                    App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to create new file for audio track at \"",
-                            basePath + filePath, "\"");
-                    return false;
-                }
-            } catch (IOException _) {
-                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to create new file for audio track at \"",
-                        basePath + filePath, "\"");
-                return false;
-            }
-        }
-        if (!file.canWrite()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Cannot write audio track to file at \"",
-                    basePath + filePath, "\"");
-            return false;
-        }
-        // Write audio track contents
-        byte[] fileData = serializeAudioTrack(audioTrack);
-        if (fileData == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to serialize audio track ", audioTrack);
-            return false;
-        }
-        FileOutputStream outputStream;
-        try {
-            outputStream = new FileOutputStream(file);
-            outputStream.write(fileData);
-            outputStream.close();
-        } catch (IOException _) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write audio track data to file at \"",
-                    basePath + filePath, "\"");
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Convert an audio track to a byte array
-     * @param audioTrack The audio track to be serialized
-     * @return The serialized audio track or null if serialization failed
-     */
-    public byte[] serializeAudioTrack(AudioTrack audioTrack) {
-        int sampleRate = audioTrack.getSampleRate();
-        int sampleSize = audioTrack.getSampleSize();
-        int channelCount = audioTrack.getChannelCount();
-        int dataSize = audioTrack.getDataSize();
-        byte[] data = audioTrack.getData();
-        if (data == null) {
-            return null;
-        }
-        int fileDataSize = (4 * Integer.BYTES) + data.length;
-        ByteBuffer buffer;
-        try {
-            buffer = ByteBuffer.allocate(fileDataSize);
-            buffer.putInt(sampleRate);
-            buffer.putInt(sampleSize);
-            buffer.putInt(channelCount);
-            buffer.putInt(dataSize);
-            buffer.put(data);
-        } catch (IllegalArgumentException | BufferOverflowException | ReadOnlyBufferException _) {
-            return null;
-        }
-        return buffer.array();
-    }
-
-    /**
-     * Write the contents of an animation to a file on disk
-     * @param animation The animation to write
-     * @param filePath The destination file path to write to in the base asset path
-     * @return Whether the animation was successfully written to the given file path
-     */
-    public boolean writeAnimation(Animation animation, String filePath) {
-        // Ensure output file is accessible
-        if (basePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
-            return false;
-        }
-        if (animation == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write animation, none provided");
-            return false;
-        }
-        if (filePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write animation, no file path provided");
-            return false;
-        }
-        if (filePath.isEmpty()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write animation, empty file path provided");
-            return false;
-        }
-        App.Log.write(LogSource.Assets, LogLevel.Info, "Writing animation ", animation, " to \"", basePath + filePath,
-                "\"");
-        File file = new File(basePath + filePath);
-        if (!file.exists()) {
-            try {
-                if (!file.createNewFile()) {
-                    App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to create new file for animation at \"",
-                            basePath + filePath, "\"");
-                    return false;
-                }
-            } catch (IOException _) {
-                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to create new file for animation at\"",
-                        basePath + filePath, "\"");
-                return false;
-            }
-        }
-        if (!file.canWrite()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Cannot write animation to file at \"",
-                    basePath + filePath, "\"");
-            return false;
-        }
-        // Write animation contents
-        byte[] fileData = serializeAnimation(animation);
-        if (fileData == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to serialize animation ", animation);
-            return false;
-        }
-        FileOutputStream outputStream;
-        try {
-            outputStream = new FileOutputStream(file);
-            outputStream.write(fileData);
-            outputStream.close();
-        } catch (IOException | BufferOverflowException | ReadOnlyBufferException _) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write animation data to file at \"",
-                    basePath + filePath, "\"");
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Convert an animation to a byte array
-     * @param animation The animation to be serialized
-     * @return The serialized animation or null if serialization failed
-     */
-    public byte[] serializeAnimation(Animation animation) {
-        int targetFPS = animation.getTargetFPS();
-        Vector sheetDimensions = animation.getSheetDimensions();
-        Vector frameDimensions = animation.getFrameDimensions();
-        int frameCount = animation.getFrameCount();
-        Colour[] data = animation.getData();
-        if (sheetDimensions == null || frameDimensions == null || data == null) {
-            return null;
-        }
-        int fileDataSize = (6 * Integer.BYTES) + (data.length * Integer.BYTES);
-        ByteBuffer buffer;
-        try {
-            buffer = ByteBuffer.allocate(fileDataSize);
-            buffer.putInt(targetFPS);
-            buffer.putInt((int)sheetDimensions.getX());
-            buffer.putInt((int)sheetDimensions.getY());
-            buffer.putInt((int)frameDimensions.getX());
-            buffer.putInt((int)frameDimensions.getY());
-            buffer.putInt(frameCount);
-            for (Colour c : data) {
-                buffer.putInt(c.getRGBA());
-            }
-        } catch (IllegalArgumentException | BufferOverflowException | ReadOnlyBufferException _) {
-            return null;
-        }
-        return buffer.array();
-    }
-
-    /**
-     * Dispose of all assets and free the asset management system's memory
-     */
-    public boolean destroy() {
-        boolean success = true;
-        App.Log.write(LogSource.Assets, LogLevel.Info, "Destroying asset management system");
-        basePath = null;
-        // Free audio tracks
-        App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing ", audioTracks.size(), " audio tracks");
-        for (HashMap.Entry<String, AudioTrack> entry : audioTracks.entrySet()) {
-            try {
-                if (entry.getValue() != null) {
-                    entry.getValue().destroy();
-                }
-            } catch (IllegalStateException _) {
-                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to retrieve value to destroy in audio ",
-                        "tracks");
-                success = false;
-            }
-        }
-        audioTracks.clear();
-        // Free animations
-        App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing ", animations.size(), " animations");
-        for (HashMap.Entry<String, Animation> entry : animations.entrySet()) {
-            try {
-                if (entry.getValue() != null) {
-                    entry.getValue().destroy();
-                }
-            } catch (IllegalStateException _) {
-                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to retrieve value to destroy in animations");
-                success = false;
-            }
-        }
-        audioTracks.clear();
-        return success;
-    }
-
-    /**
      * Attempt to load an audio track from the disk by its file path and place it in the asset management system's cache
      * @param filePath The file path to load the audio track from in the base asset path
      * @return Whether the audio track was successfully loaded from the given file path
      */
-    private boolean loadAudioTrack(String filePath) {
+    private boolean readAudioTrack(String filePath) {
         // Ensure the file path is accessible
         if (basePath == null) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
@@ -400,11 +173,107 @@ public class AssetManager {
     }
 
     /**
+     * Write the contents of an audio track to a file on disk
+     * @param audioTrack The audio track to write
+     * @param filePath The destination file path to write to in the base asset path
+     * @return Whether the audio track was successfully written to the given file path
+     */
+    public boolean writeAudioTrack(AudioTrack audioTrack, String filePath) {
+        // Ensure the output file is accessible
+        if (basePath == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Error, "No base asset path provided");
+            return false;
+        }
+        if (audioTrack == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write audio track, none provided");
+            return false;
+        }
+        if (filePath == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write audio track, no file path provided");
+            return false;
+        }
+        if (filePath.isEmpty()) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write audio track, empty file path provided");
+            return false;
+        }
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Writing audio track ", audioTrack, " to \"",
+                basePath + filePath, "\"");
+        File file = new File(basePath + filePath);
+        if (!file.exists()) {
+            try {
+                if (!file.createNewFile()) {
+                    App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to create new file for audio track at \"",
+                            basePath + filePath, "\"");
+                    return false;
+                }
+            } catch (IOException _) {
+                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to create new file for audio track at \"",
+                        basePath + filePath, "\"");
+                return false;
+            }
+        }
+        if (!file.canWrite()) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Cannot write audio track to file at \"",
+                    basePath + filePath, "\"");
+            return false;
+        }
+        // Write audio track contents
+        byte[] fileData = serializeAudioTrack(audioTrack);
+        if (fileData == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to serialize audio track ", audioTrack);
+            return false;
+        }
+        FileOutputStream outputStream;
+        try {
+            outputStream = new FileOutputStream(file);
+            outputStream.write(fileData);
+            outputStream.close();
+        } catch (IOException _) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write audio track data to file at \"",
+                    basePath + filePath, "\"");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Convert an audio track to a byte array
+     * @param audioTrack The audio track to be serialized
+     * @return The serialized audio track or null if serialization failed
+     */
+    public byte[] serializeAudioTrack(AudioTrack audioTrack) {
+        if (audioTrack == null) {
+            return null;
+        }
+        int sampleRate = audioTrack.getSampleRate();
+        int sampleSize = audioTrack.getSampleSize();
+        int channelCount = audioTrack.getChannelCount();
+        int dataSize = audioTrack.getDataSize();
+        byte[] data = audioTrack.getData();
+        if (data == null) {
+            return null;
+        }
+        int fileDataSize = (4 * Integer.BYTES) + data.length;
+        ByteBuffer buffer;
+        try {
+            buffer = ByteBuffer.allocate(fileDataSize);
+            buffer.putInt(sampleRate);
+            buffer.putInt(sampleSize);
+            buffer.putInt(channelCount);
+            buffer.putInt(dataSize);
+            buffer.put(data);
+        } catch (IllegalArgumentException | BufferOverflowException | ReadOnlyBufferException _) {
+            return null;
+        }
+        return buffer.array();
+    }
+
+    /**
      * Attempt to load an animation from the disk by its file path and place it in the asset management system's cache
      * @param filePath The file path to load the animation from in the base asset path
      * @return Whether the animation was successfully loaded from the given file path
      */
-    private boolean loadAnimation(String filePath) {
+    private boolean readAnimation(String filePath) {
         // Ensure the file path is accessible
         if (basePath == null) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
@@ -524,6 +393,143 @@ public class AssetManager {
     }
 
     /**
+     * Write the contents of an animation to a file on disk
+     * @param animation The animation to write
+     * @param filePath The destination file path to write to in the base asset path
+     * @return Whether the animation was successfully written to the given file path
+     */
+    public boolean writeAnimation(Animation animation, String filePath) {
+        // Ensure output file is accessible
+        if (basePath == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
+            return false;
+        }
+        if (animation == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write animation, none provided");
+            return false;
+        }
+        if (filePath == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write animation, no file path provided");
+            return false;
+        }
+        if (filePath.isEmpty()) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write animation, empty file path provided");
+            return false;
+        }
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Writing animation ", animation, " to \"", basePath + filePath,
+                "\"");
+        File file = new File(basePath + filePath);
+        if (!file.exists()) {
+            try {
+                if (!file.createNewFile()) {
+                    App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to create new file for animation at \"",
+                            basePath + filePath, "\"");
+                    return false;
+                }
+            } catch (IOException _) {
+                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to create new file for animation at\"",
+                        basePath + filePath, "\"");
+                return false;
+            }
+        }
+        if (!file.canWrite()) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Cannot write animation to file at \"",
+                    basePath + filePath, "\"");
+            return false;
+        }
+        // Write animation contents
+        byte[] fileData = serializeAnimation(animation);
+        if (fileData == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to serialize animation ", animation);
+            return false;
+        }
+        FileOutputStream outputStream;
+        try {
+            outputStream = new FileOutputStream(file);
+            outputStream.write(fileData);
+            outputStream.close();
+        } catch (IOException | BufferOverflowException | ReadOnlyBufferException _) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write animation data to file at \"",
+                    basePath + filePath, "\"");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Convert an animation to a byte array
+     * @param animation The animation to be serialized
+     * @return The serialized animation or null if serialization failed
+     */
+    public byte[] serializeAnimation(Animation animation) {
+        if (animation == null) {
+            return null;
+        }
+        int targetFPS = animation.getTargetFPS();
+        Vector sheetDimensions = animation.getSheetDimensions();
+        Vector frameDimensions = animation.getFrameDimensions();
+        int frameCount = animation.getFrameCount();
+        Colour[] data = animation.getData();
+        if (sheetDimensions == null || frameDimensions == null || data == null) {
+            return null;
+        }
+        int fileDataSize = (6 * Integer.BYTES) + (data.length * Integer.BYTES);
+        ByteBuffer buffer;
+        try {
+            buffer = ByteBuffer.allocate(fileDataSize);
+            buffer.putInt(targetFPS);
+            buffer.putInt((int)sheetDimensions.getX());
+            buffer.putInt((int)sheetDimensions.getY());
+            buffer.putInt((int)frameDimensions.getX());
+            buffer.putInt((int)frameDimensions.getY());
+            buffer.putInt(frameCount);
+            for (Colour c : data) {
+                buffer.putInt(c.getRGBA());
+            }
+        } catch (IllegalArgumentException | BufferOverflowException | ReadOnlyBufferException _) {
+            return null;
+        }
+        return buffer.array();
+    }
+
+    /**
+     * Dispose of all assets and free the asset management system's memory
+     */
+    public boolean destroy() {
+        boolean success = true;
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Destroying asset management system");
+        basePath = null;
+        // Free audio tracks
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing ", audioTracks.size(), " audio tracks");
+        for (HashMap.Entry<String, AudioTrack> entry : audioTracks.entrySet()) {
+            try {
+                if (entry.getValue() != null) {
+                    entry.getValue().destroy();
+                }
+            } catch (IllegalStateException _) {
+                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to retrieve value to destroy in audio ",
+                        "tracks");
+                success = false;
+            }
+        }
+        audioTracks.clear();
+        // Free animations
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing ", animations.size(), " animations");
+        for (HashMap.Entry<String, Animation> entry : animations.entrySet()) {
+            try {
+                if (entry.getValue() != null) {
+                    entry.getValue().destroy();
+                }
+            } catch (IllegalStateException _) {
+                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to retrieve value to destroy in animations");
+                success = false;
+            }
+        }
+        audioTracks.clear();
+        return success;
+    }
+
+    /**
      * Get the base path (directory) containing all assets for the application framework
      * @return The application framework's base asset path
      */
@@ -578,7 +584,7 @@ public class AssetManager {
         }
         // Load if not in memory
         if (!audioTracks.containsKey(filePath)) {
-            if (!loadAudioTrack(filePath)) {
+            if (!readAudioTrack(filePath)) {
                 return null;
             }
         }
@@ -602,7 +608,7 @@ public class AssetManager {
         }
         // Load if not in memory
         if (!animations.containsKey(filePath)) {
-            if (!loadAnimation(filePath)) {
+            if (!readAnimation(filePath)) {
                 return null;
             }
         }
