@@ -110,4 +110,13 @@ public class Glyph {
         this.offset = offset;
     }
 
+    /**
+     * Get a string representing this glyph
+     * @return This glyph's string representation
+     */
+    @Override
+    public String toString() {
+        return "glyph(frame " + animationFrame + ", advance " + advance + "px, offset " + offset + "px)";
+    }
+
 }

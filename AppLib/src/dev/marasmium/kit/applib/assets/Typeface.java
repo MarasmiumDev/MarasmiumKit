@@ -20,6 +20,10 @@ public class Typeface {
      */
     private final HashMap<Character, Glyph> glyphs = new HashMap<>();
     /**
+     * The serialized animation containing the glyph images of this typeface
+     */
+    private byte[] animationData = null;
+    /**
      * The constructed file path of the animation containing the glyph images of this typeface
      */
     private String animationFilePath = null;
@@ -28,10 +32,10 @@ public class Typeface {
      * Initialize this typeface with a set of characters mapped to glyph metrics and an animation file path
      * @param characters The set of characters in this typeface
      * @param glyphMetrics The set of glyph metrics corresponding to the characters of this typeface
-     * @param animationFilePath The constructed file path of the animation containing the glyph images of this typeface
+     * @param animationData The serialized animation containing the glyph images of this typeface
      * @return Whether all parameters were valid and this typeface was initialized successfully
      */
-    public boolean initialize(String characters, Glyph[] glyphMetrics, String animationFilePath) {
+    public boolean initialize(String characters, Glyph[] glyphMetrics, byte[] animationData) {
         if (characters == null || glyphMetrics == null || animationFilePath == null) {
             return false;
         }
@@ -43,7 +47,7 @@ public class Typeface {
                 return false;
             }
         }
-        if (!setAnimationFilePath(animationFilePath)) {
+        if (!setAnimationData(animationData)) {
             return false;
         }
         return true;
@@ -135,6 +139,32 @@ public class Typeface {
     }
 
     /**
+     * Get the serialized animation containing this typeface's glyph images
+     * @return This typeface's animation data
+     */
+    public byte[] getAnimationData() {
+        return animationData;
+    }
+
+    /**
+     * Set the serialized animation containing this typeface's glyph images
+     * @param animationData This typeface's animation data
+     * @return Whether the given animation data was valid and was set successfully
+     */
+    public boolean setAnimationData(byte[] animationData) {
+        if (animationData == null) {
+            return false;
+        }
+        this.animationData = new byte[animationData.length];
+        try {
+            System.arraycopy(animationData, 0, this.animationData, 0, animationData.length);
+        } catch (IndexOutOfBoundsException | ArrayStoreException _) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Get the constructed file path of the animation containing this typeface's glyph images
      * @return This typeface's animation file path
      */
@@ -156,6 +186,18 @@ public class Typeface {
         }
         this.animationFilePath = animationFilePath;
         return true;
+    }
+
+    /**
+     * Get a string representing this typeface
+     * @return This typeface's string representation
+     */
+    @Override
+    public String toString() {
+        if (animationData == null || animationFilePath == null) {
+            return "typeface(null)";
+        }
+        return "typeface(" + glyphs.size() + " glyphs, " + animationData.length + "B at \"" + animationFilePath + "\")";
     }
 
 }
