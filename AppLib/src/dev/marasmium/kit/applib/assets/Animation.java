@@ -97,7 +97,7 @@ public class Animation {
      * @return Whether the given target FPS was valid
      */
     public boolean setTargetFPS(int targetFPS) {
-        if (targetFPS <= 0) {
+        if (targetFPS < 0) {
             return false;
         }
         this.targetFPS = targetFPS;
@@ -121,7 +121,7 @@ public class Animation {
         if (sheetDimensions == null) {
             return false;
         }
-        if (sheetDimensions.getX() <= 1.0d || sheetDimensions.getY() <= 1.0d) {
+        if (sheetDimensions.getX() < 1.0f || sheetDimensions.getY() < 1.0f) {
             return false;
         }
         this.sheetDimensions = sheetDimensions;
@@ -145,7 +145,7 @@ public class Animation {
         if (frameDimensions == null) {
             return false;
         }
-        if (frameDimensions.getX() <= 1.0d || frameDimensions.getY() <= 1.0d) {
+        if (frameDimensions.getX() < 1.0f || frameDimensions.getY() < 1.0f) {
             return false;
         }
         this.frameDimensions = frameDimensions;
@@ -233,7 +233,7 @@ public class Animation {
         if (sheetDimensions == null) {
             return null;
         }
-        if (sheetDimensions.getX() <= 1.0f) {
+        if (sheetDimensions.getX() < 1.0f) {
             return null;
         }
         int xSheet = frameIndex % ((int)sheetDimensions.getX());
@@ -253,7 +253,7 @@ public class Animation {
         if (sheetDimensions == null) {
             return null;
         }
-        if (sheetDimensions.getX() <= 1.0f || sheetDimensions.getY() <= 1.0f) {
+        if (sheetDimensions.getX() < 1.0f || sheetDimensions.getY() < 1.0f) {
             return null;
         }
         return Vector.Cartesian(1.0f / sheetDimensions.getX(), 1.0f / sheetDimensions.getY());

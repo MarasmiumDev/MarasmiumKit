@@ -65,7 +65,7 @@ public class AssetManager {
      * @param filePath The file path to load the audio track from in the base asset path
      * @return Whether the audio track was successfully loaded from the given file path
      */
-    private boolean readAudioTrack(String filePath) {
+    public boolean readAudioTrack(String filePath) {
         // Ensure the file path is accessible
         if (basePath == null) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
@@ -104,17 +104,7 @@ public class AssetManager {
                     "\"");
             return false;
         }
-        // Deserialize audio track and place in memory
-        AudioTrack audioTrack = deserializeAudioTrack(fileData);
-        if (audioTrack == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Info, "Failed to deserialize audio track from \"",
-                    basePath + filePath, "\"");
-            return false;
-        }
-        App.Log.write(LogSource.Assets, LogLevel.Info, "Loaded audio track ", audioTrack, " from \"",
-                basePath + filePath, "\"");
-        audioTracks.put(filePath, audioTrack);
-        return true;
+        return addAudioTrack(filePath, deserializeAudioTrack(fileData));
     }
 
     /**
@@ -122,7 +112,7 @@ public class AssetManager {
      * @param fileData The data to convert
      * @return The deserialized audio track or null if deserialization failed
      */
-    private AudioTrack deserializeAudioTrack(byte[] fileData) {
+    public AudioTrack deserializeAudioTrack(byte[] fileData) {
         int sampleRate;
         int sampleSize;
         int channelCount;
@@ -273,7 +263,7 @@ public class AssetManager {
      * @param filePath The file path to load the animation from in the base asset path
      * @return Whether the animation was successfully loaded from the given file path
      */
-    private boolean readAnimation(String filePath) {
+    public boolean readAnimation(String filePath) {
         // Ensure the file path is accessible
         if (basePath == null) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
@@ -312,17 +302,7 @@ public class AssetManager {
                     basePath + filePath, "\"");
             return false;
         }
-        // Parse animation and place in cache
-        Animation animation = deserializeAnimation(fileData);
-        if (animation == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize animation from \"",
-                    basePath + filePath, "\"");
-            return false;
-        }
-        App.Log.write(LogSource.Assets, LogLevel.Info, "Loaded animation ", animation, " from \"", basePath + filePath,
-                "\"");
-        animations.put(filePath, animation);
-        return true;
+        return addAnimation(filePath, deserializeAnimation(fileData));
     }
 
     /**
@@ -330,7 +310,7 @@ public class AssetManager {
      * @param fileData The data to convert
      * @return The deserialized animation or null if deserialization failed
      */
-    private Animation deserializeAnimation(byte[] fileData) {
+    public Animation deserializeAnimation(byte[] fileData) {
         int targetFPS;
         Vector sheetDimensions = Vector.Zero();
         Vector frameDimensions = Vector.Zero();
@@ -592,27 +572,30 @@ public class AssetManager {
     }
 
     /**
-     * Retrieve a cached animation from memory or attempt to load it from disk by its file path
-     * @param filePath The file path of the animation to retrieve in the base asset path
-     * @return The requested animation from memory or disk or null if the animation could not be loaded
+     * Add an audio track from the asset management system's cache
+     * @param filePath The file path of the audio track to add in the base asset path
+     * @param audioTrack The audio track to add
+     * @return Whether the audio track was not in memory and was added successfully
      */
-    public Animation getAnimation(String filePath) {
-        if (basePath == null) {
-            return null;
-        }
+    public boolean addAudioTrack(String filePath, AudioTrack audioTrack) {
         if (filePath == null) {
-            return null;
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "No file path provided to add audio track");
+            return false;
         }
         if (filePath.isEmpty()) {
-            return null;
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Empty file path provided to add audio track");
+            return false;
         }
-        // Load if not in memory
-        if (!animations.containsKey(filePath)) {
-            if (!readAnimation(filePath)) {
-                return null;
-            }
+        if (audioTrack == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "No audio track provided to add");
+            return false;
         }
-        return animations.get(filePath);
+        if (audioTracks.containsKey(filePath)) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to add audio track, already cached");
+            return false;
+        }
+        audioTracks.put(filePath, audioTrack);
+        return true;
     }
 
     /**
@@ -620,7 +603,7 @@ public class AssetManager {
      * @param filePath The file path of the audio track to free in the base asset path
      * @return Whether the audio track was in memory and was removed successfully
      */
-    public boolean freeAudioTrack(String filePath) {
+    public boolean removeAudioTrack(String filePath) {
         if (basePath == null) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
             return false;
@@ -645,11 +628,62 @@ public class AssetManager {
     }
 
     /**
+     * Retrieve a cached animation from memory or attempt to load it from disk by its file path
+     * @param filePath The file path of the animation to retrieve in the base asset path
+     * @return The requested animation from memory or disk or null if the animation could not be loaded
+     */
+    public Animation getAnimation(String filePath) {
+        if (basePath == null) {
+            return null;
+        }
+        if (filePath == null) {
+            return null;
+        }
+        if (filePath.isEmpty()) {
+            return null;
+        }
+        // Load if not in memory
+        if (!animations.containsKey(filePath)) {
+            if (!readAnimation(filePath)) {
+                return null;
+            }
+        }
+        return animations.get(filePath);
+    }
+
+    /**
+     * Add an animation from the asset management system's cache
+     * @param filePath The file path of the animation to add in the base asset path
+     * @param animation The animation to add
+     * @return Whether the animation was not in memory and was added successfully
+     */
+    public boolean addAnimation(String filePath, Animation animation) {
+        if (filePath == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "No file path provided to add animation");
+            return false;
+        }
+        if (filePath.isEmpty()) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Empty file path provided to add animation");
+            return false;
+        }
+        if (animation == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "No animation provided to add");
+            return false;
+        }
+        if (animations.containsKey(filePath)) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to add animation, already cached");
+            return false;
+        }
+        animations.put(filePath, animation);
+        return true;
+    }
+
+    /**
      * Remove an animation from the asset management system's cache
      * @param filePath The file path of the animation to free in the base asset path
      * @return Whether the animation was in memory and was removed successfully
      */
-    public boolean freeAnimation(String filePath) {
+    public boolean removeAnimation(String filePath) {
         if (basePath == null) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
             return false;
