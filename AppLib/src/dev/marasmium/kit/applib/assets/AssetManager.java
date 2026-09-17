@@ -41,6 +41,10 @@ public class AssetManager {
      * The set of animations cached in memory mapped to their file paths
      */
     private final HashMap<String, Animation> animations = new HashMap<>();
+    /**
+     * The set of typefaces cached in memory mapped to their file paths
+     */
+    private final HashMap<String, Typeface> typefaces = new HashMap<>();
 
     /**
      * Initialize the MarasmiumKit application framework's asset management system
@@ -473,6 +477,43 @@ public class AssetManager {
     }
 
     /**
+     * Attempt to load a typeface from the disk by its file path and place it in the asset management system's cache
+     * @param filePath The file path to load the typeface from in the base asset path
+     * @return Whether the typeface was successfully loaded from the given file path
+     */
+    public boolean readTypeface(String filePath) {
+        return false;
+    }
+
+    /**
+     * Convert a byte array to a typeface
+     * @param fileData The data to convert
+     * @return The deserialized typeface or null if deserialization failed
+     */
+    public Typeface deserializeTypeface(byte[] fileData) {
+        return null;
+    }
+
+    /**
+     * Write the contents of a typeface to a file on disk
+     * @param typeface The typeface to write
+     * @param filePath The destination file path to write to in the base asset path
+     * @return Whether the typeface was successfully written to the given file path
+     */
+    public boolean writeTypeface(Typeface typeface, String filePath) {
+        return false;
+    }
+
+    /**
+     * Convert a typeface to a byte array
+     * @param typeface The typeface to convert
+     * @return The serialized typeface or null if serialization failed
+     */
+    public byte[] serializeTypeface(Typeface typeface) {
+        return null;
+    }
+
+    /**
      * Dispose of all assets and free the asset management system's memory
      */
     public boolean destroy() {
@@ -506,6 +547,19 @@ public class AssetManager {
             }
         }
         audioTracks.clear();
+        // Free typefaces
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing ", typefaces.size(), " typefaces");
+        for (HashMap.Entry<String, Typeface> entry : typefaces.entrySet()) {
+            try {
+                if (entry.getValue() != null) {
+                    entry.getValue().destroy();
+                }
+            } catch (IllegalStateException _) {
+                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to retrieve value to destroy in typefaces");
+                success = false;
+            }
+        }
+        typefaces.clear();
         return success;
     }
 
@@ -572,7 +626,7 @@ public class AssetManager {
     }
 
     /**
-     * Add an audio track from the asset management system's cache
+     * Add an audio track to the asset management system's cache
      * @param filePath The file path of the audio track to add in the base asset path
      * @param audioTrack The audio track to add
      * @return Whether the audio track was not in memory and was added successfully
@@ -594,6 +648,7 @@ public class AssetManager {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to add audio track, already cached");
             return false;
         }
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Adding audio track at \"", basePath + filePath, "\"");
         audioTracks.put(filePath, audioTrack);
         return true;
     }
@@ -652,7 +707,7 @@ public class AssetManager {
     }
 
     /**
-     * Add an animation from the asset management system's cache
+     * Add an animation to the asset management system's cache
      * @param filePath The file path of the animation to add in the base asset path
      * @param animation The animation to add
      * @return Whether the animation was not in memory and was added successfully
@@ -674,6 +729,7 @@ public class AssetManager {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to add animation, already cached");
             return false;
         }
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Adding animation at \"", basePath + filePath, "\"");
         animations.put(filePath, animation);
         return true;
     }
@@ -684,10 +740,6 @@ public class AssetManager {
      * @return Whether the animation was in memory and was removed successfully
      */
     public boolean removeAnimation(String filePath) {
-        if (basePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
-            return false;
-        }
         if (filePath == null) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "No file path provided to free animation");
             return false;
@@ -705,6 +757,83 @@ public class AssetManager {
             animations.get(filePath).destroy();
         }
         return animations.remove(filePath) != null;
+    }
+
+    /**
+     * Retrieve a cached typeface from memory or attempt to load it from disk by its file path
+     * @param filePath The file path of the typeface to retrieve in the base asset path
+     * @return The requested typeface from memory or disk or null if the typeface could not be loaded
+     */
+    public Typeface getTypeface(String filePath) {
+        if (basePath == null) {
+            return null;
+        }
+        if (filePath == null) {
+            return null;
+        }
+        if (filePath.isEmpty()) {
+            return null;
+        }
+        // Load if not in memory
+        if (!typefaces.containsKey(filePath)) {
+            if (!readTypeface(filePath)) {
+                return null;
+            }
+        }
+        return typefaces.get(filePath);
+    }
+
+    /**
+     * Add a typeface to the asset management system's cache
+     * @param filePath The file path of the typeface to add in the base asset path
+     * @param typeface The typeface to add
+     * @return Whether the typeface was not in memory and was added successfully
+     */
+    public boolean addTypeface(String filePath, Typeface typeface) {
+        if (filePath == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "No file path provided to add typeface");
+            return false;
+        }
+        if (filePath.isEmpty()) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Empty file path provided to add typeface");
+            return false;
+        }
+        if (typeface == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "No typeface provided to add");
+            return false;
+        }
+        if (typefaces.containsKey(filePath)) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to add typeface, already cached");
+            return false;
+        }
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Adding typeface at \"", basePath + filePath, "\"");
+        typefaces.put(filePath, typeface);
+        return true;
+    }
+
+    /**
+     * Remove a typeface from the asset management system's cache
+     * @param filePath The file path of the typeface to remove in the base asset path
+     * @return Whether the typeface was in memory and was removed successfully
+     */
+    public boolean removeTypeface(String filePath) {
+        if (filePath == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "No file path provided to free typeface");
+            return false;
+        }
+        if (filePath.isEmpty()) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Empty file path provided to free typeface");
+            return false;
+        }
+        if (!typefaces.containsKey(filePath)) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "File path provided to free typeface not loaded");
+            return false;
+        }
+        App.Log.write(LogSource.Assets, LogLevel.Warning, "Freeing typeface at \"", basePath + filePath, "\"");
+        if (typefaces.get(filePath) != null) {
+            typefaces.get(filePath).destroy();
+        }
+        return typefaces.remove(filePath) != null;
     }
 
 }

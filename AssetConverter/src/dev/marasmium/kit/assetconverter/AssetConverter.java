@@ -302,6 +302,15 @@ public class AssetConverter {
     }
 
     /**
+     * Convert a common font file readable by the base JVM to the MarasmiumKit's custom typeface file format
+     * @param commandLine Scanner for reading command line input
+     * @return Whether a file was converted successfully
+     */
+    private static boolean convertTypeface(Scanner commandLine) {
+        return false;
+    }
+
+    /**
      * The main entry point of the AssetConverter program
      */
     static void main() {
@@ -329,7 +338,8 @@ public class AssetConverter {
             // Switch between audio and animation file conversion
             System.out.println("1. Audio");
             System.out.println("2. Animation");
-            System.out.println("3. Exit");
+            System.out.println("3. Typeface");
+            System.out.println("4. Exit");
             System.out.print("Mode: ");
             String modeStr;
             try {
@@ -345,7 +355,7 @@ public class AssetConverter {
                 System.out.println("Invalid mode");
                 return;
             }
-            if (mode < 1 || mode > 3) {
+            if (mode < 1 || mode > 4) {
                 System.out.println("Invalid mode");
                 return;
             }
@@ -361,6 +371,10 @@ public class AssetConverter {
                     }
                     break;
                 case 3:
+                    if (!convertTypeface(commandLine)) {
+                        System.out.println("Failed to convert typeface");
+                    }
+                case 4:
                     running = false;
                     break;
             }
