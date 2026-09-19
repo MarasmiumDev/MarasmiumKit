@@ -432,7 +432,7 @@ public class AssetManager {
             outputStream = new FileOutputStream(file);
             outputStream.write(fileData);
             outputStream.close();
-        } catch (IOException | BufferOverflowException | ReadOnlyBufferException _) {
+        } catch (IOException _) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write animation data to file at \"",
                     basePath + filePath, "\"");
             return false;
@@ -482,7 +482,45 @@ public class AssetManager {
      * @return Whether the typeface was successfully loaded from the given file path
      */
     public boolean readTypeface(String filePath) {
-        return false;
+        // Ensure the file path is accessible
+        if (basePath == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
+            return false;
+        }
+        if (filePath == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "No file path provided to load typeface");
+            return false;
+        }
+        if (filePath.isEmpty()) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Empty file path provided to load typeface");
+            return false;
+        }
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Reading typeface from \"", basePath + filePath, "\"");
+        File file = new File(basePath + filePath);
+        if (!file.canRead()) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to read typeface at \"", basePath + filePath,
+                    "\", cannot read from file");
+            return false;
+        }
+        // Read all file data into memory
+        FileInputStream inputStream;
+        try {
+            inputStream = new FileInputStream(file);
+        } catch (FileNotFoundException _) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to read typeface at \"", basePath + filePath,
+                    "\", cannot open file");
+            return false;
+        }
+        byte[] fileData;
+        try {
+            fileData = inputStream.readAllBytes();
+            inputStream.close();
+        } catch (IOException _) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to read typeface data from \"",
+                    basePath + filePath, "\"");
+            return false;
+        }
+        return addTypeface(filePath, deserializeTypeface(fileData));
     }
 
     /**
@@ -501,7 +539,61 @@ public class AssetManager {
      * @return Whether the typeface was successfully written to the given file path
      */
     public boolean writeTypeface(Typeface typeface, String filePath) {
-        return false;
+        // Ensure the output file is accessible
+        if (basePath == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
+            return false;
+        }
+        if (typeface == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write typeface, none provided");
+            return false;
+        }
+        if (filePath == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write typeface, no file path provided");
+            return false;
+        }
+        if (filePath.isEmpty()) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write typeface, empty file path provided");
+            return false;
+        }
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Writing typeface ", typeface, " to \"", basePath + filePath,
+                "\"");
+        File file = new File(basePath + filePath);
+        if (!file.exists()) {
+            try {
+                if (!file.createNewFile()) {
+                    App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to create new file for typeface at \"",
+                            basePath + filePath, "\"");
+                    return false;
+                }
+            } catch (IOException _) {
+                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to create new file for typeface at \"",
+                        basePath + filePath, "\"");
+                return false;
+            }
+        }
+        if (!file.canWrite()) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Cannot write typeface to file at \"",
+                    basePath + filePath, "\"");
+            return false;
+        }
+        // Write typeface contents
+        byte[] fileData = serializeTypeface(typeface);
+        if (fileData == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to serialise typeface ", typeface);
+            return false;
+        }
+        FileOutputStream outputStream;
+        try {
+            outputStream = new FileOutputStream(file);
+            outputStream.write(fileData);
+            outputStream.close();
+        } catch (IOException _) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write typeface data to file at \"",
+                    basePath + filePath, "\"");
+            return false;
+        }
+        return true;
     }
 
     /**
