@@ -397,7 +397,8 @@ public class AssetConverter {
                 System.out.println("Failed to initialize glyph metrics for '" + character + "'");
                 return false;
             }
-            glyphImages[i] = new BufferedImage(glyphBounds.width, glyphBounds.height, BufferedImage.TYPE_INT_ARGB);
+            glyphImages[i] = new BufferedImage(Math.max(glyphBounds.width, 1), Math.max(glyphBounds.height, 1),
+                    BufferedImage.TYPE_INT_ARGB);
             Graphics2D graphics = glyphImages[i].createGraphics();
             graphics.setColor(colour);
             graphics.drawGlyphVector(glyphVector, -glyphBounds.x, -glyphBounds.y);
@@ -528,6 +529,7 @@ public class AssetConverter {
                     if (!convertTypeface(commandLine)) {
                         System.out.println("Failed to convert typeface");
                     }
+                    break;
                 case 4:
                     running = false;
                     break;

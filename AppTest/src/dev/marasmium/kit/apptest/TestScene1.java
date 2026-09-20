@@ -97,9 +97,16 @@ public class TestScene1 extends Scene implements NetListener {
             sprites.add(s);
             App.Audio.soundEffects.play("Audio/Sound_Effect_1.audio");
         }
-        // Test font
+        // Test typefaces
         if (App.Input.keyboard.isKeyPressed(KeyboardKey.J)) {
-            Typeface typeface = App.Assets.getTypeface("Typeface/Test.typeface");
+            Typeface typeface = App.Assets.getTypeface("Typeface/Fira_Sans.typeface");
+            App.Log.write(logSource, LogLevel.Info, "Loaded typeface: ", typeface);
+            for (HashMap.Entry<Character, Glyph> entry : typeface.getGlyphs().entrySet()) {
+                App.Log.write(logSource, LogLevel.Info, "Glyph ", entry.getKey(), ": ", entry.getValue());
+            }
+        }
+        if (App.Input.keyboard.isKeyPressed(KeyboardKey.K)) {
+            Typeface typeface = App.Assets.getTypeface("Typeface/Silkscreen.typeface");
             App.Log.write(logSource, LogLevel.Info, "Loaded typeface: ", typeface);
             for (HashMap.Entry<Character, Glyph> entry : typeface.getGlyphs().entrySet()) {
                 App.Log.write(logSource, LogLevel.Info, "Glyph ", entry.getKey(), ": ", entry.getValue());
