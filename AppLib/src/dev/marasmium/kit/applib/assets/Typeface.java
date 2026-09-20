@@ -36,7 +36,7 @@ public class Typeface {
      * @return Whether all parameters were valid and this typeface was initialized successfully
      */
     public boolean initialize(String characters, Glyph[] glyphMetrics, byte[] animationData) {
-        if (characters == null || glyphMetrics == null || animationFilePath == null) {
+        if (characters == null || glyphMetrics == null || animationData == null) {
             return false;
         }
         if (characters.length() != glyphMetrics.length) {
@@ -194,8 +194,11 @@ public class Typeface {
      */
     @Override
     public String toString() {
-        if (animationData == null || animationFilePath == null) {
+        if (animationData == null) {
             return "typeface(null)";
+        }
+        if (animationFilePath == null) {
+            return "typeface(" + glyphs.size() + " glyphs, " + animationData.length + "B)";
         }
         return "typeface(" + glyphs.size() + " glyphs, " + animationData.length + "B at \"" + animationFilePath + "\")";
     }

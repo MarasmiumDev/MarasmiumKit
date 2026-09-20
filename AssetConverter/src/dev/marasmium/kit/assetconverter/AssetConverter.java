@@ -11,6 +11,8 @@ import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.assets.Animation;
 import dev.marasmium.kit.applib.assets.AssetManagerConfig;
 import dev.marasmium.kit.applib.assets.AudioTrack;
+import dev.marasmium.kit.applib.assets.Glyph;
+import dev.marasmium.kit.applib.assets.Typeface;
 import dev.marasmium.kit.applib.data.Colour;
 import dev.marasmium.kit.applib.data.Vector;
 
@@ -19,7 +21,14 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphVector;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -307,7 +316,152 @@ public class AssetConverter {
      * @return Whether a file was converted successfully
      */
     private static boolean convertTypeface(Scanner commandLine) {
-        return false;
+        // Read format and data from input file
+        System.out.print("Input file path: ");
+        String inputFilePath;
+        try {
+            inputFilePath = commandLine.nextLine();
+        } catch (NoSuchElementException | IllegalStateException _) {
+            System.out.println("No user input available");
+            return false;
+        }
+        File inputFile = new File(inputFilePath);
+        if (!inputFile.canRead()) {
+            System.out.println("Failed to open input file");
+            return false;
+        }
+        System.out.print("Input font size: ");
+        String fontSizeStr;
+        try {
+            fontSizeStr = commandLine.nextLine();
+        } catch (NoSuchElementException | IllegalStateException _) {
+            System.out.println("No user input available");
+            return false;
+        }
+        float fontSize;
+        try {
+            fontSize = Float.parseFloat(fontSizeStr);
+        } catch (NumberFormatException _) {
+            System.out.println("Failed to parse font size");
+            return false;
+        }
+        if (fontSize <= 0.0f) {
+            System.out.println("Invalid font size");
+            return false;
+        }
+        Font inputFont;
+        try {
+            inputFont = Font.createFont(Font.TRUETYPE_FONT, inputFile).deriveFont(fontSize);
+        } catch (IllegalArgumentException | IOException | FontFormatException _) {
+            System.out.println("Failed to load TrueType font from input file");
+            return false;
+        }
+        System.out.println("Read font file (" + inputFile.length() + "B), format:");
+        System.out.println("Input font name: " + inputFont.getName());
+        System.out.println("Input font size: " + inputFont.getSize());
+        System.out.println("Input font glyph count: " + inputFont.getNumGlyphs());
+        // Read desired output format
+        System.out.print("Output colour: ");
+        String colourStr;
+        try {
+            colourStr = commandLine.nextLine();
+        } catch (NoSuchElementException | IllegalStateException _) {
+            System.out.println("No user input available");
+            return false;
+        }
+        Color colour;
+        try {
+            colour = Color.decode(colourStr);
+        } catch (NumberFormatException _) {
+            System.out.println("Failed to parse output typeface colour");
+            return false;
+        }
+        System.out.print("Output character set: ");
+        String characters;
+        try {
+            characters = commandLine.nextLine();
+        } catch (NoSuchElementException | IllegalStateException _) {
+            System.out.println("No user input available");
+            return false;
+        }
+        FontRenderContext renderContext = new FontRenderContext(null, true, true);
+        Glyph[] glyphs = new Glyph[characters.length()];
+        BufferedImage[] glyphImages = new BufferedImage[glyphs.length];
+        for (int i = 0; i < characters.length(); i++) {
+            String character = String.valueOf(characters.charAt(i));
+            GlyphVector glyphVector = inputFont.createGlyphVector(renderContext, character);
+            Rectangle glyphBounds = glyphVector.getPixelBounds(renderContext, 0, 0);
+            glyphs[i] = new Glyph();
+            if (!glyphs[i].initialize(i, (int)Math.ceil(glyphVector.getGlyphMetrics(0).getAdvanceX()),
+                    -(int)Math.ceil(glyphBounds.getMaxY()))) {
+                System.out.println("Failed to initialize glyph metrics for '" + character + "'");
+                return false;
+            }
+            glyphImages[i] = new BufferedImage(glyphBounds.width, glyphBounds.height, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D graphics = glyphImages[i].createGraphics();
+            graphics.setColor(colour);
+            graphics.drawGlyphVector(glyphVector, -glyphBounds.x, -glyphBounds.y);
+            graphics.dispose();
+        }
+        int animationFrameWidth = 0;
+        int animationFrameHeight = 0;
+        for (int i = 0; i < characters.length(); i++) {
+            if (animationFrameWidth < glyphImages[i].getWidth()) {
+                animationFrameWidth = glyphImages[i].getWidth();
+            }
+            if (animationFrameHeight < glyphImages[i].getHeight()) {
+                animationFrameHeight = glyphImages[i].getHeight();
+            }
+        }
+        BufferedImage animationImage = new BufferedImage(animationFrameWidth * characters.length(),
+                animationFrameHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D graphics = animationImage.createGraphics();
+        for (int i = 0; i < characters.length(); i++) {
+            graphics.drawImage(glyphImages[i], i * animationFrameWidth,
+                    animationFrameHeight - glyphImages[i].getHeight(), null);
+        }
+        graphics.dispose();
+        Colour[] animationColours = new Colour[animationImage.getWidth() * animationImage.getHeight()];
+        int colourIndex = 0;
+        for (int y = animationImage.getHeight() - 1; y >= 0; y--) {
+            for (int x = 0; x < animationImage.getWidth(); x++) {
+                int ARGB = animationImage.getRGB(x, y);
+                int red = (ARGB >> 16) & 0xFF;
+                int green = (ARGB >> 8) & 0xFF;
+                int blue = ARGB & 0xFF;
+                int alpha = (ARGB >> 24) & 0xFF;
+                animationColours[colourIndex] = Colour.Channels(red, green, blue, alpha);
+                colourIndex++;
+            }
+        }
+        Animation animation = new Animation();
+        if (!animation.initialize(0, Vector.Cartesian(characters.length(), 1),
+                Vector.Cartesian(animationFrameWidth, animationFrameHeight), characters.length(), animationColours)) {
+            System.out.println("Failed to initialize typeface animation");
+            return false;
+        }
+        byte[] animationData = App.Assets.serializeAnimation(animation);
+        // Write converted typeface
+        Typeface typeface = new Typeface();
+        if (!typeface.initialize(characters, glyphs, animationData)) {
+            System.out.println("Failed to initialize typeface");
+            return false;
+        }
+        System.out.println("Generated typeface: " + typeface);
+        System.out.print("Output file path: ");
+        String outputFilePath;
+        try {
+            outputFilePath = commandLine.nextLine();
+        } catch (NoSuchElementException | IllegalStateException _) {
+            System.out.println("No user input available");
+            return false;
+        }
+        if (!App.Assets.writeTypeface(typeface, outputFilePath)) {
+            System.out.println("Failed to write typeface");
+            return false;
+        }
+        typeface.destroy();
+        return true;
     }
 
     /**

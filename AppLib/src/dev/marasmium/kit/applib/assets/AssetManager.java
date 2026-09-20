@@ -248,6 +248,7 @@ public class AssetManager {
             return null;
         }
         int fileDataSize = (4 * Integer.BYTES) + data.length;
+        byte[] fileData;
         ByteBuffer buffer;
         try {
             buffer = ByteBuffer.allocate(fileDataSize);
@@ -256,10 +257,11 @@ public class AssetManager {
             buffer.putInt(channelCount);
             buffer.putInt(dataSize);
             buffer.put(data);
-        } catch (IllegalArgumentException | BufferOverflowException | ReadOnlyBufferException _) {
+            fileData = buffer.array();
+        } catch (IllegalArgumentException | BufferOverflowException | UnsupportedOperationException _) {
             return null;
         }
-        return buffer.array();
+        return fileData;
     }
 
     /**
@@ -315,6 +317,9 @@ public class AssetManager {
      * @return The deserialized animation or null if deserialization failed
      */
     public Animation deserializeAnimation(byte[] fileData) {
+        if (fileData == null) {
+            return null;
+        }
         int targetFPS;
         Vector sheetDimensions = Vector.Zero();
         Vector frameDimensions = Vector.Zero();
@@ -458,6 +463,7 @@ public class AssetManager {
             return null;
         }
         int fileDataSize = (6 * Integer.BYTES) + (data.length * Integer.BYTES);
+        byte[] fileData;
         ByteBuffer buffer;
         try {
             buffer = ByteBuffer.allocate(fileDataSize);
@@ -470,10 +476,11 @@ public class AssetManager {
             for (Colour c : data) {
                 buffer.putInt(c.getRGBA());
             }
-        } catch (IllegalArgumentException | BufferOverflowException | ReadOnlyBufferException _) {
+            fileData = buffer.array();
+        } catch (IllegalArgumentException | BufferOverflowException | UnsupportedOperationException _) {
             return null;
         }
-        return buffer.array();
+        return fileData;
     }
 
     /**
@@ -529,7 +536,96 @@ public class AssetManager {
      * @return The deserialized typeface or null if deserialization failed
      */
     public Typeface deserializeTypeface(byte[] fileData) {
-        return null;
+        if (fileData == null) {
+            return null;
+        }
+        int characterCount;
+        StringBuilder characters = new StringBuilder();
+        Glyph[] glyphs;
+        int animationDataSize;
+        byte[] animationData;
+        byte[] buffer = new byte[Integer.BYTES];
+        int offset = 0;
+        if (fileData.length < Integer.BYTES) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize typeface, data is smaller than ",
+                    "header size");
+            return null;
+        }
+        try {
+            System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
+            offset += Integer.BYTES;
+            characterCount = ByteBuffer.wrap(buffer).getInt();
+        } catch (IndexOutOfBoundsException | ArrayStoreException | BufferOverflowException _) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize typeface, data invalid");
+            return null;
+        }
+        glyphs = new Glyph[characterCount];
+        if (fileData.length < offset + (characterCount * Character.BYTES) + (characterCount * 3 * Integer.BYTES)) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize typeface, data is smaller than ",
+                    "required size");
+            return null;
+        }
+        for (int i = 0; i < characterCount; i++) {
+            char glyphCharacter;
+            int glyphAnimationFrame;
+            int glyphAdvance;
+            int glyphOffset;
+            try {
+                System.arraycopy(fileData, offset, buffer, 0, Character.BYTES);
+                offset += Character.BYTES;
+                glyphCharacter = ByteBuffer.wrap(buffer, 0, Character.BYTES).getChar();
+                System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
+                offset += Integer.BYTES;
+                glyphAnimationFrame = ByteBuffer.wrap(buffer).getInt();
+                System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
+                offset += Integer.BYTES;
+                glyphAdvance = ByteBuffer.wrap(buffer).getInt();
+                System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
+                offset += Integer.BYTES;
+                glyphOffset = ByteBuffer.wrap(buffer).getInt();
+            } catch (IndexOutOfBoundsException | ArrayStoreException | BufferOverflowException _) {
+                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize typeface, data invalid");
+                return null;
+            }
+            characters.append(glyphCharacter);
+            glyphs[i] = new Glyph();
+            if (!glyphs[i].initialize(glyphAnimationFrame, glyphAdvance, glyphOffset)) {
+                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize typeface, glyph metrics for '",
+                        glyphCharacter, "' invalid");
+                return null;
+            }
+        }
+        if (fileData.length < offset + Integer.BYTES) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize typeface, data is smaller than ",
+                    "required size");
+            return null;
+        }
+        try {
+            System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
+            offset += Integer.BYTES;
+            animationDataSize = ByteBuffer.wrap(buffer).getInt();
+        } catch (IndexOutOfBoundsException | ArrayStoreException | BufferOverflowException _) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize typeface, data invalid");
+            return null;
+        }
+        if (fileData.length < offset + animationDataSize) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize typeface, data is smaller than ",
+                    "required size");
+            return null;
+        }
+        animationData = new byte[animationDataSize];
+        try {
+            System.arraycopy(fileData, offset, animationData, 0, animationDataSize);
+        } catch (IndexOutOfBoundsException | ArrayStoreException _) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize typeface, data invalid");
+            return null;
+        }
+        Typeface typeface = new Typeface();
+        if (!typeface.initialize(characters.toString(), glyphs, animationData)) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to initialize typeface, invalid parameters");
+            return null;
+        }
+        return typeface;
     }
 
     /**
@@ -602,7 +698,47 @@ public class AssetManager {
      * @return The serialized typeface or null if serialization failed
      */
     public byte[] serializeTypeface(Typeface typeface) {
-        return null;
+        if (typeface == null) {
+            return null;
+        }
+        if (typeface.getCharacters() == null) {
+            return null;
+        }
+        int characterCount = typeface.getCharacters().length();
+        HashMap<Character, Glyph> glyphs = typeface.getGlyphs();
+        if (typeface.getAnimationData() == null) {
+            return null;
+        }
+        int animationDataSize = typeface.getAnimationData().length;
+        byte[] animationData = typeface.getAnimationData();
+        int fileDataSize = Integer.BYTES + (characterCount * Character.BYTES) + (characterCount * 3 * Integer.BYTES)
+                + Integer.BYTES + animationDataSize;
+        byte[] fileData;
+        ByteBuffer buffer;
+        try {
+            buffer = ByteBuffer.allocate(fileDataSize);
+            buffer.putInt(characterCount);
+            for (HashMap.Entry<Character, Glyph> entry : glyphs.entrySet()) {
+                char character;
+                Glyph glyph;
+                try {
+                    character = entry.getKey();
+                    glyph = entry.getValue();
+                } catch (IllegalArgumentException _) {
+                    return null;
+                }
+                buffer.putChar(character);
+                buffer.putInt(glyph.getAnimationFrame());
+                buffer.putInt(glyph.getAdvance());
+                buffer.putInt(glyph.getOffset());
+            }
+            buffer.putInt(animationDataSize);
+            buffer.put(animationData);
+            fileData = buffer.array();
+        } catch (IllegalArgumentException | BufferOverflowException | UnsupportedOperationException _) {
+            return null;
+        }
+        return fileData;
     }
 
     /**
@@ -899,6 +1035,16 @@ public class AssetManager {
             return false;
         }
         App.Log.write(LogSource.Assets, LogLevel.Info, "Adding typeface at \"", basePath + filePath, "\"");
+        typeface.setAnimationFilePath("animation:" + filePath);
+        Animation animation = deserializeAnimation(typeface.getAnimationData());
+        if (animation == null) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to add typeface, could not deserialize ",
+                    "animation data");
+            return false;
+        }
+        if (!animations.containsKey(typeface.getAnimationFilePath())) {
+            animations.put(typeface.getAnimationFilePath(), animation);
+        }
         typefaces.put(filePath, typeface);
         return true;
     }
@@ -923,6 +1069,10 @@ public class AssetManager {
         }
         App.Log.write(LogSource.Assets, LogLevel.Warning, "Freeing typeface at \"", basePath + filePath, "\"");
         if (typefaces.get(filePath) != null) {
+            if (animations.get(typefaces.get(filePath).getAnimationFilePath()) != null) {
+                animations.get(typefaces.get(filePath).getAnimationFilePath()).destroy();
+                animations.remove(typefaces.get(filePath).getAnimationFilePath());
+            }
             typefaces.get(filePath).destroy();
         }
         return typefaces.remove(filePath) != null;

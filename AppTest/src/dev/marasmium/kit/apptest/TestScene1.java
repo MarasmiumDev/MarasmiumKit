@@ -10,6 +10,8 @@ package dev.marasmium.kit.apptest;
 import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.Scene;
 import dev.marasmium.kit.applib.assets.Animation;
+import dev.marasmium.kit.applib.assets.Glyph;
+import dev.marasmium.kit.applib.assets.Typeface;
 import dev.marasmium.kit.applib.audio.AudioDevice;
 import dev.marasmium.kit.applib.data.Angle;
 import dev.marasmium.kit.applib.data.Colour;
@@ -25,6 +27,7 @@ import dev.marasmium.kit.applib.networking.NetMessage;
 import dev.marasmium.kit.applib.windowing.Monitor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 public class TestScene1 extends Scene implements NetListener {
@@ -48,7 +51,6 @@ public class TestScene1 extends Scene implements NetListener {
         center.initialize(Vector.Zero(), 0.0f, Vector.Cartesian(10.0f, 10.0f), Angle.Zero(),
                 "Animation/Animation_1.animation");
         camera.initialize(Vector.Zero(), 1.0f, Angle.Zero());
-        AudioDevice ad = new AudioDevice();
         return true;
     }
 
@@ -95,6 +97,14 @@ public class TestScene1 extends Scene implements NetListener {
             sprites.add(s);
             App.Audio.soundEffects.play("Audio/Sound_Effect_1.audio");
         }
+        // Test font
+        if (App.Input.keyboard.isKeyPressed(KeyboardKey.J)) {
+            Typeface typeface = App.Assets.getTypeface("Typeface/Test.typeface");
+            App.Log.write(logSource, LogLevel.Info, "Loaded typeface: ", typeface);
+            for (HashMap.Entry<Character, Glyph> entry : typeface.getGlyphs().entrySet()) {
+                App.Log.write(logSource, LogLevel.Info, "Glyph ", entry.getKey(), ": ", entry.getValue());
+            }
+        }
         return true;
     }
 
@@ -112,7 +122,7 @@ public class TestScene1 extends Scene implements NetListener {
             sprite.update(deltaFrames);
         }
         if (frameTimer > App.Graphics.getTargetFPS()) {
-            App.Log.write(logSource, LogLevel.Info, "Rendered ", frames, " frames");
+            //App.Log.write(logSource, LogLevel.Info, "Rendered ", frames, " frames");
             frameTimer = 0.0d;
             frames = 0;
         }
