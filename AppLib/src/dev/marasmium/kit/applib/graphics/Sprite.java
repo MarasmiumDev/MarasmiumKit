@@ -15,20 +15,8 @@ import dev.marasmium.kit.applib.data.Vector;
 /**
  * A structure representing a drawable sprite
  */
-public class Sprite extends Body {
+public class Sprite extends Box {
 
-    /**
-     * The depth of this sprite in the rendered scene
-     */
-    private float depth = 0.0f;
-    /**
-     * The horizontal and vertical dimensions of this sprite
-     */
-    private Vector dimensions = null;
-    /**
-     * The rate of change of the dimensions of this sprite
-     */
-    private Vector growth = null;
     /**
      * The file path of the animation to draw on this sprite
      */
@@ -64,14 +52,7 @@ public class Sprite extends Body {
      * @return Whether all parameters were valid and this sprite was initialized successfully
      */
     public boolean initialize(Vector position, float depth, Vector dimensions, Angle angle, String animationFilePath) {
-        if (!super.initialize(position, angle)) {
-            return false;
-        }
-        setDepth(depth);
-        if (!setDimensions(dimensions)) {
-            return false;
-        }
-        if (!setGrowth(Vector.Zero())) {
+        if (!super.initialize(position, angle, dimensions, depth)) {
             return false;
         }
         if (!setAnimationFilePath(animationFilePath)) {
@@ -89,9 +70,6 @@ public class Sprite extends Body {
      */
     public void update(float deltaFrames) {
         super.update(deltaFrames);
-        if (dimensions != null) {
-            dimensions = dimensions.add(growth.scalarMultiply(deltaFrames));
-        }
         if (animationPlaying) {
             Animation animation = App.Assets.getAnimation(animationFilePath);
             if (animation != null) {
@@ -111,73 +89,12 @@ public class Sprite extends Body {
      */
     public void destroy() {
         super.destroy();
-        depth = 0.0f;
-        dimensions = null;
-        growth = null;
         animationFilePath = null;
         animationFrame = 0;
         animationPlaying = false;
         animationTimer = 0.0f;
         flippedVertically = false;
         flippedHorizontally = false;
-    }
-
-    /**
-     * Get the depth of this sprite in the rendered scene
-     * @return The depth of this sprite
-     */
-    public float getDepth() {
-        return depth;
-    }
-
-    /**
-     * Set the depth of this sprite in the rendered scene
-     * @param depth The new depth for this sprite
-     */
-    public void setDepth(float depth) {
-        this.depth = depth;
-    }
-
-    /**
-     * Get the dimensions of this sprite
-     * @return The dimensions of this sprite
-     */
-    public Vector getDimensions() {
-        return dimensions;
-    }
-
-    /**
-     * Set the dimensions of this sprite
-     * @param dimensions The new dimensions for this sprite
-     * @return Whether the given dimensions are valid
-     */
-    public boolean setDimensions(Vector dimensions) {
-        if (dimensions == null) {
-            return false;
-        }
-        this.dimensions = dimensions;
-        return true;
-    }
-
-    /**
-     * Get the rate of change of the dimensions of this sprite
-     * @return The rate of change of the dimensions of this sprite
-     */
-    public Vector getGrowth() {
-        return growth;
-    }
-
-    /**
-     * Set the rate of change of the dimensions of this sprite
-     * @param growth The new rate of change of the dimensions of this sprite
-     * @return Whether the given rate of change is valid
-     */
-    public boolean setGrowth(Vector growth) {
-        if (growth == null) {
-            return false;
-        }
-        this.growth = growth;
-        return true;
     }
 
     /**
