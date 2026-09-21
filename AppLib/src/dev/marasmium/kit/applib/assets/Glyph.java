@@ -7,6 +7,8 @@
 
 package dev.marasmium.kit.applib.assets;
 
+import dev.marasmium.kit.applib.data.Vector;
+
 /**
  * Data structure containing the identification and positioning metrics of a glyph in a typeface
  */
@@ -17,9 +19,9 @@ public class Glyph {
      */
     private int animationFrame = 0;
     /**
-     * The horizontal distance between the left border of this glyph and the glyph after it in a string in pixels
+     * The horizontal and vertical advances of this glyph
      */
-    private int advance = 0;
+    private Vector advances = null;
     /**
      * The vertical offset of this glyph in a string in pixels
      */
@@ -28,15 +30,15 @@ public class Glyph {
     /**
      * Initialize this glyph with an animation frame index, horizontal advance, and vertical offset
      * @param animationFrame The frame index of this glyph's image in the typeface's animation
-     * @param advance The horizontal advance of this glyph
+     * @param advances The horizontal and vertical advances of this glyph
      * @param offset The vertical offset of this glyph
      * @return Whether all parameters were valid and this glyph was initialized successfully
      */
-    public boolean initialize(int animationFrame, int advance, int offset) {
+    public boolean initialize(int animationFrame, Vector advances, int offset) {
         if (!setAnimationFrame(animationFrame)) {
             return false;
         }
-        if (!setAdvance(advance)) {
+        if (!setAdvances(advances)) {
             return false;
         }
         setOffset(offset);
@@ -48,7 +50,7 @@ public class Glyph {
      */
     public void destroy() {
         animationFrame = 0;
-        advance = 0;
+        advances = null;
         offset = 0;
     }
 
@@ -74,23 +76,26 @@ public class Glyph {
     }
 
     /**
-     * Get the horizontal distance from the left border of this glyph to the next glyph in a string in pixels
-     * @return This glyph's horizontal advance
+     * Get the horizontal and vertical advances of this glyph
+     * @return This glyph's horizontal and vertical advances
      */
-    public int getAdvance() {
-        return advance;
+    public Vector getAdvances() {
+        return advances;
     }
 
     /**
-     * Set the horizontal distance from the left border of this glyph to the next glyph in a string in pixels
-     * @param advance This glyph's new horizontal advance
-     * @return Whether the given advance was valid and was set successfully
+     * Set the horizontal and vertical advances of this glyph
+     * @param advances This glyph's new horizontal and vertical advances
+     * @return Whether the given advances were valid and was set successfully
      */
-    public boolean setAdvance(int advance) {
-        if (advance < 0) {
+    public boolean setAdvances(Vector advances) {
+        if (advances == null) {
             return false;
         }
-        this.advance = advance;
+        if (advances.getX() < 0.0f) {
+            return false;
+        }
+        this.advances = advances;
         return true;
     }
 
@@ -116,7 +121,7 @@ public class Glyph {
      */
     @Override
     public String toString() {
-        return "glyph(frame " + animationFrame + ", advance " + advance + "px, offset " + offset + "px)";
+        return "glyph(frame " + animationFrame + ", advances " + advances + "px, offset " + offset + "px)";
     }
 
 }

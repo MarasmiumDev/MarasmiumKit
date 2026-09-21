@@ -14,6 +14,8 @@ import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLException;
 import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.assets.Animation;
+import dev.marasmium.kit.applib.assets.Glyph;
+import dev.marasmium.kit.applib.assets.Typeface;
 import dev.marasmium.kit.applib.data.Angle;
 import dev.marasmium.kit.applib.data.Colour;
 import dev.marasmium.kit.applib.data.Vector;
@@ -26,6 +28,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ReadOnlyBufferException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -185,6 +188,11 @@ public class GraphicsManager implements GLEventListener {
             }
         }
         return success;
+    }
+
+    public boolean submit(Camera camera, String text, String typefaceFilePath, Box bounds, float depth, float size,
+                          TextAlignment horizontalAlignment, TextAlignment verticalAlignment) {
+        return false;
     }
 
     /**

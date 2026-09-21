@@ -31,12 +31,12 @@ public class Box extends Body {
     /**
      * Initialize this box with a position, angle, dimensions, and depth
      * @param position The initial position of this box in world coordinates
-     * @param angle The initial angle of this box
-     * @param dimensions The initial dimensions of this box in world coordinates
      * @param depth The initial depth of this box
+     * @param dimensions The initial dimensions of this box in world coordinates
+     * @param angle The initial angle of this box
      * @return Whether the given parameters were valid
      */
-    public boolean initialize(Vector position, Angle angle, Vector dimensions, float depth) {
+    public boolean initialize(Vector position, float depth, Vector dimensions, Angle angle) {
         if (!super.initialize(position, angle)) {
             return false;
         }
@@ -54,6 +54,7 @@ public class Box extends Body {
      * Update this box's dimensions by its rate of change
      * @param deltaFrames The number of frames elapsed since the last call to update
      */
+    @Override
     public void update(float deltaFrames) {
         super.update(deltaFrames);
         if (dimensions != null) {
@@ -70,6 +71,7 @@ public class Box extends Body {
     /**
      * Free this box's memory
      */
+    @Override
     public void destroy() {
         super.destroy();
         depth = 0.0f;
@@ -136,6 +138,55 @@ public class Box extends Body {
         }
         this.growth = growth;
         return true;
+    }
+
+    /**
+     * Test whether this box is fully inside another box
+     * @param box The box to test this one against
+     * @return Whether this box is inside the given box
+     */
+    public boolean isInside(Box box) {
+        if (box == null) {
+            return false;
+        }
+        if (position.getX() < box.getPosition().getX()
+                || position.getX() + dimensions.getX() > box.getPosition().getX() + box.getDimensions().getX()) {
+            return false;
+        }
+        if (position.getY() < box.getPosition().getY()
+                || position.getY() + dimensions.getY() > box.getPosition().getY() + box.getDimensions().getY()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Test whether this box is fully outside another box
+     * @param box The box to test this one against
+     * @return Whether this box is outside the given box
+     */
+    public boolean isOutside(Box box) {
+        if (box == null) {
+            return false;
+        }
+        if (position.getX() + dimensions.getX() < box.getPosition().getX()
+                || position.getX() > box.getPosition().getX() + box.getDimensions().getX()) {
+            return false;
+        }
+        if (position.getY() + dimensions.getY() < box.getPosition().getY()
+                || position.getY() > box.getPosition().getY() + box.getDimensions().getY()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Test whether this box intersects with another box
+     * @param box The box to test this one against
+     * @return Whether this box intersects with the given box
+     */
+    public boolean intersects(Box box) {
+        return !this.isOutside(box) && !box.isOutside(this);
     }
 
 }

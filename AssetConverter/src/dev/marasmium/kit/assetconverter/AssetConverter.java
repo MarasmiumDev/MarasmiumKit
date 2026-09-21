@@ -392,7 +392,9 @@ public class AssetConverter {
             GlyphVector glyphVector = inputFont.createGlyphVector(renderContext, character);
             Rectangle glyphBounds = glyphVector.getPixelBounds(renderContext, 0, 0);
             glyphs[i] = new Glyph();
-            if (!glyphs[i].initialize(i, (int)Math.ceil(glyphVector.getGlyphMetrics(0).getAdvanceX()),
+            if (!glyphs[i].initialize(i,
+                    Vector.Cartesian((float)Math.ceil(glyphVector.getGlyphMetrics(0).getAdvanceX()),
+                            (float)Math.ceil(glyphBounds.getHeight())),
                     -(int)Math.ceil(glyphBounds.getMaxY()))) {
                 System.out.println("Failed to initialize glyph metrics for '" + character + "'");
                 return false;
@@ -449,7 +451,7 @@ public class AssetConverter {
             return false;
         }
         System.out.println("Generated typeface: " + typeface);
-        System.out.print("Output file path: ");
+        System.out.print("Output file path: " + App.Assets.getBasePath());
         String outputFilePath;
         try {
             outputFilePath = commandLine.nextLine();

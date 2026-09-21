@@ -52,7 +52,7 @@ public class Sprite extends Box {
      * @return Whether all parameters were valid and this sprite was initialized successfully
      */
     public boolean initialize(Vector position, float depth, Vector dimensions, Angle angle, String animationFilePath) {
-        if (!super.initialize(position, angle, dimensions, depth)) {
+        if (!super.initialize(position, depth, dimensions, angle)) {
             return false;
         }
         if (!setAnimationFilePath(animationFilePath)) {
@@ -68,6 +68,7 @@ public class Sprite extends Box {
      * Update this sprite's position, dimensions, and angle by their rates of change and update its animation
      * @param deltaFrames The number of frames elapsed since the last call to update
      */
+    @Override
     public void update(float deltaFrames) {
         super.update(deltaFrames);
         if (animationPlaying) {
@@ -87,6 +88,7 @@ public class Sprite extends Box {
     /**
      * Free this sprite's memory
      */
+    @Override
     public void destroy() {
         super.destroy();
         animationFilePath = null;

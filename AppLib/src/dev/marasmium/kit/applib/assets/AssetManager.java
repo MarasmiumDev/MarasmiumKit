@@ -560,7 +560,7 @@ public class AssetManager {
             return null;
         }
         glyphs = new Glyph[characterCount];
-        if (fileData.length < offset + (characterCount * Character.BYTES) + (characterCount * 3 * Integer.BYTES)) {
+        if (fileData.length < offset + (characterCount * Character.BYTES) + (characterCount * 4 * Integer.BYTES)) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize typeface, data is smaller than ",
                     "required size");
             return null;
@@ -568,7 +568,7 @@ public class AssetManager {
         for (int i = 0; i < characterCount; i++) {
             char glyphCharacter;
             int glyphAnimationFrame;
-            int glyphAdvance;
+            Vector glyphAdvances = Vector.Zero();
             int glyphOffset;
             try {
                 System.arraycopy(fileData, offset, buffer, 0, Character.BYTES);
@@ -579,7 +579,10 @@ public class AssetManager {
                 glyphAnimationFrame = ByteBuffer.wrap(buffer).getInt();
                 System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
                 offset += Integer.BYTES;
-                glyphAdvance = ByteBuffer.wrap(buffer).getInt();
+                glyphAdvances.setX(ByteBuffer.wrap(buffer).getInt());
+                System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
+                offset += Integer.BYTES;
+                glyphAdvances.setY(ByteBuffer.wrap(buffer).getInt());
                 System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
                 offset += Integer.BYTES;
                 glyphOffset = ByteBuffer.wrap(buffer).getInt();
@@ -589,7 +592,7 @@ public class AssetManager {
             }
             characters.append(glyphCharacter);
             glyphs[i] = new Glyph();
-            if (!glyphs[i].initialize(glyphAnimationFrame, glyphAdvance, glyphOffset)) {
+            if (!glyphs[i].initialize(glyphAnimationFrame, glyphAdvances, glyphOffset)) {
                 App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize typeface, glyph metrics for '",
                         glyphCharacter, "' invalid");
                 return null;
@@ -711,7 +714,7 @@ public class AssetManager {
         }
         int animationDataSize = typeface.getAnimationData().length;
         byte[] animationData = typeface.getAnimationData();
-        int fileDataSize = Integer.BYTES + (characterCount * Character.BYTES) + (characterCount * 3 * Integer.BYTES)
+        int fileDataSize = Integer.BYTES + (characterCount * Character.BYTES) + (characterCount * 4 * Integer.BYTES)
                 + Integer.BYTES + animationDataSize;
         byte[] fileData;
         ByteBuffer buffer;
@@ -729,7 +732,8 @@ public class AssetManager {
                 }
                 buffer.putChar(character);
                 buffer.putInt(glyph.getAnimationFrame());
-                buffer.putInt(glyph.getAdvance());
+                buffer.putInt((int)glyph.getAdvances().getX());
+                buffer.putInt((int)glyph.getAdvances().getY());
                 buffer.putInt(glyph.getOffset());
             }
             buffer.putInt(animationDataSize);
