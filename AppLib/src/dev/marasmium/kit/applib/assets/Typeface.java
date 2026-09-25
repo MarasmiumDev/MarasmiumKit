@@ -13,7 +13,7 @@ import java.util.HashMap;
 /**
  * Data structure containing metrics and animation data for a typeface to be drawn by the graphics system
  */
-public class Typeface {
+public class Typeface implements Cloneable {
 
     /**
      * Mapping of characters in this typeface to glyph identifiers and metrics
@@ -201,6 +201,37 @@ public class Typeface {
             return "typeface(" + glyphs.size() + " glyphs, " + animationData.length + "B)";
         }
         return "typeface(" + glyphs.size() + " glyphs, " + animationData.length + "B at \"" + animationFilePath + "\")";
+    }
+
+    /**
+     * Make a copy of this typeface containing the same data
+     * @return A copy of this typeface
+     */
+    @Override
+    public Typeface clone() {
+        Typeface typeface;
+        try {
+            typeface = (Typeface)super.clone();
+        } catch (CloneNotSupportedException _) {
+            return null;
+        }
+        for (HashMap.Entry<Character, Glyph> entry : glyphs.entrySet()) {
+            try {
+                typeface.glyphs.put(entry.getKey(), entry.getValue().clone());
+            } catch (IllegalStateException _) {
+                return null;
+            }
+        }
+        if (animationData != null) {
+            typeface.animationData = new byte[animationData.length];
+            try {
+                System.arraycopy(animationData, 0, typeface.animationData, 0, animationData.length);
+            } catch (IndexOutOfBoundsException | ArrayStoreException _) {
+                return null;
+            }
+        }
+        typeface.animationFilePath = animationFilePath;
+        return typeface;
     }
 
 }

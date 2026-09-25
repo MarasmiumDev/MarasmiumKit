@@ -8,6 +8,7 @@
 package dev.marasmium.kit.applib.graphics;
 
 import dev.marasmium.kit.applib.data.Angle;
+import dev.marasmium.kit.applib.data.Line;
 import dev.marasmium.kit.applib.data.Vector;
 
 /**
@@ -141,41 +142,73 @@ public class Box extends Body {
     }
 
     /**
-     * Test whether this box is fully inside another box
-     * @param box The box to test this one against
-     * @return Whether this box is inside the given box
+     * Get the positions of the bottom left, bottom right, top left, and top right corners of this box
+     * @return The positions of the corners of this box
      */
-    public boolean isInside(Box box) {
+    public Vector[] getCorners() {
+        Vector[] corners = new Vector[4];
+        Vector midpoint = position.add(dimensions.scalarMultiply(0.5f));
+        corners[0] = position.rotateAbout(angle, midpoint);
+        corners[1] = Vector.Cartesian(position.getX() + dimensions.getX(), position.getY())
+                .rotateAbout(angle, midpoint);
+        corners[2] = Vector.Cartesian(position.getX(), position.getY() + dimensions.getY())
+                .rotateAbout(angle, midpoint);
+        corners[3] = position.add(dimensions).rotateAbout(angle, midpoint);
+        return corners;
+    }
+
+    /**
+     * Test whether a vector is positioned inside this box
+     * @param point The vector to test against this box
+     * @return Whether the given vector is inside this box
+     */
+    public boolean contains(Vector point) {
+        if (point == null) {
+            return false;
+        }
+        Vector[] corners = getCorners();
+        Line left = Line.Point_Point(corners[2], corners[0]);
+        Line right = Line.Point_Point(corners[1], corners[3]);
+        Line bottom = Line.Point_Point(corners[0], corners[1]);
+        Line top = Line.Point_Point(corners[2], corners[3]);
+        return point.isBetween(left, right) && point.isBetween(bottom, top);
+    }
+
+    /**
+     * Test whether all four corners of a box are positioned inside of this box
+     * @param box The box to test against this box
+     * @return Whether the given box's corners are inside this box
+     */
+    public boolean contains(Box box) {
         if (box == null) {
             return false;
         }
-        if (position.getX() < box.getPosition().getX()
-                || position.getX() + dimensions.getX() > box.getPosition().getX() + box.getDimensions().getX()) {
-            return false;
-        }
-        if (position.getY() < box.getPosition().getY()
-                || position.getY() + dimensions.getY() > box.getPosition().getY() + box.getDimensions().getY()) {
-            return false;
+        for (Vector corner : box.getCorners()) {
+            if (!contains(corner)) {
+                return false;
+            }
         }
         return true;
     }
 
     /**
-     * Test whether this box is fully outside another box
-     * @param box The box to test this one against
-     * @return Whether this box is outside the given box
+     * Test whether all four corners of a box are positioned outside of this box
+     * @param box The box to test against this box
+     * @return Whether the given box's corners are outside this box
      */
-    public boolean isOutside(Box box) {
+    public boolean isDisjointFrom(Box box) {
         if (box == null) {
             return false;
         }
-        if (position.getX() + dimensions.getX() < box.getPosition().getX()
-                || position.getX() > box.getPosition().getX() + box.getDimensions().getX()) {
-            return false;
+        for (Vector corner : box.getCorners()) {
+            if (contains(corner)) {
+                return false;
+            }
         }
-        if (position.getY() + dimensions.getY() < box.getPosition().getY()
-                || position.getY() > box.getPosition().getY() + box.getDimensions().getY()) {
-            return false;
+        for (Vector corner : getCorners()) {
+            if (box.contains(corner)) {
+                return false;
+            }
         }
         return true;
     }
@@ -185,8 +218,11 @@ public class Box extends Body {
      * @param box The box to test this one against
      * @return Whether this box intersects with the given box
      */
-    public boolean intersects(Box box) {
-        return !this.isOutside(box) && !box.isOutside(this);
+    public boolean intersectsWith(Box box) {
+        if (box == null) {
+            return false;
+        }
+        return !isDisjointFrom(box);
     }
 
 }

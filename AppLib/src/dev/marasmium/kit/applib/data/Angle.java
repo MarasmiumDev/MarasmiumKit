@@ -13,7 +13,7 @@ import java.io.Serializable;
 /**
  * Angle data structure and related constants and mathematical operations
  */
-public class Angle implements Serializable {
+public class Angle implements Serializable, Cloneable {
 
     /**
      * Small value for comparing with floating-point rounding error
@@ -75,10 +75,20 @@ public class Angle implements Serializable {
 
     /**
      * Construct a zero angle
-     * @return The zero angle
+     * @return A zero angle
      */
     public static Angle Zero() {
         return new Angle();
+    }
+
+    /**
+     * Construct a right angle
+     * @return A right angle
+     */
+    public static Angle Right() {
+        Angle a = new Angle();
+        a.setRadians(Pi / 2.0f);
+        return a;
     }
 
     /**

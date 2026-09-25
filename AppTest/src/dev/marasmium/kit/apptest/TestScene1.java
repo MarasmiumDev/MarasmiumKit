@@ -9,35 +9,22 @@ package dev.marasmium.kit.apptest;
 
 import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.Scene;
-import dev.marasmium.kit.applib.assets.Animation;
-import dev.marasmium.kit.applib.assets.Glyph;
-import dev.marasmium.kit.applib.assets.Typeface;
-import dev.marasmium.kit.applib.audio.AudioDevice;
 import dev.marasmium.kit.applib.data.Angle;
-import dev.marasmium.kit.applib.data.Colour;
 import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.graphics.Camera;
 import dev.marasmium.kit.applib.graphics.Sprite;
 import dev.marasmium.kit.applib.input.KeyboardKey;
-import dev.marasmium.kit.applib.input.MouseButton;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 import dev.marasmium.kit.applib.networking.NetListener;
-import dev.marasmium.kit.applib.networking.NetMessage;
-import dev.marasmium.kit.applib.windowing.Monitor;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
 
 public class TestScene1 extends Scene implements NetListener {
 
     private final LogSource logSource = new LogSource("Test Scene 1");
     private final Camera camera = new Camera();
-    private Sprite center = new Sprite();
-    private final ArrayList<Sprite> sprites = new ArrayList<>();
-    private int frames = 0;
-    private double frameTimer = 0.0d;
+    private Sprite sprite1;
+    private Sprite sprite2;
+    private int spriteIndex = 0;
 
     @Override
     public boolean initialize() {
@@ -48,97 +35,84 @@ public class TestScene1 extends Scene implements NetListener {
     @Override
     public boolean enter(Scene lastScene) {
         App.Log.write(logSource, LogLevel.Info, "Entering test scene 1");
-        center.initialize(Vector.Zero(), 0.0f, Vector.Cartesian(10.0f, 10.0f), Angle.Zero(),
-                "Animation/Animation_1.animation");
         camera.initialize(Vector.Zero(), 1.0f, Angle.Zero());
+        sprite1 = new Sprite();
+        sprite1.initialize(Vector.Cartesian(0.0f, 0.0f), 0.0f, Vector.Cartesian(100.0f, 100.0f), Angle.Zero(),
+                "Animation/Animation_1.animation");
+        sprite2 = new Sprite();
+        sprite2.initialize(Vector.Cartesian(-100.0f, 0.0f), 1.0f, Vector.Cartesian(160.0f, 90.0f), Angle.Radians(1.2f),
+                "Animation/Animation_2.animation");
+        spriteIndex = 0;
         return true;
     }
 
     @Override
     public boolean processInput() {
-        // Control camera
-        float translateSpeed = 5.0f / camera.getScale();
+        // Control sprite
+        final float velocity = 2.5f;
+        final float rotation = 0.01f;
+        final float growth = 1.5f;
         if (App.Input.keyboard.isKeyDown(KeyboardKey.A)) {
-            camera.getVelocity().setX(-translateSpeed);
+            sprite1.getVelocity().setX(-velocity);
         } else if (App.Input.keyboard.isKeyDown(KeyboardKey.D)) {
-            camera.getVelocity().setX(translateSpeed);
+            sprite1.getVelocity().setX(velocity);
         } else {
-            camera.getVelocity().setX(0.0f);
+            sprite1.getVelocity().setX(0.0f);
         }
         if (App.Input.keyboard.isKeyDown(KeyboardKey.S)) {
-            camera.getVelocity().setY(-translateSpeed);
+            sprite1.getVelocity().setY(-velocity);
         } else if (App.Input.keyboard.isKeyDown(KeyboardKey.W)) {
-            camera.getVelocity().setY(translateSpeed);
+            sprite1.getVelocity().setY(velocity);
         } else {
-            camera.getVelocity().setY(0.0f);
+            sprite1.getVelocity().setY(0.0f);
         }
-        float zoomSpeed = 0.05f * camera.getScale();
         if (App.Input.keyboard.isKeyDown(KeyboardKey.Q)) {
-            camera.setZoom(-zoomSpeed);
+            sprite1.setRotation(Angle.Radians(-rotation));
         } else if (App.Input.keyboard.isKeyDown(KeyboardKey.E)) {
-            camera.setZoom(zoomSpeed);
+            sprite1.setRotation(Angle.Radians(rotation));
         } else {
-            camera.setZoom(0.0f);
+            sprite1.setRotation(Angle.Zero());
         }
-        float rotateSpeed = 0.01f;
-        if (App.Input.keyboard.isKeyDown(KeyboardKey.R)) {
-            camera.setRotation(Angle.Radians(-rotateSpeed));
-        } else if (App.Input.keyboard.isKeyDown(KeyboardKey.T)) {
-            camera.setRotation(Angle.Radians(rotateSpeed));
+        if (App.Input.keyboard.isKeyDown(KeyboardKey.J)) {
+            sprite1.getGrowth().setX(-growth);
+        } else if (App.Input.keyboard.isKeyDown(KeyboardKey.L)) {
+            sprite1.getGrowth().setX(growth);
         } else {
-            camera.setRotation(Angle.Zero());
+            sprite1.getGrowth().setX(0.0f);
         }
-        // Add sprites
-        if (App.Input.mouse.isButtonPressed(MouseButton.Left)) {
-            Sprite s = new Sprite();
-            s.initialize(App.Input.mouse.getCursorPosition(camera), 0.0f, Vector.Cartesian(50.0f, 50.0f), Angle.Zero(),
-                    "Animation/Animation_2.animation");
-            s.playAnimation();
-            sprites.add(s);
-            App.Audio.soundEffects.play("Audio/Sound_Effect_1.audio");
+        if (App.Input.keyboard.isKeyDown(KeyboardKey.K)) {
+            sprite1.getGrowth().setY(-growth);
+        } else if (App.Input.keyboard.isKeyDown(KeyboardKey.I)) {
+            sprite1.getGrowth().setY(growth);
+        } else {
+            sprite1.getGrowth().setY(0.0f);
         }
-        // Test typefaces
-        if (App.Input.keyboard.isKeyPressed(KeyboardKey.J)) {
-            Typeface typeface = App.Assets.getTypeface("Typeface/Fira_Sans.typeface");
-            App.Log.write(logSource, LogLevel.Info, "Loaded typeface: ", typeface);
-            for (HashMap.Entry<Character, Glyph> entry : typeface.getGlyphs().entrySet()) {
-                App.Log.write(logSource, LogLevel.Info, "Glyph ", entry.getKey(), ": ", entry.getValue());
-            }
-        }
-        if (App.Input.keyboard.isKeyPressed(KeyboardKey.K)) {
-            Typeface typeface = App.Assets.getTypeface("Typeface/Silkscreen.typeface");
-            App.Log.write(logSource, LogLevel.Info, "Loaded typeface: ", typeface);
-            for (HashMap.Entry<Character, Glyph> entry : typeface.getGlyphs().entrySet()) {
-                App.Log.write(logSource, LogLevel.Info, "Glyph ", entry.getKey(), ": ", entry.getValue());
-            }
+        if (App.Input.keyboard.isKeyPressed(KeyboardKey.T)) {
+            App.Log.write(logSource, LogLevel.Info, "Contains: ", sprite1.contains(sprite2), ", Disjoint: ",
+                    sprite1.isDisjointFrom(sprite2), ", Intersects: ", sprite1.intersectsWith(sprite2));
         }
         return true;
     }
 
     @Override
     public void draw() {
-        App.Graphics.submit(camera, sprites);
-        App.Graphics.submit(camera, center);
-        frames++;
+        App.Graphics.submit(camera, sprite1);
+        App.Graphics.submit(camera, sprite2);
     }
 
     @Override
     public void update(float deltaFrames) {
         camera.update(deltaFrames);
-        for (Sprite sprite : sprites) {
-            sprite.update(deltaFrames);
-        }
-        if (frameTimer > App.Graphics.getTargetFPS()) {
-            //App.Log.write(logSource, LogLevel.Info, "Rendered ", frames, " frames");
-            frameTimer = 0.0d;
-            frames = 0;
-        }
-        frameTimer += deltaFrames;
+        sprite1.update(deltaFrames);
+        sprite2.update(deltaFrames);
     }
 
     @Override
     public boolean leave(Scene lastScene) {
         App.Log.write(logSource, LogLevel.Info, "Leaving test scene 1");
+        camera.destroy();
+        sprite1.destroy();
+        sprite2.destroy();
         return true;
     }
 
@@ -146,22 +120,6 @@ public class TestScene1 extends Scene implements NetListener {
     public boolean destroy() {
         App.Log.write(logSource, LogLevel.Info, "Destroying test scene 1");
         return true;
-    }
-
-    @Override
-    public boolean netConnected(int clientID) {
-        App.Log.write(logSource, LogLevel.Info, "Network connected");
-        return true;
-    }
-
-    @Override
-    public void netMessageReceived(int clientID, NetMessage message) {
-        App.Log.write(logSource, LogLevel.Info, "Received message: ", message);
-    }
-
-    @Override
-    public void netDisconnected(int clientID) {
-        App.Log.write(logSource, LogLevel.Info, "Network disconnected");
     }
     
 }

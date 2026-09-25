@@ -14,7 +14,7 @@ import dev.marasmium.kit.applib.data.Vector;
  * Data structure representing an animation which can be applied to a sprite to be drawn by the MarasmiumKit application
  * framework
  */
-public class Animation {
+public class Animation implements Cloneable {
 
     /**
      * The target number of frames of this animation to draw per second
@@ -270,6 +270,38 @@ public class Animation {
         }
         return "animation(" + targetFPS + "FPS, " + frameCount + " of " + sheetDimensions + "frames, " + frameDimensions
                 + "pixels, texture ID " + textureID + ")";
+    }
+
+    /**
+     * Make a copy of this animation containing the same data
+     * @return A copy of this animation
+     */
+    @Override
+    public Animation clone() {
+        Animation animation;
+        try {
+            animation = (Animation)super.clone();
+        } catch (CloneNotSupportedException _) {
+            return null;
+        }
+        animation.targetFPS = targetFPS;
+        if (sheetDimensions != null) {
+            animation.sheetDimensions = sheetDimensions.clone();
+        }
+        if (frameDimensions != null) {
+            animation.frameDimensions = frameDimensions.clone();
+        }
+        animation.frameCount = frameCount;
+        if (data != null) {
+            data = new Colour[data.length];
+            try {
+                System.arraycopy(data, 0, animation.data, 0, data.length);
+            } catch (IndexOutOfBoundsException | ArrayStoreException _) {
+                return null;
+            }
+        }
+        animation.textureID = textureID;
+        return animation;
     }
 
 }

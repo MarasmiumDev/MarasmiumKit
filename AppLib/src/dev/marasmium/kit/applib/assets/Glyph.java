@@ -12,7 +12,7 @@ import dev.marasmium.kit.applib.data.Vector;
 /**
  * Data structure containing the identification and positioning metrics of a glyph in a typeface
  */
-public class Glyph {
+public class Glyph implements Cloneable {
 
     /**
      * The frame index of this glyph's image in the typeface's animation
@@ -122,6 +122,26 @@ public class Glyph {
     @Override
     public String toString() {
         return "glyph(frame " + animationFrame + ", advances " + advances + "px, offset " + offset + "px)";
+    }
+
+    /**
+     * Make a copy of this glyph containing the same data
+     * @return A copy of this glyph
+     */
+    @Override
+    public Glyph clone() {
+        Glyph glyph;
+        try {
+            glyph = (Glyph)super.clone();
+        } catch (CloneNotSupportedException _) {
+            return null;
+        }
+        glyph.animationFrame = animationFrame;
+        if (advances != null) {
+            glyph.advances = advances.clone();
+        }
+        glyph.offset = offset;
+        return glyph;
     }
 
 }

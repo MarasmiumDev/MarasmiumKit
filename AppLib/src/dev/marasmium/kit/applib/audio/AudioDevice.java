@@ -13,7 +13,7 @@ import javax.sound.sampled.Mixer;
 /**
  * Structure representing an audio device (input or output)
  */
-public class AudioDevice {
+public class AudioDevice implements Cloneable {
 
     /**
      * The index of this audio device in the local audio environment's array of available devices
@@ -117,6 +117,23 @@ public class AudioDevice {
             return false;
         }
         return ((AudioDevice)o).getIndex() == getIndex();
+    }
+
+    /**
+     * Make a copy of this audio device containing the same data
+     * @return A copy of this audio device
+     */
+    @Override
+    public AudioDevice clone() {
+        AudioDevice audioDevice;
+        try {
+            audioDevice = (AudioDevice)super.clone();
+        } catch (CloneNotSupportedException _) {
+            return null;
+        }
+        audioDevice.index = index;
+        audioDevice.name = name;
+        return audioDevice;
     }
 
 }

@@ -7,12 +7,14 @@
 
 package dev.marasmium.kit.applib.data;
 
+import dev.marasmium.kit.applib.graphics.Box;
+
 import java.io.Serializable;
 
 /**
  * 2D vector data structure with related constants and mathematical operations
  */
-public class Vector implements Serializable {
+public class Vector implements Serializable, Cloneable {
 
     /**
      * Small value for comparing with floating-point rounding error
@@ -449,6 +451,85 @@ public class Vector implements Serializable {
             return false;
         }
         return Math.abs(dotMultiply(v)) < Epsilon;
+    }
+
+    /**
+     * Test whether this vector is positioned to the left of a line
+     * @param l The line to test this vector against
+     * @return Whether this vector is to the left of the given line
+     */
+    public boolean isLeftOf(Line l) {
+        if (l == null) {
+            return false;
+        }
+        if (l.isVertical()) {
+            return x < l.getXIntercept();
+        }
+        return y > l.getY(x);
+    }
+
+    /**
+     * Test whether this vector is positioned to the right of a line
+     * @param l The line to test this vector against
+     * @return Whether this vector is to the right of the given line
+     */
+    public boolean isRightOf(Line l) {
+        if (l == null) {
+            return false;
+        }
+        if (l.isVertical()) {
+            return x > l.getXIntercept();
+        }
+        return y < l.getY(x);
+    }
+
+    /**
+     * Test whether this vector is positioned on a line
+     * @param l The line to test this vector against
+     * @return Whether this vector is on the given line
+     */
+    public boolean isOn(Line l) {
+        if (l == null) {
+            return false;
+        }
+        return l.contains(this);
+    }
+
+    /**
+     * Test whether this vector is positioned between two lines
+     * @param l1 The first line to test this vector against
+     * @param l2 The second line to test this vector against
+     * @return Whether this vector is between the given lines
+     */
+    public boolean isBetween(Line l1, Line l2) {
+        if (l1 == null || l2 == null) {
+            return false;
+        }
+        return (isRightOf(l1) && isLeftOf(l2)) || (isLeftOf(l1) && isRightOf(l2));
+    }
+
+    /**
+     * Test whether this vector is positioned inside a box
+     * @param b The box to test this vector against
+     * @return Whether this vector is inside the given box
+     */
+    public boolean isInside(Box b) {
+        if (b == null) {
+            return false;
+        }
+        return b.contains(this);
+    }
+
+    /**
+     * Test whether this vector is positioned outside a box
+     * @param b The box to test this vector against
+     * @return Whether this vector is outside the given box
+     */
+    public boolean isOutside(Box b) {
+        if (b == null) {
+            return false;
+        }
+        return !isInside(b);
     }
 
     /**

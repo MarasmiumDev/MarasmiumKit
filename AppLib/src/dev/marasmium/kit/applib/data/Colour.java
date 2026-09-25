@@ -12,7 +12,7 @@ import java.io.Serializable;
 /**
  * RGBA colour data structure with related constants mathematical operations
  */
-public class Colour implements Serializable {
+public class Colour implements Serializable, Cloneable {
 
     /**
      * Blank colour constant

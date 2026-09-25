@@ -11,7 +11,7 @@ package dev.marasmium.kit.applib.assets;
 /**
  * Data structure representing an audio track to be played by the MarasmiumKit application framework
  */
-public class AudioTrack {
+public class AudioTrack implements Cloneable {
 
     /**
      * The sample rate of this audio track in Hz
@@ -212,6 +212,32 @@ public class AudioTrack {
         }
         return "audio(" + sampleRate + "Hz, " + sampleSize + "BPS, " + channelCount + " channels, " + data.length
                 + "B, " + getDuration() + "s)";
+    }
+
+    /**
+     * Make a copy of this audio track containing the same data
+     * @return A copy of this audio track
+     */
+    @Override
+    public AudioTrack clone() {
+        AudioTrack audioTrack;
+        try {
+            audioTrack = (AudioTrack)super.clone();
+        } catch (CloneNotSupportedException _) {
+            return null;
+        }
+        audioTrack.sampleRate = sampleRate;
+        audioTrack.sampleSize = sampleSize;
+        audioTrack.channelCount = channelCount;
+        if (data != null) {
+            audioTrack.data = new byte[data.length];
+            try {
+                System.arraycopy(data, 0, audioTrack.data, 0, data.length);
+            } catch (IndexOutOfBoundsException | ArrayStoreException _) {
+                return null;
+            }
+        }
+        return audioTrack;
     }
 
 }

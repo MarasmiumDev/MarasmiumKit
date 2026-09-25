@@ -16,7 +16,7 @@ import java.awt.HeadlessException;
 /**
  * Data structure representing a monitor in the local graphics environment with a description, position, and dimensions
  */
-public class Monitor {
+public class Monitor implements Cloneable {
 
     /**
      * The index of this monitor in the local graphics environment's array of screen devices
@@ -160,4 +160,28 @@ public class Monitor {
         return "monitor(" + getIndex() + ", \"" + getDescription() + "\", " + getDimensions() + ", " + getPosition()
                 + ")";
     }
+
+    /**
+     * Make a copy of this monitor containing the same data
+     * @return A copy of this monitor
+     */
+    @Override
+    public Monitor clone() {
+        Monitor monitor;
+        try {
+            monitor = (Monitor)super.clone();
+        } catch (CloneNotSupportedException _) {
+            return null;
+        }
+        monitor.index = index;
+        monitor.description = description;
+        if (position != null) {
+            monitor.position = position.clone();
+        }
+        if (dimensions != null) {
+            monitor.dimensions = dimensions.clone();
+        }
+        return monitor;
+    }
+
 }
