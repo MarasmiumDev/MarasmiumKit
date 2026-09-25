@@ -392,7 +392,7 @@ public class AssetConverter {
             GlyphVector glyphVector = inputFont.createGlyphVector(renderContext, character);
             Rectangle glyphBounds = glyphVector.getPixelBounds(renderContext, 0, 0);
             glyphs[i] = new Glyph();
-            if (!glyphs[i].initialize(i,
+            if (!glyphs[i].initialize(i, Vector.Cartesian((int)glyphBounds.getWidth(), (int)glyphBounds.getHeight()),
                     Vector.Cartesian((float)Math.ceil(glyphVector.getGlyphMetrics(0).getAdvanceX()),
                             (float)Math.ceil(glyphBounds.getHeight())),
                     -(int)Math.ceil(glyphBounds.getMaxY()))) {

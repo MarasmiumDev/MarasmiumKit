@@ -9,14 +9,19 @@ package dev.marasmium.kit.apptest;
 
 import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.Scene;
+import dev.marasmium.kit.applib.assets.Glyph;
+import dev.marasmium.kit.applib.assets.Typeface;
 import dev.marasmium.kit.applib.data.Angle;
 import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.graphics.Camera;
 import dev.marasmium.kit.applib.graphics.Sprite;
 import dev.marasmium.kit.applib.input.KeyboardKey;
+import dev.marasmium.kit.applib.input.MouseButton;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 import dev.marasmium.kit.applib.networking.NetListener;
+
+import java.util.HashMap;
 
 public class TestScene1 extends Scene implements NetListener {
 
@@ -48,6 +53,21 @@ public class TestScene1 extends Scene implements NetListener {
 
     @Override
     public boolean processInput() {
+        // Test font loading
+        if (App.Input.mouse.isButtonPressed(MouseButton.Left)) {
+            Typeface firaSans = App.Assets.getTypeface("Typeface/Fira_Sans.typeface");
+            App.Log.write(logSource, LogLevel.Info, "Loaded: ", firaSans);
+            for (HashMap.Entry<Character, Glyph> entry : firaSans.getGlyphs().entrySet()) {
+                App.Log.write(logSource, LogLevel.Info, "'", entry.getKey(), "': ", entry.getValue());
+            }
+        }
+        if (App.Input.mouse.isButtonPressed(MouseButton.Right)) {
+            Typeface silkscreen = App.Assets.getTypeface("Typeface/Silkscreen.typeface");
+            App.Log.write(logSource, LogLevel.Info, "Loaded: ", silkscreen);
+            for (HashMap.Entry<Character, Glyph> entry : silkscreen.getGlyphs().entrySet()) {
+                App.Log.write(logSource, LogLevel.Info, "'", entry.getKey(), "': ", entry.getValue());
+            }
+        }
         // Control sprite
         final float velocity = 2.5f;
         final float rotation = 0.01f;

@@ -19,6 +19,10 @@ public class Glyph implements Cloneable {
      */
     private int animationFrame = 0;
     /**
+     * The dimensions of this glyph in pixels
+     */
+    private Vector dimensions = null;
+    /**
      * The horizontal and vertical advances of this glyph
      */
     private Vector advances = null;
@@ -30,12 +34,16 @@ public class Glyph implements Cloneable {
     /**
      * Initialize this glyph with an animation frame index, horizontal advance, and vertical offset
      * @param animationFrame The frame index of this glyph's image in the typeface's animation
+     * @param dimensions The dimensions of this glyph in pixels
      * @param advances The horizontal and vertical advances of this glyph
      * @param offset The vertical offset of this glyph
      * @return Whether all parameters were valid and this glyph was initialized successfully
      */
-    public boolean initialize(int animationFrame, Vector advances, int offset) {
+    public boolean initialize(int animationFrame, Vector dimensions, Vector advances, int offset) {
         if (!setAnimationFrame(animationFrame)) {
+            return false;
+        }
+        if (!setDimensions(dimensions)) {
             return false;
         }
         if (!setAdvances(advances)) {
@@ -50,6 +58,7 @@ public class Glyph implements Cloneable {
      */
     public void destroy() {
         animationFrame = 0;
+        dimensions = null;
         advances = null;
         offset = 0;
     }
@@ -72,6 +81,30 @@ public class Glyph implements Cloneable {
             return false;
         }
         this.animationFrame = animationFrame;
+        return true;
+    }
+
+    /**
+     * Get the dimensions of this glyph in pixels
+     * @return The dimensions of this glyph
+     */
+    public Vector getDimensions() {
+        return dimensions;
+    }
+
+    /**
+     * Set the dimensions of this glyph in pixels
+     * @param dimensions The new dimensions for this glyph
+     * @return Whether the given dimensions were valid
+     */
+    public boolean setDimensions(Vector dimensions) {
+        if (dimensions == null) {
+            return false;
+        }
+        if (dimensions.getX() < 0.0f || dimensions.getY() < 0.0f) {
+            return false;
+        }
+        this.dimensions = dimensions;
         return true;
     }
 
@@ -121,7 +154,11 @@ public class Glyph implements Cloneable {
      */
     @Override
     public String toString() {
-        return "glyph(frame " + animationFrame + ", advances " + advances + "px, offset " + offset + "px)";
+        if (dimensions == null || advances == null) {
+            return "glyph(null)";
+        }
+        return "glyph(frame " + animationFrame + ", dimensions " + dimensions + ", advances " + advances + "px, offset "
+                + offset + "px)";
     }
 
     /**
