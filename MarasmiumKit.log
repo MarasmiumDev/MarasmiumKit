@@ -1,283 +1,86 @@
-2026.09.25@15:45:17.737: [Logging System] [Information] Initialized logging system
-2026.09.25@15:45:17.738: [MarasmiumKit App] [Information] Initialized logging system
-2026.09.25@15:45:17.739: [User-Input Management System] [Information] Initialized keyboard user-input management system
-2026.09.25@15:45:17.740: [User-Input Management System] [Information] Initialized mouse user-input management system
-2026.09.25@15:45:17.740: [User-Input Management System] [Information] Initialized user-input management system
-2026.09.25@15:45:17.740: [MarasmiumKit App] [Information] Initialized user-input management system
-2026.09.25@15:45:18.976: [Windowing System] [Information] Set window title "MarasmiumKit App"
-2026.09.25@15:45:18.976: [Windowing System] [Information] Set fullscreen monitor index monitor(0, "Display 1", vector(1920.0, 1243.0), vector(0.0, 0.0))
-2026.09.25@15:45:18.978: [Windowing System] [Information] Set mouse cursor visible
-2026.09.25@15:45:18.978: [Windowing System] [Information] Initialized windowing system
-2026.09.25@15:45:18.978: [MarasmiumKit App] [Information] Initialized windowing system
-2026.09.25@15:45:18.978: [Network Client] [Information] Set maximum messages to process per update -1
-2026.09.25@15:45:18.978: [Network Client] [Information] Initialized network client
-2026.09.25@15:45:18.978: [MarasmiumKit App] [Information] Initialized network client
-2026.09.25@15:45:18.978: [Asset Management System] [Information] Setting base asset path "./Assets/"
-2026.09.25@15:45:18.978: [Asset Management System] [Information] Initialized asset management system
-2026.09.25@15:45:18.978: [MarasmiumKit App] [Information] Initialized asset management system
-2026.09.25@15:45:18.986: [Audio System] [Information] Setting audio output speaker speaker(0, "Port APLAPP")
-2026.09.25@15:45:18.987: [Audio System] [Warning] Speaker not available for audio output, setting default
-2026.09.25@15:45:18.987: [Audio System] [Information] Set default sound effect volume 100%
-2026.09.25@15:45:18.987: [Audio System] [Information] Initialized sound effects audio subsystem
-2026.09.25@15:45:18.988: [Audio System] [Information] Set music volume 100%
-2026.09.25@15:45:18.988: [Audio System] [Information] Initialized music audio subsystem
-2026.09.25@15:45:18.988: [Audio System] [Information] Initialize audio system
-2026.09.25@15:45:18.988: [Graphics System] [Information] Target FPS set to 60 -> FPMS=0.06, MSPF=16
-2026.09.25@15:45:18.988: [Graphics System] [Information] Maximum UPF set to 8
-2026.09.25@15:45:18.988: [Graphics System] [Information] Set clear colour to colour(0, 0, 0, 255)
-2026.09.25@15:45:18.988: [Graphics System] [Information] Initialized graphics system
-2026.09.25@15:45:18.988: [MarasmiumKit App] [Information] Initialized graphics system
-2026.09.25@15:45:18.988: [MarasmiumKit App] [Information] Scene 0 not added
-2026.09.25@15:45:18.988: [MarasmiumKit App] [Information] Adding scene 0
-2026.09.25@15:45:18.989: [MarasmiumKit App] [Information] Scene 0 requires initialization
-2026.09.25@15:45:18.989: [Test Scene 1] [Information] Initializing test scene 1
-2026.09.25@15:45:18.989: [MarasmiumKit App] [Information] Entering new scene 1
-2026.09.25@15:45:18.989: [Test Scene 1] [Information] Entering test scene 1
-2026.09.25@15:45:18.989: [Asset Management System] [Information] Loading animation from "./Assets/Animation/Animation_1.animation"
-2026.09.25@15:45:18.991: [Asset Management System] [Information] Adding animation at "./Assets/Animation/Animation_1.animation"
-2026.09.25@15:45:18.992: [Asset Management System] [Information] Loading animation from "./Assets/Animation/Animation_2.animation"
-2026.09.25@15:45:18.992: [Asset Management System] [Information] Adding animation at "./Assets/Animation/Animation_2.animation"
-2026.09.25@15:45:18.992: [User-Input Management System] [Information] Adding user-input listener
-2026.09.25@15:45:18.992: [Network Client] [Information] Adding network listener
-2026.09.25@15:45:18.992: [MarasmiumKit App] [Information] Set initial scene
-2026.09.25@15:45:18.992: [MarasmiumKit App] [Information] Initialized MarasmiumKit application framework
-2026.09.25@15:45:18.992: [MarasmiumKit App] [Information] Starting main application loop
-2026.09.25@15:45:19.036: [Windowing System] [Information] Generated new window frame
-2026.09.25@15:45:19.036: [Windowing System] [Information] Set window dimensions vector(1280.0, 720.0)
-2026.09.25@15:45:19.079: [Graphics System] [Information] Initializing OpenGL parameters
-2026.09.25@15:45:19.080: [Graphics System] [Information] OpenGL version "4.1 Metal - 91.7"
-2026.09.25@15:45:19.081: [Graphics System] [Information] Compiled vertex shader 4
-2026.09.25@15:45:19.081: [Graphics System] [Information] Compiled fragment shader 5
-2026.09.25@15:45:19.082: [Graphics System] [Information] Generated shader program 6
-2026.09.25@15:45:19.084: [Graphics System] [Information] Generated VAO 2, VBO 1, and IBO 2
-2026.09.25@15:45:19.085: [Graphics System] [Information] Resized OpenGL viewport 2560x1440
-2026.09.25@15:45:19.088: [Graphics System] [Information] Generated texture ID 3 for animation animation(4FPS, 12 of vector(4.0, 3.0)frames, vector(32.0, 25.0)pixels, texture ID 0)
-2026.09.25@15:45:19.090: [Graphics System] [Information] Resizing OpenGL vertex buffer to 80B
-2026.09.25@15:45:19.092: [Graphics System] [Information] Resizing OpenGL index buffer to 24B
-2026.09.25@15:45:19.093: [Graphics System] [Information] Generated texture ID 4 for animation animation(4FPS, 12 of vector(4.0, 3.0)frames, vector(2.0, 3.0)pixels, texture ID 0)
-2026.09.25@15:45:21.212: [Asset Management System] [Information] Reading typeface from "./Assets/Typeface/Fira_Sans.typeface"
-2026.09.25@15:45:21.225: [Asset Management System] [Information] Adding typeface at "./Assets/Typeface/Fira_Sans.typeface"
-2026.09.25@15:45:21.255: [Test Scene 1] [Information] Loaded: typeface(95 glyphs, 5453404B at "animation:Typeface/Fira_Sans.typeface")
-2026.09.25@15:45:21.257: [Test Scene 1] [Information] ' ': glyph(frame 47, dimensions vector(0.0, 0.0), advances vector(34.0, 0.0)px, offset 0px)
-2026.09.25@15:45:21.258: [Test Scene 1] [Information] '!': glyph(frame 75, dimensions vector(18.0, 90.0), advances vector(31.0, 90.0)px, offset -2px)
-2026.09.25@15:45:21.258: [Test Scene 1] [Information] '"': glyph(frame 91, dimensions vector(36.0, 34.0), advances vector(52.0, 34.0)px, offset 54px)
-2026.09.25@15:45:21.258: [Test Scene 1] [Information] '#': glyph(frame 77, dimensions vector(62.0, 86.0), advances vector(67.0, 86.0)px, offset 0px)
-2026.09.25@15:45:21.258: [Test Scene 1] [Information] '$': glyph(frame 78, dimensions vector(60.0, 125.0), advances vector(68.0, 125.0)px, offset -20px)
-2026.09.25@15:45:21.259: [Test Scene 1] [Information] '%': glyph(frame 79, dimensions vector(94.0, 95.0), advances vector(106.0, 95.0)px, offset -4px)
-2026.09.25@15:45:21.259: [Test Scene 1] [Information] '&': glyph(frame 81, dimensions vector(78.0, 91.0), advances vector(94.0, 91.0)px, offset -1px)
-2026.09.25@15:45:21.259: [Test Scene 1] [Information] ''': glyph(frame 43, dimensions vector(13.0, 34.0), advances vector(29.0, 34.0)px, offset 54px)
-2026.09.25@15:45:21.259: [Test Scene 1] [Information] '(': glyph(frame 83, dimensions vector(31.0, 127.0), advances vector(42.0, 127.0)px, offset -19px)
-2026.09.25@15:45:21.259: [Test Scene 1] [Information] ')': glyph(frame 84, dimensions vector(31.0, 127.0), advances vector(42.0, 127.0)px, offset -19px)
-2026.09.25@15:45:21.259: [Test Scene 1] [Information] '*': glyph(frame 82, dimensions vector(51.0, 49.0), advances vector(57.0, 49.0)px, offset 46px)
-2026.09.25@15:45:21.259: [Test Scene 1] [Information] '+': glyph(frame 86, dimensions vector(48.0, 48.0), advances vector(64.0, 48.0)px, offset 18px)
-2026.09.25@15:45:21.259: [Test Scene 1] [Information] ',': glyph(frame 44, dimensions vector(19.0, 38.0), advances vector(31.0, 38.0)px, offset -22px)
-2026.09.25@15:45:21.259: [Test Scene 1] [Information] '-': glyph(frame 37, dimensions vector(36.0, 10.0), advances vector(52.0, 10.0)px, offset 35px)
-2026.09.25@15:45:21.259: [Test Scene 1] [Information] '.': glyph(frame 45, dimensions vector(18.0, 18.0), advances vector(31.0, 18.0)px, offset -2px)
-2026.09.25@15:45:21.259: [Test Scene 1] [Information] '/': glyph(frame 46, dimensions vector(40.0, 117.0), advances vector(67.0, 117.0)px, offset -14px)
-2026.09.25@15:45:21.259: [Test Scene 1] [Information] '0': glyph(frame 36, dimensions vector(57.0, 88.0), advances vector(72.0, 88.0)px, offset -1px)
-2026.09.25@15:45:21.259: [Test Scene 1] [Information] '1': glyph(frame 27, dimensions vector(37.0, 86.0), advances vector(56.0, 86.0)px, offset 0px)
-2026.09.25@15:45:21.259: [Test Scene 1] [Information] '2': glyph(frame 28, dimensions vector(54.0, 87.0), advances vector(64.0, 87.0)px, offset 0px)
-2026.09.25@15:45:21.259: [Test Scene 1] [Information] '3': glyph(frame 29, dimensions vector(55.0, 88.0), advances vector(64.0, 88.0)px, offset -1px)
-2026.09.25@15:45:21.259: [Test Scene 1] [Information] '4': glyph(frame 30, dimensions vector(59.0, 87.0), advances vector(69.0, 87.0)px, offset 0px)
-2026.09.25@15:45:21.259: [Test Scene 1] [Information] '5': glyph(frame 31, dimensions vector(55.0, 87.0), advances vector(65.0, 87.0)px, offset -1px)
-2026.09.25@15:45:21.259: [Test Scene 1] [Information] '6': glyph(frame 32, dimensions vector(56.0, 88.0), advances vector(69.0, 88.0)px, offset -1px)
-2026.09.25@15:45:21.259: [Test Scene 1] [Information] '7': glyph(frame 33, dimensions vector(50.0, 87.0), advances vector(57.0, 87.0)px, offset -1px)
-2026.09.25@15:45:21.259: [Test Scene 1] [Information] '8': glyph(frame 34, dimensions vector(59.0, 88.0), advances vector(71.0, 88.0)px, offset -1px)
-2026.09.25@15:45:21.259: [Test Scene 1] [Information] '9': glyph(frame 35, dimensions vector(55.0, 90.0), advances vector(68.0, 90.0)px, offset -3px)
-2026.09.25@15:45:21.259: [Test Scene 1] [Information] ':': glyph(frame 90, dimensions vector(18.0, 65.0), advances vector(31.0, 65.0)px, offset -2px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] ';': glyph(frame 42, dimensions vector(19.0, 85.0), advances vector(31.0, 85.0)px, offset -22px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] '<': glyph(frame 92, dimensions vector(51.0, 56.0), advances vector(65.0, 56.0)px, offset 15px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] '=': glyph(frame 38, dimensions vector(48.0, 35.0), advances vector(65.0, 35.0)px, offset 25px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] '>': glyph(frame 93, dimensions vector(51.0, 56.0), advances vector(65.0, 56.0)px, offset 15px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] '?': glyph(frame 94, dimensions vector(51.0, 91.0), advances vector(59.0, 91.0)px, offset -1px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] '@': glyph(frame 76, dimensions vector(113.0, 117.0), advances vector(131.0, 117.0)px, offset -27px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] 'A': glyph(frame 48, dimensions vector(72.0, 88.0), advances vector(74.0, 88.0)px, offset 0px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] 'B': glyph(frame 49, dimensions vector(59.0, 88.0), advances vector(78.0, 88.0)px, offset 0px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] 'C': glyph(frame 50, dimensions vector(62.0, 91.0), advances vector(72.0, 91.0)px, offset -1px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] 'D': glyph(frame 51, dimensions vector(63.0, 88.0), advances vector(83.0, 88.0)px, offset 0px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] 'E': glyph(frame 52, dimensions vector(49.0, 88.0), advances vector(69.0, 88.0)px, offset 0px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] 'F': glyph(frame 53, dimensions vector(47.0, 88.0), advances vector(63.0, 88.0)px, offset 0px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] 'G': glyph(frame 54, dimensions vector(66.0, 91.0), advances vector(81.0, 91.0)px, offset -1px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] 'H': glyph(frame 55, dimensions vector(61.0, 88.0), advances vector(88.0, 88.0)px, offset 0px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] 'I': glyph(frame 56, dimensions vector(12.0, 88.0), advances vector(38.0, 88.0)px, offset 0px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] 'J': glyph(frame 57, dimensions vector(26.0, 106.0), advances vector(40.0, 106.0)px, offset -18px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] 'K': glyph(frame 58, dimensions vector(63.0, 88.0), advances vector(76.0, 88.0)px, offset 0px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] 'L': glyph(frame 59, dimensions vector(48.0, 88.0), advances vector(64.0, 88.0)px, offset 0px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] 'M': glyph(frame 60, dimensions vector(84.0, 88.0), advances vector(100.0, 88.0)px, offset 0px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] 'N': glyph(frame 61, dimensions vector(62.0, 88.0), advances vector(88.0, 88.0)px, offset 0px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] 'O': glyph(frame 62, dimensions vector(74.0, 91.0), advances vector(89.0, 91.0)px, offset -1px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] 'P': glyph(frame 63, dimensions vector(57.0, 88.0), advances vector(75.0, 88.0)px, offset 0px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] 'Q': glyph(frame 64, dimensions vector(78.0, 103.0), advances vector(89.0, 103.0)px, offset -13px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] 'R': glyph(frame 65, dimensions vector(61.0, 88.0), advances vector(78.0, 88.0)px, offset 0px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] 'S': glyph(frame 66, dimensions vector(61.0, 91.0), advances vector(70.0, 91.0)px, offset -1px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] 'T': glyph(frame 67, dimensions vector(63.0, 88.0), advances vector(67.0, 88.0)px, offset 0px)
-2026.09.25@15:45:21.260: [Test Scene 1] [Information] 'U': glyph(frame 68, dimensions vector(62.0, 90.0), advances vector(85.0, 90.0)px, offset -2px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 'V': glyph(frame 69, dimensions vector(70.0, 88.0), advances vector(72.0, 88.0)px, offset 0px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 'W': glyph(frame 70, dimensions vector(99.0, 88.0), advances vector(106.0, 88.0)px, offset 0px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 'X': glyph(frame 71, dimensions vector(68.0, 88.0), advances vector(70.0, 88.0)px, offset 0px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 'Y': glyph(frame 72, dimensions vector(69.0, 88.0), advances vector(71.0, 88.0)px, offset 0px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 'Z': glyph(frame 73, dimensions vector(57.0, 88.0), advances vector(67.0, 88.0)px, offset 0px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] '[': glyph(frame 39, dimensions vector(27.0, 119.0), advances vector(42.0, 119.0)px, offset -15px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] '\': glyph(frame 41, dimensions vector(40.0, 117.0), advances vector(67.0, 117.0)px, offset -14px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] ']': glyph(frame 40, dimensions vector(26.0, 119.0), advances vector(42.0, 119.0)px, offset -15px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] '^': glyph(frame 80, dimensions vector(59.0, 40.0), advances vector(70.0, 40.0)px, offset 68px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] '_': glyph(frame 85, dimensions vector(62.0, 10.0), advances vector(67.0, 10.0)px, offset -18px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] '`': glyph(frame 26, dimensions vector(31.0, 21.0), advances vector(39.0, 21.0)px, offset 82px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 'a': glyph(frame 0, dimensions vector(57.0, 71.0), advances vector(70.0, 71.0)px, offset -2px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 'b': glyph(frame 1, dimensions vector(56.0, 98.0), advances vector(77.0, 98.0)px, offset -2px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 'c': glyph(frame 2, dimensions vector(50.0, 71.0), advances vector(62.0, 71.0)px, offset -2px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 'd': glyph(frame 3, dimensions vector(56.0, 98.0), advances vector(77.0, 98.0)px, offset -2px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 'e': glyph(frame 4, dimensions vector(56.0, 71.0), advances vector(70.0, 71.0)px, offset -2px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 'f': glyph(frame 5, dimensions vector(49.0, 96.0), advances vector(43.0, 96.0)px, offset 0px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 'g': glyph(frame 6, dimensions vector(63.0, 102.0), advances vector(67.0, 102.0)px, offset -27px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 'h': glyph(frame 7, dimensions vector(51.0, 96.0), advances vector(76.0, 96.0)px, offset 0px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 'i': glyph(frame 8, dimensions vector(17.0, 100.0), advances vector(37.0, 100.0)px, offset 0px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 'j': glyph(frame 9, dimensions vector(27.0, 127.0), advances vector(36.0, 127.0)px, offset -27px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 'k': glyph(frame 10, dimensions vector(53.0, 96.0), advances vector(66.0, 96.0)px, offset 0px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 'l': glyph(frame 11, dimensions vector(23.0, 98.0), advances vector(38.0, 98.0)px, offset -2px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 'm': glyph(frame 12, dimensions vector(86.0, 69.0), advances vector(110.0, 69.0)px, offset 0px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 'n': glyph(frame 13, dimensions vector(51.0, 69.0), advances vector(76.0, 69.0)px, offset 0px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 'o': glyph(frame 14, dimensions vector(60.0, 71.0), advances vector(75.0, 71.0)px, offset -2px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 'p': glyph(frame 15, dimensions vector(56.0, 96.0), advances vector(77.0, 96.0)px, offset -27px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 'q': glyph(frame 16, dimensions vector(56.0, 96.0), advances vector(77.0, 96.0)px, offset -27px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 'r': glyph(frame 17, dimensions vector(36.0, 69.0), advances vector(50.0, 69.0)px, offset 0px)
-2026.09.25@15:45:21.261: [Test Scene 1] [Information] 's': glyph(frame 18, dimensions vector(52.0, 71.0), advances vector(60.0, 71.0)px, offset -2px)
-2026.09.25@15:45:21.262: [Test Scene 1] [Information] 't': glyph(frame 19, dimensions vector(45.0, 86.0), advances vector(47.0, 86.0)px, offset -2px)
-2026.09.25@15:45:21.262: [Test Scene 1] [Information] 'u': glyph(frame 20, dimensions vector(51.0, 69.0), advances vector(75.0, 69.0)px, offset -2px)
-2026.09.25@15:45:21.262: [Test Scene 1] [Information] 'v': glyph(frame 21, dimensions vector(60.0, 67.0), advances vector(63.0, 67.0)px, offset 0px)
-2026.09.25@15:45:21.262: [Test Scene 1] [Information] 'w': glyph(frame 22, dimensions vector(87.0, 67.0), advances vector(92.0, 67.0)px, offset 0px)
-2026.09.25@15:45:21.262: [Test Scene 1] [Information] 'x': glyph(frame 23, dimensions vector(61.0, 67.0), advances vector(63.0, 67.0)px, offset 0px)
-2026.09.25@15:45:21.262: [Test Scene 1] [Information] 'y': glyph(frame 24, dimensions vector(60.0, 95.0), advances vector(63.0, 95.0)px, offset -28px)
-2026.09.25@15:45:21.262: [Test Scene 1] [Information] 'z': glyph(frame 25, dimensions vector(49.0, 67.0), advances vector(56.0, 67.0)px, offset 0px)
-2026.09.25@15:45:21.262: [Test Scene 1] [Information] '{': glyph(frame 87, dimensions vector(32.0, 124.0), advances vector(42.0, 124.0)px, offset -17px)
-2026.09.25@15:45:21.262: [Test Scene 1] [Information] '|': glyph(frame 89, dimensions vector(11.0, 116.0), advances vector(52.0, 116.0)px, offset -13px)
-2026.09.25@15:45:21.262: [Test Scene 1] [Information] '}': glyph(frame 88, dimensions vector(32.0, 124.0), advances vector(42.0, 124.0)px, offset -17px)
-2026.09.25@15:45:21.262: [Test Scene 1] [Information] '~': glyph(frame 74, dimensions vector(54.0, 17.0), advances vector(63.0, 17.0)px, offset 32px)
-2026.09.25@15:46:00.929: [Asset Management System] [Information] Reading typeface from "./Assets/Typeface/Silkscreen.typeface"
-2026.09.25@15:46:00.940: [Asset Management System] [Information] Adding typeface at "./Assets/Typeface/Silkscreen.typeface"
-2026.09.25@15:46:00.957: [Test Scene 1] [Information] Loaded: typeface(95 glyphs, 3404824B at "animation:Typeface/Silkscreen.typeface")
-2026.09.25@15:46:00.957: [Test Scene 1] [Information] ' ': glyph(frame 47, dimensions vector(0.0, 0.0), advances vector(65.0, 0.0)px, offset 0px)
-2026.09.25@15:46:00.958: [Test Scene 1] [Information] '!': glyph(frame 75, dimensions vector(16.0, 80.0), advances vector(49.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.958: [Test Scene 1] [Information] '"': glyph(frame 91, dimensions vector(48.0, 32.0), advances vector(81.0, 32.0)px, offset 48px)
-2026.09.25@15:46:00.958: [Test Scene 1] [Information] '#': glyph(frame 77, dimensions vector(80.0, 80.0), advances vector(113.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.958: [Test Scene 1] [Information] '$': glyph(frame 78, dimensions vector(64.0, 112.0), advances vector(97.0, 112.0)px, offset -16px)
-2026.09.25@15:46:00.958: [Test Scene 1] [Information] '%': glyph(frame 79, dimensions vector(80.0, 80.0), advances vector(113.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.958: [Test Scene 1] [Information] '&': glyph(frame 81, dimensions vector(64.0, 112.0), advances vector(97.0, 112.0)px, offset -16px)
-2026.09.25@15:46:00.958: [Test Scene 1] [Information] ''': glyph(frame 43, dimensions vector(16.0, 32.0), advances vector(49.0, 32.0)px, offset 48px)
-2026.09.25@15:46:00.958: [Test Scene 1] [Information] '(': glyph(frame 83, dimensions vector(32.0, 80.0), advances vector(65.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.958: [Test Scene 1] [Information] ')': glyph(frame 84, dimensions vector(32.0, 80.0), advances vector(65.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.958: [Test Scene 1] [Information] '*': glyph(frame 82, dimensions vector(80.0, 80.0), advances vector(113.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.958: [Test Scene 1] [Information] '+': glyph(frame 86, dimensions vector(80.0, 80.0), advances vector(113.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.958: [Test Scene 1] [Information] ',': glyph(frame 44, dimensions vector(32.0, 32.0), advances vector(65.0, 32.0)px, offset -16px)
-2026.09.25@15:46:00.958: [Test Scene 1] [Information] '-': glyph(frame 37, dimensions vector(48.0, 16.0), advances vector(81.0, 16.0)px, offset 32px)
-2026.09.25@15:46:00.958: [Test Scene 1] [Information] '.': glyph(frame 45, dimensions vector(16.0, 16.0), advances vector(49.0, 16.0)px, offset 0px)
-2026.09.25@15:46:00.958: [Test Scene 1] [Information] '/': glyph(frame 46, dimensions vector(48.0, 80.0), advances vector(81.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.958: [Test Scene 1] [Information] '0': glyph(frame 36, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.958: [Test Scene 1] [Information] '1': glyph(frame 27, dimensions vector(48.0, 80.0), advances vector(81.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.958: [Test Scene 1] [Information] '2': glyph(frame 28, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.958: [Test Scene 1] [Information] '3': glyph(frame 29, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.958: [Test Scene 1] [Information] '4': glyph(frame 30, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.958: [Test Scene 1] [Information] '5': glyph(frame 31, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] '6': glyph(frame 32, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] '7': glyph(frame 33, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] '8': glyph(frame 34, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] '9': glyph(frame 35, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] ':': glyph(frame 90, dimensions vector(16.0, 48.0), advances vector(49.0, 48.0)px, offset 16px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] ';': glyph(frame 42, dimensions vector(32.0, 64.0), advances vector(65.0, 64.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] '<': glyph(frame 92, dimensions vector(48.0, 80.0), advances vector(81.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] '=': glyph(frame 38, dimensions vector(48.0, 48.0), advances vector(81.0, 48.0)px, offset 16px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] '>': glyph(frame 93, dimensions vector(48.0, 80.0), advances vector(81.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] '?': glyph(frame 94, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] '@': glyph(frame 76, dimensions vector(80.0, 80.0), advances vector(113.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] 'A': glyph(frame 48, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] 'B': glyph(frame 49, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] 'C': glyph(frame 50, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] 'D': glyph(frame 51, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] 'E': glyph(frame 52, dimensions vector(48.0, 80.0), advances vector(81.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] 'F': glyph(frame 53, dimensions vector(48.0, 80.0), advances vector(81.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] 'G': glyph(frame 54, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] 'H': glyph(frame 55, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] 'I': glyph(frame 56, dimensions vector(16.0, 80.0), advances vector(49.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] 'J': glyph(frame 57, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] 'K': glyph(frame 58, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] 'L': glyph(frame 59, dimensions vector(48.0, 80.0), advances vector(81.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] 'M': glyph(frame 60, dimensions vector(80.0, 80.0), advances vector(113.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] 'N': glyph(frame 61, dimensions vector(80.0, 80.0), advances vector(113.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] 'O': glyph(frame 62, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] 'P': glyph(frame 63, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.959: [Test Scene 1] [Information] 'Q': glyph(frame 64, dimensions vector(64.0, 96.0), advances vector(97.0, 96.0)px, offset -16px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'R': glyph(frame 65, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'S': glyph(frame 66, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'T': glyph(frame 67, dimensions vector(48.0, 80.0), advances vector(81.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'U': glyph(frame 68, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'V': glyph(frame 69, dimensions vector(80.0, 80.0), advances vector(113.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'W': glyph(frame 70, dimensions vector(80.0, 80.0), advances vector(113.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'X': glyph(frame 71, dimensions vector(80.0, 80.0), advances vector(113.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'Y': glyph(frame 72, dimensions vector(80.0, 80.0), advances vector(113.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'Z': glyph(frame 73, dimensions vector(48.0, 80.0), advances vector(81.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] '[': glyph(frame 39, dimensions vector(32.0, 80.0), advances vector(65.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] '\': glyph(frame 41, dimensions vector(48.0, 80.0), advances vector(81.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] ']': glyph(frame 40, dimensions vector(32.0, 80.0), advances vector(65.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] '^': glyph(frame 80, dimensions vector(48.0, 32.0), advances vector(81.0, 32.0)px, offset 64px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] '_': glyph(frame 85, dimensions vector(64.0, 16.0), advances vector(97.0, 16.0)px, offset -16px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] '`': glyph(frame 26, dimensions vector(32.0, 32.0), advances vector(65.0, 32.0)px, offset 96px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'a': glyph(frame 0, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'b': glyph(frame 1, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'c': glyph(frame 2, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'd': glyph(frame 3, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'e': glyph(frame 4, dimensions vector(48.0, 80.0), advances vector(81.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'f': glyph(frame 5, dimensions vector(48.0, 80.0), advances vector(81.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'g': glyph(frame 6, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'h': glyph(frame 7, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'i': glyph(frame 8, dimensions vector(16.0, 80.0), advances vector(49.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'j': glyph(frame 9, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'k': glyph(frame 10, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'l': glyph(frame 11, dimensions vector(48.0, 80.0), advances vector(81.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'm': glyph(frame 12, dimensions vector(80.0, 80.0), advances vector(113.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'n': glyph(frame 13, dimensions vector(80.0, 80.0), advances vector(113.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.960: [Test Scene 1] [Information] 'o': glyph(frame 14, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.961: [Test Scene 1] [Information] 'p': glyph(frame 15, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.961: [Test Scene 1] [Information] 'q': glyph(frame 16, dimensions vector(64.0, 96.0), advances vector(97.0, 96.0)px, offset -16px)
-2026.09.25@15:46:00.961: [Test Scene 1] [Information] 'r': glyph(frame 17, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.961: [Test Scene 1] [Information] 's': glyph(frame 18, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.961: [Test Scene 1] [Information] 't': glyph(frame 19, dimensions vector(48.0, 80.0), advances vector(81.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.961: [Test Scene 1] [Information] 'u': glyph(frame 20, dimensions vector(64.0, 80.0), advances vector(97.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.961: [Test Scene 1] [Information] 'v': glyph(frame 21, dimensions vector(80.0, 80.0), advances vector(113.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.961: [Test Scene 1] [Information] 'w': glyph(frame 22, dimensions vector(80.0, 80.0), advances vector(113.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.961: [Test Scene 1] [Information] 'x': glyph(frame 23, dimensions vector(80.0, 80.0), advances vector(113.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.961: [Test Scene 1] [Information] 'y': glyph(frame 24, dimensions vector(80.0, 80.0), advances vector(113.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.961: [Test Scene 1] [Information] 'z': glyph(frame 25, dimensions vector(48.0, 80.0), advances vector(81.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.961: [Test Scene 1] [Information] '{': glyph(frame 87, dimensions vector(48.0, 80.0), advances vector(81.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.961: [Test Scene 1] [Information] '|': glyph(frame 89, dimensions vector(16.0, 112.0), advances vector(49.0, 112.0)px, offset -16px)
-2026.09.25@15:46:00.961: [Test Scene 1] [Information] '}': glyph(frame 88, dimensions vector(48.0, 80.0), advances vector(81.0, 80.0)px, offset 0px)
-2026.09.25@15:46:00.961: [Test Scene 1] [Information] '~': glyph(frame 74, dimensions vector(64.0, 32.0), advances vector(97.0, 32.0)px, offset 48px)
-2026.09.25@15:46:04.191: [MarasmiumKit App] [Information] Finished main application loop
-2026.09.25@15:46:04.192: [MarasmiumKit App] [Information] Destroying MarasmiumKit application framework
-2026.09.25@15:46:04.192: [MarasmiumKit App] [Information] Freeing all scenes
-2026.09.25@15:46:04.192: [Test Scene 1] [Information] Leaving test scene 1
-2026.09.25@15:46:04.192: [Test Scene 1] [Information] Destroying test scene 1
-2026.09.25@15:46:04.192: [MarasmiumKit App] [Information] Destroying graphics system
-2026.09.25@15:46:04.192: [Graphics System] [Information] Destroying graphics system
-2026.09.25@15:46:04.192: [MarasmiumKit App] [Information] Destroying audio system
-2026.09.25@15:46:04.192: [Audio System] [Information] Destroying audio system
-2026.09.25@15:46:04.193: [Audio System] [Information] Destroying sound effects audio subsystem
-2026.09.25@15:46:04.193: [Audio System] [Information] Stopping all sound effects
-2026.09.25@15:46:04.193: [Audio System] [Information] Destroying music audio subsystem
-2026.09.25@15:46:04.193: [MarasmiumKit App] [Information] Destroying asset management system
-2026.09.25@15:46:04.193: [Asset Management System] [Information] Destroying asset management system
-2026.09.25@15:46:04.193: [Asset Management System] [Information] Freeing 0 audio tracks
-2026.09.25@15:46:04.193: [Asset Management System] [Information] Freeing 4 animations
-2026.09.25@15:46:04.193: [Asset Management System] [Information] Freeing 2 typefaces
-2026.09.25@15:46:04.193: [MarasmiumKit App] [Information] Destroying network client
-2026.09.25@15:46:04.193: [Network Client] [Information] Destroying network client
-2026.09.25@15:46:04.193: [Network Client] [Information] Destroyed network client
-2026.09.25@15:46:04.194: [MarasmiumKit App] [Information] Destroying windowing system
-2026.09.25@15:46:04.194: [Windowing System] [Information] Destroying windowing system
-2026.09.25@15:46:04.197: [Graphics System] [Information] Disposed of 2 OpenGL texture IDs
-2026.09.25@15:46:04.202: [Graphics System] [Information] Disposed of OpenGL utilities
-2026.09.25@15:46:04.213: [MarasmiumKit App] [Information] Destroying user-input management system
-2026.09.25@15:46:04.213: [User-Input Management System] [Information] Destroying user-input management system
-2026.09.25@15:46:04.213: [User-Input Management System] [Information] Destroying mouse user-input management system
-2026.09.25@15:46:04.213: [User-Input Management System] [Information] Destroying keyboard user-input management system
-2026.09.25@15:46:04.213: [MarasmiumKit App] [Information] Destroying logging system
-2026.09.25@15:46:04.213: [Logging System] [Information] Destroying logging system
+2026.09.25@18:22:34.353: [Logging System] [Information] Initialized logging system
+2026.09.25@18:22:34.353: [MarasmiumKit App] [Information] Initialized logging system
+2026.09.25@18:22:34.355: [User-Input Management System] [Information] Initialized keyboard user-input management system
+2026.09.25@18:22:34.355: [User-Input Management System] [Information] Initialized mouse user-input management system
+2026.09.25@18:22:34.355: [User-Input Management System] [Information] Initialized user-input management system
+2026.09.25@18:22:34.355: [MarasmiumKit App] [Information] Initialized user-input management system
+2026.09.25@18:22:36.017: [Windowing System] [Information] Set window title "MarasmiumKit App"
+2026.09.25@18:22:36.018: [Windowing System] [Information] Set fullscreen monitor index monitor(0, "Display 1", vector(1920.0, 1243.0), vector(0.0, 0.0))
+2026.09.25@18:22:36.020: [Windowing System] [Information] Set mouse cursor visible
+2026.09.25@18:22:36.020: [Windowing System] [Information] Initialized windowing system
+2026.09.25@18:22:36.020: [MarasmiumKit App] [Information] Initialized windowing system
+2026.09.25@18:22:36.020: [Network Client] [Information] Set maximum messages to process per update -1
+2026.09.25@18:22:36.020: [Network Client] [Information] Initialized network client
+2026.09.25@18:22:36.020: [MarasmiumKit App] [Information] Initialized network client
+2026.09.25@18:22:36.020: [Asset Management System] [Information] Setting base asset path "./Assets/"
+2026.09.25@18:22:36.020: [Asset Management System] [Information] Initialized asset management system
+2026.09.25@18:22:36.020: [MarasmiumKit App] [Information] Initialized asset management system
+2026.09.25@18:22:36.027: [Audio System] [Information] Setting audio output speaker speaker(0, "Port MacBook Air Microphone")
+2026.09.25@18:22:36.028: [Audio System] [Warning] Speaker not available for audio output, setting default
+2026.09.25@18:22:36.028: [Audio System] [Information] Set default sound effect volume 100%
+2026.09.25@18:22:36.028: [Audio System] [Information] Initialized sound effects audio subsystem
+2026.09.25@18:22:36.029: [Audio System] [Information] Set music volume 100%
+2026.09.25@18:22:36.029: [Audio System] [Information] Initialized music audio subsystem
+2026.09.25@18:22:36.029: [Audio System] [Information] Initialize audio system
+2026.09.25@18:22:36.029: [Graphics System] [Information] Target FPS set to 60 -> FPMS=0.06, MSPF=16
+2026.09.25@18:22:36.029: [Graphics System] [Information] Maximum UPF set to 8
+2026.09.25@18:22:36.029: [Graphics System] [Information] Set clear colour to colour(0, 0, 0, 255)
+2026.09.25@18:22:36.029: [Graphics System] [Information] Initialized graphics system
+2026.09.25@18:22:36.029: [MarasmiumKit App] [Information] Initialized graphics system
+2026.09.25@18:22:36.029: [MarasmiumKit App] [Information] Scene 0 not added
+2026.09.25@18:22:36.030: [MarasmiumKit App] [Information] Adding scene 0
+2026.09.25@18:22:36.030: [MarasmiumKit App] [Information] Scene 0 requires initialization
+2026.09.25@18:22:36.030: [Test Scene 1] [Information] Initializing test scene 1
+2026.09.25@18:22:36.030: [MarasmiumKit App] [Information] Entering new scene 1
+2026.09.25@18:22:36.030: [Test Scene 1] [Information] Entering test scene 1
+2026.09.25@18:22:36.030: [Asset Management System] [Information] Loading animation from "./Assets/Animation/Animation_1.animation"
+2026.09.25@18:22:36.033: [Asset Management System] [Information] Adding animation at "./Assets/Animation/Animation_1.animation"
+2026.09.25@18:22:36.033: [Asset Management System] [Information] Loading animation from "./Assets/Animation/Animation_2.animation"
+2026.09.25@18:22:36.033: [Asset Management System] [Information] Adding animation at "./Assets/Animation/Animation_2.animation"
+2026.09.25@18:22:36.033: [User-Input Management System] [Information] Adding user-input listener
+2026.09.25@18:22:36.033: [Network Client] [Information] Adding network listener
+2026.09.25@18:22:36.033: [MarasmiumKit App] [Information] Set initial scene
+2026.09.25@18:22:36.033: [MarasmiumKit App] [Information] Initialized MarasmiumKit application framework
+2026.09.25@18:22:36.033: [MarasmiumKit App] [Information] Starting main application loop
+2026.09.25@18:22:36.084: [Windowing System] [Information] Generated new window frame
+2026.09.25@18:22:36.085: [Windowing System] [Information] Set window dimensions vector(1280.0, 720.0)
+2026.09.25@18:22:36.139: [Graphics System] [Information] Initializing OpenGL parameters
+2026.09.25@18:22:36.140: [Graphics System] [Information] OpenGL version "4.1 Metal - 91.7"
+2026.09.25@18:22:36.141: [Graphics System] [Information] Compiled vertex shader 4
+2026.09.25@18:22:36.141: [Graphics System] [Information] Compiled fragment shader 5
+2026.09.25@18:22:36.142: [Graphics System] [Information] Generated shader program 6
+2026.09.25@18:22:36.144: [Graphics System] [Information] Generated VAO 2, VBO 1, and IBO 2
+2026.09.25@18:22:36.145: [Graphics System] [Information] Resized OpenGL viewport 2560x1440
+2026.09.25@18:22:36.148: [Graphics System] [Information] Generated texture ID 3 for animation animation(4FPS, 12 frames arranged vector(4.0, 3.0), vector(32.0, 25.0)pixels, texture ID 0)
+2026.09.25@18:22:36.149: [Graphics System] [Information] Resizing OpenGL vertex buffer to 64B
+2026.09.25@18:22:36.151: [Graphics System] [Information] Resizing OpenGL index buffer to 24B
+2026.09.25@18:22:39.422: [MarasmiumKit App] [Information] Finished main application loop
+2026.09.25@18:22:39.422: [MarasmiumKit App] [Information] Destroying MarasmiumKit application framework
+2026.09.25@18:22:39.422: [MarasmiumKit App] [Information] Freeing all scenes
+2026.09.25@18:22:39.422: [Test Scene 1] [Information] Leaving test scene 1
+2026.09.25@18:22:39.422: [Test Scene 1] [Information] Destroying test scene 1
+2026.09.25@18:22:39.422: [MarasmiumKit App] [Information] Destroying graphics system
+2026.09.25@18:22:39.422: [Graphics System] [Information] Destroying graphics system
+2026.09.25@18:22:39.422: [MarasmiumKit App] [Information] Destroying audio system
+2026.09.25@18:22:39.422: [Audio System] [Information] Destroying audio system
+2026.09.25@18:22:39.422: [Audio System] [Information] Destroying sound effects audio subsystem
+2026.09.25@18:22:39.422: [Audio System] [Information] Stopping all sound effects
+2026.09.25@18:22:39.423: [Audio System] [Information] Destroying music audio subsystem
+2026.09.25@18:22:39.423: [MarasmiumKit App] [Information] Destroying asset management system
+2026.09.25@18:22:39.423: [Asset Management System] [Information] Destroying asset management system
+2026.09.25@18:22:39.423: [Asset Management System] [Information] Freeing 0 audio tracks
+2026.09.25@18:22:39.423: [Asset Management System] [Information] Freeing 2 animations
+2026.09.25@18:22:39.423: [Asset Management System] [Information] Freeing 0 typefaces
+2026.09.25@18:22:39.423: [MarasmiumKit App] [Information] Destroying network client
+2026.09.25@18:22:39.423: [Network Client] [Information] Destroying network client
+2026.09.25@18:22:39.423: [Network Client] [Information] Destroyed network client
+2026.09.25@18:22:39.423: [MarasmiumKit App] [Information] Destroying windowing system
+2026.09.25@18:22:39.423: [Windowing System] [Information] Destroying windowing system
+2026.09.25@18:22:39.424: [Graphics System] [Information] Disposed of 1 OpenGL texture IDs
+2026.09.25@18:22:39.426: [Graphics System] [Information] Disposed of OpenGL utilities
+2026.09.25@18:22:39.433: [MarasmiumKit App] [Information] Destroying user-input management system
+2026.09.25@18:22:39.433: [User-Input Management System] [Information] Destroying user-input management system
+2026.09.25@18:22:39.433: [User-Input Management System] [Information] Destroying mouse user-input management system
+2026.09.25@18:22:39.433: [User-Input Management System] [Information] Destroying keyboard user-input management system
+2026.09.25@18:22:39.433: [MarasmiumKit App] [Information] Destroying logging system
+2026.09.25@18:22:39.433: [Logging System] [Information] Destroying logging system

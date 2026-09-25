@@ -46,7 +46,7 @@ public class GraphicsManager implements GLEventListener {
     /**
      * The number of floating point values per vertex in a sprite to be rendered by the graphics system
      */
-    private static final int FloatsPerVertex = 5;
+    private static final int FloatsPerVertex = 4;
     /**
      * The number of indices of sprite vertex data to process when rendering sprites
      */
@@ -58,7 +58,7 @@ public class GraphicsManager implements GLEventListener {
     /**
      * The vertex data offset for texture positioning information
      */
-    private static final int TexturePositionOffset = 3;
+    private static final int TexturePositionOffset = 2;
 
     /**
      * The target (fractional) number of graphics frames to process per millisecond
@@ -172,12 +172,12 @@ public class GraphicsManager implements GLEventListener {
     }
 
     /**
-     * Submit a set of sprites to the graphics system for rendering
+     * Submit a list of sprites to the graphics system for rendering
      * @param camera The camera to render these sprites through
      * @param sprites The sprites to render
      * @return Whether the sprites were submitted successfully
      */
-    public boolean submit(Camera camera, List<Sprite> sprites) {
+    public boolean submit(Camera camera, ArrayList<Sprite> sprites) {
         if (sprites == null) {
             return false;
         }
@@ -190,8 +190,22 @@ public class GraphicsManager implements GLEventListener {
         return success;
     }
 
-    public boolean submit(Camera camera, String text, String typefaceFilePath, Box bounds, float depth, float size,
-                          TextAlignment horizontalAlignment, TextAlignment verticalAlignment) {
+    /**
+     * Submit a string of text to the graphics system for rendering
+     * @param camera The camera to render the text through
+     * @param text The text to render
+     * @param typefaceFilePath The typeface to render the text in
+     * @param boundsPosition The position of the bounding box for the text to be aligned within
+     * @param boundsDimensions The dimensions of the bounding box for the text to be aligned within
+     * @param depth The depth to render the text characters at in the scene
+     * @param size The scale on the default pixel size of the typeface to draw the text at
+     * @param horizontalAlignment The horizontal alignment of the text within its bounding box
+     * @param verticalAlignment The vertical alignment of the text within its bounding box
+     * @return Whether the text was submitted successfully
+     */
+    public boolean submit(Camera camera, String text, String typefaceFilePath, Vector boundsPosition,
+                          Vector boundsDimensions, float depth, float size, TextAlignment horizontalAlignment,
+                          TextAlignment verticalAlignment) {
         return false;
     }
 
@@ -486,13 +500,13 @@ public class GraphicsManager implements GLEventListener {
         final String[] vertexSources = {
                 """
                     #version 330 core
-                    layout (location = 0) in vec3 inSpritePosition;
+                    layout (location = 0) in vec2 inSpritePosition;
                     layout (location = 1) in vec2 inTexturePosition;
                     uniform mat4 cameraMatrix;
                     out vec2 texturePosition;
                     void main() {
                         texturePosition = inTexturePosition;
-                        gl_Position = cameraMatrix * vec4(inSpritePosition, 1.0);
+                        gl_Position = cameraMatrix * vec4(inSpritePosition, 0.0, 1.0);
                     }
                 """,
         };
@@ -629,7 +643,6 @@ public class GraphicsManager implements GLEventListener {
                     continue;
                 }
                 Vector spritePosition = sprite.getPosition();
-                float spriteDepth = sprite.getDepth();
                 Vector spriteDimensions = sprite.getDimensions();
                 Angle spriteAngle = sprite.getAngle();
                 if (spritePosition == null || spriteDimensions == null || spriteAngle == null) {
@@ -694,13 +707,13 @@ public class GraphicsManager implements GLEventListener {
                 }
                 // Allocate vertices and indices
                 float[] sVertices = {
-                        spriteBottomLeft.getX(), spriteBottomLeft.getY(), spriteDepth,
+                        spriteBottomLeft.getX(), spriteBottomLeft.getY(),
                         textureBottomLeft.getX(), textureBottomLeft.getY(),
-                        spriteBottomRight.getX(), spriteBottomRight.getY(), spriteDepth,
+                        spriteBottomRight.getX(), spriteBottomRight.getY(),
                         textureBottomRight.getX(), textureBottomRight.getY(),
-                        spriteTopRight.getX(), spriteTopRight.getY(), spriteDepth,
+                        spriteTopRight.getX(), spriteTopRight.getY(),
                         textureTopRight.getX(), textureTopRight.getY(),
-                        spriteTopLeft.getX(), spriteTopLeft.getY(), spriteDepth,
+                        spriteTopLeft.getX(), spriteTopLeft.getY(),
                         textureTopLeft.getX(), textureTopLeft.getY(),
                 };
                 FloatBuffer newVertices = Buffers.newDirectFloatBuffer(vertices.capacity() + sVertices.length);

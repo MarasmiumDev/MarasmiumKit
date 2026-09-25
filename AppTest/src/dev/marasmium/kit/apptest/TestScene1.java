@@ -15,6 +15,7 @@ import dev.marasmium.kit.applib.data.Angle;
 import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.graphics.Camera;
 import dev.marasmium.kit.applib.graphics.Sprite;
+import dev.marasmium.kit.applib.graphics.TextAlignment;
 import dev.marasmium.kit.applib.input.KeyboardKey;
 import dev.marasmium.kit.applib.input.MouseButton;
 import dev.marasmium.kit.applib.logging.LogLevel;
@@ -29,7 +30,6 @@ public class TestScene1 extends Scene implements NetListener {
     private final Camera camera = new Camera();
     private Sprite sprite1;
     private Sprite sprite2;
-    private int spriteIndex = 0;
 
     @Override
     public boolean initialize() {
@@ -47,7 +47,6 @@ public class TestScene1 extends Scene implements NetListener {
         sprite2 = new Sprite();
         sprite2.initialize(Vector.Cartesian(-100.0f, 0.0f), 1.0f, Vector.Cartesian(160.0f, 90.0f), Angle.Radians(1.2f),
                 "Animation/Animation_2.animation");
-        spriteIndex = 0;
         return true;
     }
 
@@ -111,13 +110,17 @@ public class TestScene1 extends Scene implements NetListener {
             App.Log.write(logSource, LogLevel.Info, "Contains: ", sprite1.contains(sprite2), ", Disjoint: ",
                     sprite1.isDisjointFrom(sprite2), ", Intersects: ", sprite1.intersectsWith(sprite2));
         }
+        if (sprite1.contains(App.Input.mouse.getCursorPosition(camera))) {
+            App.Log.write(logSource, LogLevel.Info, "Intersection");
+        }
         return true;
     }
 
     @Override
     public void draw() {
         App.Graphics.submit(camera, sprite1);
-        App.Graphics.submit(camera, sprite2);
+        App.Graphics.submit(camera, "Hello World!", "Typeface/Fira_Sans.typeface", Vector.Zero(),
+                Vector.Cartesian(500000.0f, 500000.0f), 1.5f, 1.0f, TextAlignment.Left, TextAlignment.Bottom);
     }
 
     @Override

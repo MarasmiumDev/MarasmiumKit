@@ -268,8 +268,8 @@ public class Animation implements Cloneable {
         if (sheetDimensions == null || frameDimensions == null || data == null) {
             return "animation(null)";
         }
-        return "animation(" + targetFPS + "FPS, " + frameCount + " of " + sheetDimensions + "frames, " + frameDimensions
-                + "pixels, texture ID " + textureID + ")";
+        return "animation(" + targetFPS + "FPS, " + frameCount + " frames arranged " + sheetDimensions + ", "
+                + frameDimensions + "pixels, texture ID " + textureID + ")";
     }
 
     /**

@@ -463,9 +463,9 @@ public class Vector implements Serializable, Cloneable {
             return false;
         }
         if (l.isVertical()) {
-            return x < l.getXIntercept();
+            return x <= l.getXIntercept();
         }
-        return y > l.getY(x);
+        return y >= l.getY(x);
     }
 
     /**
@@ -478,9 +478,9 @@ public class Vector implements Serializable, Cloneable {
             return false;
         }
         if (l.isVertical()) {
-            return x > l.getXIntercept();
+            return x >= l.getXIntercept();
         }
-        return y < l.getY(x);
+        return y <= l.getY(x);
     }
 
     /**
