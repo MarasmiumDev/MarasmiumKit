@@ -244,12 +244,15 @@ public class WindowManager {
             canvas.setMaximumSize(new Dimension((int)dimensions.getX(), (int)dimensions.getY()));
             canvas.setSize((int)dimensions.getX(), (int)dimensions.getY());
             frame.pack();
-            Vector monitorPosition = getMonitor().getPosition();
-            Vector monitorDimensions = getMonitor().getDimensions();
-            Vector windowPosition = monitorPosition
-                    .add(monitorDimensions.scalarDivide(2.0f))
-                    .subtract(dimensions.scalarDivide(2.0f));
-            frame.setLocation((int)windowPosition.getX(), (int)windowPosition.getY());
+            Monitor monitor = getMonitor();
+            if (monitor != null) {
+                Vector monitorPosition = getMonitor().getPosition();
+                Vector monitorDimensions = getMonitor().getDimensions();
+                Vector windowPosition = monitorPosition
+                        .add(monitorDimensions.scalarDivide(2.0f))
+                        .subtract(dimensions.scalarDivide(2.0f));
+                frame.setLocation((int) windowPosition.getX(), (int) windowPosition.getY());
+            }
             App.Log.write(LogSource.Window, LogLevel.Info, "Set window dimensions ", dimensions);
         });
         this.dimensions = dimensions;

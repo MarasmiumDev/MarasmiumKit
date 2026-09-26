@@ -1,3 +1,4 @@
 Manifest-Version: 1.0
 Main-Class: dev.marasmium.kit.servertest.ServerTest
-
+Enable-Native-Access: ALL-UNNAMED
+Add-Opens: java.desktop/sun.awt
