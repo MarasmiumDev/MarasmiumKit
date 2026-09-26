@@ -9,27 +9,25 @@ package dev.marasmium.kit.apptest;
 
 import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.Scene;
-import dev.marasmium.kit.applib.assets.Glyph;
-import dev.marasmium.kit.applib.assets.Typeface;
 import dev.marasmium.kit.applib.data.Angle;
 import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.graphics.Camera;
 import dev.marasmium.kit.applib.graphics.Sprite;
 import dev.marasmium.kit.applib.graphics.TextAlignment;
 import dev.marasmium.kit.applib.input.KeyboardKey;
-import dev.marasmium.kit.applib.input.MouseButton;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 import dev.marasmium.kit.applib.networking.NetListener;
-
-import java.util.HashMap;
 
 public class TestScene1 extends Scene implements NetListener {
 
     private final LogSource logSource = new LogSource("Test Scene 1");
     private final Camera camera = new Camera();
-    private Sprite sprite1;
-    private Sprite sprite2;
+    private Sprite sprite;
+    private String text;
+    private String typefaceFileName;
+    private TextAlignment horizontalAlignment;
+    private TextAlignment verticalAlignment;
 
     @Override
     public boolean initialize() {
@@ -41,101 +39,102 @@ public class TestScene1 extends Scene implements NetListener {
     public boolean enter(Scene lastScene) {
         App.Log.write(logSource, LogLevel.Info, "Entering test scene 1");
         camera.initialize(Vector.Zero(), 1.0f, Angle.Zero());
-        sprite1 = new Sprite();
-        sprite1.initialize(Vector.Cartesian(0.0f, 0.0f), 0.0f, Vector.Cartesian(100.0f, 100.0f), Angle.Zero(),
-                "Animation/Animation_1.animation");
-        sprite2 = new Sprite();
-        sprite2.initialize(Vector.Cartesian(-100.0f, 0.0f), 1.0f, Vector.Cartesian(160.0f, 90.0f), Angle.Radians(1.2f),
+        sprite = new Sprite();
+        sprite.initialize(Vector.Cartesian(0.0f, 0.0f), 0.0f, Vector.Cartesian(4500.0f, 100.0f), Angle.Zero(),
                 "Animation/Animation_2.animation");
+        sprite.setAnimationFrame(6);
+        typefaceFileName = "Typeface/Fira_Sans.typeface";
+        text = "";
+        horizontalAlignment = TextAlignment.Left;
+        verticalAlignment = TextAlignment.Bottom;
         return true;
     }
 
     @Override
     public boolean processInput() {
-        // Test font loading
-        if (App.Input.mouse.isButtonPressed(MouseButton.Left)) {
-            Typeface firaSans = App.Assets.getTypeface("Typeface/Fira_Sans.typeface");
-            App.Log.write(logSource, LogLevel.Info, "Loaded: ", firaSans);
-            for (HashMap.Entry<Character, Glyph> entry : firaSans.getGlyphs().entrySet()) {
-                App.Log.write(logSource, LogLevel.Info, "'", entry.getKey(), "': ", entry.getValue());
+        // Camera controls
+        if (App.Input.keyboard.isKeyDown(KeyboardKey.Backspace)) {
+            float cameraZoom = 0.01f * camera.getScale();
+            if (App.Input.keyboard.isKeyDown(KeyboardKey.Q)) {
+                camera.setZoom(-cameraZoom);
+            } else if (App.Input.keyboard.isKeyDown(KeyboardKey.E)) {
+                camera.setZoom(cameraZoom);
+            } else {
+                camera.setZoom(0.0f);
             }
-        }
-        if (App.Input.mouse.isButtonPressed(MouseButton.Right)) {
-            Typeface silkscreen = App.Assets.getTypeface("Typeface/Silkscreen.typeface");
-            App.Log.write(logSource, LogLevel.Info, "Loaded: ", silkscreen);
-            for (HashMap.Entry<Character, Glyph> entry : silkscreen.getGlyphs().entrySet()) {
-                App.Log.write(logSource, LogLevel.Info, "'", entry.getKey(), "': ", entry.getValue());
+            float cameraSpeed = 3.5f / camera.getScale();
+            if (App.Input.keyboard.isKeyDown(KeyboardKey.A)) {
+                camera.getVelocity().setX(-cameraSpeed);
+            } else if (App.Input.keyboard.isKeyDown(KeyboardKey.D)) {
+                camera.getVelocity().setX(cameraSpeed);
+            } else {
+                camera.getVelocity().setX(0.0f);
             }
-        }
-        // Control sprite
-        final float velocity = 2.5f;
-        final float rotation = 0.01f;
-        final float growth = 1.5f;
-        if (App.Input.keyboard.isKeyDown(KeyboardKey.A)) {
-            sprite1.getVelocity().setX(-velocity);
-        } else if (App.Input.keyboard.isKeyDown(KeyboardKey.D)) {
-            sprite1.getVelocity().setX(velocity);
+            if (App.Input.keyboard.isKeyDown(KeyboardKey.S)) {
+                camera.getVelocity().setY(-cameraSpeed);
+            } else if (App.Input.keyboard.isKeyDown(KeyboardKey.W)) {
+                camera.getVelocity().setY(cameraSpeed);
+            } else {
+                camera.getVelocity().setY(0.0f);
+            }
+            float cameraRotation = 0.01f;
+            if (App.Input.keyboard.isKeyDown(KeyboardKey.Z)) {
+                camera.setRotation(Angle.Radians(-cameraRotation));
+            } else if (App.Input.keyboard.isKeyDown(KeyboardKey.X)) {
+                camera.setRotation(Angle.Radians(cameraRotation));
+            } else {
+                camera.setRotation(Angle.Zero());
+            }
+            // Alignment controls
+            if (App.Input.keyboard.isKeyPressed(KeyboardKey.Left)) {
+                horizontalAlignment = TextAlignment.Left;
+            }
+            if (App.Input.keyboard.isKeyPressed(KeyboardKey.Right)) {
+                horizontalAlignment = TextAlignment.Right;
+            }
+            if (App.Input.keyboard.isKeyPressed(KeyboardKey.Down)) {
+                verticalAlignment = TextAlignment.Bottom;
+            }
+            if (App.Input.keyboard.isKeyPressed(KeyboardKey.Up)) {
+                verticalAlignment = TextAlignment.Top;
+            }
+            if (App.Input.keyboard.isKeyPressed(KeyboardKey.Comma)) {
+                horizontalAlignment = TextAlignment.Center;
+            }
+            if (App.Input.keyboard.isKeyPressed(KeyboardKey.Period)) {
+                verticalAlignment = TextAlignment.Center;
+            }
+            // Change typeface
+            if (App.Input.keyboard.isKeyPressed(KeyboardKey.T)) {
+                typefaceFileName = "Typeface/Fira_Sans.typeface";
+            }
+            if (App.Input.keyboard.isKeyPressed(KeyboardKey.Y)) {
+                typefaceFileName = "Typeface/Silkscreen.typeface";
+            }
         } else {
-            sprite1.getVelocity().setX(0.0f);
-        }
-        if (App.Input.keyboard.isKeyDown(KeyboardKey.S)) {
-            sprite1.getVelocity().setY(-velocity);
-        } else if (App.Input.keyboard.isKeyDown(KeyboardKey.W)) {
-            sprite1.getVelocity().setY(velocity);
-        } else {
-            sprite1.getVelocity().setY(0.0f);
-        }
-        if (App.Input.keyboard.isKeyDown(KeyboardKey.Q)) {
-            sprite1.setRotation(Angle.Radians(-rotation));
-        } else if (App.Input.keyboard.isKeyDown(KeyboardKey.E)) {
-            sprite1.setRotation(Angle.Radians(rotation));
-        } else {
-            sprite1.setRotation(Angle.Zero());
-        }
-        if (App.Input.keyboard.isKeyDown(KeyboardKey.J)) {
-            sprite1.getGrowth().setX(-growth);
-        } else if (App.Input.keyboard.isKeyDown(KeyboardKey.L)) {
-            sprite1.getGrowth().setX(growth);
-        } else {
-            sprite1.getGrowth().setX(0.0f);
-        }
-        if (App.Input.keyboard.isKeyDown(KeyboardKey.K)) {
-            sprite1.getGrowth().setY(-growth);
-        } else if (App.Input.keyboard.isKeyDown(KeyboardKey.I)) {
-            sprite1.getGrowth().setY(growth);
-        } else {
-            sprite1.getGrowth().setY(0.0f);
-        }
-        if (App.Input.keyboard.isKeyPressed(KeyboardKey.T)) {
-            App.Log.write(logSource, LogLevel.Info, "Contains: ", sprite1.contains(sprite2), ", Disjoint: ",
-                    sprite1.isDisjointFrom(sprite2), ", Intersects: ", sprite1.intersectsWith(sprite2));
-        }
-        if (sprite1.contains(App.Input.mouse.getCursorPosition(camera))) {
-            App.Log.write(logSource, LogLevel.Info, "Intersection");
+            text += App.Input.keyboard.getTypedChars();
         }
         return true;
     }
 
     @Override
     public void draw() {
-        App.Graphics.submit(camera, sprite1);
-        App.Graphics.submit(camera, "Hello World!", "Typeface/Fira_Sans.typeface", Vector.Zero(),
-                Vector.Cartesian(500000.0f, 500000.0f), 1.5f, 1.0f, TextAlignment.Left, TextAlignment.Bottom);
+        App.Graphics.submit(camera, sprite);
+        App.Graphics.submit(camera, text, typefaceFileName, sprite.getPosition(), sprite.getDimensions(), 1.0f, 0.5f,
+                horizontalAlignment, verticalAlignment);
     }
 
     @Override
     public void update(float deltaFrames) {
         camera.update(deltaFrames);
-        sprite1.update(deltaFrames);
-        sprite2.update(deltaFrames);
+        sprite.update(deltaFrames);
     }
 
     @Override
     public boolean leave(Scene lastScene) {
         App.Log.write(logSource, LogLevel.Info, "Leaving test scene 1");
         camera.destroy();
-        sprite1.destroy();
-        sprite2.destroy();
+        sprite.destroy();
         return true;
     }
 

@@ -27,28 +27,40 @@ public class Typeface implements Cloneable {
      * The constructed file path of the animation containing the glyph images of this typeface
      */
     private String animationFilePath = null;
+    /**
+     * The maximum height of a glyph in this typeface
+     */
+    private float maxGlyphHeight = 0.0f;
+    /**
+     * The maximum absolute offset of a glyph in this typeface
+     */
+    private float maxGlyphOffset = 0.0f;
 
     /**
      * Initialize this typeface with a set of characters mapped to glyph metrics and an animation file path
      * @param characters The set of characters in this typeface
-     * @param glyphMetrics The set of glyph metrics corresponding to the characters of this typeface
+     * @param glyphs The set of glyph metrics corresponding to the characters of this typeface
      * @param animationData The serialized animation containing the glyph images of this typeface
      * @return Whether all parameters were valid and this typeface was initialized successfully
      */
-    public boolean initialize(String characters, Glyph[] glyphMetrics, byte[] animationData) {
-        if (characters == null || glyphMetrics == null || animationData == null) {
+    public boolean initialize(String characters, Glyph[] glyphs, byte[] animationData) {
+        if (characters == null || glyphs == null || animationData == null) {
             return false;
         }
-        if (characters.length() != glyphMetrics.length) {
+        if (characters.length() != glyphs.length) {
             return false;
         }
         for (int i = 0; i < characters.length(); i++) {
-            if (!addGlyph(characters.charAt(i), glyphMetrics[i])) {
+            if (!addGlyph(characters.charAt(i), glyphs[i])) {
                 return false;
             }
         }
         if (!setAnimationData(animationData)) {
             return false;
+        }
+        for (Glyph glyph : glyphs) {
+            maxGlyphHeight = Math.max(maxGlyphHeight, glyph.getDimensions().getY() + glyph.getOffset());
+            maxGlyphOffset = Math.max(maxGlyphOffset, -glyph.getOffset());
         }
         return true;
     }
@@ -186,6 +198,22 @@ public class Typeface implements Cloneable {
         }
         this.animationFilePath = animationFilePath;
         return true;
+    }
+
+    /**
+     * Get the maximum height of a glyph in this typeface
+     * @return This typeface's maximum glyph height
+     */
+    public float getMaxGlyphHeight() {
+        return maxGlyphHeight;
+    }
+
+    /**
+     * Get the maximum absolute offset of a glyph in this typeface
+     * @return This typeface's maximum glyph offset
+     */
+    public float getMaxGlyphOffset() {
+        return maxGlyphOffset;
     }
 
     /**

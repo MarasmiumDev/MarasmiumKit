@@ -158,6 +158,20 @@ public class Box extends Body {
     }
 
     /**
+     * Get the lines containing the left, right, bottom, and top edges of this box
+     * @return The lines containing edges of this box
+     */
+    public Line[] getEdges() {
+        Vector[] corners = getCorners();
+        Line[] edges = new Line[4];
+        edges[0] = Line.Point_Point(corners[0], corners[2]);
+        edges[1] = Line.Point_Point(corners[1], corners[3]);
+        edges[2] = Line.Point_Point(corners[0], corners[1]);
+        edges[3] = Line.Point_Point(corners[2], corners[3]);
+        return edges;
+    }
+
+    /**
      * Test whether a vector is positioned inside this box
      * @param point The vector to test against this box
      * @return Whether the given vector is inside this box
@@ -166,12 +180,8 @@ public class Box extends Body {
         if (point == null) {
             return false;
         }
-        Vector[] corners = getCorners();
-        Line left = Line.Point_Point(corners[2], corners[0]);
-        Line right = Line.Point_Point(corners[1], corners[3]);
-        Line bottom = Line.Point_Point(corners[0], corners[1]);
-        Line top = Line.Point_Point(corners[2], corners[3]);
-        return point.isBetween(left, right) && point.isBetween(bottom, top);
+        Line[] edges = getEdges();
+        return point.isBetween(edges[0], edges[1]) && point.isBetween(edges[2], edges[3]);
     }
 
     /**
@@ -200,17 +210,7 @@ public class Box extends Body {
         if (box == null) {
             return false;
         }
-        for (Vector corner : box.getCorners()) {
-            if (contains(corner)) {
-                return false;
-            }
-        }
-        for (Vector corner : getCorners()) {
-            if (box.contains(corner)) {
-                return false;
-            }
-        }
-        return true;
+        return !intersectsWith(box);
     }
 
     /**
@@ -222,7 +222,22 @@ public class Box extends Body {
         if (box == null) {
             return false;
         }
-        return !isDisjointFrom(box);
+        Line[] edges = getEdges();
+        Line[] boxEdges = box.getEdges();
+        for (int i = 0; i < 4; i++) {
+            Line edge = edges[i];
+            for (int j = 0; j < 4; j++) {
+                Line boxEdge = boxEdges[j];
+                Vector intersection = edge.getIntersectionPoint(boxEdge);
+                if (intersection == null) {
+                    continue;
+                }
+                if (contains(intersection) && box.contains(intersection)) {
+                    return true;
+                }
+            }
+        }
+        return contains(box) || box.contains(this);
     }
 
 }

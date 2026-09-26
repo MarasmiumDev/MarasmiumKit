@@ -164,6 +164,15 @@ public class GraphicsManager implements GLEventListener {
         if (camera == null || sprite == null) {
             return false;
         }
+        Box windowBox = new Box();
+        if (!windowBox.initialize(camera.getPosition().subtract(
+                App.Window.getDimensions().scalarDivide(camera.getScale()).scalarMultiply(0.5f)), 0.0f,
+                App.Window.getDimensions().scalarDivide(camera.getScale()), Angle.Zero())) {
+            return false;
+        }
+        if (!sprite.intersectsWith(windowBox)) {
+            return false;
+        }
         if (!spriteGroups.containsKey(camera)) {
             spriteGroups.put(camera, new ArrayList<>());
         }
@@ -195,18 +204,98 @@ public class GraphicsManager implements GLEventListener {
      * @param camera The camera to render the text through
      * @param text The text to render
      * @param typefaceFilePath The typeface to render the text in
-     * @param boundsPosition The position of the bounding box for the text to be aligned within
-     * @param boundsDimensions The dimensions of the bounding box for the text to be aligned within
+     * @param boxPosition The position of the bounding box for the text to be aligned within
+     * @param boxDimensions The dimensions of the bounding box for the text to be aligned within
      * @param depth The depth to render the text characters at in the scene
      * @param size The scale on the default pixel size of the typeface to draw the text at
      * @param horizontalAlignment The horizontal alignment of the text within its bounding box
      * @param verticalAlignment The vertical alignment of the text within its bounding box
      * @return Whether the text was submitted successfully
      */
-    public boolean submit(Camera camera, String text, String typefaceFilePath, Vector boundsPosition,
-                          Vector boundsDimensions, float depth, float size, TextAlignment horizontalAlignment,
-                          TextAlignment verticalAlignment) {
-        return false;
+    public boolean submit(Camera camera, String text, String typefaceFilePath, Vector boxPosition, Vector boxDimensions,
+                          float depth, float size, TextAlignment horizontalAlignment, TextAlignment verticalAlignment) {
+        // Check parameters
+        if (text == null || typefaceFilePath == null || boxPosition == null || boxDimensions == null
+                || horizontalAlignment == null || verticalAlignment == null) {
+            return false;
+        }
+        if (text.isEmpty()) {
+            return false;
+        }
+        // Load typeface and required animation
+        Typeface typeface = App.Assets.getTypeface(typefaceFilePath);
+        if (typeface == null) {
+            return false;
+        }
+        Animation animation = App.Assets.getAnimation(typeface.getAnimationFilePath());
+        if (animation == null) {
+            return false;
+        }
+        Glyph[] glyphs = new Glyph[text.length()];
+        float textWidth = 0.0f;
+        Sprite[] sprites = new Sprite[text.length()];
+        // Compute character metrics
+        for (int i = 0; i < text.length(); i++) {
+            glyphs[i] = typeface.getGlyph(text.charAt(i));
+            if (glyphs[i] == null) {
+                return false;
+            }
+            textWidth += glyphs[i].getAdvances().getX() * size;
+            sprites[i] = new Sprite();
+            sprites[i].setVelocity(Vector.Zero());
+            sprites[i].setAngle(Angle.Zero());
+            sprites[i].setRotation(Angle.Zero());
+            sprites[i].setDepth(depth);
+            sprites[i].setDimensions(animation.getFrameDimensions().scalarMultiply(size));
+            sprites[i].setGrowth(Vector.Zero());
+            sprites[i].setAnimationFilePath(typeface.getAnimationFilePath());
+            sprites[i].setAnimationFrame(glyphs[i].getAnimationFrame());
+        }
+        // Compute starting position based on alignment
+        Vector textPosition = boxPosition.clone();
+        if (horizontalAlignment == TextAlignment.Left) {
+            textPosition.setX(boxPosition.getX());
+        } else if (horizontalAlignment == TextAlignment.Right) {
+            textPosition.setX(boxPosition.getX() + boxDimensions.getX() - textWidth);
+        } else if (horizontalAlignment == TextAlignment.Center) {
+            textPosition.setX(boxPosition.getX() + ((boxDimensions.getX() - textWidth) * 0.5f));
+        } else {
+            return false;
+        }
+        if (verticalAlignment == TextAlignment.Bottom) {
+            textPosition.setY(boxPosition.getY() + (typeface.getMaxGlyphOffset() * size));
+        } else if (verticalAlignment == TextAlignment.Top) {
+            textPosition.setY(boxPosition.getY() + boxDimensions.getY() - (typeface.getMaxGlyphHeight() * size));
+        } else if (verticalAlignment == TextAlignment.Center) {
+            textPosition.setY(boxPosition.getY() + (typeface.getMaxGlyphOffset() * size)
+                    + ((boxDimensions.getY() - (typeface.getMaxGlyphHeight() * size)) * 0.5f));
+        } else {
+            return false;
+        }
+        // Set character sprite positions
+        Vector spritePosition = textPosition.clone();
+        for (int i = 0; i < text.length(); i++) {
+            spritePosition.setY(textPosition.getY() + (glyphs[i].getOffset() * size));
+            sprites[i].setPosition(spritePosition.clone());
+            spritePosition.setX(spritePosition.getX() + (glyphs[i].getAdvances().getX() * size));
+        }
+        ArrayList<Sprite> spritesList = new ArrayList<>();
+        Box box = new Box();
+        if (!box.initialize(boxPosition, 0.0f, boxDimensions, Angle.Zero())) {
+            return false;
+        }
+        // Draw within bounding box
+        for (int i = 0; i < text.length(); i++) {
+            Box spriteBox = new Box();
+            if (!spriteBox.initialize(sprites[i].getPosition(), 0.0f, glyphs[i].getDimensions().scalarMultiply(size),
+                    Angle.Zero())) {
+                return false;
+            }
+            if (box.contains(spriteBox)) {
+                spritesList.add(sprites[i]);
+            }
+        }
+        return submit(camera, spritesList);
     }
 
     /**
