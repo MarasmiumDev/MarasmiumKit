@@ -9,9 +9,6 @@ package dev.marasmium.kit.apptest;
 
 import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.AppConfig;
-import dev.marasmium.kit.applib.data.Colour;
-import dev.marasmium.kit.applib.data.Line;
-import dev.marasmium.kit.applib.data.Vector;
 
 public class AppTest {
 

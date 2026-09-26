@@ -28,10 +28,8 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ReadOnlyBufferException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -819,9 +817,10 @@ public class GraphicsManager implements GLEventListener {
                 }
                 vertices = newVertices;
                 vertices.flip();
+                int baseIndex = spriteCount * FloatsPerVertex;
                 int[] sIndices = {
-                        (spriteCount * 4) + 0, (spriteCount * 4) + 1, (spriteCount * 4) + 2,
-                        (spriteCount * 4) + 2, (spriteCount * 4) + 3, (spriteCount * 4) + 0,
+                        baseIndex, baseIndex + 1, baseIndex + 2,
+                        baseIndex + 2, baseIndex + 3, baseIndex,
                 };
                 IntBuffer newIndices = Buffers.newDirectIntBuffer(indices.capacity() + sIndices.length);
                 try {

@@ -60,7 +60,7 @@ public abstract class Scene implements InputListener, NetListener {
     public abstract boolean processInput();
 
     /**
-     * Draw this scene's graphics
+     * Submit this scene's content to the graphics system to draw
      */
     public abstract void draw();
 

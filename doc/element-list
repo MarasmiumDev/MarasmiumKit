@@ -1,0 +1,13 @@
+dev.marasmium.kit.applib
+dev.marasmium.kit.applib.assets
+dev.marasmium.kit.applib.audio
+dev.marasmium.kit.applib.data
+dev.marasmium.kit.applib.graphics
+dev.marasmium.kit.applib.input
+dev.marasmium.kit.applib.logging
+dev.marasmium.kit.applib.networking
+dev.marasmium.kit.applib.windowing
+dev.marasmium.kit.apptest
+dev.marasmium.kit.assetconverter
+dev.marasmium.kit.leveleditor
+dev.marasmium.kit.levelplayer

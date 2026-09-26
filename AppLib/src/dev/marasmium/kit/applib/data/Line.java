@@ -10,7 +10,7 @@ package dev.marasmium.kit.applib.data;
 import java.io.Serializable;
 
 /**
- * A data structure representing a line as a linear function
+ * Linear function data structure representing a 2D line
  */
 public class Line implements Serializable, Cloneable {
 

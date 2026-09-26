@@ -183,7 +183,7 @@ public class App {
     }
 
     /**
-     * Free/de-initialize the application framework's memory
+     * Free the application framework's memory
      * @return Whether the application framework was successfully/cleanly destroyed
      */
     public static boolean Destroy() {
@@ -242,8 +242,7 @@ public class App {
     }
 
     /**
-     * Add a scene to the application framework to be managed by it - the framework will be responsible for initializing
-     * and destroying the scene after it is added
+     * Add a scene to the application framework to be managed by it
      * @param scene The scene to add to the application framework - if not initialized, this will initialize it
      * @return Whether the scene was not already present and was initialized successfully
      */
@@ -269,8 +268,7 @@ public class App {
     }
 
     /**
-     * Remove a scene from the application framework no longer to be managed by it - the framework will no longer be
-     * responsible for initializing and destroying the scene after it is removed
+     * Remove a scene from the application framework no longer to be managed by it
      * @param scene The scene to remove from the application framework - this will destroy it
      * @return Whether the scene was present and was destroyed successfully
      */
@@ -308,8 +306,8 @@ public class App {
     }
 
     /**
-     * Leaves the current scene if one is present, adds the given scene to be managed by the application framework if
-     * not already added, and enters the new scene
+     * Leave the current scene if one is present, add the given scene to be managed by the application framework if
+     * not already added, and enter the new scene
      * @param scene The new scene for the application framework to display, must not be null
      * @return Whether leaving the old scene and entering the new scene was done successfully
      */
