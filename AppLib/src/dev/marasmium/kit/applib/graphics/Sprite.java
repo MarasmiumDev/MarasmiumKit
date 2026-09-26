@@ -34,6 +34,14 @@ public class Sprite extends Box {
      */
     private float animationTimer = 0.0f;
     /**
+     * The number of times this sprite's animation should play before stopping automatically
+     */
+    private int animationRepeatCount = 0;
+    /**
+     * The number of times this sprite's animation has played since the last time it was played
+     */
+    private int animationRepeatCounter = 0;
+    /**
      * Whether this sprite's animation is flipped horizontally when drawn
      */
     private boolean flippedHorizontally = false;
@@ -77,8 +85,16 @@ public class Sprite extends Box {
                 float animationFrameTime = (float)App.Graphics.getTargetFPS() / animation.getTargetFPS();
                 animationTimer += deltaFrames;
                 if (animationTimer >= animationFrameTime) {
-                    animationFrame += 1;
-                    animationFrame %= animation.getFrameCount();
+                    if (animationFrame < animation.getFrameCount() - 1) {
+                        animationFrame += 1;
+                    } else {
+                        animationRepeatCounter += 1;
+                        if (animationRepeatCounter < animationRepeatCount || animationRepeatCount < 0) {
+                            animationFrame = 0;
+                        } else {
+                            pauseAnimation();
+                        }
+                    }
                     animationTimer = 0.0f;
                 }
             }
@@ -95,6 +111,8 @@ public class Sprite extends Box {
         animationFrame = 0;
         animationPlaying = false;
         animationTimer = 0.0f;
+        animationRepeatCount = 0;
+        animationRepeatCounter = 0;
         flippedVertically = false;
         flippedHorizontally = false;
     }
@@ -161,9 +179,20 @@ public class Sprite extends Box {
 
     /**
      * Set this sprite's current animation to advance on updates by its target FPS
+     * @param animationRepeatCount The number of times to play this animation before automatically pausing, negative for
+     * infinite loop
+     */
+    public void playAnimation(int animationRepeatCount) {
+        animationPlaying = true;
+        this.animationRepeatCount = animationRepeatCount;
+        animationRepeatCounter = 0;
+    }
+
+    /**
+     * Set this sprite's current animation to advance on updates by its target FPS
      */
     public void playAnimation() {
-        animationPlaying = true;
+        playAnimation(-1);
     }
 
     /**
@@ -180,6 +209,14 @@ public class Sprite extends Box {
         animationPlaying = false;
         animationFrame = 0;
         animationTimer = 0.0f;
+    }
+
+    /**
+     * Test whether this sprite's current animation has finished its most recently played number of loops
+     * @return Whether this sprite's current animation is finished
+     */
+    public boolean isAnimationFinished() {
+        return !animationPlaying && animationRepeatCount == animationRepeatCounter && animationRepeatCount != 0;
     }
 
     /**

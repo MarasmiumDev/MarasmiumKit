@@ -202,19 +202,18 @@ public class GraphicsManager implements GLEventListener {
      * @param camera The camera to render the text through
      * @param text The text to render
      * @param typefaceFilePath The typeface to render the text in
-     * @param boxPosition The position of the bounding box for the text to be aligned within
-     * @param boxDimensions The dimensions of the bounding box for the text to be aligned within
+     * @param boundingBox The bounding box for the text to be aligned and contained within
      * @param depth The depth to render the text characters at in the scene
      * @param size The scale on the default pixel size of the typeface to draw the text at
      * @param horizontalAlignment The horizontal alignment of the text within its bounding box
      * @param verticalAlignment The vertical alignment of the text within its bounding box
      * @return Whether the text was submitted successfully
      */
-    public boolean submit(Camera camera, String text, String typefaceFilePath, Vector boxPosition, Vector boxDimensions,
-                          float depth, float size, TextAlignment horizontalAlignment, TextAlignment verticalAlignment) {
+    public boolean submit(Camera camera, String text, String typefaceFilePath, Box boundingBox, float depth, float size,
+                          TextAlignment horizontalAlignment, TextAlignment verticalAlignment) {
         // Check parameters
-        if (text == null || typefaceFilePath == null || boxPosition == null || boxDimensions == null
-                || horizontalAlignment == null || verticalAlignment == null) {
+        if (text == null || typefaceFilePath == null || boundingBox == null || horizontalAlignment == null
+                || verticalAlignment == null) {
             return false;
         }
         if (text.isEmpty()) {
@@ -254,23 +253,26 @@ public class GraphicsManager implements GLEventListener {
             sprites[i].setAnimationFrame(glyphs[i].getAnimationFrame());
         }
         // Compute starting position based on alignment
-        Vector textPosition = boxPosition.clone();
+        Vector textPosition = boundingBox.getPosition();
         if (horizontalAlignment == TextAlignment.Left) {
-            textPosition.setX(boxPosition.getX());
+            textPosition.setX(boundingBox.getPosition().getX());
         } else if (horizontalAlignment == TextAlignment.Right) {
-            textPosition.setX(boxPosition.getX() + boxDimensions.getX() - textDimensions.getX());
+            textPosition.setX(boundingBox.getPosition().getX() + boundingBox.getDimensions().getX()
+                    - textDimensions.getX());
         } else if (horizontalAlignment == TextAlignment.Center) {
-            textPosition.setX(boxPosition.getX() + ((boxDimensions.getX() - textDimensions.getX()) * 0.5f));
+            textPosition.setX(boundingBox.getPosition().getX() + ((boundingBox.getDimensions().getX()
+                    - textDimensions.getX()) * 0.5f));
         } else {
             return false;
         }
         if (verticalAlignment == TextAlignment.Bottom) {
-            textPosition.setY(boxPosition.getY() + (maxOffset * size));
+            textPosition.setY(boundingBox.getPosition().getY() + (maxOffset * size));
         } else if (verticalAlignment == TextAlignment.Top) {
-            textPosition.setY(boxPosition.getY() + boxDimensions.getY() - (textDimensions.getY() * size));
+            textPosition.setY(boundingBox.getPosition().getY() + boundingBox.getDimensions().getY()
+                    - (textDimensions.getY() * size));
         } else if (verticalAlignment == TextAlignment.Center) {
-            textPosition.setY(boxPosition.getY() + (maxOffset * size)
-                    + ((boxDimensions.getY() - (textDimensions.getY() * size)) * 0.5f));
+            textPosition.setY(boundingBox.getPosition().getY() + (maxOffset * size)
+                    + ((boundingBox.getDimensions().getY() - (textDimensions.getY() * size)) * 0.5f));
         } else {
             return false;
         }
@@ -282,10 +284,6 @@ public class GraphicsManager implements GLEventListener {
             spritePosition.setX(spritePosition.getX() + (glyphs[i].getAdvances().getX() * size));
         }
         ArrayList<Sprite> spritesList = new ArrayList<>();
-        Box box = new Box();
-        if (!box.initialize(boxPosition, 0.0f, boxDimensions, Angle.Zero())) {
-            return false;
-        }
         // Draw within bounding box
         for (int i = 0; i < text.length(); i++) {
             Box spriteBox = new Box();
@@ -293,7 +291,7 @@ public class GraphicsManager implements GLEventListener {
                     Angle.Zero())) {
                 return false;
             }
-            if (box.contains(spriteBox)) {
+            if (boundingBox.contains(spriteBox)) {
                 spritesList.add(sprites[i]);
             }
         }

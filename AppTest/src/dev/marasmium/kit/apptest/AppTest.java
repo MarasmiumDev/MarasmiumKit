@@ -12,22 +12,24 @@ import dev.marasmium.kit.applib.AppConfig;
 
 public class AppTest {
 
-    public static final TestScene1 Test_Scene_1 = new TestScene1();
+    public static final TitleScene Title_Scene = new TitleScene();
 
     static void main() {
-        // Set up app
-        AppConfig config = new AppConfig(Test_Scene_1);
+        AppConfig config = new AppConfig(Title_Scene);
         if (!config.applyDefaults()) {
-            System.out.println("Failed to apply default settings");
+            System.out.println("Failed to configure application");
             return;
         }
         if (App.Initialize(config)) {
+            System.out.println("Initialized application");
             App.Run();
         } else {
-            System.out.println("Failed to initialize app!");
+            System.out.println("Failed to initialize application");
         }
-        if (!App.Destroy()) {
-            System.out.println("Failed to destroy app!");
+        if (App.Destroy()) {
+            System.out.println("Destroyed application");
+        } else {
+            System.out.println("Failed to destroy application");
         }
     }
 
