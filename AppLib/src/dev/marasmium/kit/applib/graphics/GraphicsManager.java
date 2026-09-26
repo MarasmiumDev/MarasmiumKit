@@ -232,7 +232,8 @@ public class GraphicsManager implements GLEventListener {
             return false;
         }
         Glyph[] glyphs = new Glyph[text.length()];
-        float textWidth = 0.0f;
+        Vector textDimensions = Vector.Zero();
+        float maxOffset = 0.0f;
         Sprite[] sprites = new Sprite[text.length()];
         // Compute character metrics
         for (int i = 0; i < text.length(); i++) {
@@ -240,7 +241,10 @@ public class GraphicsManager implements GLEventListener {
             if (glyphs[i] == null) {
                 return false;
             }
-            textWidth += glyphs[i].getAdvances().getX() * size;
+            textDimensions.setX(textDimensions.getX() + glyphs[i].getAdvances().getX() * size);
+            textDimensions.setY(Math.max(textDimensions.getY(),
+                    glyphs[i].getDimensions().getY() + glyphs[i].getOffset()));
+            maxOffset = Math.max(maxOffset, -glyphs[i].getOffset());
             sprites[i] = new Sprite();
             sprites[i].setVelocity(Vector.Zero());
             sprites[i].setAngle(Angle.Zero());
@@ -256,19 +260,19 @@ public class GraphicsManager implements GLEventListener {
         if (horizontalAlignment == TextAlignment.Left) {
             textPosition.setX(boxPosition.getX());
         } else if (horizontalAlignment == TextAlignment.Right) {
-            textPosition.setX(boxPosition.getX() + boxDimensions.getX() - textWidth);
+            textPosition.setX(boxPosition.getX() + boxDimensions.getX() - textDimensions.getX());
         } else if (horizontalAlignment == TextAlignment.Center) {
-            textPosition.setX(boxPosition.getX() + ((boxDimensions.getX() - textWidth) * 0.5f));
+            textPosition.setX(boxPosition.getX() + ((boxDimensions.getX() - textDimensions.getX()) * 0.5f));
         } else {
             return false;
         }
         if (verticalAlignment == TextAlignment.Bottom) {
-            textPosition.setY(boxPosition.getY() + (typeface.getMaxGlyphOffset() * size));
+            textPosition.setY(boxPosition.getY() + (maxOffset * size));
         } else if (verticalAlignment == TextAlignment.Top) {
-            textPosition.setY(boxPosition.getY() + boxDimensions.getY() - (typeface.getMaxGlyphHeight() * size));
+            textPosition.setY(boxPosition.getY() + boxDimensions.getY() - (textDimensions.getY() * size));
         } else if (verticalAlignment == TextAlignment.Center) {
-            textPosition.setY(boxPosition.getY() + (typeface.getMaxGlyphOffset() * size)
-                    + ((boxDimensions.getY() - (typeface.getMaxGlyphHeight() * size)) * 0.5f));
+            textPosition.setY(boxPosition.getY() + (maxOffset * size)
+                    + ((boxDimensions.getY() - (textDimensions.getY() * size)) * 0.5f));
         } else {
             return false;
         }

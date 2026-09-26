@@ -27,14 +27,6 @@ public class Typeface implements Cloneable {
      * The constructed file path of the animation containing the glyph images of this typeface
      */
     private String animationFilePath = null;
-    /**
-     * The maximum height of a glyph in this typeface
-     */
-    private float maxGlyphHeight = 0.0f;
-    /**
-     * The maximum absolute offset of a glyph in this typeface
-     */
-    private float maxGlyphOffset = 0.0f;
 
     /**
      * Initialize this typeface with a set of characters mapped to glyph metrics and an animation file path
@@ -57,10 +49,6 @@ public class Typeface implements Cloneable {
         }
         if (!setAnimationData(animationData)) {
             return false;
-        }
-        for (Glyph glyph : glyphs) {
-            maxGlyphHeight = Math.max(maxGlyphHeight, glyph.getDimensions().getY() + glyph.getOffset());
-            maxGlyphOffset = Math.max(maxGlyphOffset, -glyph.getOffset());
         }
         return true;
     }
@@ -198,22 +186,6 @@ public class Typeface implements Cloneable {
         }
         this.animationFilePath = animationFilePath;
         return true;
-    }
-
-    /**
-     * Get the maximum height of a glyph in this typeface
-     * @return This typeface's maximum glyph height
-     */
-    public float getMaxGlyphHeight() {
-        return maxGlyphHeight;
-    }
-
-    /**
-     * Get the maximum absolute offset of a glyph in this typeface
-     * @return This typeface's maximum glyph offset
-     */
-    public float getMaxGlyphOffset() {
-        return maxGlyphOffset;
     }
 
     /**
