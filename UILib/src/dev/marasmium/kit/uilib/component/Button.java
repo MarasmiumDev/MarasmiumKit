@@ -1,0 +1,267 @@
+/**
+ * File:        Button.java
+ * Author:      MarasmiumDev (info@marasmium.dev)
+ * Created:     2026.09.28
+ * Purpose:     Defines a button user-interface component
+ */
+
+package dev.marasmium.kit.uilib.component;
+
+import dev.marasmium.kit.applib.App;
+import dev.marasmium.kit.applib.data.Angle;
+import dev.marasmium.kit.applib.data.Vector;
+import dev.marasmium.kit.applib.graphics.Alignment;
+import dev.marasmium.kit.applib.input.MouseButton;
+import dev.marasmium.kit.uilib.UIEvent;
+
+public class Button extends UIComponent {
+
+    protected boolean selected = false;
+    protected boolean pressed = false;
+    protected String unselectedAnimationFilePath = null;
+    protected String selectedAnimationFilePath = null;
+    protected String pressedAnimationFilePath = null;
+    protected final Label label = new Label();
+    protected Alignment labelAlignment = null;
+
+    public boolean initialize(Vector position, Vector dimensions, String[] animationFilePaths, String labelText,
+                              Alignment labelAlignment) {
+        if (animationFilePaths == null) {
+            return false;
+        }
+        if (animationFilePaths.length != 3) {
+            return false;
+        }
+        if (!label.initialize(Vector.Zero(), Vector.Zero(), "", labelText, Alignment.Center, Alignment.Center)) {
+            return false;
+        }
+        if (!addComponent(label)) {
+            return false;
+        }
+        setEnabled(true);
+        setVisible(true);
+        if (!sprite.initialize(Vector.Zero(), 0.0f, Vector.Zero(), Angle.Zero(), animationFilePaths[0])) {
+            return false;
+        }
+        sprite.setAnimationFrame(sprite.getAnimationFrameCount() - 1);
+        if (!setDimensions(dimensions)) {
+            return false;
+        }
+        if (!setPosition(position)) {
+            return false;
+        }
+        if (!setUnselectedAnimationFilePath(animationFilePaths[0])) {
+            return false;
+        }
+        if (!setSelectedAnimationFilePath(animationFilePaths[1])) {
+            return false;
+        }
+        if (!setPressedAnimationFilePath(animationFilePaths[2])) {
+            return false;
+        }
+        if (!setLabelAlignment(labelAlignment)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void processInput() {
+        label.processInput();
+        if (App.Input.mouse.getCursorPosition(parent.getCamera()).inside(sprite)) {
+            if (!selected) {
+                selected = true;
+                sprite.stopAnimation();
+                sprite.setAnimationFilePath(selectedAnimationFilePath);
+                sprite.playAnimation(1);
+                parent.buttonEvent(parent.getGroupID(), componentID, UIEvent.Button_Selected);
+            }
+        } else {
+            if (selected) {
+                selected = false;
+                sprite.stopAnimation();
+                sprite.setAnimationFilePath(unselectedAnimationFilePath);
+                sprite.playAnimation(1);
+                parent.buttonEvent(parent.getGroupID(), componentID, UIEvent.Button_Unselected);
+            }
+        }
+        if (selected && pressed) {
+            if (App.Input.mouse.isButtonReleased(MouseButton.Left)) {
+                parent.buttonEvent(parent.getGroupID(), componentID, UIEvent.Button_Released);
+            }
+        }
+        if (selected) {
+            if (App.Input.mouse.isButtonDown(MouseButton.Left)) {
+                if (!pressed) {
+                    pressed = true;
+                    sprite.stopAnimation();
+                    sprite.setAnimationFilePath(pressedAnimationFilePath);
+                    sprite.playAnimation(1);
+                    parent.buttonEvent(parent.getGroupID(), componentID, UIEvent.Button_Pressed);
+                }
+            } else {
+                if (pressed) {
+                    pressed = false;
+                    sprite.stopAnimation();
+                    sprite.setAnimationFilePath(selectedAnimationFilePath);
+                    sprite.setAnimationFrame(sprite.getAnimationFrameCount() - 1);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void draw() {
+        label.draw();
+        App.Graphics.submit(parent.getCamera(), sprite);
+    }
+
+    @Override
+    public void update(float deltaFrames) {
+        sprite.update(deltaFrames);
+        label.update(deltaFrames);
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        label.destroy();
+        labelAlignment = null;
+    }
+
+    @Override
+    public boolean setPosition(Vector position) {
+        boolean success = true;
+        Vector labelPosition = getPosition().clone();
+        if (labelAlignment == Alignment.Left) {
+            labelPosition.setX(position.getX() - getDimensions().getX());
+        } else if (labelAlignment == Alignment.Right) {
+            labelPosition.setX(position.getX() + getDimensions().getX());
+        } else if (labelAlignment == Alignment.Bottom) {
+            labelPosition.setY(position.getY() - getDimensions().getY());
+        } else if (labelAlignment == Alignment.Top) {
+            labelPosition.setY(position.getY() + getDimensions().getY());
+        };
+        if (!label.setPosition(labelPosition)) {
+            success = false;
+        }
+        if (!super.setPosition(position)) {
+            success = false;
+        }
+        return success;
+    }
+
+    @Override
+    public boolean setDimensions(Vector dimensions) {
+        boolean success = true;
+        if (!super.setDimensions(dimensions)) {
+            success = false;
+        }
+        if (!label.setDimensions(dimensions)) {
+            success = false;
+        }
+        return success;
+    }
+
+    @Override
+    public void setMinimumDimensions(Vector minimumDimensions) {
+        super.setMinimumDimensions(minimumDimensions);
+        label.setMinimumDimensions(minimumDimensions);
+    }
+
+    @Override
+    public void setMaximumDimensions(Vector maximumDimensions) {
+        super.setMaximumDimensions(maximumDimensions);
+        label.setMaximumDimensions(maximumDimensions);
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public boolean isPressed() {
+        return pressed;
+    }
+
+    public String getUnselectedAnimationFilePath() {
+        return unselectedAnimationFilePath;
+    }
+
+    public boolean setUnselectedAnimationFilePath(String unselectedAnimationFilePath) {
+        if (unselectedAnimationFilePath == null) {
+            return false;
+        }
+        this.unselectedAnimationFilePath = unselectedAnimationFilePath;
+        return true;
+    }
+
+    public String getSelectedAnimationFilePath() {
+        return selectedAnimationFilePath;
+    }
+
+    public boolean setSelectedAnimationFilePath(String selectedAnimationFilePath) {
+        if (selectedAnimationFilePath == null) {
+            return false;
+        }
+        this.selectedAnimationFilePath = selectedAnimationFilePath;
+        return true;
+    }
+
+    public String getPressedAnimationFilePath() {
+        return pressedAnimationFilePath;
+    }
+
+    public boolean setPressedAnimationFilePath(String pressedAnimationFilePath) {
+        if (pressedAnimationFilePath == null) {
+            return false;
+        }
+        this.pressedAnimationFilePath = pressedAnimationFilePath;
+        return true;
+    }
+
+    public Label getLabel() {
+        return label;
+    }
+
+    public Alignment getLabelAlignment() {
+        return labelAlignment;
+    }
+
+    public boolean setLabelAlignment(Alignment labelAlignment) {
+        if (labelAlignment == null) {
+            return false;
+        }
+        this.labelAlignment = labelAlignment;
+        if (labelAlignment == Alignment.Left) {
+            if (!(label.setHorizontalTextAlignment(Alignment.Right)
+                    && label.setVerticalTextAlignment(Alignment.Center))) {
+                return false;
+            }
+        } else if (labelAlignment == Alignment.Right) {
+            if (!(label.setHorizontalTextAlignment(Alignment.Left)
+                    && label.setVerticalTextAlignment(Alignment.Center))) {
+                return false;
+            }
+        } else if (labelAlignment == Alignment.Bottom) {
+            if (!(label.setHorizontalTextAlignment(Alignment.Center)
+                    && label.setVerticalTextAlignment(Alignment.Top))) {
+                return false;
+            }
+        } else if (labelAlignment == Alignment.Top) {
+            if (!(label.setHorizontalTextAlignment(Alignment.Center)
+                    && label.setVerticalTextAlignment(Alignment.Bottom))) {
+                return false;
+            }
+        } else {
+            if (!(label.setHorizontalTextAlignment(Alignment.Center)
+                    && label.setVerticalTextAlignment(Alignment.Center))) {
+                return false;
+            }
+        }
+        if (!setPosition(getPosition().clone())) {
+            return false;
+        }
+        return true;
+    }
+
+}

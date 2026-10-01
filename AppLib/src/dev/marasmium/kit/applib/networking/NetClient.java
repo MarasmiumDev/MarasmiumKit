@@ -250,6 +250,14 @@ public class NetClient implements NetListener {
     }
 
     /**
+     * Get the set of network listeners currently subscribed to network event callbacks
+     * @return The current set of network listeners
+     */
+    public ArrayList<NetListener> getListeners() {
+        return listeners;
+    }
+
+    /**
      * Subscribe a listener to receive network event callbacks from the network client
      * @param listener The listener to add
      * @return Whether the listener was added successfully

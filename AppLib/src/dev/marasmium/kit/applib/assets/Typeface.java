@@ -74,6 +74,52 @@ public class Typeface implements Cloneable {
     }
 
     /**
+     * Get a string representing this typeface
+     * @return This typeface's string representation
+     */
+    @Override
+    public String toString() {
+        if (animationData == null) {
+            return "typeface(null)";
+        }
+        if (animationFilePath == null) {
+            return "typeface(" + glyphs.size() + " glyphs, " + animationData.length + "B)";
+        }
+        return "typeface(" + glyphs.size() + " glyphs, " + animationData.length + "B at \"" + animationFilePath + "\")";
+    }
+
+    /**
+     * Make a copy of this typeface containing the same data
+     * @return A copy of this typeface
+     */
+    @Override
+    public Typeface clone() {
+        Typeface typeface;
+        try {
+            typeface = (Typeface)super.clone();
+        } catch (CloneNotSupportedException _) {
+            return null;
+        }
+        for (HashMap.Entry<Character, Glyph> entry : glyphs.entrySet()) {
+            try {
+                typeface.glyphs.put(entry.getKey(), entry.getValue().clone());
+            } catch (IllegalStateException _) {
+                return null;
+            }
+        }
+        if (animationData != null) {
+            typeface.animationData = new byte[animationData.length];
+            try {
+                System.arraycopy(animationData, 0, typeface.animationData, 0, animationData.length);
+            } catch (IndexOutOfBoundsException | ArrayStoreException _) {
+                return null;
+            }
+        }
+        typeface.animationFilePath = animationFilePath;
+        return typeface;
+    }
+
+    /**
      * Get the set of characters in this typeface mapped to their glyph metrics
      * @return This typeface's glyph metrics
      */
@@ -186,52 +232,6 @@ public class Typeface implements Cloneable {
         }
         this.animationFilePath = animationFilePath;
         return true;
-    }
-
-    /**
-     * Get a string representing this typeface
-     * @return This typeface's string representation
-     */
-    @Override
-    public String toString() {
-        if (animationData == null) {
-            return "typeface(null)";
-        }
-        if (animationFilePath == null) {
-            return "typeface(" + glyphs.size() + " glyphs, " + animationData.length + "B)";
-        }
-        return "typeface(" + glyphs.size() + " glyphs, " + animationData.length + "B at \"" + animationFilePath + "\")";
-    }
-
-    /**
-     * Make a copy of this typeface containing the same data
-     * @return A copy of this typeface
-     */
-    @Override
-    public Typeface clone() {
-        Typeface typeface;
-        try {
-            typeface = (Typeface)super.clone();
-        } catch (CloneNotSupportedException _) {
-            return null;
-        }
-        for (HashMap.Entry<Character, Glyph> entry : glyphs.entrySet()) {
-            try {
-                typeface.glyphs.put(entry.getKey(), entry.getValue().clone());
-            } catch (IllegalStateException _) {
-                return null;
-            }
-        }
-        if (animationData != null) {
-            typeface.animationData = new byte[animationData.length];
-            try {
-                System.arraycopy(animationData, 0, typeface.animationData, 0, animationData.length);
-            } catch (IndexOutOfBoundsException | ArrayStoreException _) {
-                return null;
-            }
-        }
-        typeface.animationFilePath = animationFilePath;
-        return typeface;
     }
 
 }

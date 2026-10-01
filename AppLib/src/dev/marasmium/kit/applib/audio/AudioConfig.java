@@ -26,16 +26,10 @@ public class AudioConfig {
     public final MusicManagerConfig music = new MusicManagerConfig();
 
     /**
-     * Apply the default settings to this audio configuration structure
-     * @return Whether the default settings were applied successfully
+     * Construct an audio system configuration structure with default settings
      */
-    public boolean applyDefaults() {
-        if (!speaker.initialize(0)) {
-            return false;
-        }
-        soundEffects.applyDefaults();
-        music.applyDefaults();
-        return true;
+    public AudioConfig() {
+        speaker.initialize(0);
     }
 
 }

@@ -65,6 +65,45 @@ public class AudioTrack implements Cloneable {
     }
 
     /**
+     * Convert this audio track to a string containing its format, size, and duration
+     * @return The string representation of this audio track
+     */
+    @Override
+    public String toString() {
+        if (data == null) {
+            return "audio(null)";
+        }
+        return "audio(" + sampleRate + "Hz, " + sampleSize + "BPS, " + channelCount + " channels, " + data.length
+                + "B, " + getDuration() + "s)";
+    }
+
+    /**
+     * Make a copy of this audio track containing the same data
+     * @return A copy of this audio track
+     */
+    @Override
+    public AudioTrack clone() {
+        AudioTrack audioTrack;
+        try {
+            audioTrack = (AudioTrack)super.clone();
+        } catch (CloneNotSupportedException _) {
+            return null;
+        }
+        audioTrack.sampleRate = sampleRate;
+        audioTrack.sampleSize = sampleSize;
+        audioTrack.channelCount = channelCount;
+        if (data != null) {
+            audioTrack.data = new byte[data.length];
+            try {
+                System.arraycopy(data, 0, audioTrack.data, 0, data.length);
+            } catch (IndexOutOfBoundsException | ArrayStoreException _) {
+                return null;
+            }
+        }
+        return audioTrack;
+    }
+
+    /**
      * Get the sample rate to play this audio track at
      * @return This audio track's sample rate in Hz
      */
@@ -199,45 +238,6 @@ public class AudioTrack implements Cloneable {
             return 0;
         }
         return data.length;
-    }
-
-    /**
-     * Convert this audio track to a string containing its format, size, and duration
-     * @return The string representation of this audio track
-     */
-    @Override
-    public String toString() {
-        if (data == null) {
-            return "audio(null)";
-        }
-        return "audio(" + sampleRate + "Hz, " + sampleSize + "BPS, " + channelCount + " channels, " + data.length
-                + "B, " + getDuration() + "s)";
-    }
-
-    /**
-     * Make a copy of this audio track containing the same data
-     * @return A copy of this audio track
-     */
-    @Override
-    public AudioTrack clone() {
-        AudioTrack audioTrack;
-        try {
-            audioTrack = (AudioTrack)super.clone();
-        } catch (CloneNotSupportedException _) {
-            return null;
-        }
-        audioTrack.sampleRate = sampleRate;
-        audioTrack.sampleSize = sampleSize;
-        audioTrack.channelCount = channelCount;
-        if (data != null) {
-            audioTrack.data = new byte[data.length];
-            try {
-                System.arraycopy(data, 0, audioTrack.data, 0, data.length);
-            } catch (IndexOutOfBoundsException | ArrayStoreException _) {
-                return null;
-            }
-        }
-        return audioTrack;
     }
 
 }

@@ -287,6 +287,56 @@ public class NetServer implements NetListener {
     }
 
     /**
+     * A new client has connected to the server
+     * @param clientID The ID number of the connected network connection
+     * @return Whether the client connection was accepted by the server
+     */
+    @Override
+    public boolean netConnected(int clientID) {
+        // Check against maximum client count
+        if (clients.size() > maxClients && maxClients != -1) {
+            log.write(logSource, LogLevel.Warning, "Maximum client count exceeded, rejecting client ", clientID);
+            getClient(clientID).setRejected(true);
+            return false;
+        }
+        // Check against server logic
+        if (!parent.netConnected(clientID)) {
+            log.write(logSource, LogLevel.Warning, "Client ", clientID, " rejected by server logic");
+            getClient(clientID).setRejected(true);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * The server has received a message from a client
+     * @param clientID The ID number of the network connection
+     * @param message The message received
+     */
+    @Override
+    public void netMessageReceived(int clientID, NetMessage message) {
+        if (message == null) {
+            return;
+        }
+        parent.netMessageReceived(clientID, message);
+    }
+
+    /**
+     * A client has disconnected from the server
+     * @param clientID The ID number of the disconnected network connection
+     */
+    @Override
+    public void netDisconnected(int clientID) {
+        NetConnection client = getClient(clientID);
+        if (client != null) {
+            if (!client.isRejected()) {
+                parent.netDisconnected(clientID);
+            }
+            clients.remove(client);
+        }
+    }
+
+    /**
      * Get the server's logging system
      * @return The server log
      */
@@ -410,56 +460,6 @@ public class NetServer implements NetListener {
         }
         this.maxMPUPC = maxMPUPC;
         return true;
-    }
-
-    /**
-     * A new client has connected to the server
-     * @param clientID The ID number of the connected network connection
-     * @return Whether the client connection was accepted by the server
-     */
-    @Override
-    public boolean netConnected(int clientID) {
-        // Check against maximum client count
-        if (clients.size() > maxClients && maxClients != -1) {
-            log.write(logSource, LogLevel.Warning, "Maximum client count exceeded, rejecting client ", clientID);
-            getClient(clientID).setRejected(true);
-            return false;
-        }
-        // Check against server logic
-        if (!parent.netConnected(clientID)) {
-            log.write(logSource, LogLevel.Warning, "Client ", clientID, " rejected by server logic");
-            getClient(clientID).setRejected(true);
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * The server has received a message from a client
-     * @param clientID The ID number of the network connection
-     * @param message The message received
-     */
-    @Override
-    public void netMessageReceived(int clientID, NetMessage message) {
-        if (message == null) {
-            return;
-        }
-        parent.netMessageReceived(clientID, message);
-    }
-
-    /**
-     * A client has disconnected from the server
-     * @param clientID The ID number of the disconnected network connection
-     */
-    @Override
-    public void netDisconnected(int clientID) {
-        NetConnection client = getClient(clientID);
-        if (client != null) {
-            if (!client.isRejected()) {
-                parent.netDisconnected(clientID);
-            }
-            clients.remove(client);
-        }
     }
 
 }

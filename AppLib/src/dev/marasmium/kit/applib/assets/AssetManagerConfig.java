@@ -16,12 +16,12 @@ public class AssetManagerConfig {
     /**
      * The base path (directory) containing all audio and animation assets for the application framework
      */
-    public String basePath = null;
+    public String basePath;
 
     /**
-     * Apply the default settings to this asset management configuration structure
+     * Construct an asset management system configuration structure with default settings
      */
-    public void applyDefaults() {
+    public AssetManagerConfig() {
         basePath = "./Assets/";
     }
 

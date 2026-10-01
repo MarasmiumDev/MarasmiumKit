@@ -41,6 +41,21 @@ public abstract class Scene implements InputListener, NetListener {
     }
 
     /**
+     * External destruction function for this scene intended to be called only by the application framework when
+     * removing it from the app, frees the scene's ID and calls its internal destroy function
+     * @return Whether this scene was destroyed safely
+     */
+    public boolean destroyScene() {
+        if (!initialized) {
+            return false;
+        }
+        boolean success = destroy();
+        sceneID = 0;
+        initialized = false;
+        return success;
+    }
+
+    /**
      * Initialize this scene's memory
      * @return Whether this scene was initialized successfully
      */
@@ -78,18 +93,16 @@ public abstract class Scene implements InputListener, NetListener {
     public abstract boolean leave(Scene nextScene);
 
     /**
-     * External destruction function for this scene intended to be called only by the application framework when
-     * removing it from the app, frees the scene's ID and calls its internal destroy function
-     * @return Whether this scene was destroyed safely
+     * Test whether this scene has the same ID as another instance
+     * @param o The object to compare this scene to (must be an instance of Scene)
+     * @return Whether o has the same scene ID as this one
      */
-    public boolean destroyScene() {
-        if (!initialized) {
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Scene s)) {
             return false;
         }
-        boolean success = destroy();
-        sceneID = 0;
-        initialized = false;
-        return success;
+        return sceneID == s.sceneID;
     }
 
     /**
@@ -120,19 +133,6 @@ public abstract class Scene implements InputListener, NetListener {
      */
     public void setSceneID(int sceneID) {
         this.sceneID = sceneID;
-    }
-
-    /**
-     * Test whether this scene has the same ID as another instance
-     * @param o The object to compare this scene to (must be an instance of Scene)
-     * @return Whether o has the same scene ID as this one
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Scene s)) {
-            return false;
-        }
-        return sceneID == s.sceneID;
     }
 
 }

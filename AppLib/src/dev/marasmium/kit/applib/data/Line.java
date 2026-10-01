@@ -15,11 +15,6 @@ import java.io.Serializable;
 public class Line implements Serializable, Cloneable {
 
     /**
-     * Small value for comparing with floating-point rounding error
-     */
-    public static final float Epsilon = 0.0001f;
-
-    /**
      * The rise/run slope of this line
      */
     private float slope;
@@ -95,7 +90,7 @@ public class Line implements Serializable, Cloneable {
      * @return The line with the given slope and x-intercept or null if the parameters were invalid
      */
     public static Line Slope_X_Intercept(float slope, float xIntercept) {
-        if (Math.abs(slope) < Epsilon) {
+        if (Math.abs(slope) < Constants.Epsilon) {
             return null;
         }
         if (!Float.isFinite(xIntercept)) {
@@ -125,7 +120,7 @@ public class Line implements Serializable, Cloneable {
         if (!Float.isFinite(yIntercept)) {
             return null;
         }
-        if (Math.abs(slope) < Epsilon) {
+        if (Math.abs(slope) < Constants.Epsilon) {
             return Horizontal(yIntercept);
         } else {
             Line l = new Line();
@@ -146,7 +141,7 @@ public class Line implements Serializable, Cloneable {
         if (point == null) {
             return null;
         }
-        if (Math.abs(slope) < Epsilon) {
+        if (Math.abs(slope) < Constants.Epsilon) {
             return Horizontal(point);
         }
         if (!Float.isFinite(slope)) {
@@ -171,7 +166,7 @@ public class Line implements Serializable, Cloneable {
         }
         float rise = point2.getY() - point1.getY();
         float run = point2.getX() - point1.getX();
-        if (Math.abs(run) < Epsilon) {
+        if (Math.abs(run) < Constants.Epsilon) {
             return Vertical(point1);
         }
         return Point_Slope(point1, rise / run);
@@ -292,35 +287,11 @@ public class Line implements Serializable, Cloneable {
     }
 
     /**
-     * Get the rise/run slope of this line
-     * @return The slope of this line
-     */
-    public float getSlope() {
-        return slope;
-    }
-
-    /**
-     * Get the x-coordinate of the x-intercept of this line
-     * @return The x-intercept of this line
-     */
-    public float getXIntercept() {
-        return xIntercept;
-    }
-
-    /**
-     * Get the y-coordinate of the y-intercept of this line
-     * @return The y-intercept of this line
-     */
-    public float getYIntercept() {
-        return yIntercept;
-    }
-
-    /**
      * Get the x-coordinate corresponding to a given y-coordinate on this line
      * @param y The y-coordinate to test
      * @return The x-coordinate corresponding to the given y-coordinate or NaN if there was none
      */
-    public float getX(float y) {
+    public float sampleX(float y) {
         if (isHorizontal()) {
             return Float.NaN;
         }
@@ -335,7 +306,7 @@ public class Line implements Serializable, Cloneable {
      * @param x The x-coordinate to test
      * @return The y-coordinate corresponding to the given x-coordinate or NaN if there was none
      */
-    public float getY(float x) {
+    public float sampleY(float x) {
         if (isHorizontal()) {
             return yIntercept;
         }
@@ -346,51 +317,18 @@ public class Line implements Serializable, Cloneable {
     }
 
     /**
-     * Test whether this line is horizontal (has slope 0)
-     * @return Whether this line is horizontal
-     */
-    public boolean isHorizontal() {
-        if (isVertical()) {
-            return false;
-        }
-        return Math.abs(slope) < Epsilon;
-    }
-
-    /**
-     * Test whether this line is vertical (has slope +/-infinity)
-     * @return Whether this line is vertical
-     */
-    public boolean isVertical() {
-        return !Float.isFinite(slope);
-    }
-
-    /**
-     * Get the angle this line's slope makes with the x-axis
-     * @return The angle of this line
-     */
-    public Angle getAngle() {
-        if (isHorizontal()) {
-            return Angle.Zero();
-        }
-        if (isVertical()) {
-            return Angle.Right();
-        }
-        return Angle.Radians((float)Math.atan(slope));
-    }
-
-    /**
      * Test whether this line is parallel to another line
      * @param l The line to test against this one
      * @return Whether this line is parallel to the given line
      */
-    public boolean isParallelTo(Line l) {
+    public boolean parallelTo(Line l) {
         if (l == null) {
             return false;
         }
         if (isVertical() && l.isVertical()) {
             return true;
         }
-        return Math.abs(slope - l.slope) < Epsilon;
+        return Math.abs(slope - l.slope) < Constants.Epsilon;
     }
 
     /**
@@ -398,14 +336,14 @@ public class Line implements Serializable, Cloneable {
      * @param l The line to test against this one
      * @return Whether this line is perpendicular to the given line
      */
-    public boolean isPerpendicularTo(Line l) {
+    public boolean perpendicularTo(Line l) {
         if (l == null) {
             return false;
         }
         if (isHorizontal() || isVertical() || l.isHorizontal() || l.isVertical()) {
             return (isHorizontal() && l.isVertical()) || (isVertical() && l.isHorizontal());
         }
-        return Math.abs(slope + (1.0f / l.slope)) < Epsilon;
+        return Math.abs(slope + (1.0f / l.slope)) < Constants.Epsilon;
     }
 
     /**
@@ -418,9 +356,9 @@ public class Line implements Serializable, Cloneable {
             return false;
         }
         if (isVertical()) {
-            return Math.abs(p.getX() - xIntercept) < Epsilon;
+            return Math.abs(p.getX() - xIntercept) < Constants.Epsilon;
         }
-        return Math.abs(getY(p.getX()) - p.getY()) < Epsilon;
+        return Math.abs(sampleY(p.getX()) - p.getY()) < Constants.Epsilon;
     }
 
     /**
@@ -428,21 +366,21 @@ public class Line implements Serializable, Cloneable {
      * @param l The line to test against this one
      * @return The intersection point of this line and the given line or null if no intersection point exists
      */
-    public Vector getIntersectionPoint(Line l) {
+    public Vector intersectionPointWith(Line l) {
         if (l == null) {
             return null;
         }
-        if (isParallelTo(l)) {
+        if (parallelTo(l)) {
             return null;
         }
         if (isVertical()) {
-            return Vector.Cartesian(xIntercept, l.getY(xIntercept));
+            return Vector.Cartesian(xIntercept, l.sampleY(xIntercept));
         }
         if (l.isVertical()) {
-            return Vector.Cartesian(l.xIntercept, getY(l.xIntercept));
+            return Vector.Cartesian(l.xIntercept, sampleY(l.xIntercept));
         }
         float x = (l.yIntercept - yIntercept) / (slope - l.slope);
-        return Vector.Cartesian(x, getY(x));
+        return Vector.Cartesian(x, sampleY(x));
     }
 
     /**
@@ -450,11 +388,11 @@ public class Line implements Serializable, Cloneable {
      * @param p The point to find the closest point to
      * @return The closest point on this line to the given point
      */
-    public Vector getClosestPointTo(Vector p) {
+    public Vector closestPointTo(Vector p) {
         if (p == null) {
             return null;
         }
-        return Perpendicular_Through(this, p).getIntersectionPoint(this);
+        return Perpendicular_Through(this, p).intersectionPointWith(this);
     }
 
     /**
@@ -462,8 +400,8 @@ public class Line implements Serializable, Cloneable {
      * @param p The point to find the distance to
      * @return The distance between the given point and this line
      */
-    public float getDistanceTo(Vector p) {
-        return p.subtract(getClosestPointTo(p)).getLength();
+    public float distanceTo(Vector p) {
+        return p.subtract(closestPointTo(p)).getLength();
     }
 
     /**
@@ -472,7 +410,7 @@ public class Line implements Serializable, Cloneable {
      * @return Whether this line intersects with a given line
      */
     public boolean intersectsWith(Line l) {
-        return !isParallelTo(l);
+        return !parallelTo(l);
     }
 
     /**
@@ -492,12 +430,12 @@ public class Line implements Serializable, Cloneable {
             return false;
         }
         if (isHorizontal()) {
-            return Math.abs(yIntercept - l.yIntercept) < Epsilon;
+            return Math.abs(yIntercept - l.yIntercept) < Constants.Epsilon;
         } else if (isVertical()) {
-            return Math.abs(xIntercept - l.xIntercept) < Epsilon;
+            return Math.abs(xIntercept - l.xIntercept) < Constants.Epsilon;
         }
-        return Math.abs(slope - l.slope) < Epsilon && Math.abs(xIntercept - l.xIntercept) < Epsilon
-                && Math.abs(yIntercept - l.yIntercept) < Epsilon;
+        return Math.abs(slope - l.slope) < Constants.Epsilon && Math.abs(xIntercept - l.xIntercept) < Constants.Epsilon
+                && Math.abs(yIntercept - l.yIntercept) < Constants.Epsilon;
     }
 
     /**
@@ -530,6 +468,63 @@ public class Line implements Serializable, Cloneable {
         l.xIntercept = xIntercept;
         l.yIntercept = yIntercept;
         return l;
+    }
+
+    /**
+     * Get the rise/run slope of this line
+     * @return The slope of this line
+     */
+    public float getSlope() {
+        return slope;
+    }
+
+    /**
+     * Get the x-coordinate of the x-intercept of this line
+     * @return The x-intercept of this line
+     */
+    public float getXIntercept() {
+        return xIntercept;
+    }
+
+    /**
+     * Get the y-coordinate of the y-intercept of this line
+     * @return The y-intercept of this line
+     */
+    public float getYIntercept() {
+        return yIntercept;
+    }
+
+    /**
+     * Test whether this line is horizontal (has slope 0)
+     * @return Whether this line is horizontal
+     */
+    public boolean isHorizontal() {
+        if (isVertical()) {
+            return false;
+        }
+        return Math.abs(slope) < Constants.Epsilon;
+    }
+
+    /**
+     * Test whether this line is vertical (has slope +/-infinity)
+     * @return Whether this line is vertical
+     */
+    public boolean isVertical() {
+        return !Float.isFinite(slope);
+    }
+
+    /**
+     * Get the angle this line's slope makes with the x-axis
+     * @return The angle of this line
+     */
+    public Angle getAngle() {
+        if (isHorizontal()) {
+            return Angle.Zero();
+        }
+        if (isVertical()) {
+            return Angle.Right();
+        }
+        return Angle.Radians((float)Math.atan(slope));
     }
 
 }

@@ -23,10 +23,6 @@ import java.util.ArrayList;
 public class AudioManager {
 
     /**
-     * The speaker to play audio on
-     */
-    private AudioDevice speaker = null;
-    /**
      * The sound effects audio subsystem
      */
     public final SoundEffectsManager soundEffects = new SoundEffectsManager();
@@ -34,6 +30,11 @@ public class AudioManager {
      * The music audio subsystem
      */
     public final MusicManager music = new MusicManager();
+
+    /**
+     * The speaker to play audio on
+     */
+    private AudioDevice speaker = null;
 
     /**
      * Initialize the sound effects and music audio subsystems

@@ -162,58 +162,6 @@ public class KeyboardManager implements KeyListener {
     }
 
     /**
-     * Test whether a key is currently down on the keyboard
-     * @param key The key to test
-     * @return Whether the given key is currently down
-     */
-    public boolean isKeyDown(KeyboardKey key) {
-        if (key == null) {
-            return false;
-        }
-        KeyState state = keyStates.get(key);
-        if (state == null) {
-            return false;
-        }
-        return state.isDown;
-    }
-
-    /**
-     * Test whether a key was just pressed down on the keyboard
-     * @param key The key to test
-     * @return Whether the given key was just pressed down
-     */
-    public boolean isKeyPressed(KeyboardKey key) {
-        return isKeyDown(key) && !wasKeyDown(key);
-    }
-
-    /**
-     * Test whether a key was just released on the keyboard
-     * @param key The key to test
-     * @return Whether the given key was just released
-     */
-    public boolean isKeyReleased(KeyboardKey key) {
-        return !isKeyDown(key) && wasKeyDown(key);
-    }
-
-    /**
-     * Get the set of characters typed on the keyboard since the last logic update
-     * @return The set of characters typed since the last update
-     */
-    public String getTypedChars() {
-        typedCharsLock.lock();
-        String typedChars = this.typedChars;
-        if (typedChars == null) {
-            typedChars = "";
-        }
-        try {
-            typedCharsLock.unlock();
-        } catch (IllegalMonitorStateException _) {
-            App.Log.write(LogSource.Input, LogLevel.Error, "Typed characters scope lock failed to release");
-        }
-        return typedChars;
-    }
-
-    /**
      * Callback function for Java AWT key press events
      * @param e The event to be processed
      */
@@ -270,6 +218,58 @@ public class KeyboardManager implements KeyListener {
         } catch (IllegalMonitorStateException _) {
             App.Log.write(LogSource.Input, LogLevel.Error, "Typed characters scope lock failed to release");
         }
+    }
+
+    /**
+     * Test whether a key is currently down on the keyboard
+     * @param key The key to test
+     * @return Whether the given key is currently down
+     */
+    public boolean isKeyDown(KeyboardKey key) {
+        if (key == null) {
+            return false;
+        }
+        KeyState state = keyStates.get(key);
+        if (state == null) {
+            return false;
+        }
+        return state.isDown;
+    }
+
+    /**
+     * Test whether a key was just pressed down on the keyboard
+     * @param key The key to test
+     * @return Whether the given key was just pressed down
+     */
+    public boolean isKeyPressed(KeyboardKey key) {
+        return isKeyDown(key) && !wasKeyDown(key);
+    }
+
+    /**
+     * Test whether a key was just released on the keyboard
+     * @param key The key to test
+     * @return Whether the given key was just released
+     */
+    public boolean isKeyReleased(KeyboardKey key) {
+        return !isKeyDown(key) && wasKeyDown(key);
+    }
+
+    /**
+     * Get the set of characters typed on the keyboard since the last logic update
+     * @return The set of characters typed since the last update
+     */
+    public String getTypedChars() {
+        typedCharsLock.lock();
+        String typedChars = this.typedChars;
+        if (typedChars == null) {
+            typedChars = "";
+        }
+        try {
+            typedCharsLock.unlock();
+        } catch (IllegalMonitorStateException _) {
+            App.Log.write(LogSource.Input, LogLevel.Error, "Typed characters scope lock failed to release");
+        }
+        return typedChars;
     }
 
 }

@@ -16,12 +16,12 @@ public class SoundEffectsManagerConfig {
     /**
      * The default volume to play sound effects at
      */
-    public float defaultVolume = 0.0f;
+    public float defaultVolume;
 
     /**
-     * Apply the default settings to this sound effects configuration structure
+     * Construct a sound effects manager configuration structure with default settings
      */
-    public void applyDefaults() {
+    public SoundEffectsManagerConfig() {
         defaultVolume = 1.0f;
     }
 

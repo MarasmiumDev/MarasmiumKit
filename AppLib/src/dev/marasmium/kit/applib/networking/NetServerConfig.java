@@ -41,16 +41,9 @@ public class NetServerConfig {
      * @param port The port for the server to listen for client connections on
      */
     public NetServerConfig(NetListener parent, int port) {
+        log.fileOutputPath = "MarasmiumKit-Server.log";
         this.parent = parent;
         this.port = port;
-    }
-
-    /**
-     * Apply the default settings to this network server configuration structure
-     */
-    public void applyDefaults() {
-        log.applyDefaults();
-        log.fileOutputPath = "MarasmiumKit-Server.log";
         maxMPUPC = -1;
         maxClients = -1;
     }

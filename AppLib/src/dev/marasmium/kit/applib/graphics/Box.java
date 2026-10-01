@@ -52,6 +52,75 @@ public class Box extends Body {
     }
 
     /**
+     * Test whether a vector is positioned inside this box
+     * @param point The vector to test against this box
+     * @return Whether the given vector is inside this box
+     */
+    public boolean contains(Vector point) {
+        if (point == null) {
+            return false;
+        }
+        Line[] edges = getEdges();
+        return point.between(edges[0], edges[1]) && point.between(edges[2], edges[3]);
+    }
+
+    /**
+     * Test whether all four corners of a box are positioned inside of this box
+     * @param box The box to test against this box
+     * @return Whether the given box's corners are inside this box
+     */
+    public boolean contains(Box box) {
+        if (box == null) {
+            return false;
+        }
+        for (Vector corner : box.getCorners()) {
+            if (!contains(corner)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Test whether all four corners of a box are positioned outside of this box
+     * @param box The box to test against this box
+     * @return Whether the given box's corners are outside this box
+     */
+    public boolean disjointFrom(Box box) {
+        if (box == null) {
+            return false;
+        }
+        return !intersectsWith(box);
+    }
+
+    /**
+     * Test whether this box intersects with another box
+     * @param box The box to test this one against
+     * @return Whether this box intersects with the given box
+     */
+    public boolean intersectsWith(Box box) {
+        if (box == null) {
+            return false;
+        }
+        Line[] edges = getEdges();
+        Line[] boxEdges = box.getEdges();
+        for (int i = 0; i < 4; i++) {
+            Line edge = edges[i];
+            for (int j = 0; j < 4; j++) {
+                Line boxEdge = boxEdges[j];
+                Vector intersection = edge.intersectionPointWith(boxEdge);
+                if (intersection == null) {
+                    continue;
+                }
+                if (contains(intersection) && box.contains(intersection)) {
+                    return true;
+                }
+            }
+        }
+        return contains(box) || box.contains(this);
+    }
+
+    /**
      * Update this box's dimensions by its rate of change
      * @param deltaFrames The number of frames elapsed since the last call to update
      */
@@ -169,75 +238,6 @@ public class Box extends Body {
         edges[2] = Line.Point_Point(corners[0], corners[1]);
         edges[3] = Line.Point_Point(corners[2], corners[3]);
         return edges;
-    }
-
-    /**
-     * Test whether a vector is positioned inside this box
-     * @param point The vector to test against this box
-     * @return Whether the given vector is inside this box
-     */
-    public boolean contains(Vector point) {
-        if (point == null) {
-            return false;
-        }
-        Line[] edges = getEdges();
-        return point.isBetween(edges[0], edges[1]) && point.isBetween(edges[2], edges[3]);
-    }
-
-    /**
-     * Test whether all four corners of a box are positioned inside of this box
-     * @param box The box to test against this box
-     * @return Whether the given box's corners are inside this box
-     */
-    public boolean contains(Box box) {
-        if (box == null) {
-            return false;
-        }
-        for (Vector corner : box.getCorners()) {
-            if (!contains(corner)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Test whether all four corners of a box are positioned outside of this box
-     * @param box The box to test against this box
-     * @return Whether the given box's corners are outside this box
-     */
-    public boolean isDisjointFrom(Box box) {
-        if (box == null) {
-            return false;
-        }
-        return !intersectsWith(box);
-    }
-
-    /**
-     * Test whether this box intersects with another box
-     * @param box The box to test this one against
-     * @return Whether this box intersects with the given box
-     */
-    public boolean intersectsWith(Box box) {
-        if (box == null) {
-            return false;
-        }
-        Line[] edges = getEdges();
-        Line[] boxEdges = box.getEdges();
-        for (int i = 0; i < 4; i++) {
-            Line edge = edges[i];
-            for (int j = 0; j < 4; j++) {
-                Line boxEdge = boxEdges[j];
-                Vector intersection = edge.getIntersectionPoint(boxEdge);
-                if (intersection == null) {
-                    continue;
-                }
-                if (contains(intersection) && box.contains(intersection)) {
-                    return true;
-                }
-            }
-        }
-        return contains(box) || box.contains(this);
     }
 
 }

@@ -78,6 +78,19 @@ public class Body {
     }
 
     /**
+     * Get a string representation of this body
+     * @return A string representation of this body
+     */
+    @Override
+    public String toString() {
+        if (position == null || velocity == null || angle == null || rotation == null) {
+            return "body(null)";
+        }
+        return "body(position " + position + ", velocity " + velocity + ", angle " + angle + ", rotation " + rotation
+                + ")";
+    }
+
+    /**
      * Get the current position of this body
      * @return The current position of this body in world coordinates
      */

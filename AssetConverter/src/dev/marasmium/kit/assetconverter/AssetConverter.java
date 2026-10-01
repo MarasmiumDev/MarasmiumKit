@@ -28,6 +28,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +39,78 @@ import java.util.Scanner;
  * The main class of the MarasmiumKit's asset converter program
  */
 public class AssetConverter {
+
+    /**
+     * The main entry point of the AssetConverter program
+     */
+    static void main() {
+        System.out.println("MarasmiumKit Asset Converter");
+        // Get asset base path
+        Scanner commandLine = new Scanner(System.in);
+        System.out.print("Base file path: ");
+        String basePath;
+        try {
+            basePath = commandLine.nextLine();
+        } catch (NoSuchElementException | IllegalStateException _) {
+            System.out.println("No user input available");
+            return;
+        }
+        // Initialize application framework asset manager
+        AssetManagerConfig config = new AssetManagerConfig();
+        config.basePath = basePath;
+        if (!App.Assets.initialize(config)) {
+            System.out.println("Failed to initialize asset management system");
+            return;
+        }
+        boolean running = true;
+        while (running) {
+            // Switch between audio and animation file conversion
+            System.out.println("1. Audio");
+            System.out.println("2. Animation");
+            System.out.println("3. Typeface");
+            System.out.println("4. Exit");
+            System.out.print("Mode: ");
+            String modeStr;
+            try {
+                modeStr = commandLine.nextLine();
+            } catch (NoSuchElementException | IllegalStateException _) {
+                System.out.println("No user input available");
+                return;
+            }
+            int mode;
+            try {
+                mode = Integer.parseInt(modeStr);
+            } catch (NumberFormatException _) {
+                System.out.println("Invalid mode");
+                return;
+            }
+            if (mode < 1 || mode > 4) {
+                System.out.println("Invalid mode");
+                return;
+            }
+            switch (mode) {
+                case 1:
+                    if (!convertAudio(commandLine)) {
+                        System.out.println("Failed to convert audio file");
+                    }
+                    break;
+                case 2:
+                    if (!convertAnimation(commandLine)) {
+                        System.out.println("Failed to convert animation file");
+                    }
+                    break;
+                case 3:
+                    if (!convertTypeface(commandLine)) {
+                        System.out.println("Failed to convert typeface");
+                    }
+                    break;
+                case 4:
+                    running = false;
+                    break;
+            }
+        }
+        App.Assets.destroy();
+    }
 
     /**
      * Convert a common audio file readable by the base JVM to the MarasmiumKit's custom audio file format
@@ -389,20 +462,21 @@ public class AssetConverter {
         for (int i = 0; i < characters.length(); i++) {
             String character = String.valueOf(characters.charAt(i));
             GlyphVector glyphVector = inputFont.createGlyphVector(renderContext, character);
-            Rectangle glyphBounds = glyphVector.getPixelBounds(renderContext, 0, 0);
+            Rectangle2D glyph2DBounds = glyphVector.getGlyphMetrics(0).getBounds2D();
+            Rectangle glyphPixelBounds = glyphVector.getPixelBounds(renderContext, 0, 0);
             glyphs[i] = new Glyph();
-            if (!glyphs[i].initialize(i, Vector.Cartesian((int)glyphBounds.getWidth(), (int)glyphBounds.getHeight()),
+            if (!glyphs[i].initialize(i, Vector.Cartesian((int)glyphPixelBounds.getWidth(),
+                            (int)glyphPixelBounds.getHeight()),
                     Vector.Cartesian((float)Math.ceil(glyphVector.getGlyphMetrics(0).getAdvanceX()),
-                            (float)Math.ceil(glyphBounds.getHeight())),
-                    -(int)Math.ceil(glyphBounds.getMaxY()))) {
-                System.out.println("Failed to initialize glyph metrics for '" + character + "'");
+                            (float)Math.ceil(glyphPixelBounds.getHeight())),
+                    Vector.Cartesian((float)glyph2DBounds.getX(), (float)-Math.ceil(glyphPixelBounds.getMaxY())))) {
                 return false;
             }
-            glyphImages[i] = new BufferedImage(Math.max(glyphBounds.width, 1), Math.max(glyphBounds.height, 1),
-                    BufferedImage.TYPE_INT_ARGB);
+            glyphImages[i] = new BufferedImage(Math.max(glyphPixelBounds.width, 1),
+                    Math.max(glyphPixelBounds.height, 1), BufferedImage.TYPE_INT_ARGB);
             Graphics2D graphics = glyphImages[i].createGraphics();
             graphics.setColor(colour);
-            graphics.drawGlyphVector(glyphVector, -glyphBounds.x, -glyphBounds.y);
+            graphics.drawGlyphVector(glyphVector, -glyphPixelBounds.x, -glyphPixelBounds.y);
             graphics.dispose();
         }
         int animationFrameWidth = 0;
@@ -464,79 +538,6 @@ public class AssetConverter {
         }
         typeface.destroy();
         return true;
-    }
-
-    /**
-     * The main entry point of the AssetConverter program
-     */
-    static void main() {
-        System.out.println("MarasmiumKit Asset Converter");
-        // Get asset base path
-        Scanner commandLine = new Scanner(System.in);
-        System.out.print("Base file path: ");
-        String basePath;
-        try {
-            basePath = commandLine.nextLine();
-        } catch (NoSuchElementException | IllegalStateException _) {
-            System.out.println("No user input available");
-            return;
-        }
-        // Initialize application framework asset manager
-        AssetManagerConfig config = new AssetManagerConfig();
-        config.applyDefaults();
-        config.basePath = basePath;
-        if (!App.Assets.initialize(config)) {
-            System.out.println("Failed to initialize asset management system");
-            return;
-        }
-        boolean running = true;
-        while (running) {
-            // Switch between audio and animation file conversion
-            System.out.println("1. Audio");
-            System.out.println("2. Animation");
-            System.out.println("3. Typeface");
-            System.out.println("4. Exit");
-            System.out.print("Mode: ");
-            String modeStr;
-            try {
-                modeStr = commandLine.nextLine();
-            } catch (NoSuchElementException | IllegalStateException _) {
-                System.out.println("No user input available");
-                return;
-            }
-            int mode;
-            try {
-                mode = Integer.parseInt(modeStr);
-            } catch (NumberFormatException _) {
-                System.out.println("Invalid mode");
-                return;
-            }
-            if (mode < 1 || mode > 4) {
-                System.out.println("Invalid mode");
-                return;
-            }
-            switch (mode) {
-                case 1:
-                    if (!convertAudio(commandLine)) {
-                        System.out.println("Failed to convert audio file");
-                    }
-                    break;
-                case 2:
-                    if (!convertAnimation(commandLine)) {
-                        System.out.println("Failed to convert animation file");
-                    }
-                    break;
-                case 3:
-                    if (!convertTypeface(commandLine)) {
-                        System.out.println("Failed to convert typeface");
-                    }
-                    break;
-                case 4:
-                    running = false;
-                    break;
-            }
-        }
-        App.Assets.destroy();
     }
 
 }

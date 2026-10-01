@@ -17,11 +17,6 @@ import java.io.Serializable;
 public class Vector implements Serializable, Cloneable {
 
     /**
-     * Small value for comparing with floating-point rounding error
-     */
-    public static final float Epsilon = 0.0001f;
-
-    /**
      * The horizontal component of this vector on the Cartesian plane
      */
     private float x;
@@ -310,6 +305,154 @@ public class Vector implements Serializable, Cloneable {
     }
 
     /**
+     * Test whether this vector is parallel to another one
+     * @param v The vector to compare this one to
+     * @return Whether this vector is parallel to v
+     */
+    public boolean parallelTo(Vector v) {
+        if (v == null) {
+            return false;
+        }
+        if (isZero() || v.isZero()) {
+            return false;
+        }
+        return Math.abs(crossMultiply(v)) < Constants.Epsilon;
+    }
+
+    /**
+     * Test whether this vector is perpendicular to another one
+     * @param v The vector to compare this one to
+     * @return Whether this vector is perpendicular to v
+     */
+    public boolean perpendicularTo(Vector v) {
+        if (v == null) {
+            return false;
+        }
+        if (isZero() || v.isZero()) {
+            return false;
+        }
+        return Math.abs(dotMultiply(v)) < Constants.Epsilon;
+    }
+
+    /**
+     * Test whether this vector is positioned to the left of a line
+     * @param l The line to test this vector against
+     * @return Whether this vector is to the left of the given line
+     */
+    public boolean leftOf(Line l) {
+        if (l == null) {
+            return false;
+        }
+        if (l.isVertical()) {
+            return x <= l.getXIntercept();
+        }
+        return y >= l.sampleY(x);
+    }
+
+    /**
+     * Test whether this vector is positioned to the right of a line
+     * @param l The line to test this vector against
+     * @return Whether this vector is to the right of the given line
+     */
+    public boolean rightOf(Line l) {
+        if (l == null) {
+            return false;
+        }
+        if (l.isVertical()) {
+            return x >= l.getXIntercept();
+        }
+        return y <= l.sampleY(x);
+    }
+
+    /**
+     * Test whether this vector is positioned on a line
+     * @param l The line to test this vector against
+     * @return Whether this vector is on the given line
+     */
+    public boolean on(Line l) {
+        if (l == null) {
+            return false;
+        }
+        return l.contains(this);
+    }
+
+    /**
+     * Test whether this vector is positioned between two lines
+     * @param l1 The first line to test this vector against
+     * @param l2 The second line to test this vector against
+     * @return Whether this vector is between the given lines
+     */
+    public boolean between(Line l1, Line l2) {
+        if (l1 == null || l2 == null) {
+            return false;
+        }
+        return (rightOf(l1) && leftOf(l2)) || (leftOf(l1) && rightOf(l2));
+    }
+
+    /**
+     * Test whether this vector is positioned inside a box
+     * @param b The box to test this vector against
+     * @return Whether this vector is inside the given box
+     */
+    public boolean inside(Box b) {
+        if (b == null) {
+            return false;
+        }
+        return b.contains(this);
+    }
+
+    /**
+     * Test whether this vector is positioned outside a box
+     * @param b The box to test this vector against
+     * @return Whether this vector is outside the given box
+     */
+    public boolean outside(Box b) {
+        if (b == null) {
+            return false;
+        }
+        return !inside(b);
+    }
+
+    /**
+     * Test whether this vector is equal to another one
+     * @param o The object to compare this vector to (must be a Vector)
+     * @return Whether this vector is equal to o
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Vector v)) {
+            return false;
+        }
+        return Math.abs(x - v.x) < Constants.Epsilon && Math.abs(y - v.y) < Constants.Epsilon;
+    }
+
+    /**
+     * Convert this vector to a string
+     * @return The string representation of this vector
+     */
+    @Override
+    public String toString() {
+        return "vector(" + x + ", " + y + ")";
+    }
+
+    /**
+     * Make a copy of this vector
+     * @return A copy of this vector
+     */
+    @Override
+    public Vector clone() {
+        Vector v;
+        try {
+            v = (Vector)super.clone();
+        } catch (CloneNotSupportedException _) {
+            return null;
+        }
+        v.x = x;
+        v.y = y;
+        return v;
+    }
+
+    /**
      * Get the horizontal coordinate of this vector on the Cartesian plane
      * @return The horizontal coordinate of this vector
      */
@@ -378,7 +521,7 @@ public class Vector implements Serializable, Cloneable {
      * @return Whether this vector is the zero vector
      */
     public boolean isZero() {
-        return getLength() < Epsilon;
+        return getLength() < Constants.Epsilon;
     }
 
     /**
@@ -386,7 +529,7 @@ public class Vector implements Serializable, Cloneable {
      * @return Whether this vector is normalized
      */
     public boolean isNormalized() {
-        return Math.abs(getLength() - 1.0f) < Epsilon;
+        return Math.abs(getLength() - 1.0f) < Constants.Epsilon;
     }
 
     /**
@@ -421,154 +564,6 @@ public class Vector implements Serializable, Cloneable {
         Vector tmp = this.rotate(Angle.Radians(theta.getRadians() - getAngle().getRadians()));
         this.x = tmp.x;
         this.y = tmp.y;
-    }
-
-    /**
-     * Test whether this vector is parallel to another one
-     * @param v The vector to compare this one to
-     * @return Whether this vector is parallel to v
-     */
-    public boolean isParallelTo(Vector v) {
-        if (v == null) {
-            return false;
-        }
-        if (isZero() || v.isZero()) {
-            return false;
-        }
-        return Math.abs(crossMultiply(v)) < Epsilon;
-    }
-
-    /**
-     * Test whether this vector is perpendicular to another one
-     * @param v The vector to compare this one to
-     * @return Whether this vector is perpendicular to v
-     */
-    public boolean isPerpendicularTo(Vector v) {
-        if (v == null) {
-            return false;
-        }
-        if (isZero() || v.isZero()) {
-            return false;
-        }
-        return Math.abs(dotMultiply(v)) < Epsilon;
-    }
-
-    /**
-     * Test whether this vector is positioned to the left of a line
-     * @param l The line to test this vector against
-     * @return Whether this vector is to the left of the given line
-     */
-    public boolean isLeftOf(Line l) {
-        if (l == null) {
-            return false;
-        }
-        if (l.isVertical()) {
-            return x <= l.getXIntercept();
-        }
-        return y >= l.getY(x);
-    }
-
-    /**
-     * Test whether this vector is positioned to the right of a line
-     * @param l The line to test this vector against
-     * @return Whether this vector is to the right of the given line
-     */
-    public boolean isRightOf(Line l) {
-        if (l == null) {
-            return false;
-        }
-        if (l.isVertical()) {
-            return x >= l.getXIntercept();
-        }
-        return y <= l.getY(x);
-    }
-
-    /**
-     * Test whether this vector is positioned on a line
-     * @param l The line to test this vector against
-     * @return Whether this vector is on the given line
-     */
-    public boolean isOn(Line l) {
-        if (l == null) {
-            return false;
-        }
-        return l.contains(this);
-    }
-
-    /**
-     * Test whether this vector is positioned between two lines
-     * @param l1 The first line to test this vector against
-     * @param l2 The second line to test this vector against
-     * @return Whether this vector is between the given lines
-     */
-    public boolean isBetween(Line l1, Line l2) {
-        if (l1 == null || l2 == null) {
-            return false;
-        }
-        return (isRightOf(l1) && isLeftOf(l2)) || (isLeftOf(l1) && isRightOf(l2));
-    }
-
-    /**
-     * Test whether this vector is positioned inside a box
-     * @param b The box to test this vector against
-     * @return Whether this vector is inside the given box
-     */
-    public boolean isInside(Box b) {
-        if (b == null) {
-            return false;
-        }
-        return b.contains(this);
-    }
-
-    /**
-     * Test whether this vector is positioned outside a box
-     * @param b The box to test this vector against
-     * @return Whether this vector is outside the given box
-     */
-    public boolean isOutside(Box b) {
-        if (b == null) {
-            return false;
-        }
-        return !isInside(b);
-    }
-
-    /**
-     * Test whether this vector is equal to another one
-     * @param o The object to compare this vector to (must be a Vector)
-     * @return Whether this vector is equal to o
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Vector v)) {
-            return false;
-        }
-        return Math.abs(x - v.x) < Epsilon && Math.abs(y - v.y) < Epsilon;
-    }
-
-    /**
-     * Convert this vector to a string
-     * @return The string representation of this vector
-     */
-    @Override
-    public String toString() {
-        return "vector(" + x + ", " + y + ")";
-    }
-
-    /**
-     * Make a copy of this vector
-     * @return A copy of this vector
-     */
-    @Override
-    public Vector clone() {
-        Vector v;
-        try {
-            v = (Vector)super.clone();
-        } catch (CloneNotSupportedException _) {
-            return null;
-        }
-        v.x = x;
-        v.y = y;
-        return v;
     }
 
 }

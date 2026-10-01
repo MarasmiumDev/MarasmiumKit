@@ -73,6 +73,40 @@ public class Sprite extends Box {
     }
 
     /**
+     * Set this sprite's current animation to advance on updates by its target FPS
+     * @param animationRepeatCount The number of times to play this animation before automatically pausing, negative for
+     * infinite loop
+     */
+    public void playAnimation(int animationRepeatCount) {
+        animationPlaying = true;
+        this.animationRepeatCount = animationRepeatCount;
+        animationRepeatCounter = 0;
+    }
+
+    /**
+     * Set this sprite's current animation to advance on updates by its target FPS
+     */
+    public void playAnimation() {
+        playAnimation(-1);
+    }
+
+    /**
+     * Pause this sprite's current animation
+     */
+    public void pauseAnimation() {
+        animationPlaying = false;
+    }
+
+    /**
+     * Pause this sprite's current animation and reset its frame index to the beginning of the animation
+     */
+    public void stopAnimation() {
+        animationPlaying = false;
+        animationFrame = 0;
+        animationTimer = 0.0f;
+    }
+
+    /**
      * Update this sprite's position, dimensions, and angle by their rates of change and update its animation
      * @param deltaFrames The number of frames elapsed since the last call to update
      */
@@ -118,6 +152,19 @@ public class Sprite extends Box {
     }
 
     /**
+     * Get a string representation of this sprite
+     * @return This sprite's string representation
+     */
+    @Override
+    public String toString() {
+        if (position == null || dimensions == null || animationFilePath == null) {
+            return "sprite(null)";
+        }
+        return "sprite(position " + position + ", dimensions: " + dimensions + ", animation: " + animationFilePath
+                + ")";
+    }
+
+    /**
      * Get the file path of the current animation of this sprite
      * @return The current animation file path of this sprite
      */
@@ -132,12 +179,6 @@ public class Sprite extends Box {
      */
     public boolean setAnimationFilePath(String animationFilePath) {
         if (animationFilePath == null) {
-            return false;
-        }
-        if (animationFilePath.isEmpty()) {
-            return false;
-        }
-        if (App.Assets.getAnimation(animationFilePath) == null) {
             return false;
         }
         this.animationFilePath = animationFilePath;
@@ -170,45 +211,23 @@ public class Sprite extends Box {
     }
 
     /**
+     * Get the number of frames in this sprite's animation
+     * @return The number of frames in this sprite's animation
+     */
+    public int getAnimationFrameCount() {
+        Animation animation = App.Assets.getAnimation(animationFilePath);
+        if (animation == null) {
+            return 0;
+        }
+        return animation.getFrameCount();
+    }
+
+    /**
      * Test whether this sprite's animation is currently playing
      * @return Whether this sprite's animation is playing
      */
     public boolean isAnimationPlaying() {
         return animationPlaying;
-    }
-
-    /**
-     * Set this sprite's current animation to advance on updates by its target FPS
-     * @param animationRepeatCount The number of times to play this animation before automatically pausing, negative for
-     * infinite loop
-     */
-    public void playAnimation(int animationRepeatCount) {
-        animationPlaying = true;
-        this.animationRepeatCount = animationRepeatCount;
-        animationRepeatCounter = 0;
-    }
-
-    /**
-     * Set this sprite's current animation to advance on updates by its target FPS
-     */
-    public void playAnimation() {
-        playAnimation(-1);
-    }
-
-    /**
-     * Pause this sprite's current animation
-     */
-    public void pauseAnimation() {
-        animationPlaying = false;
-    }
-
-    /**
-     * Pause this sprite's current animation and reset its frame index to the beginning of the animation
-     */
-    public void stopAnimation() {
-        animationPlaying = false;
-        animationFrame = 0;
-        animationTimer = 0.0f;
     }
 
     /**

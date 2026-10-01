@@ -18,9 +18,9 @@ public class NetClientConfig {
     public int maxMPU = 0;
 
     /**
-     * Apply the default settings to this network client configuration structure
+     * Construct a network client configuration structure with default settings
      */
-    public void applyDefaults() {
+    public NetClientConfig() {
         maxMPU = -1;
     }
 

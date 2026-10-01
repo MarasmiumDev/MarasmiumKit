@@ -203,14 +203,15 @@ public class GraphicsManager implements GLEventListener {
      * @param text The text to render
      * @param typefaceFilePath The typeface to render the text in
      * @param boundingBox The bounding box for the text to be aligned and contained within
+     * @param padding The spacing between the text and the edges of the bounding box
      * @param depth The depth to render the text characters at in the scene
      * @param size The scale on the default pixel size of the typeface to draw the text at
      * @param horizontalAlignment The horizontal alignment of the text within its bounding box
      * @param verticalAlignment The vertical alignment of the text within its bounding box
      * @return Whether the text was submitted successfully
      */
-    public boolean submit(Camera camera, String text, String typefaceFilePath, Box boundingBox, float depth, float size,
-                          TextAlignment horizontalAlignment, TextAlignment verticalAlignment) {
+    public boolean submit(Camera camera, String text, String typefaceFilePath, Box boundingBox, float padding,
+                          float depth, float size, Alignment horizontalAlignment, Alignment verticalAlignment) {
         // Check parameters
         if (text == null || typefaceFilePath == null || boundingBox == null || horizontalAlignment == null
                 || verticalAlignment == null) {
@@ -238,10 +239,11 @@ public class GraphicsManager implements GLEventListener {
             if (glyphs[i] == null) {
                 return false;
             }
-            textDimensions.setX(textDimensions.getX() + glyphs[i].getAdvances().getX() * size);
+            textDimensions.setX(textDimensions.getX() - (glyphs[i].getOffsets().getX() * size)
+                    + (glyphs[i].getAdvances().getX() * size));
             textDimensions.setY(Math.max(textDimensions.getY(),
-                    glyphs[i].getDimensions().getY() + glyphs[i].getOffset()));
-            maxOffset = Math.max(maxOffset, -glyphs[i].getOffset());
+                    (glyphs[i].getDimensions().getY() * size) + (glyphs[i].getOffsets().getY() * size)));
+            maxOffset = Math.max(maxOffset, -glyphs[i].getOffsets().getY() * size);
             sprites[i] = new Sprite();
             sprites[i].setVelocity(Vector.Zero());
             sprites[i].setAngle(Angle.Zero());
@@ -253,35 +255,36 @@ public class GraphicsManager implements GLEventListener {
             sprites[i].setAnimationFrame(glyphs[i].getAnimationFrame());
         }
         // Compute starting position based on alignment
-        Vector textPosition = boundingBox.getPosition();
-        if (horizontalAlignment == TextAlignment.Left) {
-            textPosition.setX(boundingBox.getPosition().getX());
-        } else if (horizontalAlignment == TextAlignment.Right) {
+        Vector textPosition = boundingBox.getPosition().clone();
+        if (horizontalAlignment == Alignment.Left) {
+            textPosition.setX(boundingBox.getPosition().getX() + padding);
+        } else if (horizontalAlignment == Alignment.Right) {
             textPosition.setX(boundingBox.getPosition().getX() + boundingBox.getDimensions().getX()
-                    - textDimensions.getX());
-        } else if (horizontalAlignment == TextAlignment.Center) {
+                    - textDimensions.getX() - padding);
+        } else if (horizontalAlignment == Alignment.Center) {
             textPosition.setX(boundingBox.getPosition().getX() + ((boundingBox.getDimensions().getX()
                     - textDimensions.getX()) * 0.5f));
         } else {
             return false;
         }
-        if (verticalAlignment == TextAlignment.Bottom) {
-            textPosition.setY(boundingBox.getPosition().getY() + (maxOffset * size));
-        } else if (verticalAlignment == TextAlignment.Top) {
+        if (verticalAlignment == Alignment.Bottom) {
+            textPosition.setY(boundingBox.getPosition().getY() + maxOffset + padding);
+        } else if (verticalAlignment == Alignment.Top) {
             textPosition.setY(boundingBox.getPosition().getY() + boundingBox.getDimensions().getY()
-                    - (textDimensions.getY() * size));
-        } else if (verticalAlignment == TextAlignment.Center) {
-            textPosition.setY(boundingBox.getPosition().getY() + (maxOffset * size)
-                    + ((boundingBox.getDimensions().getY() - (textDimensions.getY() * size)) * 0.5f));
+                    - textDimensions.getY() - padding);
+        } else if (verticalAlignment == Alignment.Center) {
+            textPosition.setY(boundingBox.getPosition().getY() + maxOffset
+                    + ((boundingBox.getDimensions().getY() - textDimensions.getY()) * 0.5f));
         } else {
             return false;
         }
         // Set character sprite positions
         Vector spritePosition = textPosition.clone();
         for (int i = 0; i < text.length(); i++) {
-            spritePosition.setY(textPosition.getY() + (glyphs[i].getOffset() * size));
+            spritePosition.setY(textPosition.getY() + (glyphs[i].getOffsets().getY() * size));
             sprites[i].setPosition(spritePosition.clone());
-            spritePosition.setX(spritePosition.getX() + (glyphs[i].getAdvances().getX() * size));
+            spritePosition.setX(spritePosition.getX() - (glyphs[i].getOffsets().getX() * size)
+                    + (glyphs[i].getAdvances().getX() * size));
         }
         ArrayList<Sprite> spritesList = new ArrayList<>();
         // Draw within bounding box
@@ -450,111 +453,6 @@ public class GraphicsManager implements GLEventListener {
         gl3.glBindBuffer(GL3.GL_ELEMENT_ARRAY_BUFFER, 0);
         gl3.glUseProgram(0);
         gl3.glBindTexture(GL3.GL_TEXTURE_2D, 0);
-    }
-
-    /**
-     * Get the target (fractional) number of graphics frames to process per millisecond
-     * @return The target number of frames per millisecond
-     */
-    public float getTargetFPMS() {
-        return targetFPMS;
-    }
-
-    /**
-     * Get the target number of milliseconds to elapse between graphics frames
-     * @return The target number of milliseconds per frame
-     */
-    public int getTargetMSPF() {
-        return targetMSPF;
-    }
-
-    /**
-     * Get the target number of graphics frames to process per second
-     * @return The target number of frames per second
-     */
-    public int getTargetFPS() {
-        return (int)(1000.0d * targetFPMS);
-    }
-
-    /**
-     * Set the target number of graphics frames to process per second
-     * @param targetFPS The new target number of frames per second
-     * @return Whether the given target FPS is valid
-     */
-    public boolean setTargetFPS(int targetFPS) {
-        if (targetFPS <= 0) {
-            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Target FPS ", targetFPS, " invalid");
-            return false;
-        }
-        targetFPMS = (float)targetFPS / 1000.0f;
-        if (targetFPMS <= 0.0f) {
-            return false;
-        }
-        targetMSPF = (int)(1.0f / targetFPMS);
-        App.Log.write(LogSource.Graphics, LogLevel.Info, "Target FPS set to ", targetFPS, " -> FPMS=", targetFPMS, ", ",
-                "MSPF=", targetMSPF);
-        return true;
-    }
-
-    /**
-     * Get the maximum number of logic updates allowed per graphics frame
-     * @return The maximum number of logic updates per frame
-     */
-    public int getMaxUPF() {
-        return maxUPF;
-    }
-
-    /**
-     * Set the maximum number of logic updates allowed per graphics frame
-     * @param maxUPF The new maximum number of logic updates per frame
-     * @return Whether the given maximum UPF is valid
-     */
-    public boolean setMaxUPF(int maxUPF) {
-        if (maxUPF <= 0) {
-            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Maximum UPF ", maxUPF, " invalid");
-            return false;
-        }
-        this.maxUPF = maxUPF;
-        App.Log.write(LogSource.Graphics, LogLevel.Info, "Maximum UPF set to ", maxUPF);
-        return true;
-    }
-
-    /**
-     * Get the colour to clear the window to each frame
-     * @return The graphics system's clear colour
-     */
-    public Colour getClearColour() {
-        clearColourLock.lock();
-        Colour clearColour = this.clearColour;
-        try {
-            clearColourLock.unlock();
-        } catch (IllegalMonitorStateException _) {
-            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to unlock clear colour lock");
-            return null;
-        }
-        return clearColour;
-    }
-
-    /**
-     * Set the colour to clear the window to each frame
-     * @param clearColour The new clear colour
-     * @return Whether the given clear colour was valid
-     */
-    public boolean setClearColour(Colour clearColour) {
-        if (clearColour == null) {
-            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Clear colour invalid");
-            return false;
-        }
-        clearColourLock.lock();
-        this.clearColour = clearColour;
-        try {
-            clearColourLock.unlock();
-        } catch (IllegalMonitorStateException _) {
-            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to unlock clear colour lock");
-            return false;
-        }
-        App.Log.write(LogSource.Graphics, LogLevel.Info, "Set clear colour to ", clearColour);
-        return true;
     }
 
     /**
@@ -895,6 +793,111 @@ public class GraphicsManager implements GLEventListener {
         gl3.glDeleteBuffers(1, IBOIDs, 0);
         gl3.glDeleteProgram(shaderID);
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Disposed of OpenGL utilities");
+    }
+
+    /**
+     * Get the target (fractional) number of graphics frames to process per millisecond
+     * @return The target number of frames per millisecond
+     */
+    public float getTargetFPMS() {
+        return targetFPMS;
+    }
+
+    /**
+     * Get the target number of milliseconds to elapse between graphics frames
+     * @return The target number of milliseconds per frame
+     */
+    public int getTargetMSPF() {
+        return targetMSPF;
+    }
+
+    /**
+     * Get the target number of graphics frames to process per second
+     * @return The target number of frames per second
+     */
+    public int getTargetFPS() {
+        return (int)(1000.0d * targetFPMS);
+    }
+
+    /**
+     * Set the target number of graphics frames to process per second
+     * @param targetFPS The new target number of frames per second
+     * @return Whether the given target FPS is valid
+     */
+    public boolean setTargetFPS(int targetFPS) {
+        if (targetFPS <= 0) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Target FPS ", targetFPS, " invalid");
+            return false;
+        }
+        targetFPMS = (float)targetFPS / 1000.0f;
+        if (targetFPMS <= 0.0f) {
+            return false;
+        }
+        targetMSPF = (int)(1.0f / targetFPMS);
+        App.Log.write(LogSource.Graphics, LogLevel.Info, "Target FPS set to ", targetFPS, " -> FPMS=", targetFPMS, ", ",
+                "MSPF=", targetMSPF);
+        return true;
+    }
+
+    /**
+     * Get the maximum number of logic updates allowed per graphics frame
+     * @return The maximum number of logic updates per frame
+     */
+    public int getMaxUPF() {
+        return maxUPF;
+    }
+
+    /**
+     * Set the maximum number of logic updates allowed per graphics frame
+     * @param maxUPF The new maximum number of logic updates per frame
+     * @return Whether the given maximum UPF is valid
+     */
+    public boolean setMaxUPF(int maxUPF) {
+        if (maxUPF <= 0) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Maximum UPF ", maxUPF, " invalid");
+            return false;
+        }
+        this.maxUPF = maxUPF;
+        App.Log.write(LogSource.Graphics, LogLevel.Info, "Maximum UPF set to ", maxUPF);
+        return true;
+    }
+
+    /**
+     * Get the colour to clear the window to each frame
+     * @return The graphics system's clear colour
+     */
+    public Colour getClearColour() {
+        clearColourLock.lock();
+        Colour clearColour = this.clearColour;
+        try {
+            clearColourLock.unlock();
+        } catch (IllegalMonitorStateException _) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to unlock clear colour lock");
+            return null;
+        }
+        return clearColour;
+    }
+
+    /**
+     * Set the colour to clear the window to each frame
+     * @param clearColour The new clear colour
+     * @return Whether the given clear colour was valid
+     */
+    public boolean setClearColour(Colour clearColour) {
+        if (clearColour == null) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Clear colour invalid");
+            return false;
+        }
+        clearColourLock.lock();
+        this.clearColour = clearColour;
+        try {
+            clearColourLock.unlock();
+        } catch (IllegalMonitorStateException _) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to unlock clear colour lock");
+            return false;
+        }
+        App.Log.write(LogSource.Graphics, LogLevel.Info, "Set clear colour to ", clearColour);
+        return true;
     }
 
 }

@@ -47,6 +47,7 @@ public class Camera extends Body {
      * Update the position, scale, and rotation of this camera by their rates of change
      * @param deltaFrames The number of frames which have elapsed since the last call to update
      */
+    @Override
     public void update(float deltaFrames) {
         super.update(deltaFrames);
         scale += zoom * deltaFrames;
@@ -58,9 +59,27 @@ public class Camera extends Body {
     /**
      * Free this camera's memory
      */
+    @Override
     public void destroy() {
         super.destroy();
         scale = 0.0f;
+        zoom = 0.0f;
+    }
+
+    /**
+     * Test whether this camera has the same projection as another
+     * @param o The reference object with which to compare (must be an instance of Camera)
+     * @return Whether the given camera is equal to this one
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Camera c)) {
+            return false;
+        }
+        if (position == null || angle == null) {
+            return false;
+        }
+        return c.position.equals(position) && c.scale == scale && c.angle.equals(angle);
     }
 
     /**
@@ -119,25 +138,11 @@ public class Camera extends Body {
         float scaleX = (2.0f * scale) / width;
         float scaleY = (2.0f * scale) / height;
         return new float[] {
-                scaleX * cos, -scaleY * sin, 0.0f, 0.0f, scaleX * sin, scaleY * cos, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+                scaleX * cos, -scaleY * sin, 0.0f, 0.0f,
+                scaleX * sin, scaleY * cos, 0.0f, 0.0f,
+                0.0f, 0.0f, 1.0f, 0.0f,
                 -scaleX * (cos * positionX + sin * positionY), scaleY * (sin * positionX - cos * positionY), 0.0f, 1.0f,
         };
-    }
-
-    /**
-     * Test whether this camera has the same projection as another
-     * @param o The reference object with which to compare (must be an instance of Camera)
-     * @return Whether the given camera is equal to this one
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Camera c)) {
-            return false;
-        }
-        if (position == null || angle == null) {
-            return false;
-        }
-        return c.position.equals(position) && c.scale == scale && c.angle.equals(angle);
     }
 
 }

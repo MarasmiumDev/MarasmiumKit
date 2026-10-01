@@ -65,34 +65,6 @@ public class AudioDevice implements Cloneable {
     }
 
     /**
-     * Get the index of this audio device in the local audio environment's array of available devices
-     * @return This audio device's index or -1 if this audio device was invalidated
-     */
-    public int getIndex() {
-        validate();
-        return index;
-    }
-
-    /**
-     * Set the index of this audio device in the local audio environment's array of available devices
-     * @param index The audio device's new index
-     * @return Whether the given index was valid
-     */
-    public boolean setIndex(int index) {
-        this.index = index;
-        return validate();
-    }
-
-    /**
-     * Get the system-reported name of this audio device
-     * @return This audio device's name or null if this audio device was invalidated
-     */
-    public String getName() {
-        validate();
-        return name;
-    }
-
-    /**
      * Convert this audio device to a string
      * @return The string representation of this audio device
      */
@@ -134,6 +106,34 @@ public class AudioDevice implements Cloneable {
         audioDevice.index = index;
         audioDevice.name = name;
         return audioDevice;
+    }
+
+    /**
+     * Get the index of this audio device in the local audio environment's array of available devices
+     * @return This audio device's index or -1 if this audio device was invalidated
+     */
+    public int getIndex() {
+        validate();
+        return index;
+    }
+
+    /**
+     * Set the index of this audio device in the local audio environment's array of available devices
+     * @param index The audio device's new index
+     * @return Whether the given index was valid
+     */
+    public boolean setIndex(int index) {
+        this.index = index;
+        return validate();
+    }
+
+    /**
+     * Get the system-reported name of this audio device
+     * @return This audio device's name or null if this audio device was invalidated
+     */
+    public String getName() {
+        validate();
+        return name;
     }
 
 }

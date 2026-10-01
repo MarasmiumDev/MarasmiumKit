@@ -36,18 +36,14 @@ public class WindowManagerConfig {
     public boolean mouseCursorVisible = false;
 
     /**
-     * Apply default settings to this window configuration structure
-     * @return Whether the default settings were applied successfully
+     * Construct a windowing system configuration structure with default settings
      */
-    public boolean applyDefaults() {
+    public WindowManagerConfig() {
         title = "MarasmiumKit App";
         dimensions = Vector.Cartesian(1280.0f, 720.0f);
         fullscreen = false;
-        if (!monitor.initialize(0)) {
-            return false;
-        }
+        monitor.initialize(0);
         mouseCursorVisible = true;
-        return true;
     }
 
 }

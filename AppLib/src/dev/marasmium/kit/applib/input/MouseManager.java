@@ -173,118 +173,6 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
     }
 
     /**
-     * Test whether a button was down on the mouse in the last logic update
-     * @param button The button to test
-     * @return Whether the given button was down in the last logic update
-     */
-    private boolean wasButtonDown(MouseButton button) {
-        if (button == null) {
-            return false;
-        }
-        ButtonState state = buttonStates.get(button);
-        if (state == null) {
-            return false;
-        }
-        return state.wasDown;
-    }
-
-    /**
-     * Test whether a button is currently down on the mouse
-     * @param button The button to test
-     * @return Whether the given button is currently down
-     */
-    public boolean isButtonDown(MouseButton button) {
-        if (button == null) {
-            return false;
-        }
-        ButtonState state = buttonStates.get(button);
-        if (state == null) {
-            return false;
-        }
-        return state.isDown;
-    }
-
-    /**
-     * Test whether a button was just pressed down on the mouse
-     * @param button The button to test
-     * @return Whether the given button was just pressed down
-     */
-    public boolean isButtonPressed(MouseButton button) {
-        return isButtonDown(button) && !wasButtonDown(button);
-    }
-
-    /**
-     * Test whether a button was just released on the mouse
-     * @param button The button to test
-     * @return Whether the given button was just released
-     */
-    public boolean isButtonReleased(MouseButton button) {
-        return !isButtonDown(button) && wasButtonDown(button);
-    }
-
-    /**
-     * Get the current position of the mouse cursor on the application framework's window
-     * @return The current position of the mouse cursor
-     */
-    public Vector getCursorPosition() {
-        cursorPositionLock.lock();
-        Vector cursorPosition = this.cursorPosition;
-        try {
-            cursorPositionLock.unlock();
-        } catch (IllegalMonitorStateException _) {
-            App.Log.write(LogSource.Input, LogLevel.Error, "Failed to release cursor position scope lock");
-        }
-        return cursorPosition;
-    }
-
-    /**
-     * Get the current position of the mouse in world coordinates projected by a camera
-     * @param camera The camera the cursor coordinates are projected through
-     * @return The current position of the mouse cursor in world coordinates
-     */
-    public Vector getCursorPosition(Camera camera) {
-        if (camera == null) {
-            return null;
-        }
-        Vector cursorPosition = getCursorPosition();
-        Vector cameraPosition = camera.getPosition();
-        float cameraScale = camera.getScale();
-        Angle cameraAngle = camera.getAngle();
-        Vector windowDimensions = App.Window.getDimensions();
-        if (cameraPosition == null || cameraAngle == null || windowDimensions == null) {
-            return null;
-        }
-        return cursorPosition.scalarMultiply(2.0f).elementDivide(windowDimensions)
-                .subtract(Vector.Cartesian(1.0f, 1.0f)).elementMultiply(windowDimensions)
-                .elementDivide(Vector.Cartesian(2.0f, 2.0f).scalarMultiply(cameraScale)).rotate(cameraAngle)
-                .add(cameraPosition);
-    }
-
-    /**
-     * Get the horizontal and vertical distance the mouse cursor has moved since the last logic update
-     * @return The most recent movement of the mouse cursor
-     */
-    public Vector getCursorMovement() {
-        Vector cursorPosition = getCursorPosition();
-        return cursorPosition.subtract(lastCursorPosition);
-    }
-
-    /**
-     * Get the mouse's accumulated scroll movement since the last logic update
-     * @return The most recent mouse scroll movement
-     */
-    public Vector getScrollMovement() {
-        scrollMovementLock.lock();
-        Vector scrollMovement = this.scrollMovement;
-        try {
-            scrollMovementLock.unlock();
-        } catch (IllegalMonitorStateException _) {
-            App.Log.write(LogSource.Input, LogLevel.Error, "Failed to release scroll movement scope lock");
-        }
-        return scrollMovement;
-    }
-
-    /**
      * Callback for Java AWT mouse click events (unused)
      * @param e The event to be processed
      */
@@ -396,6 +284,118 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
         } catch (IllegalMonitorStateException _) {
             App.Log.write(LogSource.Input, LogLevel.Error, "Failed to release scroll movement scope lock");
         }
+    }
+
+    /**
+     * Test whether a button was down on the mouse in the last logic update
+     * @param button The button to test
+     * @return Whether the given button was down in the last logic update
+     */
+    private boolean wasButtonDown(MouseButton button) {
+        if (button == null) {
+            return false;
+        }
+        ButtonState state = buttonStates.get(button);
+        if (state == null) {
+            return false;
+        }
+        return state.wasDown;
+    }
+
+    /**
+     * Test whether a button is currently down on the mouse
+     * @param button The button to test
+     * @return Whether the given button is currently down
+     */
+    public boolean isButtonDown(MouseButton button) {
+        if (button == null) {
+            return false;
+        }
+        ButtonState state = buttonStates.get(button);
+        if (state == null) {
+            return false;
+        }
+        return state.isDown;
+    }
+
+    /**
+     * Test whether a button was just pressed down on the mouse
+     * @param button The button to test
+     * @return Whether the given button was just pressed down
+     */
+    public boolean isButtonPressed(MouseButton button) {
+        return isButtonDown(button) && !wasButtonDown(button);
+    }
+
+    /**
+     * Test whether a button was just released on the mouse
+     * @param button The button to test
+     * @return Whether the given button was just released
+     */
+    public boolean isButtonReleased(MouseButton button) {
+        return !isButtonDown(button) && wasButtonDown(button);
+    }
+
+    /**
+     * Get the current position of the mouse cursor on the application framework's window
+     * @return The current position of the mouse cursor
+     */
+    public Vector getCursorPosition() {
+        cursorPositionLock.lock();
+        Vector cursorPosition = this.cursorPosition;
+        try {
+            cursorPositionLock.unlock();
+        } catch (IllegalMonitorStateException _) {
+            App.Log.write(LogSource.Input, LogLevel.Error, "Failed to release cursor position scope lock");
+        }
+        return cursorPosition;
+    }
+
+    /**
+     * Get the current position of the mouse in world coordinates projected by a camera
+     * @param camera The camera the cursor coordinates are projected through
+     * @return The current position of the mouse cursor in world coordinates
+     */
+    public Vector getCursorPosition(Camera camera) {
+        if (camera == null) {
+            return null;
+        }
+        Vector cursorPosition = getCursorPosition();
+        Vector cameraPosition = camera.getPosition();
+        float cameraScale = camera.getScale();
+        Angle cameraAngle = camera.getAngle();
+        Vector windowDimensions = App.Window.getDimensions();
+        if (cameraPosition == null || cameraAngle == null || windowDimensions == null) {
+            return null;
+        }
+        return cursorPosition.scalarMultiply(2.0f).elementDivide(windowDimensions)
+                .subtract(Vector.Cartesian(1.0f, 1.0f)).elementMultiply(windowDimensions)
+                .elementDivide(Vector.Cartesian(2.0f, 2.0f).scalarMultiply(cameraScale)).rotate(cameraAngle)
+                .add(cameraPosition);
+    }
+
+    /**
+     * Get the horizontal and vertical distance the mouse cursor has moved since the last logic update
+     * @return The most recent movement of the mouse cursor
+     */
+    public Vector getCursorMovement() {
+        Vector cursorPosition = getCursorPosition();
+        return cursorPosition.subtract(lastCursorPosition);
+    }
+
+    /**
+     * Get the mouse's accumulated scroll movement since the last logic update
+     * @return The most recent mouse scroll movement
+     */
+    public Vector getScrollMovement() {
+        scrollMovementLock.lock();
+        Vector scrollMovement = this.scrollMovement;
+        try {
+            scrollMovementLock.unlock();
+        } catch (IllegalMonitorStateException _) {
+            App.Log.write(LogSource.Input, LogLevel.Error, "Failed to release scroll movement scope lock");
+        }
+        return scrollMovement;
     }
 
 }

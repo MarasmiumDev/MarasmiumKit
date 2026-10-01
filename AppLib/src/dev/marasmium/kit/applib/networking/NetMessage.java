@@ -46,6 +46,40 @@ public class NetMessage implements Serializable {
     }
 
     /**
+     * Convert this message to a string representation of its attributes
+     * @return The attributes of this message in a string
+     */
+    @Override
+    public String toString() {
+        return "network message(type " + type + ", " + getSize() + "B)";
+    }
+
+    /**
+     * Create a copy of this message
+     * @return A copy of this message with the same type and data
+     */
+    @Override
+    public NetMessage clone() {
+        NetMessage m;
+        try {
+            m = (NetMessage)super.clone();
+        } catch (CloneNotSupportedException _) {
+            return null;
+        }
+        m.type = this.type;
+        if (data == null) {
+            return m;
+        }
+        m.data = new byte[this.data.length];
+        try {
+            System.arraycopy(this.data, 0, m.data, 0, this.data.length);
+        } catch (IndexOutOfBoundsException | ArrayStoreException | NullPointerException _) {
+            return m;
+        }
+        return m;
+    }
+
+    /**
      * Get this message's type ID number
      * @return This message's type ID
      */
@@ -59,6 +93,14 @@ public class NetMessage implements Serializable {
      */
     public void setType(int type) {
         this.type = type;
+    }
+
+    /**
+     * Get this message's payload data
+     * @return This message's data
+     */
+    public byte[] getData() {
+        return data;
     }
 
     /**
@@ -127,40 +169,6 @@ public class NetMessage implements Serializable {
             return 0;
         }
         return data.length;
-    }
-
-    /**
-     * Convert this message to a string representation of its attributes
-     * @return The attributes of this message in a string
-     */
-    @Override
-    public String toString() {
-        return "network message(type " + type + ", " + getSize() + "B)";
-    }
-
-    /**
-     * Create a copy of this message
-     * @return A copy of this message with the same type and data
-     */
-    @Override
-    public NetMessage clone() {
-        NetMessage m;
-        try {
-            m = (NetMessage)super.clone();
-        } catch (CloneNotSupportedException _) {
-            return null;
-        }
-        m.type = this.type;
-        if (data == null) {
-            return m;
-        }
-        m.data = new byte[this.data.length];
-        try {
-            System.arraycopy(this.data, 0, m.data, 0, this.data.length);
-        } catch (IndexOutOfBoundsException | ArrayStoreException | NullPointerException _) {
-            return m;
-        }
-        return m;
     }
 
 }

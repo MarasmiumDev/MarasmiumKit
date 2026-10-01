@@ -96,6 +96,42 @@ public class Monitor implements Cloneable {
     }
 
     /**
+     * Validate that this monitor is still available and get its string representation including its index in the local
+     * graphics environment's array of screen devices, system-provided description string, dimensions, and position in,
+     * the local graphics environment. If this monitor is unavailable this will revert the structure to representing the
+     * first index in the array of screen devices
+     * @return This monitor's string representation
+     */
+    @Override
+    public String toString() {
+        return "monitor(" + getIndex() + ", \"" + getDescription() + "\", " + getDimensions() + ", " + getPosition()
+                + ")";
+    }
+
+    /**
+     * Make a copy of this monitor containing the same data
+     * @return A copy of this monitor
+     */
+    @Override
+    public Monitor clone() {
+        Monitor monitor;
+        try {
+            monitor = (Monitor)super.clone();
+        } catch (CloneNotSupportedException _) {
+            return null;
+        }
+        monitor.index = index;
+        monitor.description = description;
+        if (position != null) {
+            monitor.position = position.clone();
+        }
+        if (dimensions != null) {
+            monitor.dimensions = dimensions.clone();
+        }
+        return monitor;
+    }
+
+    /**
      * Validate that this monitor is still available and get its index in the local graphics environment's array of
      * screen devices. If this monitor's current index is unavailable this will revert the structure to representing the
      * first index in the array of screen devices
@@ -146,42 +182,6 @@ public class Monitor implements Cloneable {
     public Vector getDimensions() {
         validate();
         return dimensions;
-    }
-
-    /**
-     * Validate that this monitor is still available and get its string representation including its index in the local
-     * graphics environment's array of screen devices, system-provided description string, dimensions, and position in,
-     * the local graphics environment. If this monitor is unavailable this will revert the structure to representing the
-     * first index in the array of screen devices
-     * @return This monitor's string representation
-     */
-    @Override
-    public String toString() {
-        return "monitor(" + getIndex() + ", \"" + getDescription() + "\", " + getDimensions() + ", " + getPosition()
-                + ")";
-    }
-
-    /**
-     * Make a copy of this monitor containing the same data
-     * @return A copy of this monitor
-     */
-    @Override
-    public Monitor clone() {
-        Monitor monitor;
-        try {
-            monitor = (Monitor)super.clone();
-        } catch (CloneNotSupportedException _) {
-            return null;
-        }
-        monitor.index = index;
-        monitor.description = description;
-        if (position != null) {
-            monitor.position = position.clone();
-        }
-        if (dimensions != null) {
-            monitor.dimensions = dimensions.clone();
-        }
-        return monitor;
     }
 
 }

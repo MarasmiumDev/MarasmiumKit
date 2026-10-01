@@ -20,10 +20,6 @@ import java.util.ArrayList;
 public class InputManager implements InputListener {
 
     /**
-     * The set of input listeners subscribed to user-input event callbacks
-     */
-    private final ArrayList<InputListener> listeners = new ArrayList<>();
-    /**
      * Keyboard user-input management subsystem
      */
     public final KeyboardManager keyboard = new KeyboardManager();
@@ -31,6 +27,11 @@ public class InputManager implements InputListener {
      * Mouse user-input management subsystem
      */
     public final MouseManager mouse = new MouseManager();
+
+    /**
+     * The set of input listeners subscribed to user-input event callbacks
+     */
+    private final ArrayList<InputListener> listeners = new ArrayList<>();
 
     /**
      * Initialize the user-input management system and its subsystems
@@ -78,42 +79,6 @@ public class InputManager implements InputListener {
             success = false;
         }
         return success;
-    }
-
-    /**
-     * Subscribe a user-input listener to input event callbacks
-     * @param listener The user-input listener to add
-     * @return Whether the listener was added successfully
-     */
-    public boolean addListener(InputListener listener) {
-        if (listener == null) {
-            return false;
-        }
-        if (listeners.contains(listener)) {
-            App.Log.write(LogSource.Input, LogLevel.Warning, "Failed to add user-input listener, already present");
-            return false;
-        }
-        App.Log.write(LogSource.Input, LogLevel.Info, "Adding user-input listener");
-        listeners.add(listener);
-        return true;
-    }
-
-    /**
-     * Unsubscribe a user-input listener from input event callbacks
-     * @param listener The user-input listener to remove
-     * @return Whether the listener was removed successfully
-     */
-    public boolean removeListener(InputListener listener) {
-        if (listener == null) {
-            return false;
-        }
-        if (!listeners.contains(listener)) {
-            App.Log.write(LogSource.Input, LogLevel.Warning, "Failed to remove user-input listener, not present");
-            return false;
-        }
-        App.Log.write(LogSource.Input, LogLevel.Info, "Removing user-input listener");
-        listeners.remove(listener);
-        return true;
     }
 
     /**
@@ -210,6 +175,50 @@ public class InputManager implements InputListener {
         for (InputListener listener : listeners) {
             listener.mouseScrollMoved(movement);
         }
+    }
+
+    /**
+     * Get the set of input listeners currently subscribed to input event callbacks
+     * @return The current set of input listeners
+     */
+    public ArrayList<InputListener> getListeners() {
+        return listeners;
+    }
+
+    /**
+     * Subscribe a user-input listener to input event callbacks
+     * @param listener The user-input listener to add
+     * @return Whether the listener was added successfully
+     */
+    public boolean addListener(InputListener listener) {
+        if (listener == null) {
+            return false;
+        }
+        if (listeners.contains(listener)) {
+            App.Log.write(LogSource.Input, LogLevel.Warning, "Failed to add user-input listener, already present");
+            return false;
+        }
+        App.Log.write(LogSource.Input, LogLevel.Info, "Adding user-input listener");
+        listeners.add(listener);
+        return true;
+    }
+
+    /**
+     * Unsubscribe a user-input listener from input event callbacks
+     * @param listener The user-input listener to remove
+     * @return Whether the listener was removed successfully
+     */
+    public boolean removeListener(InputListener listener) {
+        if (listener == null) {
+            return false;
+        }
+        if (!listeners.contains(listener)) {
+            App.Log.write(LogSource.Input, LogLevel.Warning, "Failed to remove user-input listener, not present");
+            return false;
+        }
+        App.Log.write(LogSource.Input, LogLevel.Info, "Removing user-input listener");
+        listeners.remove(listener);
+        return true;
     }
 
 }

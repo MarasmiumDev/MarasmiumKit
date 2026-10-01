@@ -16,10 +16,6 @@ public class AppTest {
 
     static void main() {
         AppConfig config = new AppConfig(Title_Scene);
-        if (!config.applyDefaults()) {
-            System.out.println("Failed to configure application");
-            return;
-        }
         if (App.Initialize(config)) {
             System.out.println("Initialized application");
             App.Run();

@@ -27,19 +27,19 @@ public class Glyph implements Cloneable {
      */
     private Vector advances = null;
     /**
-     * The vertical offset of this glyph in a string in pixels
+     * The horizontal and vertical offsets of this glyph in a string in pixels
      */
-    private int offset = 0;
+    private Vector offsets = null;
 
     /**
      * Initialize this glyph with an animation frame index, horizontal advance, and vertical offset
      * @param animationFrame The frame index of this glyph's image in the typeface's animation
      * @param dimensions The dimensions of this glyph in pixels
      * @param advances The horizontal and vertical advances of this glyph
-     * @param offset The vertical offset of this glyph
+     * @param offsets The horizontal and vertical offsets of this glyph
      * @return Whether all parameters were valid and this glyph was initialized successfully
      */
-    public boolean initialize(int animationFrame, Vector dimensions, Vector advances, int offset) {
+    public boolean initialize(int animationFrame, Vector dimensions, Vector advances, Vector offsets) {
         if (!setAnimationFrame(animationFrame)) {
             return false;
         }
@@ -49,7 +49,9 @@ public class Glyph implements Cloneable {
         if (!setAdvances(advances)) {
             return false;
         }
-        setOffset(offset);
+        if (!setOffsets(offsets)) {
+            return false;
+        }
         return true;
     }
 
@@ -60,7 +62,42 @@ public class Glyph implements Cloneable {
         animationFrame = 0;
         dimensions = null;
         advances = null;
-        offset = 0;
+        offsets = null;
+    }
+
+    /**
+     * Get a string representing this glyph
+     * @return This glyph's string representation
+     */
+    @Override
+    public String toString() {
+        if (dimensions == null || advances == null) {
+            return "glyph(null)";
+        }
+        return "glyph(frame " + animationFrame + ", dimensions " + dimensions + ", advances " + advances
+                + "px, offsets " + offsets + "px)";
+    }
+
+    /**
+     * Make a copy of this glyph containing the same data
+     * @return A copy of this glyph
+     */
+    @Override
+    public Glyph clone() {
+        Glyph glyph;
+        try {
+            glyph = (Glyph)super.clone();
+        } catch (CloneNotSupportedException _) {
+            return null;
+        }
+        glyph.animationFrame = animationFrame;
+        if (advances != null) {
+            glyph.advances = advances.clone();
+        }
+        if (offsets != null) {
+            glyph.offsets = offsets.clone();
+        }
+        return glyph;
     }
 
     /**
@@ -119,7 +156,7 @@ public class Glyph implements Cloneable {
     /**
      * Set the horizontal and vertical advances of this glyph
      * @param advances This glyph's new horizontal and vertical advances
-     * @return Whether the given advances were valid and was set successfully
+     * @return Whether the given advances were valid and were set successfully
      */
     public boolean setAdvances(Vector advances) {
         if (advances == null) {
@@ -133,52 +170,24 @@ public class Glyph implements Cloneable {
     }
 
     /**
-     * Get the vertical offset of this glyph in a string in pixels
-     * @return This glyph's vertical offset
+     * Get the horizontal and vertical offsets of this glyph in a string in pixels
+     * @return This glyph's horizontal and vertical offsets
      */
-    public int getOffset() {
-        return offset;
+    public Vector getOffsets() {
+        return offsets;
     }
 
     /**
-     * Set the vertical offset of this glyph in a string in pixels
-     * @param offset This glyph's new vertical offset
+     * Set the horizontal and vertical offsets of this glyph in a string in pixels
+     * @param offsets This glyph's new horizontal and vertical offsets
+     * @return Whether the given offsets were valid and were set successfully
      */
-    public void setOffset(int offset) {
-        this.offset = offset;
-    }
-
-    /**
-     * Get a string representing this glyph
-     * @return This glyph's string representation
-     */
-    @Override
-    public String toString() {
-        if (dimensions == null || advances == null) {
-            return "glyph(null)";
+    public boolean setOffsets(Vector offsets) {
+        if (offsets == null) {
+            return false;
         }
-        return "glyph(frame " + animationFrame + ", dimensions " + dimensions + ", advances " + advances + "px, offset "
-                + offset + "px)";
-    }
-
-    /**
-     * Make a copy of this glyph containing the same data
-     * @return A copy of this glyph
-     */
-    @Override
-    public Glyph clone() {
-        Glyph glyph;
-        try {
-            glyph = (Glyph)super.clone();
-        } catch (CloneNotSupportedException _) {
-            return null;
-        }
-        glyph.animationFrame = animationFrame;
-        if (advances != null) {
-            glyph.advances = advances.clone();
-        }
-        glyph.offset = offset;
-        return glyph;
+        this.offsets = offsets;
+        return true;
     }
 
 }

@@ -109,6 +109,44 @@ public class Colour implements Serializable, Cloneable {
     }
 
     /**
+     * Test whether this colour is equal to another
+     * @param o The other object to test (must be a Colour)
+     * @return Whether this colour is equal to o
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Colour c)) {
+            return false;
+        }
+        return RGBA == c.RGBA;
+    }
+
+    /**
+     * Convert this colour to a string
+     * @return The string representation of this colour
+     */
+    @Override
+    public String toString() {
+        return "colour(" + getRed() + ", " + getGreen() + ", " + getBlue() + ", " + getAlpha() +")";
+    }
+
+    /**
+     * Make a copy of this colour
+     * @return A copy of this colour
+     */
+    @Override
+    public Colour clone() {
+        Colour c;
+        try {
+            c = (Colour)super.clone();
+        } catch (CloneNotSupportedException _) {
+            return null;
+        }
+        c.RGBA = RGBA;
+        return c;
+    }
+
+    /**
      * Get the integer whose bytes represent this colour's RGBA channel values
      * @return This colour's RGBA integer representation
      */
@@ -190,44 +228,6 @@ public class Colour implements Serializable, Cloneable {
     public void setAlpha(int alpha) {
         RGBA &= 0xFFFFFF00;
         RGBA |= (alpha & 0x000000FF);
-    }
-
-    /**
-     * Test whether this colour is equal to another
-     * @param o The other object to test (must be a Colour)
-     * @return Whether this colour is equal to o
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Colour c)) {
-            return false;
-        }
-        return RGBA == c.RGBA;
-    }
-
-    /**
-     * Convert this colour to a string
-     * @return The string representation of this colour
-     */
-    @Override
-    public String toString() {
-        return "colour(" + getRed() + ", " + getGreen() + ", " + getBlue() + ", " + getAlpha() +")";
-    }
-
-    /**
-     * Make a copy of this colour
-     * @return A copy of this colour
-     */
-    @Override
-    public Colour clone() {
-        Colour c;
-        try {
-            c = (Colour)super.clone();
-        } catch (CloneNotSupportedException _) {
-            return null;
-        }
-        c.RGBA = RGBA;
-        return c;
     }
 
 }

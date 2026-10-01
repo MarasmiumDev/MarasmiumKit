@@ -84,6 +84,51 @@ public class Animation implements Cloneable {
     }
 
     /**
+     * Convert this animation to a string
+     * @return The string representation of this animation
+     */
+    @Override
+    public String toString() {
+        if (sheetDimensions == null || frameDimensions == null || data == null) {
+            return "animation(null)";
+        }
+        return "animation(" + targetFPS + "FPS, " + frameCount + " frames arranged " + sheetDimensions + ", "
+                + frameDimensions + "pixels, texture ID " + textureID + ")";
+    }
+
+    /**
+     * Make a copy of this animation containing the same data
+     * @return A copy of this animation
+     */
+    @Override
+    public Animation clone() {
+        Animation animation;
+        try {
+            animation = (Animation)super.clone();
+        } catch (CloneNotSupportedException _) {
+            return null;
+        }
+        animation.targetFPS = targetFPS;
+        if (sheetDimensions != null) {
+            animation.sheetDimensions = sheetDimensions.clone();
+        }
+        if (frameDimensions != null) {
+            animation.frameDimensions = frameDimensions.clone();
+        }
+        animation.frameCount = frameCount;
+        if (data != null) {
+            data = new Colour[data.length];
+            try {
+                System.arraycopy(data, 0, animation.data, 0, data.length);
+            } catch (IndexOutOfBoundsException | ArrayStoreException _) {
+                return null;
+            }
+        }
+        animation.textureID = textureID;
+        return animation;
+    }
+
+    /**
      * Get the target number of frames of this animation to display per second when playing
      * @return The target FPS of this animation
      */
@@ -257,51 +302,6 @@ public class Animation implements Cloneable {
             return null;
         }
         return Vector.Cartesian(1.0f / sheetDimensions.getX(), 1.0f / sheetDimensions.getY());
-    }
-
-    /**
-     * Convert this animation to a string
-     * @return The string representation of this animation
-     */
-    @Override
-    public String toString() {
-        if (sheetDimensions == null || frameDimensions == null || data == null) {
-            return "animation(null)";
-        }
-        return "animation(" + targetFPS + "FPS, " + frameCount + " frames arranged " + sheetDimensions + ", "
-                + frameDimensions + "pixels, texture ID " + textureID + ")";
-    }
-
-    /**
-     * Make a copy of this animation containing the same data
-     * @return A copy of this animation
-     */
-    @Override
-    public Animation clone() {
-        Animation animation;
-        try {
-            animation = (Animation)super.clone();
-        } catch (CloneNotSupportedException _) {
-            return null;
-        }
-        animation.targetFPS = targetFPS;
-        if (sheetDimensions != null) {
-            animation.sheetDimensions = sheetDimensions.clone();
-        }
-        if (frameDimensions != null) {
-            animation.frameDimensions = frameDimensions.clone();
-        }
-        animation.frameCount = frameCount;
-        if (data != null) {
-            data = new Colour[data.length];
-            try {
-                System.arraycopy(data, 0, animation.data, 0, data.length);
-            } catch (IndexOutOfBoundsException | ArrayStoreException _) {
-                return null;
-            }
-        }
-        animation.textureID = textureID;
-        return animation;
     }
 
 }

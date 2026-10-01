@@ -56,20 +56,4 @@ public class AppConfig {
         this.initialScene = initialScene;
     }
 
-    /**
-     * Apply the default settings to this MarasmiumKit application configuration structure
-     * @return Whether the default settings were applied successfully
-     */
-    public boolean applyDefaults() {
-        log.applyDefaults();
-        if (!window.applyDefaults()) {
-            return false;
-        }
-        network.applyDefaults();
-        assets.applyDefaults();
-        audio.applyDefaults();
-        graphics.applyDefaults();
-        return true;
-    }
-
 }

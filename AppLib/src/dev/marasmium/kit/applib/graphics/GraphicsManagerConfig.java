@@ -17,20 +17,20 @@ public class GraphicsManagerConfig {
     /**
      * The target number of graphics frames and logic updates to process per second
      */
-    public int targetFPS = 0;
+    public int targetFPS;
     /**
      * The maximum number of logic updates allowed per graphics frame
      */
-    public int maxUPF = 0;
+    public int maxUPF;
     /**
      * The colour to clear the window to each frame
      */
-    public Colour clearColour = null;
+    public Colour clearColour;
 
     /**
-     * Apply the default settings to this graphics configuration structure
+     * Construct a graphics system configuration structure with default settings
      */
-    public void applyDefaults() {
+    public GraphicsManagerConfig() {
         targetFPS = 60;
         maxUPF = 8;
         clearColour = Colour.Black;
