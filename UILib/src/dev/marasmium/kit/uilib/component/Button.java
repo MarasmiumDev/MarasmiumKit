@@ -16,7 +16,6 @@ import dev.marasmium.kit.uilib.UIEvent;
 
 public class Button extends UIComponent {
 
-    protected boolean selected = false;
     protected boolean pressed = false;
     protected String unselectedAnimationFilePath = null;
     protected String selectedAnimationFilePath = null;
@@ -32,24 +31,12 @@ public class Button extends UIComponent {
         if (animationFilePaths.length != 3) {
             return false;
         }
-        if (!label.initialize(Vector.Zero(), Vector.Zero(), "", labelText, Alignment.Center, Alignment.Center)) {
-            return false;
-        }
-        if (!addComponent(label)) {
-            return false;
-        }
         setEnabled(true);
         setVisible(true);
         if (!sprite.initialize(Vector.Zero(), 0.0f, Vector.Zero(), Angle.Zero(), animationFilePaths[0])) {
             return false;
         }
         sprite.setAnimationFrame(sprite.getAnimationFrameCount() - 1);
-        if (!setDimensions(dimensions)) {
-            return false;
-        }
-        if (!setPosition(position)) {
-            return false;
-        }
         if (!setUnselectedAnimationFilePath(animationFilePaths[0])) {
             return false;
         }
@@ -57,6 +44,18 @@ public class Button extends UIComponent {
             return false;
         }
         if (!setPressedAnimationFilePath(animationFilePaths[2])) {
+            return false;
+        }
+        if (!label.initialize(Vector.Zero(), Vector.Zero(), "", labelText, Alignment.Center, Alignment.Center)) {
+            return false;
+        }
+        if (!addComponent(label)) {
+            return false;
+        }
+        if (!setPosition(position)) {
+            return false;
+        }
+        if (!setDimensions(dimensions)) {
             return false;
         }
         if (!setLabelAlignment(labelAlignment)) {
@@ -69,42 +68,21 @@ public class Button extends UIComponent {
     public void processInput() {
         label.processInput();
         if (App.Input.mouse.getCursorPosition(parent.getCamera()).inside(sprite)) {
-            if (!selected) {
-                selected = true;
-                sprite.stopAnimation();
-                sprite.setAnimationFilePath(selectedAnimationFilePath);
-                sprite.playAnimation(1);
-                parent.buttonEvent(parent.getGroupID(), componentID, UIEvent.Button_Selected);
-            }
+            setSelected(true);
         } else {
-            if (selected) {
-                selected = false;
-                sprite.stopAnimation();
-                sprite.setAnimationFilePath(unselectedAnimationFilePath);
-                sprite.playAnimation(1);
-                parent.buttonEvent(parent.getGroupID(), componentID, UIEvent.Button_Unselected);
+            if (!pressed) {
+                setSelected(false);
             }
         }
-        if (selected && pressed) {
+        if (pressed) {
             if (App.Input.mouse.isButtonReleased(MouseButton.Left)) {
-                parent.buttonEvent(parent.getGroupID(), componentID, UIEvent.Button_Released);
+                setPressed(false);
             }
         }
         if (selected) {
-            if (App.Input.mouse.isButtonDown(MouseButton.Left)) {
+            if (App.Input.mouse.isButtonPressed(MouseButton.Left)) {
                 if (!pressed) {
-                    pressed = true;
-                    sprite.stopAnimation();
-                    sprite.setAnimationFilePath(pressedAnimationFilePath);
-                    sprite.playAnimation(1);
-                    parent.buttonEvent(parent.getGroupID(), componentID, UIEvent.Button_Pressed);
-                }
-            } else {
-                if (pressed) {
-                    pressed = false;
-                    sprite.stopAnimation();
-                    sprite.setAnimationFilePath(selectedAnimationFilePath);
-                    sprite.setAnimationFrame(sprite.getAnimationFrameCount() - 1);
+                    setPressed(true);
                 }
             }
         }
@@ -112,8 +90,8 @@ public class Button extends UIComponent {
 
     @Override
     public void draw() {
-        label.draw();
         App.Graphics.submit(parent.getCamera(), sprite);
+        label.draw();
     }
 
     @Override
@@ -125,6 +103,10 @@ public class Button extends UIComponent {
     @Override
     public void destroy() {
         super.destroy();
+        pressed = false;
+        unselectedAnimationFilePath = null;
+        selectedAnimationFilePath = null;
+        pressedAnimationFilePath = null;
         label.destroy();
         labelAlignment = null;
     }
@@ -132,7 +114,10 @@ public class Button extends UIComponent {
     @Override
     public boolean setPosition(Vector position) {
         boolean success = true;
-        Vector labelPosition = getPosition().clone();
+        if (!super.setPosition(position)) {
+            success = false;
+        }
+        Vector labelPosition = position.clone();
         if (labelAlignment == Alignment.Left) {
             labelPosition.setX(position.getX() - getDimensions().getX());
         } else if (labelAlignment == Alignment.Right) {
@@ -143,9 +128,6 @@ public class Button extends UIComponent {
             labelPosition.setY(position.getY() + getDimensions().getY());
         };
         if (!label.setPosition(labelPosition)) {
-            success = false;
-        }
-        if (!super.setPosition(position)) {
             success = false;
         }
         return success;
@@ -164,23 +146,61 @@ public class Button extends UIComponent {
     }
 
     @Override
-    public void setMinimumDimensions(Vector minimumDimensions) {
-        super.setMinimumDimensions(minimumDimensions);
-        label.setMinimumDimensions(minimumDimensions);
+    public boolean setMinimumDimensions(Vector minimumDimensions) {
+        if (!super.setMinimumDimensions(minimumDimensions)) {
+            return false;
+        }
+        if (!label.setMinimumDimensions(minimumDimensions)) {
+            return false;
+        }
+        return true;
     }
 
     @Override
-    public void setMaximumDimensions(Vector maximumDimensions) {
-        super.setMaximumDimensions(maximumDimensions);
-        label.setMaximumDimensions(maximumDimensions);
+    public boolean setMaximumDimensions(Vector maximumDimensions) {
+        if (!super.setMaximumDimensions(maximumDimensions)) {
+            return false;
+        }
+        if (!label.setMaximumDimensions(maximumDimensions)) {
+            return false;
+        }
+        return true;
     }
 
-    public boolean isSelected() {
-        return selected;
+    @Override
+    public boolean setSelected(boolean selected) {
+        if (!super.setSelected(selected)) {
+            return false;
+        }
+        sprite.stopAnimation();
+        sprite.setAnimationFilePath(selected ? selectedAnimationFilePath : unselectedAnimationFilePath);
+        sprite.playAnimation(1);
+        if (!selected) {
+            pressed = false;
+        }
+        return true;
     }
 
     public boolean isPressed() {
         return pressed;
+    }
+
+    public boolean setPressed(boolean pressed) {
+        if (this.pressed == pressed) {
+            return false;
+        }
+        if (pressed) {
+            parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Button_Pressed);
+        } else {
+            if (App.Input.mouse.getCursorPosition(parent.getCamera()).inside(sprite)) {
+                parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Button_Released);
+            }
+        }
+        this.pressed = pressed;
+        sprite.stopAnimation();
+        sprite.setAnimationFilePath(pressed ? pressedAnimationFilePath : selectedAnimationFilePath);
+        sprite.playAnimation(1);
+        return true;
     }
 
     public String getUnselectedAnimationFilePath() {
@@ -233,28 +253,19 @@ public class Button extends UIComponent {
         }
         this.labelAlignment = labelAlignment;
         if (labelAlignment == Alignment.Left) {
-            if (!(label.setHorizontalTextAlignment(Alignment.Right)
-                    && label.setVerticalTextAlignment(Alignment.Center))) {
+            if (!label.setHorizontalTextAlignment(Alignment.Right)) {
                 return false;
             }
         } else if (labelAlignment == Alignment.Right) {
-            if (!(label.setHorizontalTextAlignment(Alignment.Left)
-                    && label.setVerticalTextAlignment(Alignment.Center))) {
+            if (!label.setHorizontalTextAlignment(Alignment.Left)) {
                 return false;
             }
         } else if (labelAlignment == Alignment.Bottom) {
-            if (!(label.setHorizontalTextAlignment(Alignment.Center)
-                    && label.setVerticalTextAlignment(Alignment.Top))) {
+            if (!label.setVerticalTextAlignment(Alignment.Top)) {
                 return false;
             }
         } else if (labelAlignment == Alignment.Top) {
-            if (!(label.setHorizontalTextAlignment(Alignment.Center)
-                    && label.setVerticalTextAlignment(Alignment.Bottom))) {
-                return false;
-            }
-        } else {
-            if (!(label.setHorizontalTextAlignment(Alignment.Center)
-                    && label.setVerticalTextAlignment(Alignment.Center))) {
+            if (!label.setVerticalTextAlignment(Alignment.Bottom)) {
                 return false;
             }
         }

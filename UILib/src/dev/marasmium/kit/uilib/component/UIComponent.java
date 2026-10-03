@@ -11,6 +11,7 @@ import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.graphics.Camera;
 import dev.marasmium.kit.applib.graphics.Sprite;
+import dev.marasmium.kit.uilib.UIEvent;
 import dev.marasmium.kit.uilib.UIGroup;
 
 public abstract class UIComponent extends UIGroup {
@@ -19,6 +20,7 @@ public abstract class UIComponent extends UIGroup {
     protected final Sprite sprite = new Sprite();
     protected Vector minimumDimensions = null;
     protected Vector maximumDimensions = null;
+    protected boolean selected = false;
 
     private Vector windowDimensions = null;
 
@@ -134,16 +136,53 @@ public abstract class UIComponent extends UIGroup {
         return minimumDimensions;
     }
 
-    public void setMinimumDimensions(Vector minimumDimensions) {
+    public boolean setMinimumDimensions(Vector minimumDimensions) {
+        if (minimumDimensions == null) {
+            return false;
+        }
+        if (minimumDimensions.getX() < 0.0f || minimumDimensions.getY() < 0.0f) {
+            return false;
+        }
         this.minimumDimensions = minimumDimensions;
+        if (!setDimensions(getDimensions().clone())) {
+            return false;
+        }
+        return true;
     }
 
     public Vector getMaximumDimensions() {
         return maximumDimensions;
     }
 
-    public void setMaximumDimensions(Vector maximumDimensions) {
+    public boolean setMaximumDimensions(Vector maximumDimensions) {
+        if (maximumDimensions == null) {
+            return false;
+        }
+        if (maximumDimensions.getX() < 0.0f || maximumDimensions.getY() < 0.0f) {
+            return false;
+        }
         this.maximumDimensions = maximumDimensions;
+        if (!setDimensions(getDimensions().clone())) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public boolean setSelected(boolean selected) {
+        if (this.selected == selected) {
+            return false;
+        }
+        if (selected) {
+            parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Component_Selected);
+        } else {
+            parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Component_Unselected);
+        }
+        this.selected = selected;
+        return true;
     }
 
 }

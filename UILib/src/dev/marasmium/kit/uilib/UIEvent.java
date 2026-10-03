@@ -10,10 +10,13 @@ package dev.marasmium.kit.uilib;
 public enum UIEvent {
 
     /**
+     * General component events
+     */
+    Component_Selected,
+    Component_Unselected,
+    /**
      * Button events
      */
-    Button_Unselected,
-    Button_Selected,
     Button_Pressed,
     Button_Released,
     /**
@@ -21,5 +24,9 @@ public enum UIEvent {
      */
     Switch_Off,
     Switch_On,
+    /**
+     * Slider events
+     */
+    Slider_Value_Set,
 
 }

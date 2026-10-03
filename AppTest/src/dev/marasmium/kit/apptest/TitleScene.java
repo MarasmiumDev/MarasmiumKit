@@ -19,6 +19,7 @@ import dev.marasmium.kit.uilib.UIGroup;
 import dev.marasmium.kit.uilib.UIListener;
 import dev.marasmium.kit.uilib.component.Button;
 import dev.marasmium.kit.uilib.component.Label;
+import dev.marasmium.kit.uilib.component.Slider;
 import dev.marasmium.kit.uilib.component.Switch;
 
 public class TitleScene extends Scene implements UIListener {
@@ -28,6 +29,7 @@ public class TitleScene extends Scene implements UIListener {
     private Label label1 = null;
     private Button button1 = null;
     private Switch switch1 = null;
+    private Slider slider1 = null;
 
     @Override
     public boolean initialize() {
@@ -52,6 +54,15 @@ public class TitleScene extends Scene implements UIListener {
                 new String[] { "Animation/UI/Switch_Off.animation", "Animation/UI/Switch_On.animation" }, "Switch",
                 Alignment.Top);
         UI.addComponent(switch1);
+        slider1 = new Slider();
+        if (!slider1.initialize(Vector.Cartesian(0.01f, 0.26f), Vector.Cartesian(0.48f, 0.125f),
+                new String[] { "Animation/UI/Slider_Unselected.animation", "Animation/UI/Slider_Selected.animation" },
+                "Slider", Alignment.Top, new String[] { "Animation/UI/Cursor_Unselected.animation",
+                        "Animation/UI/Cursor_Selected.animation", "Animation/UI/Cursor_Pressed.animation" },
+                Vector.Cartesian(0.5f, 0.9f), Alignment.Center, -10.0f, 10.0f, 5)) {
+            return false;
+        }
+        UI.addComponent(slider1);
         return true;
     }
 
@@ -76,9 +87,6 @@ public class TitleScene extends Scene implements UIListener {
 
     @Override
     public boolean leave(Scene nextScene) {
-        label1.destroy();
-        button1.destroy();
-        switch1.destroy();
         UI.destroy();
         return true;
     }
@@ -89,13 +97,8 @@ public class TitleScene extends Scene implements UIListener {
     }
 
     @Override
-    public void buttonEvent(int groupID, int buttonID, UIEvent event) {
-        App.Log.write(logSource, LogLevel.Info, "Button ", buttonID, " in group ", groupID, " event ", event);
-    }
-
-    @Override
-    public void switchEvent(int groupID, int switchID, UIEvent event) {
-        App.Log.write(logSource, LogLevel.Info, "Switch ", switchID, " in group ", groupID, " event ", event);
+    public void componentEvent(int groupID, int componentID, UIEvent event) {
+        App.Log.write(logSource, LogLevel.Info, "Component ", componentID, " in group ", groupID, " event ", event);
     }
 
 }

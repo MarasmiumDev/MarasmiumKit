@@ -39,8 +39,6 @@ public interface UIListener {
         return null;
     }
 
-    default void buttonEvent(int groupID, int buttonID, UIEvent event) {}
-
-    default void switchEvent(int groupID, int switchID, UIEvent event) {}
+    default void componentEvent(int groupID, int componentID, UIEvent event) {}
 
 }

@@ -44,6 +44,15 @@ public class Switch extends Button {
     public void processInput() {
         label.processInput();
         if (App.Input.mouse.getCursorPosition(parent.getCamera()).inside(sprite)) {
+            if (App.Input.mouse.isButtonPressed(MouseButton.Left)) {
+                if (!selected) {
+                    selected = true;
+                }
+            }
+        } else {
+            selected = false;
+        }
+        if (App.Input.mouse.getCursorPosition(parent.getCamera()).inside(sprite) && selected) {
             if (App.Input.mouse.isButtonReleased(MouseButton.Left)) {
                 setOn(!on);
             }
@@ -86,6 +95,11 @@ public class Switch extends Button {
         return true;
     }
 
+    @Override
+    public boolean setSelected(boolean selected) {
+        return false;
+    }
+
     public String getOffAnimationFilePath() {
         return unselectedAnimationFilePath;
     }
@@ -120,13 +134,13 @@ public class Switch extends Button {
             sprite.stopAnimation();
             sprite.setAnimationFilePath(unselectedAnimationFilePath);
             sprite.playAnimation(1);
-            parent.switchEvent(parent.getGroupID(), componentID, UIEvent.Switch_Off);
+            parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Switch_Off);
         } else if (on && !this.on) {
             this.on = true;
             sprite.stopAnimation();
             sprite.setAnimationFilePath(selectedAnimationFilePath);
             sprite.playAnimation(1);
-            parent.switchEvent(parent.getGroupID(), componentID, UIEvent.Switch_On);
+            parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Switch_On);
         }
     }
 

@@ -116,10 +116,10 @@ public class UIGroup implements UIListener {
             }
             Vector position = component.getPosition();
             Vector dimensions = component.getDimensions();
-            if (!component.setPosition(position)) {
+            if (!component.setDimensions(dimensions)) {
                 success = false;
             }
-            if (!component.setDimensions(dimensions)) {
+            if (!component.setPosition(position)) {
                 success = false;
             }
         }
@@ -128,13 +128,15 @@ public class UIGroup implements UIListener {
     }
 
     @Override
-    public void buttonEvent(int groupID, int buttonID, UIEvent event) {
-        parent.buttonEvent(groupID, buttonID, event);
-    }
-
-    @Override
-    public void switchEvent(int groupID, int switchID, UIEvent event) {
-        parent.switchEvent(groupID, switchID, event);
+    public void componentEvent(int groupID, int componentID, UIEvent event) {
+        if (event == UIEvent.Component_Selected) {
+            for (UIComponent component : components) {
+                if (component.getComponentID() != componentID) {
+                    component.setSelected(false);
+                }
+            }
+        }
+        parent.componentEvent(groupID, componentID, event);
     }
 
     @Override
