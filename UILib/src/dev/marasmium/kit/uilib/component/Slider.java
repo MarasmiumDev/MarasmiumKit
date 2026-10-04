@@ -29,7 +29,7 @@ public class Slider extends UIComponent {
     protected float value = 0.0f;
 
     public boolean initialize(Vector position, Vector dimensions, String[] animationFilePaths, String labelText,
-                              Alignment labelAlignment, String[] cursorAnimationFilePaths, Vector cursorDimensions,
+                              Alignment labelAlignment, Vector cursorDimensions, String[] cursorAnimationFilePaths,
                               Alignment verticalCursorAlignment, float minimumValue, float maximumValue,
                               int valueCount) {
         if (animationFilePaths == null) {
@@ -50,7 +50,8 @@ public class Slider extends UIComponent {
         if (!setSelectedAnimationFilePath(animationFilePaths[1])) {
             return false;
         }
-        if (!label.initialize(Vector.Zero(), Vector.Zero(), "", labelText, Alignment.Center, Alignment.Center)) {
+        if (!label.initialize(Vector.Zero(), Vector.Zero(), "", labelText, Vector.Zero(), Alignment.Center,
+                Alignment.Center)) {
             return false;
         }
         if (!addComponent(label)) {
@@ -114,11 +115,7 @@ public class Slider extends UIComponent {
             cursor.setPressed(true);
         } else {
             cursor.setPressed(false);
-            if (App.Input.mouse.getCursorPosition(parent.getCamera()).inside(cursor.getSprite())) {
-                cursor.setSelected(true);
-            } else {
-                cursor.setSelected(false);
-            }
+            cursor.setSelected(App.Input.mouse.getCursorPosition(parent.getCamera()).inside(cursor.getSprite()));
         }
     }
 
@@ -270,21 +267,13 @@ public class Slider extends UIComponent {
         }
         this.labelAlignment = labelAlignment;
         if (labelAlignment == Alignment.Left) {
-            if (!label.setHorizontalTextAlignment(Alignment.Right)) {
-                return false;
-            }
+            label.setHorizontalTextAlignment(Alignment.Right);
         } else if (labelAlignment == Alignment.Right) {
-            if (!label.setHorizontalTextAlignment(Alignment.Left)) {
-                return false;
-            }
+            label.setHorizontalTextAlignment(Alignment.Left);
         } else if (labelAlignment == Alignment.Bottom) {
-            if (!label.setVerticalTextAlignment(Alignment.Top)) {
-                return false;
-            }
+            label.setVerticalTextAlignment(Alignment.Top);
         } else if (labelAlignment == Alignment.Top) {
-            if (!label.setVerticalTextAlignment(Alignment.Bottom)) {
-                return false;
-            }
+            label.setVerticalTextAlignment(Alignment.Bottom);
         }
         if (!setPosition(getPosition().clone())) {
             return false;

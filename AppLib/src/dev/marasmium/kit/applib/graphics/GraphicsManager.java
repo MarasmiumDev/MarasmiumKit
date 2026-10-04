@@ -206,15 +206,16 @@ public class GraphicsManager implements GLEventListener {
      * @param padding The spacing between the text and the edges of the bounding box
      * @param depth The depth to render the text characters at in the scene
      * @param size The scale on the default pixel size of the typeface to draw the text at
+     * @param position The default position to start drawing text at before alignment within its bounding box
      * @param horizontalAlignment The horizontal alignment of the text within its bounding box
      * @param verticalAlignment The vertical alignment of the text within its bounding box
      * @return Whether the text was submitted successfully
      */
     public boolean submit(Camera camera, String text, String typefaceFilePath, Box boundingBox, float padding,
-                          float depth, float size, Alignment horizontalAlignment, Alignment verticalAlignment) {
+                          float depth, float size, Vector position, Alignment horizontalAlignment,
+                          Alignment verticalAlignment) {
         // Check parameters
-        if (text == null || typefaceFilePath == null || boundingBox == null || horizontalAlignment == null
-                || verticalAlignment == null) {
+        if (text == null || typefaceFilePath == null || boundingBox == null) {
             return false;
         }
         if (text.isEmpty()) {
@@ -255,33 +256,33 @@ public class GraphicsManager implements GLEventListener {
             sprites[i].setAnimationFrame(glyphs[i].getAnimationFrame());
         }
         // Compute starting position based on alignment
-        Vector textPosition = boundingBox.getPosition().clone();
+        Vector startPosition = boundingBox.getPosition().clone();
         if (horizontalAlignment == Alignment.Left) {
-            textPosition.setX(boundingBox.getPosition().getX() + padding);
+            startPosition.setX(boundingBox.getPosition().getX() + padding);
         } else if (horizontalAlignment == Alignment.Right) {
-            textPosition.setX(boundingBox.getPosition().getX() + boundingBox.getDimensions().getX()
+            startPosition.setX(boundingBox.getPosition().getX() + boundingBox.getDimensions().getX()
                     - textDimensions.getX() - padding);
         } else if (horizontalAlignment == Alignment.Center) {
-            textPosition.setX(boundingBox.getPosition().getX() + ((boundingBox.getDimensions().getX()
+            startPosition.setX(boundingBox.getPosition().getX() + ((boundingBox.getDimensions().getX()
                     - textDimensions.getX()) * 0.5f));
-        } else {
-            return false;
+        } else if (horizontalAlignment == null) {
+            startPosition.setX(position.getX());
         }
         if (verticalAlignment == Alignment.Bottom) {
-            textPosition.setY(boundingBox.getPosition().getY() + maxOffset + padding);
+            startPosition.setY(boundingBox.getPosition().getY() + maxOffset + padding);
         } else if (verticalAlignment == Alignment.Top) {
-            textPosition.setY(boundingBox.getPosition().getY() + boundingBox.getDimensions().getY()
+            startPosition.setY(boundingBox.getPosition().getY() + boundingBox.getDimensions().getY()
                     - textDimensions.getY() - padding);
         } else if (verticalAlignment == Alignment.Center) {
-            textPosition.setY(boundingBox.getPosition().getY() + maxOffset
+            startPosition.setY(boundingBox.getPosition().getY() + maxOffset
                     + ((boundingBox.getDimensions().getY() - textDimensions.getY()) * 0.5f));
-        } else {
-            return false;
+        } else if (verticalAlignment == null) {
+            startPosition.setY(position.getY());
         }
         // Set character sprite positions
-        Vector spritePosition = textPosition.clone();
+        Vector spritePosition = startPosition.clone();
         for (int i = 0; i < text.length(); i++) {
-            spritePosition.setY(textPosition.getY() + (glyphs[i].getOffsets().getY() * size));
+            spritePosition.setY(startPosition.getY() + (glyphs[i].getOffsets().getY() * size));
             sprites[i].setPosition(spritePosition.clone());
             spritePosition.setX(spritePosition.getX() - (glyphs[i].getOffsets().getX() * size)
                     + (glyphs[i].getAdvances().getX() * size));

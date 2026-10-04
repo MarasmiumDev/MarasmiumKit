@@ -28,5 +28,9 @@ public enum UIEvent {
      * Slider events
      */
     Slider_Value_Set,
+    /**
+     * Text box events
+     */
+    Text_Box_Value_Set,
 
 }

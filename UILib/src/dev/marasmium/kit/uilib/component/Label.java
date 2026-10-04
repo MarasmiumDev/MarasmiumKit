@@ -14,12 +14,13 @@ import dev.marasmium.kit.applib.graphics.Alignment;
 
 public class Label extends UIComponent {
 
-    private String text = null;
-    private Alignment horizontalTextAlignment = null;
-    private Alignment verticalTextAlignment = null;
+    protected String text = null;
+    protected Vector textPosition = null;
+    protected Alignment horizontalTextAlignment = null;
+    protected Alignment verticalTextAlignment = null;
 
     public boolean initialize(Vector position, Vector dimensions, String animationFilePath, String text,
-                              Alignment horizontalAlignment, Alignment verticalAlignment) {
+                              Vector textPosition, Alignment horizontalAlignment, Alignment verticalAlignment) {
         setEnabled(true);
         setVisible(true);
         if (!sprite.initialize(Vector.Zero(), 0.0f, Vector.Zero(), Angle.Zero(), animationFilePath)) {
@@ -29,12 +30,11 @@ public class Label extends UIComponent {
         if (!setText(text)) {
             return false;
         }
-        if (!setHorizontalTextAlignment(horizontalAlignment)) {
+        if (!setTextPosition(textPosition)) {
             return false;
         }
-        if (!setVerticalTextAlignment(verticalAlignment)) {
-            return false;
-        }
+        setHorizontalTextAlignment(horizontalAlignment);
+        setVerticalTextAlignment(verticalAlignment);
         if (!setPosition(position)) {
             return false;
         }
@@ -54,7 +54,8 @@ public class Label extends UIComponent {
         }
         App.Graphics.submit(parent.getCamera(), sprite);
         App.Graphics.submit(parent.getCamera(), text, parent.getTypefaceFilePath(), sprite, parent.getTextPadding(),
-                parent.getBaseDepth() + 0.1f, parent.getTextSize(), horizontalTextAlignment, verticalTextAlignment);
+                parent.getBaseDepth() + 0.1f, parent.getTextSize(), textPosition, horizontalTextAlignment,
+                verticalTextAlignment);
     }
 
     @Override
@@ -82,28 +83,32 @@ public class Label extends UIComponent {
         return true;
     }
 
+    public Vector getTextPosition() {
+        return textPosition;
+    }
+
+    public boolean setTextPosition(Vector textPosition) {
+        if (textPosition == null) {
+            return false;
+        }
+        this.textPosition = textPosition;
+        return true;
+    }
+
     public Alignment getHorizontalTextAlignment() {
         return horizontalTextAlignment;
     }
 
-    public boolean setHorizontalTextAlignment(Alignment horizontalAlignment) {
-        if (horizontalAlignment == null) {
-            return false;
-        }
+    public void setHorizontalTextAlignment(Alignment horizontalAlignment) {
         this.horizontalTextAlignment = horizontalAlignment;
-        return true;
     }
 
     public Alignment getVerticalTextAlignment() {
         return verticalTextAlignment;
     }
 
-    public boolean setVerticalTextAlignment(Alignment verticalAlignment) {
-        if (verticalAlignment == null) {
-            return false;
-        }
+    public void setVerticalTextAlignment(Alignment verticalAlignment) {
         this.verticalTextAlignment = verticalAlignment;
-        return true;
     }
 
 }

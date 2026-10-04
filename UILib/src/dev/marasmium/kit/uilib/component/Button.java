@@ -46,7 +46,8 @@ public class Button extends UIComponent {
         if (!setPressedAnimationFilePath(animationFilePaths[2])) {
             return false;
         }
-        if (!label.initialize(Vector.Zero(), Vector.Zero(), "", labelText, Alignment.Center, Alignment.Center)) {
+        if (!label.initialize(Vector.Zero(), Vector.Zero(), "", labelText, Vector.Zero(), Alignment.Center,
+                Alignment.Center)) {
             return false;
         }
         if (!addComponent(label)) {
@@ -253,21 +254,13 @@ public class Button extends UIComponent {
         }
         this.labelAlignment = labelAlignment;
         if (labelAlignment == Alignment.Left) {
-            if (!label.setHorizontalTextAlignment(Alignment.Right)) {
-                return false;
-            }
+            label.setHorizontalTextAlignment(Alignment.Right);
         } else if (labelAlignment == Alignment.Right) {
-            if (!label.setHorizontalTextAlignment(Alignment.Left)) {
-                return false;
-            }
+            label.setHorizontalTextAlignment(Alignment.Left);
         } else if (labelAlignment == Alignment.Bottom) {
-            if (!label.setVerticalTextAlignment(Alignment.Top)) {
-                return false;
-            }
+            label.setVerticalTextAlignment(Alignment.Top);
         } else if (labelAlignment == Alignment.Top) {
-            if (!label.setVerticalTextAlignment(Alignment.Bottom)) {
-                return false;
-            }
+            label.setVerticalTextAlignment(Alignment.Bottom);
         }
         if (!setPosition(getPosition().clone())) {
             return false;
