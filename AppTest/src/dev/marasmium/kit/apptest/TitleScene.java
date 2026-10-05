@@ -20,6 +20,7 @@ import dev.marasmium.kit.uilib.UIEvent;
 import dev.marasmium.kit.uilib.UIGroup;
 import dev.marasmium.kit.uilib.UIListener;
 import dev.marasmium.kit.uilib.component.Button;
+import dev.marasmium.kit.uilib.component.Carousel;
 import dev.marasmium.kit.uilib.component.Label;
 import dev.marasmium.kit.uilib.component.Slider;
 import dev.marasmium.kit.uilib.component.Switch;
@@ -34,6 +35,7 @@ public class TitleScene extends Scene implements UIListener {
     private Switch switch1 = null;
     private Slider slider1 = null;
     private TextBox textBox1 = null;
+    private Carousel carousel1 = null;
 
     @Override
     public boolean initialize() {
@@ -75,6 +77,16 @@ public class TitleScene extends Scene implements UIListener {
             return false;
         }
         UI.addComponent(textBox1);
+        carousel1 = new Carousel();
+        if (!carousel1.initialize(Vector.Cartesian(0.51f, 0.78f), Vector.Cartesian(0.48f, 0.125f),
+                "Animation/UI/Carousel.animation", Alignment.Center, Alignment.Center, "Carousel",
+                Alignment.Top, new String[] { "Animation/UI/Carousel_Button_Unselected.animation",
+                        "Animation/UI/Carousel_Button_Selected.animation",
+                        "Animation/UI/Carousel_Button_Pressed.animation" }, 0.15f, Alignment.Right,
+                new String[] { "Value 1", "Value 2", "Value 3" }, 0)) {
+            return false;
+        }
+        UI.addComponent(carousel1);
         return true;
     }
 

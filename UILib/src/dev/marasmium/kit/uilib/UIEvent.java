@@ -32,5 +32,9 @@ public enum UIEvent {
      * Text box events
      */
     Text_Box_Value_Set,
+    /**
+     * Carousel events
+     */
+    Carousel_Value_Set,
 
 }
