@@ -385,7 +385,6 @@ public class Carousel extends Label {
             label.setVerticalTextAlignment(Alignment.Bottom);
         }
         if (getPosition() == null) {
-            System.out.println("PP");
             return true;
         }
         if (!setPosition(getPosition().clone())) {
@@ -411,7 +410,6 @@ public class Carousel extends Label {
         if (getDimensions() == null) {
             return true;
         }
-        System.out.println("1");
         return setDimensions(getDimensions().clone());
     }
 
@@ -458,6 +456,17 @@ public class Carousel extends Label {
         if (!(horizontalButtonAlignment == Alignment.Left || horizontalButtonAlignment == Alignment.Center
                 || horizontalButtonAlignment == Alignment.Right)) {
             return false;
+        }
+        if (horizontalButtonAlignment == Alignment.Center) {
+            backButton.getSprite().setFlippedHorizontally(false);
+            backButton.getSprite().setFlippedVertically(false);
+            nextButton.getSprite().setFlippedHorizontally(true);
+            nextButton.getSprite().setFlippedVertically(false);
+        } else {
+            backButton.getSprite().setFlippedHorizontally(false);
+            backButton.getSprite().setFlippedVertically(false);
+            nextButton.getSprite().setFlippedHorizontally(false);
+            nextButton.getSprite().setFlippedVertically(true);
         }
         this.horizontalButtonAlignment = horizontalButtonAlignment;
         if (getPosition() == null) {

@@ -71,22 +71,16 @@ public class AssetManager {
     public boolean readAudioTrack(String filePath) {
         // Ensure the file path is accessible
         if (basePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
             return false;
         }
         if (filePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No file path provided to load audio track");
             return false;
         }
         if (filePath.isEmpty()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Empty file path provided to load audio track");
             return false;
         }
-        App.Log.write(LogSource.Assets, LogLevel.Info, "Loading audio track at \"", basePath + filePath, "\"");
         File file = new File(basePath + filePath);
         if (!file.canRead()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to load audio track at \"", basePath + filePath,
-                    "\", cannot read from file");
             return false;
         }
         // Read all file data into memory
@@ -94,8 +88,6 @@ public class AssetManager {
         try {
             inputStream = new FileInputStream(file);
         } catch (FileNotFoundException _) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to load audio track at \"", basePath + filePath,
-                    "\", cannot open file");
             return false;
         }
         byte[] fileData;
@@ -103,8 +95,6 @@ public class AssetManager {
             fileData = inputStream.readAllBytes();
             inputStream.close();
         } catch (IOException _) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to read audio data from \"", basePath + filePath,
-                    "\"");
             return false;
         }
         return addAudioTrack(filePath, deserializeAudioTrack(fileData));
@@ -124,8 +114,6 @@ public class AssetManager {
         byte[] buffer = new byte[Integer.BYTES];
         int offset = 0;
         if (fileData.length < 4 * Integer.BYTES) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize audio track, data is smaller ",
-                    "than header size");
             return null;
         }
         try {
@@ -142,24 +130,19 @@ public class AssetManager {
             offset += Integer.BYTES;
             dataSize = ByteBuffer.wrap(buffer).getInt();
         } catch (IndexOutOfBoundsException | ArrayStoreException | BufferUnderflowException _) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize audio track, data invalid");
             return null;
         }
         if (fileData.length < offset + dataSize) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize audio track, data is smaller ",
-                    "than required size");
             return null;
         }
         data = new byte[dataSize];
         try {
             System.arraycopy(fileData, offset, data, 0, dataSize);
         } catch (IndexOutOfBoundsException | ArrayStoreException _) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to copy audio data");
             return null;
         }
         AudioTrack audioTrack = new AudioTrack();
         if (!audioTrack.initialize(sampleRate, sampleSize, channelCount, data)) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to initialize audio track, invalid parameters");
             return null;
         }
         return audioTrack;
@@ -271,22 +254,16 @@ public class AssetManager {
     public boolean readAnimation(String filePath) {
         // Ensure the file path is accessible
         if (basePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
             return false;
         }
         if (filePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No file path provided to load animation");
             return false;
         }
         if (filePath.isEmpty()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Empty file path provided to load animation");
             return false;
         }
-        App.Log.write(LogSource.Assets, LogLevel.Info, "Loading animation from \"", basePath + filePath, "\"");
         File file = new File(basePath + filePath);
         if (!file.canRead()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to load animation at \"", basePath + filePath,
-                    "\", cannot read from file");
             return false;
         }
         // Read all file data into memory
@@ -294,8 +271,6 @@ public class AssetManager {
         try {
             inputStream = new FileInputStream(file);
         } catch (FileNotFoundException _) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to load animation at \"", basePath + filePath,
-                    "\", cannot open file");
             return false;
         }
         byte[] fileData;
@@ -303,8 +278,6 @@ public class AssetManager {
             fileData = inputStream.readAllBytes();
             inputStream.close();
         } catch (IOException _) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to read animation data from \"",
-                    basePath + filePath, "\"");
             return false;
         }
         return addAnimation(filePath, deserializeAnimation(fileData));
@@ -327,8 +300,6 @@ public class AssetManager {
         byte[] buffer = new byte[Integer.BYTES];
         int offset = 0;
         if (fileData.length < 6 * Integer.BYTES) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize animation, data is smaller than ",
-                    "header size");
             return null;
         }
         try {
@@ -351,13 +322,10 @@ public class AssetManager {
             offset += Integer.BYTES;
             frameCount = ByteBuffer.wrap(buffer).getInt();
         } catch (IndexOutOfBoundsException | ArrayStoreException | BufferUnderflowException _) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize animation, data invalid");
             return null;
         }
         int dataSize = Integer.BYTES * (int)(sheetDimensions.getElementProduct() * frameDimensions.getElementProduct());
         if (fileData.length < offset + dataSize) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize animation data, file is smaller ",
-                    "than required size");
             return null;
         }
         data = new Colour[dataSize / Integer.BYTES];
@@ -367,14 +335,11 @@ public class AssetManager {
                 offset += Integer.BYTES;
                 data[i] = Colour.Bytes(ByteBuffer.wrap(buffer).getInt());
             } catch (IndexOutOfBoundsException | ArrayStoreException | BufferUnderflowException _) {
-                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize animation pixel data, data ",
-                        "invalid");
                 return null;
             }
         }
         Animation animation = new Animation();
         if (!animation.initialize(targetFPS, sheetDimensions, frameDimensions, frameCount, data)) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to initialize animation, invalid parameters");
             return null;
         }
         return animation;
@@ -490,22 +455,16 @@ public class AssetManager {
     public boolean readTypeface(String filePath) {
         // Ensure the file path is accessible
         if (basePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
             return false;
         }
         if (filePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No file path provided to load typeface");
             return false;
         }
         if (filePath.isEmpty()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Empty file path provided to load typeface");
             return false;
         }
-        App.Log.write(LogSource.Assets, LogLevel.Info, "Reading typeface from \"", basePath + filePath, "\"");
         File file = new File(basePath + filePath);
         if (!file.canRead()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to read typeface at \"", basePath + filePath,
-                    "\", cannot read from file");
             return false;
         }
         // Read all file data into memory
@@ -513,8 +472,6 @@ public class AssetManager {
         try {
             inputStream = new FileInputStream(file);
         } catch (FileNotFoundException _) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to read typeface at \"", basePath + filePath,
-                    "\", cannot open file");
             return false;
         }
         byte[] fileData;
@@ -522,8 +479,6 @@ public class AssetManager {
             fileData = inputStream.readAllBytes();
             inputStream.close();
         } catch (IOException _) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to read typeface data from \"",
-                    basePath + filePath, "\"");
             return false;
         }
         return addTypeface(filePath, deserializeTypeface(fileData));
@@ -546,8 +501,6 @@ public class AssetManager {
         byte[] buffer = new byte[Integer.BYTES];
         int offset = 0;
         if (fileData.length < Integer.BYTES) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize typeface, data is smaller than ",
-                    "header size");
             return null;
         }
         try {
@@ -555,13 +508,10 @@ public class AssetManager {
             offset += Integer.BYTES;
             characterCount = ByteBuffer.wrap(buffer).getInt();
         } catch (IndexOutOfBoundsException | ArrayStoreException | BufferOverflowException _) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize typeface, data invalid");
             return null;
         }
         glyphs = new Glyph[characterCount];
         if (fileData.length < offset + (characterCount * Character.BYTES) + (characterCount * 7 * Integer.BYTES)) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize typeface, data is smaller than ",
-                    "required size");
             return null;
         }
         for (int i = 0; i < characterCount; i++) {
@@ -596,20 +546,15 @@ public class AssetManager {
                 offset += Integer.BYTES;
                 glyphOffsets.setY(ByteBuffer.wrap(buffer).getInt());
             } catch (IndexOutOfBoundsException | ArrayStoreException | BufferOverflowException _) {
-                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize typeface, data invalid");
                 return null;
             }
             characters.append(glyphCharacter);
             glyphs[i] = new Glyph();
             if (!glyphs[i].initialize(glyphAnimationFrame, glyphDimensions, glyphAdvances, glyphOffsets)) {
-                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize typeface, glyph metrics for '",
-                        glyphCharacter, "' invalid");
                 return null;
             }
         }
         if (fileData.length < offset + Integer.BYTES) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize typeface, data is smaller than ",
-                    "required size");
             return null;
         }
         try {
@@ -617,24 +562,19 @@ public class AssetManager {
             offset += Integer.BYTES;
             animationDataSize = ByteBuffer.wrap(buffer).getInt();
         } catch (IndexOutOfBoundsException | ArrayStoreException | BufferOverflowException _) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize typeface, data invalid");
             return null;
         }
         if (fileData.length < offset + animationDataSize) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize typeface, data is smaller than ",
-                    "required size");
             return null;
         }
         animationData = new byte[animationDataSize];
         try {
             System.arraycopy(fileData, offset, animationData, 0, animationDataSize);
         } catch (IndexOutOfBoundsException | ArrayStoreException _) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to deserialize typeface, data invalid");
             return null;
         }
         Typeface typeface = new Typeface();
         if (!typeface.initialize(characters.toString(), glyphs, animationData)) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to initialize typeface, invalid parameters");
             return null;
         }
         return typeface;

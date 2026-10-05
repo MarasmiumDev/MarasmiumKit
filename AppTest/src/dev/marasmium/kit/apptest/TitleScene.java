@@ -45,44 +45,47 @@ public class TitleScene extends Scene implements UIListener {
     @Override
     public boolean enter(Scene lastScene) {
         UI = new UIGroup();
-        UI.initialize(this, 0, 0.0f, "Typeface/Fira_Sans.typeface", 4.0f, 0.25f);
+        UI.initialize(this, 0, 0.0f, "Typefaces/Fira_Sans.typeface", 4.0f, 0.25f);
         label1 = new Label();
-        label1.initialize(Vector.Cartesian(0.01f, 0.78f), Vector.Cartesian(0.48f, 0.125f),
-                "Animation/UI/Label.animation", "Label", Vector.Zero(), Alignment.Center, Alignment.Center);
+        label1.initialize(Vector.Cartesian(0.01f, 0.82f), Vector.Cartesian(0.48f, 0.125f),
+                "Animations/UI/Label/Label.animation", "Label", Vector.Zero(), Alignment.Center, Alignment.Center);
         UI.addComponent(label1);
         button1 = new Button();
-        button1.initialize(Vector.Cartesian(0.01f, 0.52f), Vector.Cartesian(0.23f, 0.125f),
-                new String[] { "Animation/UI/Button_Unselected.animation", "Animation/UI/Button_Selected.animation",
-                "Animation/UI/Button_Pressed.animation" }, "Button", Alignment.Center);
+        button1.initialize(Vector.Cartesian(0.01f, 0.56f), Vector.Cartesian(0.23f, 0.125f),
+                new String[] { "Animations/UI/Button/Button_Unselected.animation",
+                        "Animations/UI/Button/Button_Selected.animation",
+                        "Animations/UI/Button/Button_Pressed.animation" }, "Button", Alignment.Center);
         UI.addComponent(button1);
         switch1 = new Switch();
-        switch1.initialize(Vector.Cartesian(0.26f, 0.52f), Vector.Cartesian(0.23f, 0.125f),
-                new String[] { "Animation/UI/Switch_Off.animation", "Animation/UI/Switch_On.animation" }, "Switch",
-                Alignment.Top);
+        switch1.initialize(Vector.Cartesian(0.26f, 0.56f), Vector.Cartesian(0.23f, 0.125f),
+                new String[] { "Animations/UI/Switch/Switch_Off.animation",
+                        "Animations/UI/Switch/Switch_On.animation" }, "Switch", Alignment.Top);
         UI.addComponent(switch1);
         slider1 = new Slider();
-        if (!slider1.initialize(Vector.Cartesian(0.01f, 0.26f), Vector.Cartesian(0.48f, 0.125f),
-                new String[] { "Animation/UI/Slider_Unselected.animation", "Animation/UI/Slider_Selected.animation" },
-                "Slider", Alignment.Top, Vector.Cartesian(0.5f, 0.9f),
-                new String[] { "Animation/UI/Cursor_Unselected.animation", "Animation/UI/Cursor_Selected.animation",
-                        "Animation/UI/Cursor_Pressed.animation" }, Alignment.Center, -10.0f, 10.0f, 5)) {
+        if (!slider1.initialize(Vector.Cartesian(0.01f, 0.3f), Vector.Cartesian(0.48f, 0.125f),
+                new String[] { "Animations/UI/Slider/Slider_Unselected.animation",
+                        "Animations/UI/Slider/Slider_Selected.animation" }, "Slider", Alignment.Top,
+                Vector.Cartesian(0.01f, 0.9f), new String[] { "Animations/UI/Slider/Slider_Cursor_Unselected.animation",
+                        "Animations/UI/Slider/Slider_Cursor_Selected.animation",
+                        "Animations/UI/Slider/Slider_Cursor_Pressed.animation" }, Alignment.Center, -10.0f, 10.0f, 5)) {
             return false;
         }
         UI.addComponent(slider1);
         textBox1 = new TextBox();
-        if (!textBox1.initialize(Vector.Cartesian(0.01f, 0.01f), Vector.Cartesian(0.48f, 0.125f),
-                new String[] { "Animation/UI/TextBox_Unselected.animation", "Animation/UI/TextBox_Selected.animation" },
-                "Text Box", Alignment.Top, Vector.Cartesian(0.01f, 0.9f), "Animation/UI/Cursor_Selected.animation",
+        if (!textBox1.initialize(Vector.Cartesian(0.01f, 0.06f), Vector.Cartesian(0.48f, 0.125f),
+                new String[] { "Animations/UI/Text_Box/Text_Box_Unselected.animation",
+                        "Animations/UI/Text_Box/Text_Box_Selected.animation" }, "Text Box", Alignment.Top,
+                Vector.Cartesian(0.01f, 0.7f), "Animations/UI/Text_Box/Text_Box_Cursor.animation",
                 Alignment.Center, null, -1)) {
             return false;
         }
         UI.addComponent(textBox1);
         carousel1 = new Carousel();
-        if (!carousel1.initialize(Vector.Cartesian(0.51f, 0.78f), Vector.Cartesian(0.48f, 0.125f),
-                "Animation/UI/Carousel.animation", Alignment.Center, Alignment.Center, "Carousel",
-                Alignment.Top, new String[] { "Animation/UI/Carousel_Button_Unselected.animation",
-                        "Animation/UI/Carousel_Button_Selected.animation",
-                        "Animation/UI/Carousel_Button_Pressed.animation" }, 0.15f, Alignment.Right,
+        if (!carousel1.initialize(Vector.Cartesian(0.51f, 0.82f), Vector.Cartesian(0.48f, 0.125f),
+                "Animations/UI/Carousel/Carousel.animation", Alignment.Center, Alignment.Center, "Carousel",
+                Alignment.Top, new String[] { "Animations/UI/Carousel/Carousel_Button_Unselected.animation",
+                        "Animations/UI/Carousel/Carousel_Button_Selected.animation",
+                        "Animations/UI/Carousel/Carousel_Button_Pressed.animation" }, 0.15f, Alignment.Right,
                 new String[] { "Value 1", "Value 2", "Value 3" }, 0)) {
             return false;
         }
