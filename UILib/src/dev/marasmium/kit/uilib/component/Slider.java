@@ -92,6 +92,9 @@ public class Slider extends UIComponent {
 
     @Override
     public void processInput() {
+        if (!enabled) {
+            return;
+        }
         label.processInput();
         if (App.Input.mouse.isButtonPressed(MouseButton.Left)
                 && App.Input.mouse.getCursorPosition(parent.getCamera()).inside(sprite)) {
@@ -121,6 +124,9 @@ public class Slider extends UIComponent {
 
     @Override
     public void draw() {
+        if (!visible) {
+            return;
+        }
         App.Graphics.submit(parent.getCamera(), sprite);
         label.draw();
         cursor.draw();
@@ -153,9 +159,8 @@ public class Slider extends UIComponent {
 
     @Override
     public boolean setPosition(Vector position) {
-        boolean success = true;
         if (!super.setPosition(position)) {
-            success = false;
+            return false;
         }
         Vector labelPosition = position.clone();
         if (labelAlignment == Alignment.Left) {
@@ -168,31 +173,30 @@ public class Slider extends UIComponent {
             labelPosition.setY(position.getY() + getDimensions().getY());
         };
         if (!label.setPosition(labelPosition)) {
-            success = false;
+            return false;
         }
         if (!setValue(value)) {
-            success = false;
+            return false;
         }
         if (!setVerticalCursorAlignment(verticalCursorAlignment)) {
-            success = false;
+            return false;
         }
-        return success;
+        return true;
     }
 
     @Override
     public boolean setDimensions(Vector dimensions) {
-        boolean success = true;
         Vector cursorDimensions = getCursorDimensions();
         if (!super.setDimensions(dimensions)) {
-            success = false;
+            return false;
         }
         if (!label.setDimensions(dimensions)) {
-            success = false;
+            return false;
         }
         if (!setCursorDimensions(cursorDimensions)) {
-            success = false;
+            return false;
         }
-        return success;
+        return setPosition(getPosition().clone());
     }
 
     @Override
@@ -203,7 +207,7 @@ public class Slider extends UIComponent {
         if (!label.setMinimumDimensions(minimumDimensions)) {
             return false;
         }
-        return true;
+        return setPosition(getPosition().clone());
     }
 
     @Override
@@ -214,7 +218,7 @@ public class Slider extends UIComponent {
         if (!label.setMaximumDimensions(maximumDimensions)) {
             return false;
         }
-        return true;
+        return setPosition(getPosition().clone());
     }
 
     @Override

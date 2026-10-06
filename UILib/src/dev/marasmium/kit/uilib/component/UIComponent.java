@@ -138,7 +138,8 @@ public abstract class UIComponent extends UIGroup {
 
     public boolean setMinimumDimensions(Vector minimumDimensions) {
         if (minimumDimensions == null) {
-            return false;
+            this.minimumDimensions = minimumDimensions;
+            return setDimensions(getDimensions().clone());
         }
         if (minimumDimensions.getX() < 0.0f || minimumDimensions.getY() < 0.0f) {
             return false;
@@ -156,7 +157,8 @@ public abstract class UIComponent extends UIGroup {
 
     public boolean setMaximumDimensions(Vector maximumDimensions) {
         if (maximumDimensions == null) {
-            return false;
+            this.maximumDimensions = maximumDimensions;
+            return setDimensions(getDimensions().clone());
         }
         if (maximumDimensions.getX() < 0.0f || maximumDimensions.getY() < 0.0f) {
             return false;

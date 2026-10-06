@@ -42,6 +42,9 @@ public class Switch extends Button {
 
     @Override
     public void processInput() {
+        if (!enabled) {
+            return;
+        }
         label.processInput();
         if (App.Input.mouse.getCursorPosition(parent.getCamera()).inside(sprite)) {
             if (App.Input.mouse.isButtonPressed(MouseButton.Left)) {

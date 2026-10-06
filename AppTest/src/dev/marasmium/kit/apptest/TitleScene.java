@@ -67,16 +67,17 @@ public class TitleScene extends Scene implements UIListener {
                         "Animations/UI/Slider/Slider_Selected.animation" }, "Slider", Alignment.Top,
                 Vector.Cartesian(0.01f, 0.9f), new String[] { "Animations/UI/Slider/Slider_Cursor_Unselected.animation",
                         "Animations/UI/Slider/Slider_Cursor_Selected.animation",
-                        "Animations/UI/Slider/Slider_Cursor_Pressed.animation" }, Alignment.Center, -10.0f, 10.0f, 5)) {
+                        "Animations/UI/Slider/Slider_Cursor_Pressed.animation" }, Alignment.Center, -10.0f, 10.0f,
+                20)) {
             return false;
         }
         UI.addComponent(slider1);
         textBox1 = new TextBox();
-        if (!textBox1.initialize(Vector.Cartesian(0.01f, 0.06f), Vector.Cartesian(0.48f, 0.125f),
+        if (!textBox1.initialize(Vector.Cartesian(0.01f, 0.05f), Vector.Cartesian(0.48f, 0.125f),
                 new String[] { "Animations/UI/Text_Box/Text_Box_Unselected.animation",
                         "Animations/UI/Text_Box/Text_Box_Selected.animation" }, "Text Box", Alignment.Top,
                 Vector.Cartesian(0.01f, 0.7f), "Animations/UI/Text_Box/Text_Box_Cursor.animation",
-                Alignment.Center, null, -1)) {
+                Alignment.Center, null, -1, 12, 0.5f)) {
             return false;
         }
         UI.addComponent(textBox1);
@@ -96,8 +97,16 @@ public class TitleScene extends Scene implements UIListener {
     @Override
     public boolean processInput() {
         UI.processInput();
-        if (App.Input.keyboard.isKeyDown(KeyboardKey.Tab) && App.Input.keyboard.isKeyPressed(KeyboardKey.F)) {
-            App.Window.setFullscreen(!App.Window.isFullscreen());
+        if (App.Input.keyboard.isKeyDown(KeyboardKey.Tab)) {
+            if (App.Input.keyboard.isKeyPressed(KeyboardKey.F)) {
+                App.Window.setFullscreen(!App.Window.isFullscreen());
+            }
+            if (App.Input.keyboard.isKeyPressed(KeyboardKey.E)) {
+                UI.setEnabled(!UI.isEnabled());
+            }
+            if (App.Input.keyboard.isKeyPressed(KeyboardKey.V)) {
+                UI.setVisible(!UI.isVisible());
+            }
         }
         return true;
     }
@@ -126,9 +135,6 @@ public class TitleScene extends Scene implements UIListener {
     @Override
     public void componentEvent(int groupID, int componentID, UIEvent event) {
         App.Log.write(logSource, LogLevel.Info, "Component ", componentID, " in group ", groupID, " event ", event);
-        if (componentID == textBox1.getComponentID()) {
-            App.Log.write(logSource, LogLevel.Info, "Text: \"", textBox1.getText(), "\"");
-        }
     }
 
 }

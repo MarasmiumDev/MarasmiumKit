@@ -30,13 +30,18 @@ public class TextBox extends Label {
     protected String allowedCharacters = null;
     protected int maximumCharacters = 0;
     protected int cursorIndex = 0;
+    protected int targetRPS = 0;
+    protected float repeatStartTime = 0.0f;
 
     private float textX = 0.0f;
     private float repeatTimer = 0.0f;
+    private boolean repeatStarting = false;
+    private float repeatStartTimer = 0.0f;
 
     public boolean initialize(Vector position, Vector dimensions, String[] animationFilePaths, String labelText,
                               Alignment labelAlignment, Vector cursorDimensions, String cursorAnimationFilePath,
-                              Alignment verticalCursorAlignment, String allowedCharacters, int maximumCharacters) {
+                              Alignment verticalCursorAlignment, String allowedCharacters, int maximumCharacters,
+                              int targetRPS, float repeatStartTime) {
         if (animationFilePaths == null) {
             return false;
         }
@@ -91,37 +96,64 @@ public class TextBox extends Label {
         if (!setCursorIndex(0)) {
             return false;
         }
+        if (!setTargetRPS(targetRPS)) {
+            return false;
+        }
+        if (!setRepeatStartTime(repeatStartTime)) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public void processInput() {
+        if (!enabled) {
+            return;
+        }
         label.processInput();
         if (App.Input.mouse.isButtonPressed(MouseButton.Left)) {
             setTyping(App.Input.mouse.getCursorPosition(parent.getCamera()).inside(sprite));
         }
-        float repeatTime = App.Graphics.getTargetFPS() / 5.0f;
+        float repeatTime = (float)App.Graphics.getTargetFPS() / (float)targetRPS;
+        float repeatStartTime = (float)App.Graphics.getTargetFPS() * this.repeatStartTime;
         if (typing) {
             // Text controls
             boolean textUpdated = false;
             if (App.Input.keyboard.isKeyDown(KeyboardKey.Left)) {
-                if (App.Input.keyboard.isKeyPressed(KeyboardKey.Left) || repeatTimer > repeatTime) {
+                if (!repeatStarting) {
+                    repeatStartTimer = 0.0f;
+                    repeatStarting = true;
+                }
+                if (App.Input.keyboard.isKeyPressed(KeyboardKey.Left) || (repeatStartTimer > repeatStartTime
+                        && repeatTimer > repeatTime)) {
                     repeatTimer = 0.0f;
                     if (cursorIndex > 0) {
                         setCursorIndex(cursorIndex - 1);
                         textUpdated = true;
                     }
                 }
-            } else if (App.Input.keyboard.isKeyDown(KeyboardKey.Right)) {
-                if (App.Input.keyboard.isKeyPressed(KeyboardKey.Right) || repeatTimer > repeatTime) {
+            }
+            if (App.Input.keyboard.isKeyDown(KeyboardKey.Right)) {
+                if (!repeatStarting) {
+                    repeatStartTimer = 0.0f;
+                    repeatStarting = true;
+                }
+                if (App.Input.keyboard.isKeyPressed(KeyboardKey.Right) || (repeatStartTimer > repeatStartTime
+                        && repeatTimer > repeatTime)) {
                     repeatTimer = 0.0f;
                     if (cursorIndex < text.length()) {
                         setCursorIndex(cursorIndex + 1);
                         textUpdated = true;
                     }
                 }
-            } else if (App.Input.keyboard.isKeyDown(KeyboardKey.Backspace)) {
-                if (App.Input.keyboard.isKeyPressed(KeyboardKey.Backspace) || repeatTimer > repeatTime) {
+            }
+            if (App.Input.keyboard.isKeyDown(KeyboardKey.Backspace)) {
+                if (!repeatStarting) {
+                    repeatStartTimer = 0.0f;
+                    repeatStarting = true;
+                }
+                if (App.Input.keyboard.isKeyPressed(KeyboardKey.Backspace) || (repeatStartTimer > repeatStartTime
+                        && repeatTimer > repeatTime)) {
                     repeatTimer = 0.0f;
                     if (cursorIndex > 0) {
                         setCursorIndex(cursorIndex - 1);
@@ -129,14 +161,31 @@ public class TextBox extends Label {
                         textUpdated = true;
                     }
                 }
-            } else if (App.Input.keyboard.isKeyPressed(KeyboardKey.Enter)) {
+            }
+            if (App.Input.keyboard.isKeyPressed(KeyboardKey.Enter)) {
                 parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Text_Box_Value_Set);
-            } else {
+                textUpdated = true;
+            }
+            if (App.Input.keyboard.isKeyReleased(KeyboardKey.Left)
+                    || App.Input.keyboard.isKeyReleased(KeyboardKey.Right)
+                    || App.Input.keyboard.isKeyReleased(KeyboardKey.Backspace)
+                    || App.Input.keyboard.isKeyReleased(KeyboardKey.Enter)) {
+                repeatStarting = false;
+                repeatStartTimer = 0.0f;
+            }
+            if (!textUpdated) {
                 String typedChars = App.Input.keyboard.getTypedChars();
                 if (!typedChars.isEmpty() && !(typedChars.contains("\n") || typedChars.contains("\r")
                         || typedChars.contains("\t") || typedChars.contains("\b"))) {
-                    setText(text.substring(0, cursorIndex) + typedChars + text.substring(cursorIndex));
-                    setCursorIndex(cursorIndex + typedChars.length());
+                    for (char character : typedChars.toCharArray()) {
+                        if (allowedCharacters != null) {
+                            if (!allowedCharacters.contains(Character.toString(character))) {
+                                continue;
+                            }
+                        }
+                        setText(text.substring(0, cursorIndex) + character + text.substring(cursorIndex));
+                        setCursorIndex(cursorIndex + 1);
+                    }
                     textUpdated = true;
                 }
             }
@@ -188,6 +237,9 @@ public class TextBox extends Label {
 
     @Override
     public void draw() {
+        if (!visible) {
+            return;
+        }
         label.draw();
         App.Graphics.submit(parent.getCamera(), sprite);
         App.Graphics.submit(parent.getCamera(), text, parent.getTypefaceFilePath(), sprite, parent.getTextPadding(),
@@ -204,8 +256,14 @@ public class TextBox extends Label {
         label.update(deltaFrames);
         cursor.update(deltaFrames);
         repeatTimer += deltaFrames;
-        if (repeatTimer > App.Graphics.getTargetFPS()) {
+        if (repeatTimer > ((float)App.Graphics.getTargetFPS() * (float)targetRPS)) {
             repeatTimer = 0.0f;
+        }
+        if (repeatStarting) {
+            repeatStartTimer += deltaFrames;
+            if (repeatStartTimer > ((float)App.Graphics.getTargetFPS() * repeatStartTimer * repeatStartTimer)) {
+                repeatStartTimer = 0.0f;
+            }
         }
         float bufferSpace = sprite.getDimensions().getX() * 0.125f;
         if (cursor.getPosition().getX() < sprite.getPosition().getX() + bufferSpace
@@ -239,9 +297,8 @@ public class TextBox extends Label {
 
     @Override
     public boolean setPosition(Vector position) {
-        boolean success = true;
         if (!super.setPosition(position)) {
-            success = false;
+            return false;
         }
         Vector labelPosition = position.clone();
         if (labelAlignment == Alignment.Left) {
@@ -254,32 +311,31 @@ public class TextBox extends Label {
             labelPosition.setY(position.getY() + getDimensions().getY());
         };
         if (!label.setPosition(labelPosition)) {
-            success = false;
+            return false;
         }
         textX = sprite.getPosition().getX();
         if (!setCursorIndex(cursorIndex)) {
-            success = false;
+            return false;
         }
         if (!setVerticalCursorAlignment(verticalCursorAlignment)) {
-            success = false;
+            return false;
         }
-        return success;
+        return true;
     }
 
     @Override
     public boolean setDimensions(Vector dimensions) {
-        boolean success = true;
         Vector cursorDimensions = getCursorDimensions();
         if (!super.setDimensions(dimensions)) {
-            success = false;
+            return false;
         }
         if (!label.setDimensions(dimensions)) {
-            success = false;
+            return false;
         }
         if (!setCursorDimensions(cursorDimensions)) {
-            success = false;
+            return false;
         }
-        return success;
+        return setPosition(getPosition().clone());
     }
 
     @Override
@@ -290,7 +346,7 @@ public class TextBox extends Label {
         if (!label.setMinimumDimensions(minimumDimensions)) {
             return false;
         }
-        return true;
+        return setPosition(getPosition().clone());
     }
 
     @Override
@@ -301,7 +357,7 @@ public class TextBox extends Label {
         if (!label.setMaximumDimensions(maximumDimensions)) {
             return false;
         }
-        return true;
+        return setPosition(getPosition().clone());
     }
 
     @Override
@@ -395,9 +451,13 @@ public class TextBox extends Label {
     }
 
     public boolean setCursorDimensions(Vector cursorDimensions) {
-        boolean success = cursor.setDimensions(cursorDimensions.elementMultiply(sprite.getDimensions()));
-        setCursorIndex(cursorIndex);
-        return success;
+        if (!cursor.setDimensions(cursorDimensions.elementMultiply(sprite.getDimensions()))) {
+            return false;
+        }
+        if (!setCursorIndex(cursorIndex)) {
+            return false;
+        }
+        return true;
     }
 
     public Alignment getVerticalCursorAlignment() {
@@ -488,6 +548,30 @@ public class TextBox extends Label {
         }
         cursor.getPosition().setX(cursorX);
         cursor.setDepth(parent.getBaseDepth() + 0.2f);
+        return true;
+    }
+
+    public int getTargetRPS() {
+        return targetRPS;
+    }
+
+    public boolean setTargetRPS(int targetRPS) {
+        if (targetRPS < 0) {
+            return false;
+        }
+        this.targetRPS = targetRPS;
+        return true;
+    }
+
+    public float getRepeatStartTime() {
+        return repeatStartTime;
+    }
+
+    public boolean setRepeatStartTime(float repeatStartTime) {
+        if (repeatStartTime < 0.0f) {
+            return false;
+        }
+        this.repeatStartTime = repeatStartTime;
         return true;
     }
 

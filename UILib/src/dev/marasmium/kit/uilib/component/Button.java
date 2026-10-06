@@ -67,6 +67,9 @@ public class Button extends UIComponent {
 
     @Override
     public void processInput() {
+        if (!enabled) {
+            return;
+        }
         label.processInput();
         if (App.Input.mouse.getCursorPosition(parent.getCamera()).inside(sprite)) {
             setSelected(true);
@@ -91,6 +94,9 @@ public class Button extends UIComponent {
 
     @Override
     public void draw() {
+        if (!visible) {
+            return;
+        }
         App.Graphics.submit(parent.getCamera(), sprite);
         label.draw();
     }
@@ -114,9 +120,8 @@ public class Button extends UIComponent {
 
     @Override
     public boolean setPosition(Vector position) {
-        boolean success = true;
         if (!super.setPosition(position)) {
-            success = false;
+            return false;
         }
         Vector labelPosition = position.clone();
         if (labelAlignment == Alignment.Left) {
@@ -129,21 +134,20 @@ public class Button extends UIComponent {
             labelPosition.setY(position.getY() + getDimensions().getY());
         };
         if (!label.setPosition(labelPosition)) {
-            success = false;
+            return false;
         }
-        return success;
+        return true;
     }
 
     @Override
     public boolean setDimensions(Vector dimensions) {
-        boolean success = true;
         if (!super.setDimensions(dimensions)) {
-            success = false;
+            return false;
         }
         if (!label.setDimensions(dimensions)) {
-            success = false;
+            return false;
         }
-        return success;
+        return setPosition(getPosition().clone());
     }
 
     @Override

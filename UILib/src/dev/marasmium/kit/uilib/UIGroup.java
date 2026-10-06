@@ -108,7 +108,6 @@ public class UIGroup implements UIListener {
         if (App.Window.getDimensions() == null) {
             return false;
         }
-        boolean success = true;
         windowDimensions = App.Window.getDimensions().clone();
         for (UIComponent component : components) {
             if (component == null) {
@@ -117,14 +116,14 @@ public class UIGroup implements UIListener {
             Vector position = component.getPosition();
             Vector dimensions = component.getDimensions();
             if (!component.setDimensions(dimensions)) {
-                success = false;
+                return false;
             }
             if (!component.setPosition(position)) {
-                success = false;
+                return false;
             }
         }
         camera.setPosition(windowDimensions.scalarMultiply(0.5f));
-        return success;
+        return true;
     }
 
     @Override

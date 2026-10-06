@@ -94,6 +94,9 @@ public class Carousel extends Label {
 
     @Override
     public void processInput() {
+        if (!enabled) {
+            return;
+        }
         label.processInput();
         backButton.processInput();
         nextButton.processInput();
@@ -101,6 +104,9 @@ public class Carousel extends Label {
 
     @Override
     public void draw() {
+        if (!visible) {
+            return;
+        }
         label.draw();
         backButton.draw();
         nextButton.draw();
@@ -282,6 +288,21 @@ public class Carousel extends Label {
 
     @Override
     public boolean setMinimumDimensions(Vector minimumDimensions) {
+        if (minimumDimensions == null) {
+            if (!super.setMinimumDimensions(null)) {
+                return false;
+            }
+            if (!label.setMinimumDimensions(null)) {
+                return false;
+            }
+            if (!backButton.setMinimumDimensions(null)) {
+                return false;
+            }
+            if (!nextButton.setMinimumDimensions(null)) {
+                return false;
+            }
+            return true;
+        }
         if (horizontalButtonAlignment == Alignment.Center) {
             if (!super.setMinimumDimensions(Vector.Cartesian(minimumDimensions.getX()
                     - (minimumDimensions.getX() * buttonWidth * 2.0f), minimumDimensions.getY()))) {
@@ -329,6 +350,21 @@ public class Carousel extends Label {
 
     @Override
     public boolean setMaximumDimensions(Vector maximumDimensions) {
+        if (maximumDimensions == null) {
+            if (!super.setMaximumDimensions(null)) {
+                return false;
+            }
+            if (!label.setMaximumDimensions(null)) {
+                return false;
+            }
+            if (!backButton.setMaximumDimensions(null)) {
+                return false;
+            }
+            if (!nextButton.setMaximumDimensions(null)) {
+                return false;
+            }
+            return true;
+        }
         if (horizontalButtonAlignment == Alignment.Center) {
             if (!super.setMaximumDimensions(Vector.Cartesian(maximumDimensions.getX()
                     - (maximumDimensions.getX() * buttonWidth * 2.0f), maximumDimensions.getY()))) {
