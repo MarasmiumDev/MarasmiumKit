@@ -76,8 +76,8 @@ public class TitleScene extends Scene implements UIListener {
         if (!textBox1.initialize(Vector.Cartesian(0.01f, 0.05f), Vector.Cartesian(0.48f, 0.125f),
                 new String[] { "Animations/UI/Text_Box/Text_Box_Unselected.animation",
                         "Animations/UI/Text_Box/Text_Box_Selected.animation" }, "Text Box", Alignment.Top,
-                Vector.Cartesian(0.01f, 0.7f), "Animations/UI/Text_Box/Text_Box_Cursor.animation",
-                Alignment.Center, null, -1, 12, 0.5f)) {
+                Vector.Cartesian(0.01f, 0.7f), "Animations/UI/Text_Box/Text_Box_Cursor.animation", Alignment.Center,
+                null, -1, 12, 0.5f)) {
             return false;
         }
         UI.addComponent(textBox1);

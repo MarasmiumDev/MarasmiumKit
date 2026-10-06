@@ -183,6 +183,9 @@ public class TextBox extends Label {
                                 continue;
                             }
                         }
+                        if (text.length() >= maximumCharacters) {
+                            continue;
+                        }
                         setText(text.substring(0, cursorIndex) + character + text.substring(cursorIndex));
                         setCursorIndex(cursorIndex + 1);
                     }
