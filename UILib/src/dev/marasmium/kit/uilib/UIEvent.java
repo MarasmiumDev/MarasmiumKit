@@ -7,16 +7,16 @@
 
 package dev.marasmium.kit.uilib;
 
+/**
+ * Enumeration of constants representing user-interface event types
+ */
 public enum UIEvent {
 
     /**
-     * General component events
-     */
-    Component_Selected,
-    Component_Unselected,
-    /**
      * Button events
      */
+    Button_Unselected,
+    Button_Selected,
     Button_Pressed,
     Button_Released,
     /**
@@ -27,10 +27,14 @@ public enum UIEvent {
     /**
      * Slider events
      */
+    Slider_Unselected,
+    Slider_Selected,
     Slider_Value_Set,
     /**
      * Text box events
      */
+    Text_Box_Unselected,
+    Text_Box_Selected,
     Text_Box_Value_Set,
     /**
      * Carousel events

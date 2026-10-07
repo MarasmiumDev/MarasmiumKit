@@ -67,8 +67,7 @@ public class TitleScene extends Scene implements UIListener {
                         "Animations/UI/Slider/Slider_Selected.animation" }, "Slider", Alignment.Top,
                 Vector.Cartesian(0.01f, 0.9f), new String[] { "Animations/UI/Slider/Slider_Cursor_Unselected.animation",
                         "Animations/UI/Slider/Slider_Cursor_Selected.animation",
-                        "Animations/UI/Slider/Slider_Cursor_Pressed.animation" }, Alignment.Center, -10.0f, 10.0f,
-                20)) {
+                        "Animations/UI/Slider/Slider_Cursor_Pressed.animation" }, Alignment.Center, -10.0f, 10.0f, 0)) {
             return false;
         }
         UI.addComponent(slider1);

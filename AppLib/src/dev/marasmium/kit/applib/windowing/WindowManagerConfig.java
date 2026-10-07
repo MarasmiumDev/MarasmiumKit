@@ -17,23 +17,23 @@ public class WindowManagerConfig {
     /**
      * The initial title to appear on the window when in windowed mode
      */
-    public String title = null;
+    public String title;
     /**
      * The initial dimensions for the window in pixels when in windowed mode
      */
-    public Vector dimensions = null;
+    public Vector dimensions;
     /**
      * Whether the window should initially appear in windowed mode
      */
-    public boolean fullscreen = false;
+    public boolean fullscreen;
     /**
      * The initial monitor for the window to appear on when in fullscreen mode
      */
-    public final Monitor monitor = new Monitor();
+    public final Monitor monitor;
     /**
      * Whether the mouse cursor is visible on the window
      */
-    public boolean mouseCursorVisible = false;
+    public boolean mouseCursorVisible;
 
     /**
      * Construct a windowing system configuration structure with default settings
@@ -42,6 +42,7 @@ public class WindowManagerConfig {
         title = "MarasmiumKit App";
         dimensions = Vector.Cartesian(1280.0f, 720.0f);
         fullscreen = false;
+        monitor = new Monitor();
         monitor.initialize(0);
         mouseCursorVisible = true;
     }

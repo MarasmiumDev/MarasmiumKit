@@ -22,27 +22,27 @@ public class AppConfig {
     /**
      * The configuration of the application framework's logging system
      */
-    public final LogManagerConfig log = new LogManagerConfig();
+    public final LogManagerConfig log;
     /**
      * The configuration of the application framework's windowing system
      */
-    public final WindowManagerConfig window = new WindowManagerConfig();
+    public final WindowManagerConfig window;
     /**
      * The configuration of the application framework's network client
      */
-    public final NetClientConfig network = new NetClientConfig();
+    public final NetClientConfig network;
     /**
      * The configuration of the application framework's asset management system
      */
-    public final AssetManagerConfig assets = new AssetManagerConfig();
+    public final AssetManagerConfig assets;
     /**
      * The configuration of the application framework's audio system
      */
-    public final AudioConfig audio = new AudioConfig();
+    public final AudioConfig audio;
     /**
      * The configuration of the application framework's graphics system
      */
-    public final GraphicsManagerConfig graphics = new GraphicsManagerConfig();
+    public final GraphicsManagerConfig graphics;
     /**
      * The initial scene to be presented by the application framework
      */
@@ -53,6 +53,12 @@ public class AppConfig {
      * @param initialScene The application's initial scene
      */
     public AppConfig(Scene initialScene) {
+        log = new LogManagerConfig();
+        window = new WindowManagerConfig();
+        network = new NetClientConfig();
+        assets = new AssetManagerConfig();
+        audio = new AudioConfig();
+        graphics = new GraphicsManagerConfig();
         this.initialScene = initialScene;
     }
 

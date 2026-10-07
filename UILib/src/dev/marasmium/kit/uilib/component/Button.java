@@ -14,15 +14,49 @@ import dev.marasmium.kit.applib.graphics.Alignment;
 import dev.marasmium.kit.applib.input.MouseButton;
 import dev.marasmium.kit.uilib.UIEvent;
 
+/**
+ * A clickable button user-interface component
+ */
 public class Button extends UIComponent {
 
+    /**
+     * Whether this button is currently selected (moused-over)
+     */
+    protected boolean selected = false;
+    /**
+     * Whether this button is currently pressed (clicked down)
+     */
     protected boolean pressed = false;
+    /**
+     * The animation to play when this button is no longer selected
+     */
     protected String unselectedAnimationFilePath = null;
+    /**
+     * The animation to play when this button is selected
+     */
     protected String selectedAnimationFilePath = null;
+    /**
+     * The animation to play when this button is pressed down
+     */
     protected String pressedAnimationFilePath = null;
+    /**
+     * The text label to appear on this button
+     */
     protected final Label label = new Label();
+    /**
+     * The alignment of this button's text label about its background
+     */
     protected Alignment labelAlignment = null;
 
+    /**
+     * Initialize this button's memory
+     * @param position The initial position for this button in percent of the application's window dimensions
+     * @param dimensions The initial dimensions for this button in percent of the application's window dimensions
+     * @param animationFilePaths The animations to play when this button is unselected, selected, and pressed
+     * @param labelText The text to appear on this button's label
+     * @param labelAlignment The alignment for this button's label about its background
+     * @return Whether all parameters wre valid and this button was initialized successfully
+     */
     public boolean initialize(Vector position, Vector dimensions, String[] animationFilePaths, String labelText,
                               Alignment labelAlignment) {
         if (animationFilePaths == null) {
@@ -65,6 +99,9 @@ public class Button extends UIComponent {
         return true;
     }
 
+    /**
+     * Process user-input to this button
+     */
     @Override
     public void processInput() {
         if (!enabled) {
@@ -92,6 +129,9 @@ public class Button extends UIComponent {
         }
     }
 
+    /**
+     * Draw this button's background animation and text label
+     */
     @Override
     public void draw() {
         if (!visible) {
@@ -101,12 +141,19 @@ public class Button extends UIComponent {
         label.draw();
     }
 
+    /**
+     * Update this button's background animation
+     * @param deltaFrames The number of frames elapsed since the last call to update
+     */
     @Override
     public void update(float deltaFrames) {
         sprite.update(deltaFrames);
         label.update(deltaFrames);
     }
 
+    /**
+     * Free this button's memory
+     */
     @Override
     public void destroy() {
         super.destroy();
@@ -118,6 +165,11 @@ public class Button extends UIComponent {
         labelAlignment = null;
     }
 
+    /**
+     * Set this button's position in percent of the application's window dimensions
+     * @param position This button's new position in percent of the application's window dimensions
+     * @return Whether the given position was valid
+     */
     @Override
     public boolean setPosition(Vector position) {
         if (!super.setPosition(position)) {
@@ -139,6 +191,11 @@ public class Button extends UIComponent {
         return true;
     }
 
+    /**
+     * Set this button's dimensions in percent of the application's window dimensions
+     * @param dimensions This button's new dimensions in percent of the application's window dimensions
+     * @return Whether the given dimensions were valid
+     */
     @Override
     public boolean setDimensions(Vector dimensions) {
         if (!super.setDimensions(dimensions)) {
@@ -150,6 +207,11 @@ public class Button extends UIComponent {
         return setPosition(getPosition().clone());
     }
 
+    /**
+     * Set the minimum dimensions for this button in pixels
+     * @param minimumDimensions This button's new minimum dimensions in pixels
+     * @return Whether the given dimensions were valid
+     */
     @Override
     public boolean setMinimumDimensions(Vector minimumDimensions) {
         if (!super.setMinimumDimensions(minimumDimensions)) {
@@ -161,6 +223,11 @@ public class Button extends UIComponent {
         return true;
     }
 
+    /**
+     * Set the maximum dimensions for this button in pixels
+     * @param maximumDimensions This button's new maximum dimensions in pixels
+     * @return Whether the given dimensions were valid
+     */
     @Override
     public boolean setMaximumDimensions(Vector maximumDimensions) {
         if (!super.setMaximumDimensions(maximumDimensions)) {
@@ -172,11 +239,29 @@ public class Button extends UIComponent {
         return true;
     }
 
-    @Override
+    /**
+     * Test whether this button is currently selected / moused-over
+     * @return Whether this button is currently selected
+     */
+    public boolean isSelected() {
+        return selected;
+    }
+
+    /**
+     * Set whether this button should be selected / moused-over and play the corresponding animation
+     * @param selected Whether this button should be unselected or selected
+     * @return Whether this button's selected state was set successfully
+     */
     public boolean setSelected(boolean selected) {
-        if (!super.setSelected(selected)) {
+        if (this.selected == selected) {
             return false;
         }
+        if (selected) {
+            parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Button_Selected);
+        } else {
+            parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Button_Unselected);
+        }
+        this.selected = selected;
         sprite.stopAnimation();
         sprite.setAnimationFilePath(selected ? selectedAnimationFilePath : unselectedAnimationFilePath);
         sprite.playAnimation(1);
@@ -186,10 +271,19 @@ public class Button extends UIComponent {
         return true;
     }
 
+    /**
+     * Test whether this button is currently pressed down
+     * @return Whether this button is currently pressed
+     */
     public boolean isPressed() {
         return pressed;
     }
 
+    /**
+     * Set whether this button should be pressed down and play the corresponding animation
+     * @param pressed Whether this button should be pressed down
+     * @return Whether this button's pressed state was set successfully
+     */
     public boolean setPressed(boolean pressed) {
         if (this.pressed == pressed) {
             return false;
@@ -208,10 +302,19 @@ public class Button extends UIComponent {
         return true;
     }
 
+    /**
+     * Get the animation to be played when this button is no longer selected/moused-over
+     * @return This button's unselected animation
+     */
     public String getUnselectedAnimationFilePath() {
         return unselectedAnimationFilePath;
     }
 
+    /**
+     * Set the animation to be played when this button is no longer selected/moused-over
+     * @param unselectedAnimationFilePath This button's new unselected animation
+     * @return Whether the given animation was valid
+     */
     public boolean setUnselectedAnimationFilePath(String unselectedAnimationFilePath) {
         if (unselectedAnimationFilePath == null) {
             return false;
@@ -220,10 +323,19 @@ public class Button extends UIComponent {
         return true;
     }
 
+    /**
+     * Get the animation to be played when this button is selected/moused-over
+     * @return This button's selected animation
+     */
     public String getSelectedAnimationFilePath() {
         return selectedAnimationFilePath;
     }
 
+    /**
+     * Set the animation to be played when this button is selected/moused-over
+     * @param selectedAnimationFilePath This button's new selected animation
+     * @return Whether the given animation was valid
+     */
     public boolean setSelectedAnimationFilePath(String selectedAnimationFilePath) {
         if (selectedAnimationFilePath == null) {
             return false;
@@ -232,10 +344,19 @@ public class Button extends UIComponent {
         return true;
     }
 
+    /**
+     * Get the animation to be played when this button is pressed down
+     * @return This button's pressed animation
+     */
     public String getPressedAnimationFilePath() {
         return pressedAnimationFilePath;
     }
 
+    /**
+     * Set the animation to be played when this button is pressed down
+     * @param pressedAnimationFilePath This button's new pressed animation
+     * @return Whether the given animation was valid
+     */
     public boolean setPressedAnimationFilePath(String pressedAnimationFilePath) {
         if (pressedAnimationFilePath == null) {
             return false;
@@ -244,14 +365,27 @@ public class Button extends UIComponent {
         return true;
     }
 
+    /**
+     * Get this button's text label
+     * @return This button's text label
+     */
     public Label getLabel() {
         return label;
     }
 
+    /**
+     * Get the alignment of this button's text label about its background
+     * @return This button's label alignment
+     */
     public Alignment getLabelAlignment() {
         return labelAlignment;
     }
 
+    /**
+     * Set the alignment of this button's text label about its background
+     * @param labelAlignment This button's new label alignment
+     * @return Whether the given alignment was valid
+     */
     public boolean setLabelAlignment(Alignment labelAlignment) {
         if (labelAlignment == null) {
             return false;

@@ -2,7 +2,7 @@
  * File:        TextBox.java
  * Author:      MarasmiumDev (info@marasmium.dev)
  * Created:     2026.10.02
- * Purpose:     Defines a text-box user-interface component
+ * Purpose:     Defines a text box user-interface component
  */
 
 package dev.marasmium.kit.uilib.component;
@@ -18,26 +18,93 @@ import dev.marasmium.kit.applib.input.KeyboardKey;
 import dev.marasmium.kit.applib.input.MouseButton;
 import dev.marasmium.kit.uilib.UIEvent;
 
+/**
+ * A text box user-interface component
+ */
 public class TextBox extends Label {
 
-    protected boolean typing = false;
+    /**
+     * Whether this text box is currently selected to be typed in
+     */
+    protected boolean selected = false;
+    /**
+     * The animation to play when this text box is no longer selected
+     */
     protected String unselectedAnimationFilePath = null;
+    /**
+     * The animation to play when this text box is selected
+     */
     protected String selectedAnimationFilePath = null;
+    /**
+     * The text label to appear on this text box
+     */
     protected final Label label = new Label();
+    /**
+     * The alignment of this text box's label about its background
+     */
     protected Alignment labelAlignment = null;
+    /**
+     * The sprite representing this text box's cursor position
+     */
     protected final Sprite cursor = new Sprite();
+    /**
+     * The vertical alignment of this text box's cursor within its background
+     */
     protected Alignment verticalCursorAlignment = null;
+    /**
+     * The set of characters allowed to be typed in this text box
+     */
     protected String allowedCharacters = null;
+    /**
+     * The maximum number of characters allowed to be typed in this text box
+     */
     protected int maximumCharacters = 0;
+    /**
+     * The current index of this text box's cursor in its body text
+     */
     protected int cursorIndex = 0;
+    /**
+     * The target number of repeated inputs per second when controls are held down
+     */
     protected int targetRPS = 0;
+    /**
+     * The number of seconds to wait before starting to repeat inputs when controls are held down
+     */
     protected float repeatStartTime = 0.0f;
 
+    /**
+     * The x-coordinate of the starting position of this text box's body text
+     */
     private float textX = 0.0f;
+    /**
+     * Timer used for repeating inputs when controls are held down
+     */
     private float repeatTimer = 0.0f;
+    /**
+     * Whether a control is currently held down and this text box is waiting to start repeating the input
+     */
     private boolean repeatStarting = false;
+    /**
+     * Timer used for starting to repeat inputs when controls are held down
+     */
     private float repeatStartTimer = 0.0f;
 
+    /**
+     * Initialize this text box's memory
+     * @param position The initial position for this text box in percent of the application's window dimensions
+     * @param dimensions The initial dimensions for this text box in percent of the application's window dimensions
+     * @param animationFilePaths The unselected and selected animations for this text box
+     * @param labelText The text to appear in this text box's label
+     * @param labelAlignment The alignment of this text box's text label abouts its background
+     * @param cursorDimensions The dimensions of this text box's cursor in percent of its background's dimensions
+     * @param cursorAnimationFilePath The animation for this text box's cursor
+     * @param verticalCursorAlignment The vertical alignment of this text box's cursor within its background
+     * @param allowedCharacters The set of characters allowed to be typed in this text box
+     * @param maximumCharacters The maximum number of characters allowed to be typed in this text box
+     * @param targetRPS The target number of repeated inputs per second when this text box's controls are held down
+     * @param repeatStartTime The time to wait before starting to repeat inputs when controls are held down in seconds
+     * @return Whether all given parameters were valid and this text box was initialized successfully
+     */
     public boolean initialize(Vector position, Vector dimensions, String[] animationFilePaths, String labelText,
                               Alignment labelAlignment, Vector cursorDimensions, String cursorAnimationFilePath,
                               Alignment verticalCursorAlignment, String allowedCharacters, int maximumCharacters,
@@ -105,6 +172,9 @@ public class TextBox extends Label {
         return true;
     }
 
+    /**
+     * Process user-input to this text box
+     */
     @Override
     public void processInput() {
         if (!enabled) {
@@ -112,11 +182,11 @@ public class TextBox extends Label {
         }
         label.processInput();
         if (App.Input.mouse.isButtonPressed(MouseButton.Left)) {
-            setTyping(App.Input.mouse.getCursorPosition(parent.getCamera()).inside(sprite));
+            setSelected(App.Input.mouse.getCursorPosition(parent.getCamera()).inside(sprite));
         }
         float repeatTime = (float)App.Graphics.getTargetFPS() / (float)targetRPS;
         float repeatStartTime = (float)App.Graphics.getTargetFPS() * this.repeatStartTime;
-        if (typing) {
+        if (selected) {
             // Text controls
             boolean textUpdated = false;
             if (App.Input.keyboard.isKeyDown(KeyboardKey.Left)) {
@@ -183,7 +253,7 @@ public class TextBox extends Label {
                                 continue;
                             }
                         }
-                        if (text.length() >= maximumCharacters) {
+                        if (text.length() >= maximumCharacters && maximumCharacters > 0) {
                             continue;
                         }
                         setText(text.substring(0, cursorIndex) + character + text.substring(cursorIndex));
@@ -238,6 +308,9 @@ public class TextBox extends Label {
         }
     }
 
+    /**
+     * Draw graphics for this text box's cursor, label, background, and body text
+     */
     @Override
     public void draw() {
         if (!visible) {
@@ -248,17 +321,23 @@ public class TextBox extends Label {
         App.Graphics.submit(parent.getCamera(), text, parent.getTypefaceFilePath(), sprite, parent.getTextPadding(),
                 parent.getBaseDepth() + 0.1f, parent.getTextSize(), Vector.Cartesian(textX, 0.0f), null,
                 verticalCursorAlignment);
-        if (typing && sprite.contains(cursor)) {
+        if (selected && sprite.contains(cursor)) {
             App.Graphics.submit(parent.getCamera(), cursor);
         }
     }
 
+    /**
+     * Update this text box's logic and animations
+     * @param deltaFrames The number of frames elapsed since the last call to update
+     */
     @Override
     public void update(float deltaFrames) {
+        // Update animations
         super.update(deltaFrames);
         label.update(deltaFrames);
         cursor.update(deltaFrames);
         repeatTimer += deltaFrames;
+        // Update input repeat timers
         if (repeatTimer > ((float)App.Graphics.getTargetFPS() * (float)targetRPS)) {
             repeatTimer = 0.0f;
         }
@@ -268,6 +347,7 @@ public class TextBox extends Label {
                 repeatStartTimer = 0.0f;
             }
         }
+        // Update cursor positioning
         float bufferSpace = sprite.getDimensions().getX() * 0.125f;
         if (cursor.getPosition().getX() < sprite.getPosition().getX() + bufferSpace
                 && textX < sprite.getPosition().getX() + parent.getTextPadding()) {
@@ -284,9 +364,13 @@ public class TextBox extends Label {
         setCursorIndex(cursorIndex);
     }
 
+    /**
+     * Free this text box's memory
+     */
     @Override
     public void destroy() {
         super.destroy();
+        selected = false;
         unselectedAnimationFilePath = null;
         selectedAnimationFilePath = null;
         label.destroy();
@@ -298,6 +382,11 @@ public class TextBox extends Label {
         cursorIndex = 0;
     }
 
+    /**
+     * Set this text box's position in percent of the application's window dimensions
+     * @param position This text box's new position in percent of the application's window dimensions
+     * @return Whether the given position was valid
+     */
     @Override
     public boolean setPosition(Vector position) {
         if (!super.setPosition(position)) {
@@ -312,7 +401,7 @@ public class TextBox extends Label {
             labelPosition.setY(position.getY() - getDimensions().getY());
         } else if (labelAlignment == Alignment.Top) {
             labelPosition.setY(position.getY() + getDimensions().getY());
-        };
+        }
         if (!label.setPosition(labelPosition)) {
             return false;
         }
@@ -326,6 +415,11 @@ public class TextBox extends Label {
         return true;
     }
 
+    /**
+     * Set this text box's dimensions in percent of the application's window dimensions
+     * @param dimensions This text box's new dimensions in percent of the application's window dimensions
+     * @return Whether the given dimensions were valid
+     */
     @Override
     public boolean setDimensions(Vector dimensions) {
         Vector cursorDimensions = getCursorDimensions();
@@ -341,6 +435,11 @@ public class TextBox extends Label {
         return setPosition(getPosition().clone());
     }
 
+    /**
+     * Set this text box's minimum dimensions in pixels
+     * @param minimumDimensions This text box's new minimum dimensions in pixels
+     * @return Whether the given dimensions were valid
+     */
     @Override
     public boolean setMinimumDimensions(Vector minimumDimensions) {
         if (!super.setMinimumDimensions(minimumDimensions)) {
@@ -352,6 +451,11 @@ public class TextBox extends Label {
         return setPosition(getPosition().clone());
     }
 
+    /**
+     * Set this text box's maximum dimensions in pixels
+     * @param maximumDimensions This text box's new maximum dimensions in pixels
+     * @return Whether the given dimensions were valid
+     */
     @Override
     public boolean setMaximumDimensions(Vector maximumDimensions) {
         if (!super.setMaximumDimensions(maximumDimensions)) {
@@ -363,6 +467,11 @@ public class TextBox extends Label {
         return setPosition(getPosition().clone());
     }
 
+    /**
+     * Set this text box's body text
+     * @param text This text box's new body text
+     * @return Whether the given test was valid
+     */
     @Override
     public boolean setText(String text) {
         if (allowedCharacters != null) {
@@ -382,25 +491,48 @@ public class TextBox extends Label {
         return true;
     }
 
-    public boolean isTyping() {
-        return typing;
+    /**
+     * Test whether this text box is currently selected
+     * @return Whether this text box is selected
+     */
+    public boolean isSelected() {
+        return selected;
     }
 
-    public boolean setTyping(boolean typing) {
-        if (this.typing == typing) {
+    /**
+     * Set whether this text box is selected and play the corresponding animation
+     * @param selected Whether this text box should be selected
+     * @return Whether this text box's selected state was changed successfully
+     */
+    public boolean setSelected(boolean selected) {
+        if (this.selected == selected) {
             return false;
         }
-        this.typing = typing;
+        if (selected) {
+            parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Text_Box_Selected);
+        } else {
+            parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Text_Box_Unselected);
+        }
+        this.selected = selected;
         sprite.stopAnimation();
-        sprite.setAnimationFilePath(typing ? selectedAnimationFilePath : unselectedAnimationFilePath);
+        sprite.setAnimationFilePath(selected ? selectedAnimationFilePath : unselectedAnimationFilePath);
         sprite.playAnimation(1);
         return true;
     }
 
+    /**
+     * Get the animation to play when this text box is no longer selected
+     * @return This text box's unselected animation
+     */
     public String getUnselectedAnimationFilePath() {
         return unselectedAnimationFilePath;
     }
 
+    /**
+     * Set the animation to play when this text box is no longer selected
+     * @param unselectedAnimationFilePath This text box's new unselected animation
+     * @return Whether the given animation was valid
+     */
     public boolean setUnselectedAnimationFilePath(String unselectedAnimationFilePath) {
         if (unselectedAnimationFilePath == null) {
             return false;
@@ -409,10 +541,19 @@ public class TextBox extends Label {
         return true;
     }
 
+    /**
+     * Get the animation to play when this text box is selected
+     * @return This text box's selected animation
+     */
     public String getSelectedAnimationFilePath() {
         return selectedAnimationFilePath;
     }
 
+    /**
+     * Set the animation to play when this text box is selected
+     * @param selectedAnimationFilePath This text box's new selected animation
+     * @return Whether the given animation was valid
+     */
     public boolean setSelectedAnimationFilePath(String selectedAnimationFilePath) {
         if (selectedAnimationFilePath == null) {
             return false;
@@ -421,14 +562,27 @@ public class TextBox extends Label {
         return true;
     }
 
+    /**
+     * Get this text box's label
+     * @return This text box's label
+     */
     public Label getLabel() {
         return label;
     }
 
+    /**
+     * Get the alignment of this text box's label about its background
+     * @return This text box's label alignment
+     */
     public Alignment getLabelAlignment() {
         return labelAlignment;
     }
 
+    /**
+     * Set the alignment of this text box's label about its background
+     * @param labelAlignment This text box's new label alignment
+     * @return Whether the given alignment was valid
+     */
     public boolean setLabelAlignment(Alignment labelAlignment) {
         if (labelAlignment == null) {
             return false;
@@ -449,10 +603,19 @@ public class TextBox extends Label {
         return true;
     }
 
+    /**
+     * Get the dimensions of this text box's cursor in percent of its background's dimensions
+     * @return This text box's cursor dimensions in percent of its background's dimensions
+     */
     public Vector getCursorDimensions() {
         return cursor.getDimensions().elementDivide(sprite.getDimensions());
     }
 
+    /**
+     * Set the dimensions of this text box's cursor in percent of its background's dimensions
+     * @param cursorDimensions This text box's new cursor dimensions in percent of its background's dimensions
+     * @return Whether the given dimensions were valid
+     */
     public boolean setCursorDimensions(Vector cursorDimensions) {
         if (!cursor.setDimensions(cursorDimensions.elementMultiply(sprite.getDimensions()))) {
             return false;
@@ -463,10 +626,19 @@ public class TextBox extends Label {
         return true;
     }
 
+    /**
+     * Get the vertical alignment of this text box's cursor within its background
+     * @return This text box's vertical cursor alignment
+     */
     public Alignment getVerticalCursorAlignment() {
         return verticalCursorAlignment;
     }
 
+    /**
+     * Set the vertical alignment of this text box's cursor within its background
+     * @param verticalCursorAlignment This text box's new vertical cursor alignment
+     * @return Whether the given alignment was valid
+     */
     public boolean setVerticalCursorAlignment(Alignment verticalCursorAlignment) {
         if (verticalCursorAlignment == null) {
             return false;
@@ -486,10 +658,19 @@ public class TextBox extends Label {
         return true;
     }
 
+    /**
+     * Get the set of characters allowed to be typed into this text box
+     * @return This text box's allowed characters
+     */
     public String getAllowedCharacters() {
         return allowedCharacters;
     }
 
+    /**
+     * Set the set of characters allowed to be typed into this text box
+     * @param allowedCharacters This text box's new allowed characters
+     * @return Whether this text box's allowed characters were set successfully
+     */
     public boolean setAllowedCharacters(String allowedCharacters) {
         this.allowedCharacters = allowedCharacters;
         if (text == null) {
@@ -504,10 +685,19 @@ public class TextBox extends Label {
         return setText(updatedText.toString());
     }
 
+    /**
+     * Get the maximum number of characters allowed to be typed into this text box
+     * @return This text box's maximum character count
+     */
     public int getMaximumCharacters() {
         return maximumCharacters;
     }
 
+    /**
+     * Set the maximum number of characters allowed to be typed into this text box
+     * @param maximumCharacters This text box's new maximum character count
+     * @return Whether this text box's maximum character count was set successfully
+     */
     public boolean setMaximumCharacters(int maximumCharacters) {
         if (maximumCharacters < -1) {
             return false;
@@ -522,10 +712,19 @@ public class TextBox extends Label {
         return true;
     }
 
+    /**
+     * Get the current index of this text box's cursor in its body text
+     * @return This text box's current cursor index
+     */
     public int getCursorIndex() {
         return cursorIndex;
     }
 
+    /**
+     * Set the index of this text box's cursor in its body text and set the cursor's position
+     * @param cursorIndex This text box's new cursor index
+     * @return Whether the given cursor index was valid and was set successfully
+     */
     public boolean setCursorIndex(int cursorIndex) {
         if (cursorIndex < 0 || cursorIndex > text.length()) {
             cursorIndex = 0;
@@ -554,10 +753,19 @@ public class TextBox extends Label {
         return true;
     }
 
+    /**
+     * Get the target number of repeated inputs per second when this text box's controls are held down
+     * @return This text box's target repeats per second
+     */
     public int getTargetRPS() {
         return targetRPS;
     }
 
+    /**
+     * Set the target number of repeated inputs per second when this text box's controls are held down
+     * @param targetRPS This text box's new target repeats per second
+     * @return Whether the given target repeats per second was valid
+     */
     public boolean setTargetRPS(int targetRPS) {
         if (targetRPS < 0) {
             return false;
@@ -566,10 +774,19 @@ public class TextBox extends Label {
         return true;
     }
 
+    /**
+     * Get the time to wait to start repeating inputs when this text box's controls are held down in seconds
+     * @return This text box's repeat start time in seconds
+     */
     public float getRepeatStartTime() {
         return repeatStartTime;
     }
 
+    /**
+     * Set the time to wait to start repeating inputs when this text box's controls are held down in seconds
+     * @param repeatStartTime This text box's repeat start time in seconds
+     * @return Whether the given repeat start time was valid
+     */
     public boolean setRepeatStartTime(float repeatStartTime) {
         if (repeatStartTime < 0.0f) {
             return false;

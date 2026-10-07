@@ -13,10 +13,25 @@ import dev.marasmium.kit.applib.graphics.Alignment;
 import dev.marasmium.kit.applib.input.MouseButton;
 import dev.marasmium.kit.uilib.UIEvent;
 
+/**
+ * A switch/toggle-button user-interface component
+ */
 public class Switch extends Button {
 
+    /**
+     * Whether this switch is currently toggled on
+     */
     protected boolean on = false;
 
+    /**
+     * Initialize this switch's memory
+     * @param position The initial position for this switch in percent of the application's window dimensions
+     * @param dimensions The initial dimensions for this switch in percent of the application's window dimensions
+     * @param animationFilePaths The animations to play when this switch is toggled off and on
+     * @param labelText The text to appear on this switch's label
+     * @param labelAlignment The alignment for this switch's label about its background
+     * @return Whether all parameters were valid and this switch was initialized successfully
+     */
     public boolean initialize(Vector position, Vector dimensions, String[] animationFilePaths, String labelText,
                               Alignment labelAlignment) {
         if (animationFilePaths == null) {
@@ -40,6 +55,9 @@ public class Switch extends Button {
         return true;
     }
 
+    /**
+     * Process user-input to this switch
+     */
     @Override
     public void processInput() {
         if (!enabled) {
@@ -62,51 +80,104 @@ public class Switch extends Button {
         }
     }
 
+    /**
+     * Free this switch's memory
+     */
     @Override
     public void destroy() {
         super.destroy();
         on = false;
     }
 
+    /**
+     * Override for the Button class's unselected animation getter function
+     * @return Always null
+     */
     @Override
     public String getUnselectedAnimationFilePath() {
         return null;
     }
 
+    /**
+     * Override for the Button class's unselected animation setter function
+     * @param unselectedAnimationFilePath Any string value
+     * @return Always true
+     */
     @Override
     public boolean setUnselectedAnimationFilePath(String unselectedAnimationFilePath) {
         return true;
     }
 
+    /**
+     * Override for the Button class's selected animation getter function
+     * @return Always null
+     */
     @Override
     public String getSelectedAnimationFilePath() {
         return null;
     }
 
+    /**
+     * Override for the Button class's selected animation setter function
+     * @param selectedAnimationFilePath Any string value
+     * @return Always true
+     */
     @Override
     public boolean setSelectedAnimationFilePath(String selectedAnimationFilePath) {
         return true;
     }
 
+    /**
+     * Override for the Button class's pressed animation getter function
+     * @return Always null
+     */
     @Override
     public String getPressedAnimationFilePath() {
         return null;
     }
 
+    /**
+     * Override for the Button class's pressed animation setter function
+     * @param pressedAnimationFilePath Any string value
+     * @return Always true
+     */
     @Override
     public boolean setPressedAnimationFilePath(String pressedAnimationFilePath) {
         return true;
     }
 
+    /**
+     * Override for the Button class's selected getter function
+     * @return Always false
+     */
+    @Override
+    public boolean isSelected() {
+        return false;
+    }
+
+    /**
+     * Override for the Button class's selected setter function
+     * @param selected Any boolean value
+     * @return Always false
+     */
     @Override
     public boolean setSelected(boolean selected) {
         return false;
     }
 
+    /**
+     * Get the animation to be played when this switch is toggled off
+     * @return This switch's off animation
+     */
     public String getOffAnimationFilePath() {
         return unselectedAnimationFilePath;
     }
 
+    /**
+     * Set the animation to be played when this switch is toggled off
+     * @param offAnimationFilePath This switch's new off animation
+     * @return Whether the given animation was valid
+     */
     public boolean setOffAnimationFilePath(String offAnimationFilePath) {
         if (offAnimationFilePath == null) {
             return false;
@@ -115,10 +186,19 @@ public class Switch extends Button {
         return true;
     }
 
+    /**
+     * Get the animation to be played when this switch is toggled on
+     * @return This switch's on animation
+     */
     public String getOnAnimationFilePath() {
         return selectedAnimationFilePath;
     }
 
+    /**
+     * Set the animation to be played when this switch is toggled on
+     * @param onAnimationFilePath This switch's new on animation
+     * @return Whether the given animation was valid
+     */
     public boolean setOnAnimationFilePath(String onAnimationFilePath) {
         if (onAnimationFilePath == null) {
             return false;
@@ -127,10 +207,18 @@ public class Switch extends Button {
         return true;
     }
 
+    /**
+     * Test whether this switch is currently toggled on
+     * @return Whether this switch is on
+     */
     public boolean isOn() {
         return on;
     }
 
+    /**
+     * Set whether this switch should be toggled on and play the corresponding animation
+     * @param on Whether this switch should be toggled on
+     */
     public void setOn(boolean on) {
         if (!on && this.on) {
             this.on = false;

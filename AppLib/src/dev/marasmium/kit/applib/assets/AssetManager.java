@@ -106,6 +106,7 @@ public class AssetManager {
      * @return The deserialized audio track or null if deserialization failed
      */
     public AudioTrack deserializeAudioTrack(byte[] fileData) {
+        // Allocate audio track parameters
         int sampleRate;
         int sampleSize;
         int channelCount;
@@ -116,6 +117,7 @@ public class AssetManager {
         if (fileData.length < 4 * Integer.BYTES) {
             return null;
         }
+        // Parse file data
         try {
             System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
             offset += Integer.BYTES;
@@ -141,6 +143,7 @@ public class AssetManager {
         } catch (IndexOutOfBoundsException | ArrayStoreException _) {
             return null;
         }
+        // Generate audio track
         AudioTrack audioTrack = new AudioTrack();
         if (!audioTrack.initialize(sampleRate, sampleSize, channelCount, data)) {
             return null;
@@ -221,6 +224,7 @@ public class AssetManager {
         if (audioTrack == null) {
             return null;
         }
+        // Extract audio track parameters
         int sampleRate = audioTrack.getSampleRate();
         int sampleSize = audioTrack.getSampleSize();
         int channelCount = audioTrack.getChannelCount();
@@ -230,6 +234,7 @@ public class AssetManager {
             return null;
         }
         int fileDataSize = (4 * Integer.BYTES) + data.length;
+        // Create file data buffer
         byte[] fileData;
         ByteBuffer buffer;
         try {
@@ -292,6 +297,7 @@ public class AssetManager {
         if (fileData == null) {
             return null;
         }
+        // Allocate animation parameters
         int targetFPS;
         Vector sheetDimensions = Vector.Zero();
         Vector frameDimensions = Vector.Zero();
@@ -302,6 +308,7 @@ public class AssetManager {
         if (fileData.length < 6 * Integer.BYTES) {
             return null;
         }
+        // Parse file data
         try {
             System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
             offset += Integer.BYTES;
@@ -338,6 +345,7 @@ public class AssetManager {
                 return null;
             }
         }
+        // Initialize animation
         Animation animation = new Animation();
         if (!animation.initialize(targetFPS, sheetDimensions, frameDimensions, frameCount, data)) {
             return null;
@@ -418,6 +426,7 @@ public class AssetManager {
         if (animation == null) {
             return null;
         }
+        // Extract animation parameters
         int targetFPS = animation.getTargetFPS();
         Vector sheetDimensions = animation.getSheetDimensions();
         Vector frameDimensions = animation.getFrameDimensions();
@@ -426,6 +435,7 @@ public class AssetManager {
         if (sheetDimensions == null || frameDimensions == null || data == null) {
             return null;
         }
+        // Create file data buffer
         int fileDataSize = (6 * Integer.BYTES) + (data.length * Integer.BYTES);
         byte[] fileData;
         ByteBuffer buffer;
@@ -493,6 +503,7 @@ public class AssetManager {
         if (fileData == null) {
             return null;
         }
+        // Allocate typeface parameters
         int characterCount;
         StringBuilder characters = new StringBuilder();
         Glyph[] glyphs;
@@ -503,6 +514,7 @@ public class AssetManager {
         if (fileData.length < Integer.BYTES) {
             return null;
         }
+        // Parse file data
         try {
             System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
             offset += Integer.BYTES;
@@ -573,6 +585,7 @@ public class AssetManager {
         } catch (IndexOutOfBoundsException | ArrayStoreException _) {
             return null;
         }
+        // Initialize typeface
         Typeface typeface = new Typeface();
         if (!typeface.initialize(characters.toString(), glyphs, animationData)) {
             return null;
@@ -656,6 +669,7 @@ public class AssetManager {
         if (typeface.getCharacters() == null) {
             return null;
         }
+        // Extract typeface parameters
         int characterCount = typeface.getCharacters().length();
         HashMap<Character, Glyph> glyphs = typeface.getGlyphs();
         if (typeface.getAnimationData() == null) {
@@ -663,6 +677,7 @@ public class AssetManager {
         }
         int animationDataSize = typeface.getAnimationData().length;
         byte[] animationData = typeface.getAnimationData();
+        // Create file data buffer
         int fileDataSize = Integer.BYTES + (characterCount * Character.BYTES) + (characterCount * 7 * Integer.BYTES)
                 + Integer.BYTES + animationDataSize;
         byte[] fileData;

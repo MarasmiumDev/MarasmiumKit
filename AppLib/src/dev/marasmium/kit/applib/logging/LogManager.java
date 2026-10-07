@@ -32,15 +32,15 @@ public class LogManager {
     /**
      * Whether the logging system will write messages to its current output file
      */
-    private boolean fileOutputEnabled = false;
+    private boolean outputFileEnabled = false;
     /**
      * The path of the logging system's current output file
      */
-    private String fileOutputPath = null;
+    private String outputFilePath = null;
     /**
      * Java file handle for the logging system's current output file
      */
-    private FileWriter fileOutputWriter = null;
+    private FileWriter outputFileWriter = null;
     /**
      * Scope lock for thread-safety while writing logs
      */
@@ -60,7 +60,7 @@ public class LogManager {
             return false;
         }
         setConsoleOutputEnabled(config.consoleOutputEnabled);
-        setFileOutputEnabled(config.fileOutputEnabled);
+        setOutputFileEnabled(config.fileOutputEnabled);
         if (!setFileOutputPath(config.fileOutputPath, config.fileOutputAppended)) {
             return false;
         }
@@ -93,15 +93,15 @@ public class LogManager {
         if (consoleOutputEnabled) {
             System.out.print(message);
         }
-        if (fileOutputEnabled) {
-            if (fileOutputWriter != null) {
+        if (outputFileEnabled) {
+            if (outputFileWriter != null) {
                 try {
-                    fileOutputWriter.write(message.toString());
-                    fileOutputWriter.flush();
+                    outputFileWriter.write(message.toString());
+                    outputFileWriter.flush();
                 } catch (IOException _) {
-                    fileOutputEnabled = false;
-                    fileOutputPath = null;
-                    fileOutputWriter = null;
+                    outputFileEnabled = false;
+                    outputFilePath = null;
+                    outputFileWriter = null;
                     write(LogSource.Log, LogLevel.Warning, "Log file inaccessible, disabled file output");
                 }
             }
@@ -149,17 +149,17 @@ public class LogManager {
         // Reset memory
         timestampFormat = "";
         consoleOutputEnabled = false;
-        fileOutputEnabled = false;
-        fileOutputPath = "";
-        if (fileOutputWriter != null) {
+        outputFileEnabled = false;
+        outputFilePath = "";
+        if (outputFileWriter != null) {
             // Close the still-open output file
             try {
-                fileOutputWriter.flush();
-                fileOutputWriter.close();
+                outputFileWriter.flush();
+                outputFileWriter.close();
             } catch (IOException _) {
                 success = false;
             }
-            fileOutputWriter = null;
+            outputFileWriter = null;
         }
         return success;
     }
@@ -245,57 +245,57 @@ public class LogManager {
      * Test whether the logging system currently writes messages to its output file
      * @return Whether writing messages to the output file is enabled
      */
-    public boolean isFileOutputEnabled() {
-        return fileOutputEnabled;
+    public boolean isOutputFileEnabled() {
+        return outputFileEnabled;
     }
 
     /**
      * Set whether the logging system will write messages to its output file
-     * @param fileOutputEnabled Whether writing messages to the output file will be enabled
+     * @param outputFileEnabled Whether writing messages to the output file will be enabled
      */
-    public void setFileOutputEnabled(boolean fileOutputEnabled) {
-        this.fileOutputEnabled = fileOutputEnabled;
+    public void setOutputFileEnabled(boolean outputFileEnabled) {
+        this.outputFileEnabled = outputFileEnabled;
     }
 
     /**
      * Get the current path of the logging system's output file
      * @return The output file path
      */
-    public String getFileOutputPath() {
-        if (fileOutputPath == null) {
+    public String getOutputFilePath() {
+        if (outputFilePath == null) {
             return "";
         }
-        return fileOutputPath;
+        return outputFilePath;
     }
 
     /**
      * Set the path of the logging system's output file and close the previous file
-     * @param fileOutputPath The new output file path or empty string to indicate no output file
-     * @param fileOutputAppended Whether logging system output should be appended to the end of the new output file
+     * @param outputFilePath The new output file path or empty string to indicate no output file
+     * @param outputFileAppended Whether logging system output should be appended to the end of the new output file
      * @return Whether the old file (if present) could be closed and the new file (if present) could be opened
      */
-    public boolean setFileOutputPath(String fileOutputPath, boolean fileOutputAppended) {
-        if (fileOutputPath == null) {
+    public boolean setFileOutputPath(String outputFilePath, boolean outputFileAppended) {
+        if (outputFilePath == null) {
             return false;
         }
-        this.fileOutputPath = fileOutputPath;
+        this.outputFilePath = outputFilePath;
         boolean success = true;
         // Close the old output file
-        if (fileOutputWriter != null) {
+        if (outputFileWriter != null) {
             try {
-                fileOutputWriter.flush();
-                fileOutputWriter.close();
+                outputFileWriter.flush();
+                outputFileWriter.close();
             } catch (IOException _) {
                 success = false;
             }
-            fileOutputWriter = null;
+            outputFileWriter = null;
         }
         // Open a new output file if one was given
-        if (fileOutputPath.isEmpty()) {
+        if (outputFilePath.isEmpty()) {
             return success;
         }
         try {
-            fileOutputWriter = new FileWriter(fileOutputPath, fileOutputAppended);
+            outputFileWriter = new FileWriter(outputFilePath, outputFileAppended);
         } catch (IOException _) {
             success = false;
         }

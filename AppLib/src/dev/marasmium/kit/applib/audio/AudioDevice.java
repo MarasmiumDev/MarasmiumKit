@@ -43,7 +43,7 @@ public class AudioDevice implements Cloneable {
 
     /**
      * Ensure that this audio device's index is still available in the local audio environment's array of available
-     * devices, and change to the default (0) if unavailable
+     * devices, and change to the default (the first available or -1)
      * @return Whether the audio device was available
      */
     private boolean validate() {
@@ -88,7 +88,7 @@ public class AudioDevice implements Cloneable {
         if (!(o instanceof AudioDevice)) {
             return false;
         }
-        return ((AudioDevice)o).getIndex() == getIndex();
+        return index == ((AudioDevice)o).index;
     }
 
     /**
