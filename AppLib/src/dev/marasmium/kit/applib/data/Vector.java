@@ -145,7 +145,14 @@ public class Vector implements Serializable, Cloneable {
         if (vector == null) {
             return null;
         }
-        return Vector.Cartesian(x / vector.x, y / vector.y);
+        Vector quotient = Vector.Cartesian(Float.NaN, Float.NaN);
+        if (vector.x != 0.0f) {
+            quotient.x = x / vector.x;
+        }
+        if (vector.y != 0.0f) {
+            quotient.y = y / vector.y;
+        }
+        return quotient;
     }
 
     /**

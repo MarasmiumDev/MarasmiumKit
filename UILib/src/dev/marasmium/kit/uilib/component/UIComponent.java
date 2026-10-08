@@ -11,7 +11,6 @@ import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.graphics.Camera;
 import dev.marasmium.kit.applib.graphics.Sprite;
-import dev.marasmium.kit.uilib.UIEvent;
 import dev.marasmium.kit.uilib.UIGroup;
 
 /**
@@ -230,17 +229,14 @@ public abstract class UIComponent extends UIGroup {
      */
     public boolean setMinimumDimensions(Vector minimumDimensions) {
         if (minimumDimensions == null) {
-            this.minimumDimensions = minimumDimensions;
+            this.minimumDimensions = null;
             return setDimensions(getDimensions().clone());
         }
         if (minimumDimensions.getX() < 0.0f || minimumDimensions.getY() < 0.0f) {
             return false;
         }
         this.minimumDimensions = minimumDimensions;
-        if (!setDimensions(getDimensions().clone())) {
-            return false;
-        }
-        return true;
+        return setDimensions(getDimensions().clone());
     }
 
     /**
@@ -258,17 +254,14 @@ public abstract class UIComponent extends UIGroup {
      */
     public boolean setMaximumDimensions(Vector maximumDimensions) {
         if (maximumDimensions == null) {
-            this.maximumDimensions = maximumDimensions;
+            this.maximumDimensions = null;
             return setDimensions(getDimensions().clone());
         }
         if (maximumDimensions.getX() < 0.0f || maximumDimensions.getY() < 0.0f) {
             return false;
         }
         this.maximumDimensions = maximumDimensions;
-        if (!setDimensions(getDimensions().clone())) {
-            return false;
-        }
-        return true;
+        return setDimensions(getDimensions().clone());
     }
 
 }

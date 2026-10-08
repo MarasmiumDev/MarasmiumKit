@@ -761,7 +761,7 @@ public class AssetManager {
                 success = false;
             }
         }
-        audioTracks.clear();
+        animations.clear();
         // Free typefaces
         App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing ", typefaces.size(), " typefaces");
         for (HashMap.Entry<String, Typeface> entry : typefaces.entrySet()) {

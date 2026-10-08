@@ -15,21 +15,24 @@ public class AudioConfig {
     /**
      * The initial audio output device to use
      */
-    public final AudioDevice speaker = new AudioDevice();
+    public final AudioDevice speaker;
     /**
      * The configuration of the sound effects audio subsystem
      */
-    public final SoundEffectsManagerConfig soundEffects = new SoundEffectsManagerConfig();
+    public final SoundEffectsManagerConfig soundEffects;
     /**
      * The configuration of the music audio subsystem
      */
-    public final MusicManagerConfig music = new MusicManagerConfig();
+    public final MusicManagerConfig music;
 
     /**
      * Construct an audio system configuration structure with default settings
      */
     public AudioConfig() {
+        speaker = new AudioDevice();
         speaker.initialize(0);
+        soundEffects = new SoundEffectsManagerConfig();
+        music = new MusicManagerConfig();
     }
 
 }

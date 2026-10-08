@@ -15,7 +15,7 @@ public class NetClientConfig {
     /**
      * The maximum number of messages to process per logic update (-1 for infinite)
      */
-    public int maxMPU = 0;
+    public int maxMPU;
 
     /**
      * Construct a network client configuration structure with default settings

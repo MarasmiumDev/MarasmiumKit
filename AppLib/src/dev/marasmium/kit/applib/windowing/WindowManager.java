@@ -199,9 +199,7 @@ public class WindowManager {
             return false;
         }
         this.title = title;
-        SwingUtilities.invokeLater(() -> {
-            frame.setTitle(title);
-        });
+        SwingUtilities.invokeLater(() -> frame.setTitle(title));
         App.Log.write(LogSource.Window, LogLevel.Info, "Set window title \"", title, "\"");
         return true;
     }

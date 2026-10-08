@@ -178,7 +178,6 @@ public class Button extends UIComponent {
     @Override
     public boolean setPosition(Vector position) {
         if (getDimensions() == null) {
-            System.out.println("Error");
             return false;
         }
         if (!super.setPosition(position)) {

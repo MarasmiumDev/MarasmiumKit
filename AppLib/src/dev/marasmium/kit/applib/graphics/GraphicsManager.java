@@ -637,21 +637,10 @@ public class GraphicsManager implements GLEventListener {
                 if (sprite == null) {
                     continue;
                 }
-                Vector spritePosition = sprite.getPosition();
-                Vector spriteDimensions = sprite.getDimensions();
-                Angle spriteAngle = sprite.getAngle();
-                if (spritePosition == null || spriteDimensions == null || spriteAngle == null) {
+                Vector[] spriteCorners = sprite.getCorners();
+                if (spriteCorners == null) {
                     continue;
                 }
-                Vector spriteCentre = spritePosition.add(spriteDimensions.scalarMultiply(0.5f));
-                Vector spriteBottomLeft = Vector.Cartesian(spritePosition.getX(), spritePosition.getY())
-                        .rotateAbout(spriteAngle, spriteCentre);
-                Vector spriteBottomRight = Vector.Cartesian(spritePosition.getX() + spriteDimensions.getX(),
-                        spritePosition.getY()).rotateAbout(spriteAngle, spriteCentre);
-                Vector spriteTopRight = Vector.Cartesian(spritePosition.getX() + spriteDimensions.getX(),
-                        spritePosition.getY() + spriteDimensions.getY()).rotateAbout(spriteAngle, spriteCentre);
-                Vector spriteTopLeft = Vector.Cartesian(spritePosition.getX(),
-                        spritePosition.getY() + spriteDimensions.getY()).rotateAbout(spriteAngle, spriteCentre);
                 // Copy animation metrics and upload texture if necessary
                 Animation animation = App.Assets.getAnimation(sprite.getAnimationFilePath());
                 if (animation == null) {
@@ -702,13 +691,13 @@ public class GraphicsManager implements GLEventListener {
                 }
                 // Allocate vertices and indices
                 float[] sVertices = {
-                        spriteBottomLeft.getX(), spriteBottomLeft.getY(),
+                        spriteCorners[0].getX(), spriteCorners[0].getY(),
                         textureBottomLeft.getX(), textureBottomLeft.getY(),
-                        spriteBottomRight.getX(), spriteBottomRight.getY(),
+                        spriteCorners[1].getX(), spriteCorners[1].getY(),
                         textureBottomRight.getX(), textureBottomRight.getY(),
-                        spriteTopRight.getX(), spriteTopRight.getY(),
+                        spriteCorners[3].getX(), spriteCorners[3].getY(),
                         textureTopRight.getX(), textureTopRight.getY(),
-                        spriteTopLeft.getX(), spriteTopLeft.getY(),
+                        spriteCorners[2].getX(), spriteCorners[2].getY(),
                         textureTopLeft.getX(), textureTopLeft.getY(),
                 };
                 FloatBuffer newVertices = Buffers.newDirectFloatBuffer(vertices.capacity() + sVertices.length);

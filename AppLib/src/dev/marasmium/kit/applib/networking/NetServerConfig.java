@@ -17,7 +17,7 @@ public class NetServerConfig {
     /**
      * The server log's configuration
      */
-    public final LogManagerConfig log = new LogManagerConfig();
+    public final LogManagerConfig log;
     /**
      * The parent class of the server to subscribe to network event callbacks
      */
@@ -29,11 +29,11 @@ public class NetServerConfig {
     /**
      * The maximum number of incoming messages to process per update per client (-1 for infinite)
      */
-    public int maxMPUPC = 0;
+    public int maxMPUPC;
     /**
      * The maximum number of clients to allow to connect to the server simultaneously (-1 for infinite)
      */
-    public int maxClients = 0;
+    public int maxClients;
 
     /**
      * Construct a network server configuration structure with default settings
@@ -41,6 +41,7 @@ public class NetServerConfig {
      * @param port The port for the server to listen for client connections on
      */
     public NetServerConfig(NetListener parent, int port) {
+        log = new LogManagerConfig();
         log.fileOutputPath = "MarasmiumKit-Server.log";
         this.parent = parent;
         this.port = port;

@@ -47,10 +47,7 @@ public class Typeface implements Cloneable {
                 return false;
             }
         }
-        if (!setAnimationData(animationData)) {
-            return false;
-        }
-        return true;
+        return setAnimationData(animationData);
     }
 
     /**

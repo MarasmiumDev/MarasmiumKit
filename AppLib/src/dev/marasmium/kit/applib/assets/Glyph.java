@@ -49,10 +49,7 @@ public class Glyph implements Cloneable {
         if (!setAdvances(advances)) {
             return false;
         }
-        if (!setOffsets(offsets)) {
-            return false;
-        }
-        return true;
+        return setOffsets(offsets);
     }
 
     /**

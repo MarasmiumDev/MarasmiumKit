@@ -48,10 +48,7 @@ public class AudioTrack implements Cloneable {
         if (!setChannelCount(channelCount)) {
             return false;
         }
-        if (!setData(data)) {
-            return false;
-        }
-        return true;
+        return setData(data);
     }
 
     /**

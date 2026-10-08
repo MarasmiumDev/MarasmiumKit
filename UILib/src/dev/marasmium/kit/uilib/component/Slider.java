@@ -655,10 +655,7 @@ public class Slider extends UIComponent {
         Vector cursorPixelPosition = cursor.getPosition().elementMultiply(App.Window.getDimensions());
         cursorPixelPosition.setX(sprite.getPosition().getX()
                 + ((sprite.getDimensions().getX() - cursor.getSprite().getDimensions().getX()) * percent));
-        if (!cursor.setPosition(cursorPixelPosition.elementDivide(App.Window.getDimensions()))) {
-            return false;
-        }
-        return true;
+        return cursor.setPosition(cursorPixelPosition.elementDivide(App.Window.getDimensions()));
     }
 
 }

@@ -131,7 +131,7 @@ public class Label extends UIComponent {
 
     /**
      * Get the starting position of this label's text when not aligned in pixels
-     * @return THis label's starting text position
+     * @return This label's starting text position
      */
     public Vector getTextPosition() {
         return textPosition;

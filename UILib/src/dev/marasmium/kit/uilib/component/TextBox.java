@@ -303,7 +303,6 @@ public class TextBox extends Label {
                 float x = textX;
                 for (int i = 0; i < text.length() + 1; i++) {
                     Glyph glyph;
-                    float step = 0.0f;
                     if (i < text.length()) {
                         glyph = typeface.getGlyph(text.charAt(i));
                     } else {
@@ -312,7 +311,7 @@ public class TextBox extends Label {
                     if (glyph == null) {
                         continue;
                     }
-                    step = (glyph.getAdvances().getX() - glyph.getOffsets().getX()) * parent.getTextSize();
+                    float step = (glyph.getAdvances().getX() - glyph.getOffsets().getX()) * parent.getTextSize();
                     setCursorIndex(i);
                     if (x + (step / 2.0f) > cursorX) {
                         break;
@@ -795,7 +794,6 @@ public class TextBox extends Label {
         if (parent == null) {
             return true;
         }
-        float textWidth = 0.0f;
         Typeface typeface = App.Assets.getTypeface(parent.getTypefaceFilePath());
         if (typeface == null) {
             return false;
@@ -809,7 +807,6 @@ public class TextBox extends Label {
             if (i < cursorIndex) {
                 cursorX += step;
             }
-            textWidth += step;
         }
         if (cursor.getPosition() == null) {
             return false;
