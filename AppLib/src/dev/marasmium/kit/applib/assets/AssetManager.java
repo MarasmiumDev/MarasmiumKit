@@ -106,6 +106,9 @@ public class AssetManager {
      * @return The deserialized audio track or null if deserialization failed
      */
     public AudioTrack deserializeAudioTrack(byte[] fileData) {
+        if (fileData == null) {
+            return null;
+        }
         // Allocate audio track parameters
         int sampleRate;
         int sampleSize;
@@ -132,6 +135,9 @@ public class AssetManager {
             offset += Integer.BYTES;
             dataSize = ByteBuffer.wrap(buffer).getInt();
         } catch (IndexOutOfBoundsException | ArrayStoreException | BufferUnderflowException _) {
+            return null;
+        }
+        if (dataSize < 0) {
             return null;
         }
         if (fileData.length < offset + dataSize) {
@@ -332,6 +338,9 @@ public class AssetManager {
             return null;
         }
         int dataSize = Integer.BYTES * (int)(sheetDimensions.getElementProduct() * frameDimensions.getElementProduct());
+        if (dataSize < 0) {
+            return null;
+        }
         if (fileData.length < offset + dataSize) {
             return null;
         }
@@ -447,8 +456,8 @@ public class AssetManager {
             buffer.putInt((int)frameDimensions.getX());
             buffer.putInt((int)frameDimensions.getY());
             buffer.putInt(frameCount);
-            for (Colour c : data) {
-                buffer.putInt(c.getRGBA());
+            for (Colour colour : data) {
+                buffer.putInt(colour.getRGBA());
             }
             fileData = buffer.array();
         } catch (IllegalArgumentException | BufferOverflowException | UnsupportedOperationException _) {
@@ -522,6 +531,9 @@ public class AssetManager {
         } catch (IndexOutOfBoundsException | ArrayStoreException | BufferOverflowException _) {
             return null;
         }
+        if (characterCount < 0) {
+            return null;
+        }
         glyphs = new Glyph[characterCount];
         if (fileData.length < offset + (characterCount * Character.BYTES) + (characterCount * 7 * Integer.BYTES)) {
             return null;
@@ -574,6 +586,9 @@ public class AssetManager {
             offset += Integer.BYTES;
             animationDataSize = ByteBuffer.wrap(buffer).getInt();
         } catch (IndexOutOfBoundsException | ArrayStoreException | BufferOverflowException _) {
+            return null;
+        }
+        if (animationDataSize < 0) {
             return null;
         }
         if (fileData.length < offset + animationDataSize) {
@@ -807,16 +822,6 @@ public class AssetManager {
      * @return The requested audio track either from memory or disk or null if the audio track could not be loaded
      */
     public AudioTrack getAudioTrack(String filePath) {
-        if (basePath == null) {
-            return null;
-        }
-        if (filePath == null) {
-            return null;
-        }
-        if (filePath.isEmpty()) {
-            return null;
-        }
-        // Load if not in memory
         if (!audioTracks.containsKey(filePath)) {
             if (!readAudioTrack(filePath)) {
                 return null;
@@ -832,18 +837,6 @@ public class AssetManager {
      * @return Whether the audio track was not in memory and was added successfully
      */
     public boolean addAudioTrack(String filePath, AudioTrack audioTrack) {
-        if (filePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No file path provided to add audio track");
-            return false;
-        }
-        if (filePath.isEmpty()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Empty file path provided to add audio track");
-            return false;
-        }
-        if (audioTrack == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No audio track provided to add");
-            return false;
-        }
         if (audioTracks.containsKey(filePath)) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to add audio track, already cached");
             return false;
@@ -859,18 +852,6 @@ public class AssetManager {
      * @return Whether the audio track was in memory and was removed successfully
      */
     public boolean removeAudioTrack(String filePath) {
-        if (basePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
-            return false;
-        }
-        if (filePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No file path provided to free audio track");
-            return false;
-        }
-        if (filePath.isEmpty()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Empty file path provided to free audio track");
-            return false;
-        }
         if (!audioTracks.containsKey(filePath)) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "File path provided to free audio track not loaded");
             return false;
@@ -888,16 +869,6 @@ public class AssetManager {
      * @return The requested animation from memory or disk or null if the animation could not be loaded
      */
     public Animation getAnimation(String filePath) {
-        if (basePath == null) {
-            return null;
-        }
-        if (filePath == null) {
-            return null;
-        }
-        if (filePath.isEmpty()) {
-            return null;
-        }
-        // Load if not in memory
         if (!animations.containsKey(filePath)) {
             if (!readAnimation(filePath)) {
                 return null;
@@ -913,18 +884,6 @@ public class AssetManager {
      * @return Whether the animation was not in memory and was added successfully
      */
     public boolean addAnimation(String filePath, Animation animation) {
-        if (filePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No file path provided to add animation");
-            return false;
-        }
-        if (filePath.isEmpty()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Empty file path provided to add animation");
-            return false;
-        }
-        if (animation == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No animation provided to add");
-            return false;
-        }
         if (animations.containsKey(filePath)) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to add animation, already cached");
             return false;
@@ -940,18 +899,6 @@ public class AssetManager {
      * @return Whether the animation was in memory and was removed successfully
      */
     public boolean removeAnimation(String filePath) {
-        if (filePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No file path provided to free animation");
-            return false;
-        }
-        if (filePath.isEmpty()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Empty file path provided to free animation");
-            return false;
-        }
-        if (!animations.containsKey(filePath)) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "File path provided to free animation not loaded");
-            return false;
-        }
         App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing animation at \"", basePath + filePath, "\"");
         if (animations.get(filePath) != null) {
             animations.get(filePath).destroy();
@@ -965,16 +912,6 @@ public class AssetManager {
      * @return The requested typeface from memory or disk or null if the typeface could not be loaded
      */
     public Typeface getTypeface(String filePath) {
-        if (basePath == null) {
-            return null;
-        }
-        if (filePath == null) {
-            return null;
-        }
-        if (filePath.isEmpty()) {
-            return null;
-        }
-        // Load if not in memory
         if (!typefaces.containsKey(filePath)) {
             if (!readTypeface(filePath)) {
                 return null;
@@ -990,18 +927,6 @@ public class AssetManager {
      * @return Whether the typeface was not in memory and was added successfully
      */
     public boolean addTypeface(String filePath, Typeface typeface) {
-        if (filePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No file path provided to add typeface");
-            return false;
-        }
-        if (filePath.isEmpty()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Empty file path provided to add typeface");
-            return false;
-        }
-        if (typeface == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No typeface provided to add");
-            return false;
-        }
         if (typefaces.containsKey(filePath)) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to add typeface, already cached");
             return false;
@@ -1027,14 +952,6 @@ public class AssetManager {
      * @return Whether the typeface was in memory and was removed successfully
      */
     public boolean removeTypeface(String filePath) {
-        if (filePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No file path provided to free typeface");
-            return false;
-        }
-        if (filePath.isEmpty()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Empty file path provided to free typeface");
-            return false;
-        }
         if (!typefaces.containsKey(filePath)) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "File path provided to free typeface not loaded");
             return false;

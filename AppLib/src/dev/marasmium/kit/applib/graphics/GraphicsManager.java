@@ -162,10 +162,13 @@ public class GraphicsManager implements GLEventListener {
         if (camera == null || sprite == null) {
             return false;
         }
+        Vector windowDimensions = App.Window.getDimensions();
+        if (windowDimensions == null) {
+            return false;
+        }
         Box windowBox = new Box();
-        if (!windowBox.initialize(camera.getPosition().subtract(
-                App.Window.getDimensions().scalarDivide(camera.getScale()).scalarMultiply(0.5f)), 0.0f,
-                App.Window.getDimensions().scalarDivide(camera.getScale()), Angle.Zero())) {
+        if (!windowBox.initialize(camera.getPosition().subtract(windowDimensions.scalarDivide(camera.getScale())
+                        .scalarMultiply(0.5f)), 0.0f, windowDimensions.scalarDivide(camera.getScale()), Angle.Zero())) {
             return false;
         }
         if (!sprite.intersectsWith(windowBox)) {
@@ -215,7 +218,8 @@ public class GraphicsManager implements GLEventListener {
                           float depth, float size, Vector position, Alignment horizontalAlignment,
                           Alignment verticalAlignment) {
         // Check parameters
-        if (text == null || typefaceFilePath == null || boundingBox == null) {
+        if (text == null || typefaceFilePath == null || boundingBox == null
+                || (position == null && (horizontalAlignment == null || verticalAlignment == null))) {
             return false;
         }
         if (text.isEmpty()) {
@@ -364,11 +368,14 @@ public class GraphicsManager implements GLEventListener {
             return false;
         }
         // Get the dimensions and colour data of the animation's texture
-        if (animation.getSheetDimensions() == null) {
+        if (animation.getSheetDimensions() == null || animation.getFrameDimensions() == null) {
             return false;
         }
         Vector dimensions = animation.getSheetDimensions().elementMultiply(animation.getFrameDimensions());
         if (dimensions == null) {
+            return false;
+        }
+        if (animation.getData() == null) {
             return false;
         }
         ByteBuffer pixels = Buffers.newDirectByteBuffer((int)(dimensions.getX() * dimensions.getY()) * Integer.BYTES);

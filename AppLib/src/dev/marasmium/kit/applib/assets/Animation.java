@@ -93,7 +93,7 @@ public class Animation implements Cloneable {
             return "animation(null)";
         }
         return "animation(" + targetFPS + "FPS, " + frameCount + " frames arranged " + sheetDimensions + ", "
-                + frameDimensions + "pixels, texture ID " + textureID + ")";
+                + frameDimensions + "pixels, " + data.length * Integer.BYTES + "B, texture ID " + textureID + ")";
     }
 
     /**
@@ -211,6 +211,9 @@ public class Animation implements Cloneable {
      * @return Whether the given frame count was valid
      */
     public boolean setFrameCount(int frameCount) {
+        if (sheetDimensions == null) {
+            return false;
+        }
         if (frameCount <= 0 || frameCount > (int)sheetDimensions.getElementProduct()) {
             return false;
         }
@@ -276,9 +279,6 @@ public class Animation implements Cloneable {
             return null;
         }
         if (sheetDimensions == null) {
-            return null;
-        }
-        if (sheetDimensions.getX() < 1.0f) {
             return null;
         }
         int xSheet = frameIndex % ((int)sheetDimensions.getX());

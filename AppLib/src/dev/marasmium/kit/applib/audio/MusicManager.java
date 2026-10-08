@@ -107,28 +107,33 @@ public class MusicManager {
                 true, false);
         // Open a new audio line in the loaded format
         DataLine.Info playerInfo = new DataLine.Info(SourceDataLine.class, format);
-        int speakerIndex = App.Audio.getSpeaker().getIndex();
-        Mixer.Info[] speakerInfo = AudioSystem.getMixerInfo();
-        if (speakerIndex < 0 || speakerIndex >= speakerInfo.length) {
+        AudioDevice speaker = App.Audio.getSpeaker();
+        if (speaker == null) {
+            App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to retrieve speaker");
+            return false;
+        }
+        int mixerIndex = speaker.getIndex();
+        Mixer.Info[] mixers = AudioSystem.getMixerInfo();
+        if (mixerIndex < 0 || mixerIndex >= mixers.length) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Invalid speaker index for music track \"", filePath,
                     "\"");
             return false;
         }
-        Mixer speaker;
+        Mixer mixer;
         try {
-            speaker = AudioSystem.getMixer(speakerInfo[speakerIndex]);
+            mixer = AudioSystem.getMixer(mixers[mixerIndex]);
         } catch (IllegalArgumentException _) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to access output speaker to play music track \"",
                     filePath, "\"");
             return false;
         }
-        if (!speaker.isLineSupported(playerInfo)) {
+        if (!mixer.isLineSupported(playerInfo)) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Audio lines in format of music track \"", filePath,
                     "\" unsupported");
             return false;
         }
         try {
-            player = (SourceDataLine)speaker.getLine(playerInfo);
+            player = (SourceDataLine)mixer.getLine(playerInfo);
             player.open(format);
         } catch (LineUnavailableException | IllegalArgumentException | IllegalStateException _) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to open audio line for music track \"", filePath,

@@ -185,9 +185,6 @@ public class WindowManager {
      * @return The title of the window
      */
     public String getTitle() {
-        if (title == null) {
-            return "";
-        }
         return title;
     }
 
@@ -201,10 +198,10 @@ public class WindowManager {
             App.Log.write(LogSource.Window, LogLevel.Warning, "No title provided");
             return false;
         }
+        this.title = title;
         SwingUtilities.invokeLater(() -> {
             frame.setTitle(title);
         });
-        this.title = title;
         App.Log.write(LogSource.Window, LogLevel.Info, "Set window title \"", title, "\"");
         return true;
     }
@@ -214,9 +211,6 @@ public class WindowManager {
      * @return The current dimensions of the window
      */
     public Vector getDimensions() {
-        if (dimensions == null) {
-            return Vector.Zero();
-        }
         return dimensions;
     }
 
@@ -237,6 +231,7 @@ public class WindowManager {
             App.Log.write(LogSource.Window, LogLevel.Warning, "Can't directly set dimensions in fullscreen mode");
             return true;
         }
+        this.dimensions = dimensions;
         // Set current window dimensions (in windowed mode)
         SwingUtilities.invokeLater(() -> {
             canvas.setPreferredSize(new Dimension((int)dimensions.getX(), (int)dimensions.getY()));
@@ -255,7 +250,6 @@ public class WindowManager {
             }
             App.Log.write(LogSource.Window, LogLevel.Info, "Set window dimensions ", dimensions);
         });
-        this.dimensions = dimensions;
         return true;
     }
 

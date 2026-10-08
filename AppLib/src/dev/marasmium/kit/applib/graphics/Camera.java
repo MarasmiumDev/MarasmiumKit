@@ -73,13 +73,13 @@ public class Camera extends Body {
      */
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Camera c)) {
+        if (!(o instanceof Camera camera)) {
             return false;
         }
         if (position == null || angle == null) {
             return false;
         }
-        return c.position.equals(position) && c.scale == scale && c.angle.equals(angle);
+        return camera.position.equals(position) && camera.scale == scale && camera.angle.equals(angle);
     }
 
     /**
@@ -127,21 +127,22 @@ public class Camera extends Body {
         if (position == null || angle == null) {
             return null;
         }
-        float positionX = position.getX();
-        float positionY = position.getY();
-        float scale = this.scale;
-        float angle = this.angle.getRadians();
-        float width = App.Window.getDimensions().getX();
-        float height = App.Window.getDimensions().getY();
-        float cos = (float)Math.cos(angle);
-        float sin = (float)Math.sin(angle);
-        float scaleX = (2.0f * scale) / width;
-        float scaleY = (2.0f * scale) / height;
+        Vector windowDimensions = App.Window.getDimensions();
+        if (windowDimensions == null) {
+            return null;
+        }
+        if (windowDimensions.getX() == 0.0f || windowDimensions.getY() == 0.0f) {
+            return null;
+        }
+        Vector position = getPosition();
+        float cosine = (float)Math.cos(angle.getRadians());
+        float sine = (float)Math.sin(angle.getRadians());
+        float scaleX = (2.0f * scale) / windowDimensions.getX();
+        float scaleY = (2.0f * scale) / windowDimensions.getY();
         return new float[] {
-                scaleX * cos, -scaleY * sin, 0.0f, 0.0f,
-                scaleX * sin, scaleY * cos, 0.0f, 0.0f,
-                0.0f, 0.0f, 1.0f, 0.0f,
-                -scaleX * (cos * positionX + sin * positionY), scaleY * (sin * positionX - cos * positionY), 0.0f, 1.0f,
+                scaleX * cosine, -scaleY * sine, 0.0f, 0.0f, scaleX * sine, scaleY * cosine, 0.0f, 0.0f, 0.0f, 0.0f,
+                1.0f, 0.0f, -scaleX * (cosine * position.getX() + sine * position.getY()),
+                scaleY * (sine * position.getX() - cosine * position.getY()), 0.0f, 1.0f,
         };
     }
 

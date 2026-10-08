@@ -60,6 +60,9 @@ public abstract class UIComponent extends UIGroup {
      */
     @Override
     public float getBaseDepth() {
+        if (parent == null) {
+            return Float.NaN;
+        }
         return parent.getBaseDepth();
     }
 
@@ -69,6 +72,9 @@ public abstract class UIComponent extends UIGroup {
      */
     @Override
     public String getTypefaceFilePath() {
+        if (parent == null) {
+            return null;
+        }
         return parent.getTypefaceFilePath();
     }
 
@@ -78,6 +84,9 @@ public abstract class UIComponent extends UIGroup {
      */
     @Override
     public float getTextSize() {
+        if (parent == null) {
+            return Float.NaN;
+        }
         return parent.getTextSize();
     }
 
@@ -87,6 +96,9 @@ public abstract class UIComponent extends UIGroup {
      */
     @Override
     public float getTextPadding() {
+        if (parent == null) {
+            return Float.NaN;
+        }
         return parent.getTextPadding();
     }
 
@@ -96,6 +108,9 @@ public abstract class UIComponent extends UIGroup {
      */
     @Override
     public int getGroupID() {
+        if (parent == null) {
+            return 0;
+        }
         return parent.getGroupID();
     }
 
@@ -105,6 +120,9 @@ public abstract class UIComponent extends UIGroup {
      */
     @Override
     public Camera getCamera() {
+        if (parent == null) {
+            return null;
+        }
         return parent.getCamera();
     }
 

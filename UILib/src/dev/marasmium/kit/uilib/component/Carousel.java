@@ -213,7 +213,9 @@ public class Carousel extends Label {
                 } else {
                     setValueIndex(values.size() - 1);
                 }
-                parent.componentEvent(parent.getGroupID(), this.componentID, UIEvent.Carousel_Value_Set);
+                if (parent != null) {
+                    parent.componentEvent(parent.getGroupID(), this.componentID, UIEvent.Carousel_Value_Set);
+                }
             }
         } else if (componentID == nextButton.getComponentID()) {
             if (event == UIEvent.Button_Released) {
@@ -222,7 +224,9 @@ public class Carousel extends Label {
                 } else {
                     setValueIndex(0);
                 }
-                parent.componentEvent(parent.getGroupID(), this.componentID, UIEvent.Carousel_Value_Set);
+                if (parent != null) {
+                    parent.componentEvent(parent.getGroupID(), this.componentID, UIEvent.Carousel_Value_Set);
+                }
             }
         }
     }
@@ -250,6 +254,10 @@ public class Carousel extends Label {
      */
     @Override
     public boolean setPosition(Vector position) {
+        if (position == null || backButton.getDimensions() == null || nextButton.getDimensions() == null
+                || super.getDimensions() == null) {
+            return false;
+        }
         // Update position depending on button alignment
         if (horizontalButtonAlignment == Alignment.Left) {
             if (!backButton.setPosition(Vector.Cartesian(position.getX(),
@@ -313,6 +321,9 @@ public class Carousel extends Label {
      */
     @Override
     public Vector getDimensions() {
+        if (backButton.getDimensions() == null || nextButton.getDimensions() == null || super.getDimensions() == null) {
+            return null;
+        }
         if (horizontalButtonAlignment == Alignment.Center) {
             return Vector.Cartesian(backButton.getDimensions().getX() + super.getDimensions().getX()
                     + nextButton.getDimensions().getX(), super.getDimensions().getY());
@@ -326,7 +337,7 @@ public class Carousel extends Label {
     /**
      * Set this carousel's dimensions in percent of the application's window dimensions
      * @param dimensions This carousel's new dimensions in percent of the application's window dimensions
-     * @return Wheher the given dimensions were valid and were set successfully
+     * @return Whether the given dimensions were valid and were set successfully
      */
     @Override
     public boolean setDimensions(Vector dimensions) {
@@ -372,6 +383,10 @@ public class Carousel extends Label {
      */
     @Override
     public Vector getMinimumDimensions() {
+        if (backButton.getMinimumDimensions() == null || nextButton.getMinimumDimensions() == null
+                || super.getMinimumDimensions() == null) {
+            return null;
+        }
         if (labelAlignment == Alignment.Center) {
             return Vector.Cartesian(backButton.getMinimumDimensions().getX() + super.getMinimumDimensions().getX()
                     + nextButton.getMinimumDimensions().getX(), super.getMinimumDimensions().getY());
@@ -446,6 +461,10 @@ public class Carousel extends Label {
      */
     @Override
     public Vector getMaximumDimensions() {
+        if (backButton.getMaximumDimensions() == null || nextButton.getMaximumDimensions() == null
+                || super.getMaximumDimensions() == null) {
+            return null;
+        }
         if (labelAlignment == Alignment.Center) {
             return Vector.Cartesian(backButton.getMaximumDimensions().getX() + super.getMaximumDimensions().getX()
                     + nextButton.getMaximumDimensions().getX(), super.getMaximumDimensions().getY());
@@ -609,15 +628,20 @@ public class Carousel extends Label {
      * @return Whether the given width was valid
      */
     public boolean setMinimumButtonWidth(float minimumButtonWidth) {
-        if (!backButton.setMinimumDimensions(Vector.Cartesian(minimumButtonWidth,
-                backButton.getMinimumDimensions().getY()))) {
+        Vector minimumButtonDimensions = Vector.Cartesian(minimumButtonWidth, 0.0f);
+        if (backButton.getMinimumDimensions() != null) {
+            minimumButtonDimensions.setY(backButton.getMinimumDimensions().getY());
+        }
+        if (!backButton.setMinimumDimensions(minimumButtonDimensions)) {
             return false;
         }
-        if (!nextButton.setMinimumDimensions(Vector.Cartesian(minimumButtonWidth,
-                nextButton.getMinimumDimensions().getY()))) {
+        if (!nextButton.setMinimumDimensions(minimumButtonDimensions)) {
             return false;
         }
-        return true;
+        if (getPosition() == null) {
+            return true;
+        }
+        return setPosition(getPosition().clone());
     }
 
     /**
@@ -634,15 +658,20 @@ public class Carousel extends Label {
      * @return Whether the given width was valid
      */
     public boolean setMaximumButtonWidth(float maximumButtonWidth) {
-        if (!backButton.setMaximumDimensions(Vector.Cartesian(maximumButtonWidth,
-                backButton.getMaximumDimensions().getY()))) {
+        Vector maximumButtonDimensions = Vector.Cartesian(maximumButtonWidth, 0.0f);
+        if (backButton.getMaximumDimensions() != null) {
+            maximumButtonDimensions.setY(backButton.getMaximumDimensions().getY());
+        }
+        if (!backButton.setMaximumDimensions(maximumButtonDimensions)) {
             return false;
         }
-        if (!nextButton.setMaximumDimensions(Vector.Cartesian(maximumButtonWidth,
-                nextButton.getMaximumDimensions().getY()))) {
+        if (!nextButton.setMaximumDimensions(maximumButtonDimensions)) {
             return false;
         }
-        return true;
+        if (getPosition() == null) {
+            return true;
+        }
+        return setPosition(getPosition().clone());
     }
 
     /**
@@ -664,6 +693,9 @@ public class Carousel extends Label {
         }
         if (!(horizontalButtonAlignment == Alignment.Left || horizontalButtonAlignment == Alignment.Center
                 || horizontalButtonAlignment == Alignment.Right)) {
+            return false;
+        }
+        if (backButton.getSprite() == null || nextButton.getSprite() == null) {
             return false;
         }
         if (horizontalButtonAlignment == Alignment.Center) {
@@ -719,6 +751,9 @@ public class Carousel extends Label {
      * @return Whether the value was added successfully
      */
     public boolean addValue(String value, int valueIndex) {
+        if (value == null) {
+            return false;
+        }
         if (valueIndex < 0) {
             return false;
         }
@@ -745,6 +780,9 @@ public class Carousel extends Label {
      * @return Whether the value was removed successfully
      */
     public boolean removeValue(String value) {
+        if (value == null) {
+            return false;
+        }
         if (!values.contains(value)) {
             return false;
         }

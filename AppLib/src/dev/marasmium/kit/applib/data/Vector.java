@@ -73,26 +73,26 @@ public class Vector implements Serializable, Cloneable {
 
     /**
      * Compute the sum of this vector and another one
-     * @param v The vector to add to this one
+     * @param vector The vector to add to this one
      * @return The sum of this vector and v
      */
-    public Vector add(Vector v) {
-        if (v == null) {
+    public Vector add(Vector vector) {
+        if (vector == null) {
             return null;
         }
-        return Vector.Cartesian(x + v.x, y + v.y);
+        return Vector.Cartesian(x + vector.x, y + vector.y);
     }
 
     /**
      * Compute the difference of this vector and another one
-     * @param v The vector to subtract from this one
+     * @param vector The vector to subtract from this one
      * @return The difference of this vector and v
      */
-    public Vector subtract(Vector v) {
-        if (v == null) {
+    public Vector subtract(Vector vector) {
+        if (vector == null) {
             return null;
         }
-        return Vector.Cartesian(x - v.x, y - v.y);
+        return Vector.Cartesian(x - vector.x, y - vector.y);
     }
 
     /**
@@ -105,83 +105,83 @@ public class Vector implements Serializable, Cloneable {
 
     /**
      * Compute the product of this vector and a scalar
-     * @param a The scalar to multiply this vector by
+     * @param angle The scalar to multiply this vector by
      * @return The product of this vector and a
      */
-    public Vector scalarMultiply(float a) {
-        return Vector.Cartesian(x * a, y * a);
+    public Vector scalarMultiply(float angle) {
+        return Vector.Cartesian(x * angle, y * angle);
     }
 
     /**
      * Compute the quotient of this vector and a scalar
-     * @param a The scalar to divide this vector by
+     * @param angle The scalar to divide this vector by
      * @return The quotient of this vector and a
      */
-    public Vector scalarDivide(float a) {
-        if (a == 0.0f) {
+    public Vector scalarDivide(float angle) {
+        if (angle == 0.0f) {
             return null;
         }
-        return scalarMultiply(1.0f / a);
+        return scalarMultiply(1.0f / angle);
     }
 
     /**
      * Compute the element-wise product of this vector and another one
-     * @param v The vector to multiply this vector by
+     * @param vector The vector to multiply this vector by
      * @return The element-wise product of this vector and v
      */
-    public Vector elementMultiply(Vector v) {
-        if (v == null) {
+    public Vector elementMultiply(Vector vector) {
+        if (vector == null) {
             return null;
         }
-        return Vector.Cartesian(x * v.x, y * v.y);
+        return Vector.Cartesian(x * vector.x, y * vector.y);
     }
 
     /**
      * Compute the element-wise quotient of this vector and another one
-     * @param v The vector to divide this vector by
+     * @param vector The vector to divide this vector by
      * @return The element-wise quotient of this vector and v
      */
-    public Vector elementDivide(Vector v) {
-        if (v == null) {
+    public Vector elementDivide(Vector vector) {
+        if (vector == null) {
             return null;
         }
-        return Vector.Cartesian(x / v.x, y / v.y);
+        return Vector.Cartesian(x / vector.x, y / vector.y);
     }
 
     /**
      * Compute the dot product of this vector and another one
-     * @param v The vector to multiply this vector by
+     * @param vector The vector to multiply this vector by
      * @return The dot product of this vector and v or 0 if v is null
      */
-    public float dotMultiply(Vector v) {
-        if (v == null) {
-            return 0.0f;
+    public float dotMultiply(Vector vector) {
+        if (vector == null) {
+            return Float.NaN;
         }
-        return Vector.Cartesian(x * v.x, y * v.y).getElementSum();
+        return Vector.Cartesian(x * vector.x, y * vector.y).getElementSum();
     }
 
     /**
      * Compute the squared distance between this vector and another one
-     * @param v The vector to compare to
+     * @param vector The vector to compare to
      * @return The squared distance between this vector and v or 0 if v is null
      */
-    public float getDistanceToSquared(Vector v) {
-        if (v == null) {
-            return 0.0f;
+    public float getDistanceToSquared(Vector vector) {
+        if (vector == null) {
+            return Float.NaN;
         }
-        return subtract(v).getLengthSquared();
+        return subtract(vector).getLengthSquared();
     }
 
     /**
      * Compute the distance between this vector and another one
-     * @param v The vector to compare to
+     * @param vector The vector to compare to
      * @return The distance between this vector and v or 0 if v is null
      */
-    public float getDistanceTo(Vector v) {
-        if (v == null) {
-            return 0.0f;
+    public float getDistanceTo(Vector vector) {
+        if (vector == null) {
+            return Float.NaN;
         }
-        return (float)Math.sqrt(getDistanceToSquared(v));
+        return (float)Math.sqrt(getDistanceToSquared(vector));
     }
 
     /**
@@ -194,14 +194,14 @@ public class Vector implements Serializable, Cloneable {
 
     /**
      * Compute the 2D cross product of this vector and another one
-     * @param v The vector to multiply this vector by
+     * @param vector The vector to multiply this vector by
      * @return The 2D cross product of this vector and v (this x v) or 0 if v is null
      */
-    public float crossMultiply(Vector v) {
-        if (v == null) {
-            return 0.0f;
+    public float crossMultiply(Vector vector) {
+        if (vector == null) {
+            return Float.NaN;
         }
-        return (x * v.y) - (y * v.x);
+        return (x * vector.y) - (y * vector.x);
     }
 
     /**
@@ -213,34 +213,35 @@ public class Vector implements Serializable, Cloneable {
         if (theta == null) {
             return null;
         }
-        return Vector.Cartesian((x * (float)Math.cos(theta.getRadians())) - (y * (float)Math.sin(theta.getRadians())),
-                (x * (float)Math.sin(theta.getRadians())) + (y * (float)Math.cos(theta.getRadians())));
+        float cosine = (float)Math.cos(theta.getRadians());
+        float sine = (float)Math.sin(theta.getRadians());
+        return Vector.Cartesian((x * cosine) - (y * sine), (x * sine) + (y * cosine));
     }
 
     /**
      * Compute the resulting of this vector rotated by an angle about the endpoint of another vector
      * @param theta The angle to rotate this vector by
-     * @param o The vector whose endpoint to rotate this vector about
+     * @param origin The vector whose endpoint to rotate this vector about
      * @return The rotated version of this vector
      */
-    public Vector rotateAbout(Angle theta, Vector o) {
-        if (theta == null || o == null) {
+    public Vector rotateAbout(Angle theta, Vector origin) {
+        if (theta == null || origin == null) {
             return null;
         }
-        return subtract(o).rotate(theta).add(o);
+        return subtract(origin).rotate(theta).add(origin);
     }
 
     /**
      * Get the angle between this vector and another one
-     * @param v The vector to compare to
+     * @param vector The vector to compare to
      * @return The angle between this vector and v
      */
-    public Angle getAngleTo(Vector v) {
-        if (v == null) {
+    public Angle getAngleTo(Vector vector) {
+        if (vector == null) {
             return null;
         }
-        float numerator = getLengthSquared() + v.getLengthSquared() - getDistanceToSquared(v);
-        float denominator = 2.0f * getLength() * v.getLength();
+        float numerator = getLengthSquared() + vector.getLengthSquared() - getDistanceToSquared(vector);
+        float denominator = 2.0f * getLength() * vector.getLength();
         if (denominator == 0.0f) {
             return Angle.Radians(0.0f);
         }
@@ -265,27 +266,27 @@ public class Vector implements Serializable, Cloneable {
 
     /**
      * Compute the vector to the point a given percentage along the distance between this vector and another one
-     * @param v The vector to compare this to (100% along the distance)
+     * @param vector The vector to compare this to (100% along the distance)
      * @param t The percentage of the distance to move between this vector and v
      * @return The vector t% of the way from this vector to v
      */
-    public Vector interpolate(Vector v, float t) {
-        if (v == null) {
+    public Vector interpolate(Vector vector, float t) {
+        if (vector == null) {
             return null;
         }
-        return add(subtract(v).scalarMultiply(t));
+        return add(subtract(vector).scalarMultiply(t));
     }
 
     /**
      * Compute the vector to the midpoint between this vector and another one
-     * @param v The vector to compare to this
+     * @param vector The vector to compare to this
      * @return The vector at the midpoint between this vector and v
      */
-    public Vector midpoint(Vector v) {
-        if (v == null) {
+    public Vector midpoint(Vector vector) {
+        if (vector == null) {
             return null;
         }
-        return interpolate(v, 0.5f);
+        return interpolate(vector, 0.5f);
     }
 
     /**
@@ -306,111 +307,111 @@ public class Vector implements Serializable, Cloneable {
 
     /**
      * Test whether this vector is parallel to another one
-     * @param v The vector to compare this one to
+     * @param vector The vector to compare this one to
      * @return Whether this vector is parallel to v
      */
-    public boolean parallelTo(Vector v) {
-        if (v == null) {
+    public boolean parallelTo(Vector vector) {
+        if (vector == null) {
             return false;
         }
-        if (isZero() || v.isZero()) {
+        if (isZero() || vector.isZero()) {
             return false;
         }
-        return Math.abs(crossMultiply(v)) < Constants.Epsilon;
+        return Math.abs(crossMultiply(vector)) < Constants.Epsilon;
     }
 
     /**
      * Test whether this vector is perpendicular to another one
-     * @param v The vector to compare this one to
+     * @param vector The vector to compare this one to
      * @return Whether this vector is perpendicular to v
      */
-    public boolean perpendicularTo(Vector v) {
-        if (v == null) {
+    public boolean perpendicularTo(Vector vector) {
+        if (vector == null) {
             return false;
         }
-        if (isZero() || v.isZero()) {
+        if (isZero() || vector.isZero()) {
             return false;
         }
-        return Math.abs(dotMultiply(v)) < Constants.Epsilon;
+        return Math.abs(dotMultiply(vector)) < Constants.Epsilon;
     }
 
     /**
      * Test whether this vector is positioned to the left of a line
-     * @param l The line to test this vector against
+     * @param line The line to test this vector against
      * @return Whether this vector is to the left of the given line
      */
-    public boolean leftOf(Line l) {
-        if (l == null) {
+    public boolean leftOf(Line line) {
+        if (line == null) {
             return false;
         }
-        if (l.isVertical()) {
-            return x <= l.getXIntercept();
+        if (line.isVertical()) {
+            return x <= line.getXIntercept();
         }
-        return y >= l.sampleY(x);
+        return y >= line.sampleY(x);
     }
 
     /**
      * Test whether this vector is positioned to the right of a line
-     * @param l The line to test this vector against
+     * @param line The line to test this vector against
      * @return Whether this vector is to the right of the given line
      */
-    public boolean rightOf(Line l) {
-        if (l == null) {
+    public boolean rightOf(Line line) {
+        if (line == null) {
             return false;
         }
-        if (l.isVertical()) {
-            return x >= l.getXIntercept();
+        if (line.isVertical()) {
+            return x >= line.getXIntercept();
         }
-        return y <= l.sampleY(x);
+        return y <= line.sampleY(x);
     }
 
     /**
      * Test whether this vector is positioned on a line
-     * @param l The line to test this vector against
+     * @param line The line to test this vector against
      * @return Whether this vector is on the given line
      */
-    public boolean on(Line l) {
-        if (l == null) {
+    public boolean on(Line line) {
+        if (line == null) {
             return false;
         }
-        return l.contains(this);
+        return line.contains(this);
     }
 
     /**
      * Test whether this vector is positioned between two lines
-     * @param l1 The first line to test this vector against
-     * @param l2 The second line to test this vector against
+     * @param line1 The first line to test this vector against
+     * @param line2 The second line to test this vector against
      * @return Whether this vector is between the given lines
      */
-    public boolean between(Line l1, Line l2) {
-        if (l1 == null || l2 == null) {
+    public boolean between(Line line1, Line line2) {
+        if (line1 == null || line2 == null) {
             return false;
         }
-        return (rightOf(l1) && leftOf(l2)) || (leftOf(l1) && rightOf(l2));
+        return (rightOf(line1) && leftOf(line2)) || (leftOf(line1) && rightOf(line2));
     }
 
     /**
      * Test whether this vector is positioned inside a box
-     * @param b The box to test this vector against
+     * @param box The box to test this vector against
      * @return Whether this vector is inside the given box
      */
-    public boolean inside(Box b) {
-        if (b == null) {
+    public boolean inside(Box box) {
+        if (box == null) {
             return false;
         }
-        return b.contains(this);
+        return box.contains(this);
     }
 
     /**
      * Test whether this vector is positioned outside a box
-     * @param b The box to test this vector against
+     * @param box The box to test this vector against
      * @return Whether this vector is outside the given box
      */
-    public boolean outside(Box b) {
-        if (b == null) {
+    public boolean outside(Box box) {
+        if (box == null) {
             return false;
         }
-        return !inside(b);
+        return !inside(box);
     }
 
     /**
@@ -420,10 +421,10 @@ public class Vector implements Serializable, Cloneable {
      */
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Vector v)) {
+        if (!(o instanceof Vector vector)) {
             return false;
         }
-        return Math.abs(x - v.x) < Constants.Epsilon && Math.abs(y - v.y) < Constants.Epsilon;
+        return Math.abs(x - vector.x) < Constants.Epsilon && Math.abs(y - vector.y) < Constants.Epsilon;
     }
 
     /**

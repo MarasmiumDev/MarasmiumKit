@@ -181,11 +181,20 @@ public class TextBox extends Label {
             return;
         }
         label.processInput();
+        if (parent == null) {
+            return;
+        }
         if (App.Input.mouse.isButtonPressed(MouseButton.Left)) {
             setSelected(App.Input.mouse.getCursorPosition(parent.getCamera()).inside(sprite));
         }
+        if (targetRPS <= 0.0f) {
+            return;
+        }
         float repeatTime = (float)App.Graphics.getTargetFPS() / (float)targetRPS;
         float repeatStartTime = (float)App.Graphics.getTargetFPS() * this.repeatStartTime;
+        if (text == null) {
+            return;
+        }
         if (selected) {
             // Text controls
             boolean textUpdated = false;
@@ -227,7 +236,9 @@ public class TextBox extends Label {
                     repeatTimer = 0.0f;
                     if (cursorIndex > 0) {
                         setCursorIndex(cursorIndex - 1);
-                        setText(text.substring(0, cursorIndex) + text.substring(cursorIndex + 1));
+                        if (cursorIndex >= 0 && cursorIndex <= text.length()) {
+                            setText(text.substring(0, cursorIndex) + text.substring(cursorIndex + 1));
+                        }
                         textUpdated = true;
                     }
                 }
@@ -261,6 +272,10 @@ public class TextBox extends Label {
                     }
                     textUpdated = true;
                 }
+            }
+            if (sprite.getDimensions() == null || cursor.getPosition() == null || sprite.getPosition() == null
+                    || cursor.getDimensions() == null) {
+                return;
             }
             if (textUpdated) {
                 while (true) {
@@ -317,12 +332,14 @@ public class TextBox extends Label {
             return;
         }
         label.draw();
-        App.Graphics.submit(parent.getCamera(), sprite);
-        App.Graphics.submit(parent.getCamera(), text, parent.getTypefaceFilePath(), sprite, parent.getTextPadding(),
-                parent.getBaseDepth() + 0.1f, parent.getTextSize(), Vector.Cartesian(textX, 0.0f), null,
-                verticalCursorAlignment);
-        if (selected && sprite.contains(cursor)) {
-            App.Graphics.submit(parent.getCamera(), cursor);
+        if (parent != null) {
+            App.Graphics.submit(parent.getCamera(), sprite);
+            App.Graphics.submit(parent.getCamera(), text, parent.getTypefaceFilePath(), sprite, parent.getTextPadding(),
+                    parent.getBaseDepth() + 0.1f, parent.getTextSize(), Vector.Cartesian(textX, 0.0f), null,
+                    verticalCursorAlignment);
+            if (selected && sprite.contains(cursor)) {
+                App.Graphics.submit(parent.getCamera(), cursor);
+            }
         }
     }
 
@@ -348,6 +365,10 @@ public class TextBox extends Label {
             }
         }
         // Update cursor positioning
+        if (parent == null || cursor.getPosition() == null || cursor.getDimensions() == null
+                || sprite.getPosition() == null || sprite.getDimensions() == null) {
+            return;
+        }
         float bufferSpace = sprite.getDimensions().getX() * 0.125f;
         if (cursor.getPosition().getX() < sprite.getPosition().getX() + bufferSpace
                 && textX < sprite.getPosition().getX() + parent.getTextPadding()) {
@@ -389,7 +410,13 @@ public class TextBox extends Label {
      */
     @Override
     public boolean setPosition(Vector position) {
+        if (position == null) {
+            return false;
+        }
         if (!super.setPosition(position)) {
+            return false;
+        }
+        if (getDimensions() == null) {
             return false;
         }
         Vector labelPosition = position.clone();
@@ -403,6 +430,9 @@ public class TextBox extends Label {
             labelPosition.setY(position.getY() + getDimensions().getY());
         }
         if (!label.setPosition(labelPosition)) {
+            return false;
+        }
+        if (sprite.getPosition() == null) {
             return false;
         }
         textX = sprite.getPosition().getX();
@@ -422,6 +452,9 @@ public class TextBox extends Label {
      */
     @Override
     public boolean setDimensions(Vector dimensions) {
+        if (dimensions == null) {
+            return false;
+        }
         Vector cursorDimensions = getCursorDimensions();
         if (!super.setDimensions(dimensions)) {
             return false;
@@ -448,6 +481,9 @@ public class TextBox extends Label {
         if (!label.setMinimumDimensions(minimumDimensions)) {
             return false;
         }
+        if (getPosition() == null) {
+            return true;
+        }
         return setPosition(getPosition().clone());
     }
 
@@ -464,6 +500,9 @@ public class TextBox extends Label {
         if (!label.setMaximumDimensions(maximumDimensions)) {
             return false;
         }
+        if (getPosition() == null) {
+            return true;
+        }
         return setPosition(getPosition().clone());
     }
 
@@ -474,6 +513,9 @@ public class TextBox extends Label {
      */
     @Override
     public boolean setText(String text) {
+        if (text == null) {
+            return false;
+        }
         if (allowedCharacters != null) {
             for (char character : text.toCharArray()) {
                 if (!allowedCharacters.contains(Character.toString(character))) {
@@ -508,10 +550,12 @@ public class TextBox extends Label {
         if (this.selected == selected) {
             return false;
         }
-        if (selected) {
-            parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Text_Box_Selected);
-        } else {
-            parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Text_Box_Unselected);
+        if (parent != null) {
+            if (selected) {
+                parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Text_Box_Selected);
+            } else {
+                parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Text_Box_Unselected);
+            }
         }
         this.selected = selected;
         sprite.stopAnimation();
@@ -608,6 +652,9 @@ public class TextBox extends Label {
      * @return This text box's cursor dimensions in percent of its background's dimensions
      */
     public Vector getCursorDimensions() {
+        if (cursor.getDimensions() == null || sprite.getDimensions() == null) {
+            return null;
+        }
         return cursor.getDimensions().elementDivide(sprite.getDimensions());
     }
 
@@ -617,6 +664,9 @@ public class TextBox extends Label {
      * @return Whether the given dimensions were valid
      */
     public boolean setCursorDimensions(Vector cursorDimensions) {
+        if (cursorDimensions == null || sprite.getDimensions() == null) {
+            return false;
+        }
         if (!cursor.setDimensions(cursorDimensions.elementMultiply(sprite.getDimensions()))) {
             return false;
         }
@@ -640,7 +690,8 @@ public class TextBox extends Label {
      * @return Whether the given alignment was valid
      */
     public boolean setVerticalCursorAlignment(Alignment verticalCursorAlignment) {
-        if (verticalCursorAlignment == null) {
+        if (verticalCursorAlignment == null || cursor.getPosition() == null || cursor.getDimensions() == null
+                || sprite.getPosition() == null || sprite.getDimensions() == null) {
             return false;
         }
         this.verticalCursorAlignment = verticalCursorAlignment;
@@ -673,6 +724,9 @@ public class TextBox extends Label {
      */
     public boolean setAllowedCharacters(String allowedCharacters) {
         this.allowedCharacters = allowedCharacters;
+        if (allowedCharacters == null) {
+            return true;
+        }
         if (text == null) {
             return true;
         }
@@ -726,17 +780,26 @@ public class TextBox extends Label {
      * @return Whether the given cursor index was valid and was set successfully
      */
     public boolean setCursorIndex(int cursorIndex) {
+        if (parent == null) {
+            return false;
+        }
+        if (text == null) {
+            return false;
+        }
         if (cursorIndex < 0 || cursorIndex > text.length()) {
             cursorIndex = 0;
         }
         this.cursorIndex = cursorIndex;
         float cursorX = textX;
+        cursor.getPosition().setX(cursorX);
         if (parent == null) {
-            cursor.getPosition().setX(cursorX);
             return true;
         }
         float textWidth = 0.0f;
         Typeface typeface = App.Assets.getTypeface(parent.getTypefaceFilePath());
+        if (typeface == null) {
+            return false;
+        }
         for (int i = 0; i < text.length(); i++) {
             Glyph glyph = typeface.getGlyph(text.charAt(i));
             if (glyph == null) {
@@ -747,6 +810,9 @@ public class TextBox extends Label {
                 cursorX += step;
             }
             textWidth += step;
+        }
+        if (cursor.getPosition() == null) {
+            return false;
         }
         cursor.getPosition().setX(cursorX);
         cursor.setDepth(parent.getBaseDepth() + 0.2f);

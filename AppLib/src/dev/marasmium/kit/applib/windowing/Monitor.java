@@ -117,10 +117,10 @@ public class Monitor implements Cloneable {
         if (o == null) {
             return false;
         }
-        if (!(o instanceof Monitor)) {
+        if (!(o instanceof Monitor monitor)) {
             return false;
         }
-        return index == ((Monitor)o).index;
+        return index == monitor.index;
     }
 
     /**

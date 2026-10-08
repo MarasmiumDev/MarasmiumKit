@@ -46,22 +46,28 @@ public class TitleScene extends Scene implements UIListener {
     public boolean enter(Scene lastScene) {
         UI = new UIGroup();
         UI.initialize(this, 0, 0.0f, "Typefaces/Fira_Sans.typeface", 4.0f, 0.25f);
-        label1 = new Label();
-        label1.initialize(Vector.Cartesian(0.01f, 0.82f), Vector.Cartesian(0.48f, 0.125f),
-                "Animations/UI/Label/Label.animation", "Label", Vector.Zero(), Alignment.Center, Alignment.Center);
-        UI.addComponent(label1);
-        button1 = new Button();
-        button1.initialize(Vector.Cartesian(0.01f, 0.56f), Vector.Cartesian(0.23f, 0.125f),
+        UI.addComponent(label1 = new Label());
+        if (!label1.initialize(Vector.Cartesian(0.01f, 0.82f), Vector.Cartesian(0.48f, 0.125f),
+                "Animations/UI/Label/Label.animation", "Label", Vector.Zero(), Alignment.Center, Alignment.Center)) {
+            return false;
+        }
+        System.out.println("1");
+        UI.addComponent(button1 = new Button());
+        if (!button1.initialize(Vector.Cartesian(0.01f, 0.56f), Vector.Cartesian(0.23f, 0.125f),
                 new String[] { "Animations/UI/Button/Button_Unselected.animation",
                         "Animations/UI/Button/Button_Selected.animation",
-                        "Animations/UI/Button/Button_Pressed.animation" }, "Button", Alignment.Center);
-        UI.addComponent(button1);
-        switch1 = new Switch();
-        switch1.initialize(Vector.Cartesian(0.26f, 0.56f), Vector.Cartesian(0.23f, 0.125f),
+                        "Animations/UI/Button/Button_Pressed.animation" }, "Button", Alignment.Center)) {
+            return false;
+        }
+        System.out.println("2");
+        UI.addComponent(switch1 = new Switch());
+        if (!switch1.initialize(Vector.Cartesian(0.26f, 0.56f), Vector.Cartesian(0.23f, 0.125f),
                 new String[] { "Animations/UI/Switch/Switch_Off.animation",
-                        "Animations/UI/Switch/Switch_On.animation" }, "Switch", Alignment.Top);
-        UI.addComponent(switch1);
-        slider1 = new Slider();
+                        "Animations/UI/Switch/Switch_On.animation" }, "Switch", Alignment.Top)) {
+            return false;
+        }
+        System.out.println("3");
+        UI.addComponent(slider1 = new Slider());
         if (!slider1.initialize(Vector.Cartesian(0.01f, 0.3f), Vector.Cartesian(0.48f, 0.125f),
                 new String[] { "Animations/UI/Slider/Slider_Unselected.animation",
                         "Animations/UI/Slider/Slider_Selected.animation" }, "Slider", Alignment.Top,
@@ -70,8 +76,8 @@ public class TitleScene extends Scene implements UIListener {
                         "Animations/UI/Slider/Slider_Cursor_Pressed.animation" }, Alignment.Center, -10.0f, 10.0f, 0)) {
             return false;
         }
-        UI.addComponent(slider1);
-        textBox1 = new TextBox();
+        System.out.println("4");
+        UI.addComponent(textBox1 = new TextBox());
         if (!textBox1.initialize(Vector.Cartesian(0.01f, 0.05f), Vector.Cartesian(0.48f, 0.125f),
                 new String[] { "Animations/UI/Text_Box/Text_Box_Unselected.animation",
                         "Animations/UI/Text_Box/Text_Box_Selected.animation" }, "Text Box", Alignment.Top,
@@ -79,8 +85,8 @@ public class TitleScene extends Scene implements UIListener {
                 null, -1, 12, 0.5f)) {
             return false;
         }
-        UI.addComponent(textBox1);
-        carousel1 = new Carousel();
+        System.out.println("5");
+        UI.addComponent(carousel1 = new Carousel());
         if (!carousel1.initialize(Vector.Cartesian(0.51f, 0.82f), Vector.Cartesian(0.48f, 0.125f),
                 "Animations/UI/Carousel/Carousel.animation", Alignment.Center, Alignment.Center, "Carousel",
                 Alignment.Top, new String[] { "Animations/UI/Carousel/Carousel_Button_Unselected.animation",
@@ -89,7 +95,6 @@ public class TitleScene extends Scene implements UIListener {
                 new String[] { "Value 1", "Value 2", "Value 3" }, 0)) {
             return false;
         }
-        UI.addComponent(carousel1);
         return true;
     }
 

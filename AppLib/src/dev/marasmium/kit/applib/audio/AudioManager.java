@@ -163,7 +163,7 @@ public class AudioManager {
         if (this.speaker != null) {
             this.speaker.destroy();
         }
-        this.speaker = speaker;
+        this.speaker = speaker.clone();
         if (!soundEffects.stop()) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to stop sound effects when switching speakers");
             success = false;

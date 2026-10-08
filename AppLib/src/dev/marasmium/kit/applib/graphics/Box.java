@@ -61,6 +61,9 @@ public class Box extends Body {
             return false;
         }
         Line[] edges = getEdges();
+        if (edges == null) {
+            return false;
+        }
         return point.between(edges[0], edges[1]) && point.between(edges[2], edges[3]);
     }
 
@@ -73,7 +76,11 @@ public class Box extends Body {
         if (box == null) {
             return false;
         }
-        for (Vector corner : box.getCorners()) {
+        Vector[] corners = box.getCorners();
+        if (corners == null) {
+            return false;
+        }
+        for (Vector corner : corners) {
             if (!contains(corner)) {
                 return false;
             }
@@ -104,6 +111,9 @@ public class Box extends Body {
         }
         Line[] edges = getEdges();
         Line[] boxEdges = box.getEdges();
+        if (edges == null || boxEdges == null) {
+            return false;
+        }
         for (int i = 0; i < 4; i++) {
             Line edge = edges[i];
             for (int j = 0; j < 4; j++) {
@@ -127,7 +137,7 @@ public class Box extends Body {
     @Override
     public void update(float deltaFrames) {
         super.update(deltaFrames);
-        if (dimensions != null) {
+        if (dimensions != null && growth != null) {
             dimensions = dimensions.add(growth.scalarMultiply(deltaFrames));
             if (dimensions.getX() < 0.0f) {
                 dimensions.setX(0.0f);
@@ -215,6 +225,9 @@ public class Box extends Body {
      * @return The positions of the corners of this box
      */
     public Vector[] getCorners() {
+        if (position == null || dimensions == null || angle == null) {
+            return null;
+        }
         Vector[] corners = new Vector[4];
         Vector midpoint = position.add(dimensions.scalarMultiply(0.5f));
         corners[0] = position.rotateAbout(angle, midpoint);
@@ -232,6 +245,9 @@ public class Box extends Body {
      */
     public Line[] getEdges() {
         Vector[] corners = getCorners();
+        if (corners == null) {
+            return null;
+        }
         Line[] edges = new Line[4];
         edges[0] = Line.Point_Point(corners[0], corners[2]);
         edges[1] = Line.Point_Point(corners[1], corners[3]);

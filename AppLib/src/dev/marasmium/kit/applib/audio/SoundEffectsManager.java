@@ -81,23 +81,28 @@ public class SoundEffectsManager {
                 true, false);
         // Open a new audio line in the loaded format
         DataLine.Info playerInfo = new DataLine.Info(SourceDataLine.class, format);
-        Mixer.Info speakerInfo = AudioSystem.getMixerInfo()[App.Audio.getSpeaker().getIndex()];
-        Mixer speaker;
+        AudioDevice speaker = App.Audio.getSpeaker();
+        if (speaker == null) {
+            App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to retrieve speaker");
+            return false;
+        }
+        Mixer.Info mixerInfo = AudioSystem.getMixerInfo()[speaker.getIndex()];
+        Mixer mixer;
         try {
-            speaker = AudioSystem.getMixer(speakerInfo);
+            mixer = AudioSystem.getMixer(mixerInfo);
         } catch (IllegalArgumentException _) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to access speaker to play sound effect \"",
                     filePath, "\"");
             return false;
         }
-        if (!speaker.isLineSupported(playerInfo)) {
+        if (!mixer.isLineSupported(playerInfo)) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Audio output not supported to play sound effect \"",
                     filePath, "\"");
             return false;
         }
         SourceDataLine player;
         try {
-            player = (SourceDataLine)speaker.getLine(playerInfo);
+            player = (SourceDataLine)mixer.getLine(playerInfo);
             player.open(format);
         } catch (LineUnavailableException | IllegalArgumentException | IllegalStateException _) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to open audio output to play sound effect \"",

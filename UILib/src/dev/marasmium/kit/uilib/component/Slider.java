@@ -151,6 +151,9 @@ public class Slider extends UIComponent {
         if (!enabled) {
             return;
         }
+        if (parent == null) {
+            return;
+        }
         label.processInput();
         if (App.Input.mouse.isButtonPressed(MouseButton.Left)
                 && App.Input.mouse.getCursorPosition(parent.getCamera()).inside(sprite)) {
@@ -160,6 +163,9 @@ public class Slider extends UIComponent {
         } else {
             if (selected && !cursor.isPressed()) {
                 setSelected(false);
+                if (parent != null) {
+                    parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Slider_Value_Set);
+                }
             }
         }
         if (selected && App.Input.mouse.isButtonDown(MouseButton.Left)) {
@@ -186,7 +192,9 @@ public class Slider extends UIComponent {
         if (!visible) {
             return;
         }
-        App.Graphics.submit(parent.getCamera(), sprite);
+        if (parent != null) {
+            App.Graphics.submit(parent.getCamera(), sprite);
+        }
         label.draw();
         cursor.draw();
     }
@@ -227,13 +235,7 @@ public class Slider extends UIComponent {
      * @param event Any event identifier
      */
     @Override
-    public void componentEvent(int groupID, int componentID, UIEvent event) {
-        if (componentID == cursor.getComponentID()) {
-            if (event == UIEvent.Button_Released) {
-                parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Slider_Value_Set);
-            }
-        }
-    }
+    public void componentEvent(int groupID, int componentID, UIEvent event) {}
 
     /**
      * Set this slider's position in percent of the application's window dimensions
@@ -254,7 +256,7 @@ public class Slider extends UIComponent {
             labelPosition.setY(position.getY() - getDimensions().getY());
         } else if (labelAlignment == Alignment.Top) {
             labelPosition.setY(position.getY() + getDimensions().getY());
-        };
+        }
         if (!label.setPosition(labelPosition)) {
             return false;
         }
@@ -284,6 +286,9 @@ public class Slider extends UIComponent {
         if (!setCursorDimensions(cursorDimensions)) {
             return false;
         }
+        if (getPosition() == null) {
+            return true;
+        }
         return setPosition(getPosition().clone());
     }
 
@@ -300,6 +305,9 @@ public class Slider extends UIComponent {
         if (!label.setMinimumDimensions(minimumDimensions)) {
             return false;
         }
+        if (getPosition() == null) {
+            return true;
+        }
         return setPosition(getPosition().clone());
     }
 
@@ -315,6 +323,9 @@ public class Slider extends UIComponent {
         }
         if (!label.setMaximumDimensions(maximumDimensions)) {
             return false;
+        }
+        if (getPosition() == null) {
+            return true;
         }
         return setPosition(getPosition().clone());
     }
@@ -336,10 +347,12 @@ public class Slider extends UIComponent {
         if (this.selected == selected) {
             return false;
         }
-        if (selected) {
-            parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Slider_Selected);
-        } else {
-            parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Slider_Unselected);
+        if (parent != null) {
+            if (selected) {
+                parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Slider_Selected);
+            } else {
+                parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Slider_Unselected);
+            }
         }
         this.selected = selected;
         sprite.stopAnimation();
@@ -445,6 +458,9 @@ public class Slider extends UIComponent {
      * @return This slider's cursor dimensions in percent of its background's dimensions
      */
     public Vector getCursorDimensions() {
+        if (cursor.getDimensions() == null || getDimensions() == null) {
+            return null;
+        }
         return cursor.getDimensions().elementDivide(getDimensions());
     }
 
@@ -454,6 +470,9 @@ public class Slider extends UIComponent {
      * @return Whether the given dimensions were valid
      */
     public boolean setCursorDimensions(Vector cursorDimensions) {
+        if (cursorDimensions == null || getDimensions() == null) {
+            return false;
+        }
         return cursor.setDimensions(cursorDimensions.elementMultiply(getDimensions()));
     }
 
@@ -506,6 +525,10 @@ public class Slider extends UIComponent {
      */
     public boolean setVerticalCursorAlignment(Alignment verticalCursorAlignment) {
         if (verticalCursorAlignment == null) {
+            return false;
+        }
+        if (cursor.getPosition() == null || App.Window.getDimensions() == null || getCursorDimensions() == null
+                || getDimensions() == null || sprite.getPosition() == null || sprite.getDimensions() == null) {
             return false;
         }
         this.verticalCursorAlignment = verticalCursorAlignment;
@@ -622,6 +645,13 @@ public class Slider extends UIComponent {
         }
         this.value = value;
         float percent = (value - minimumValue) / (maximumValue - minimumValue);
+        if (cursor.getPosition() == null || App.Window.getDimensions() == null || sprite.getPosition() == null
+                || sprite.getDimensions() == null || cursor.getSprite() == null) {
+            return false;
+        }
+        if (cursor.getSprite().getDimensions() == null) {
+            return false;
+        }
         Vector cursorPixelPosition = cursor.getPosition().elementMultiply(App.Window.getDimensions());
         cursorPixelPosition.setX(sprite.getPosition().getX()
                 + ((sprite.getDimensions().getX() - cursor.getSprite().getDimensions().getX()) * percent));

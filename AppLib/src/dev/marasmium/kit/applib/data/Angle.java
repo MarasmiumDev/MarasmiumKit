@@ -91,44 +91,44 @@ public class Angle implements Serializable, Cloneable {
 
     /**
      * Compute the sum of this vector and another one
-     * @param theta The angle to add to this one
+     * @param angle The angle to add to this one
      * @return The sum of this angle and theta
      */
-    public Angle add(Angle theta) {
-        if (theta == null) {
+    public Angle add(Angle angle) {
+        if (angle == null) {
             return null;
         }
-        return Angle.Radians(this.theta + theta.theta);
+        return Angle.Radians(this.theta + angle.theta);
     }
 
     /**
      * Compute the difference of this vector and another one
-     * @param theta The angle to subtract from this one
+     * @param angle The angle to subtract from this one
      * @return The difference of this angle and theta
      */
-    public Angle subtract(Angle theta) {
-        if (theta == null) {
+    public Angle subtract(Angle angle) {
+        if (angle == null) {
             return null;
         }
-        return Angle.Radians(this.theta - theta.theta);
+        return Angle.Radians(this.theta - angle.theta);
     }
 
     /**
      * Compute the product of this vector and a scalar
-     * @param a The scalar to multiply this angle by
+     * @param scalar The scalar to multiply this angle by
      * @return The scaled angle
      */
-    public Angle scalarMultiply(float a) {
-        return Angle.Radians(this.theta * a);
+    public Angle scalarMultiply(float scalar) {
+        return Angle.Radians(this.theta * scalar);
     }
 
     /**
      * Compute the quotient of this vector and a scalar
-     * @param a The scalar to divide this angle by
+     * @param scalar The scalar to divide this angle by
      * @return The scaled angle
      */
-    public Angle scalarDivide(float a) {
-        return Angle.Radians(this.theta / a);
+    public Angle scalarDivide(float scalar) {
+        return Angle.Radians(this.theta / scalar);
     }
 
     /**
@@ -136,33 +136,33 @@ public class Angle implements Serializable, Cloneable {
      * @return This angle in standard position
      */
     public Angle standardize() {
-        Angle a = new Angle();
-        a.theta = theta;
-        if (a.isZero()) {
-            return a;
+        Angle angle = new Angle();
+        angle.theta = theta;
+        if (angle.isZero()) {
+            return angle;
         }
-        if (a.theta < 0.0f) {
-            while (a.theta < 0.0f) {
-                a.theta += 2.0f * Constants.Pi;
+        if (angle.theta < 0.0f) {
+            while (angle.theta < 0.0f) {
+                angle.theta += 2.0f * Constants.Pi;
             }
         } else {
-            while (a.theta > 2.0f * Constants.Pi) {
-                a.theta -= 2.0f * Constants.Pi;
+            while (angle.theta > 2.0f * Constants.Pi) {
+                angle.theta -= 2.0f * Constants.Pi;
             }
         }
-        return a;
+        return angle;
     }
 
     /**
      * Test whether this angle is coterminal to another one
-     * @param theta The angle to test
+     * @param angle The angle to test
      * @return Whether this angle is coterminal to a
      */
-    public boolean coterminalTo(Angle theta) {
-        if (theta == null) {
+    public boolean coterminalTo(Angle angle) {
+        if (angle == null) {
             return false;
         }
-        return standardize().equals(theta.standardize());
+        return standardize().equals(angle.standardize());
     }
 
     /**
@@ -172,10 +172,10 @@ public class Angle implements Serializable, Cloneable {
      */
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Angle a)) {
+        if (!(o instanceof Angle angle)) {
             return false;
         }
-        return Math.abs(theta - a.theta) < Constants.Epsilon;
+        return Math.abs(theta - angle.theta) < Constants.Epsilon;
     }
 
     /**
@@ -320,8 +320,8 @@ public class Angle implements Serializable, Cloneable {
      * @return The quadrant of this angle
      */
     public int getQuadrant() {
-        Angle a = standardize();
-        return ((int)(a.getRevolutions() * 4.0f)) + 1;
+        Angle angle = standardize();
+        return ((int)(angle.getRevolutions() * 4.0f)) + 1;
     }
 
 }

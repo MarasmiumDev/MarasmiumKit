@@ -82,6 +82,9 @@ public class UIGroup implements UIListener {
      */
     public boolean initialize(UIListener parent, int groupID, float baseDepth, String typefaceFilePath,
                               float textPadding, float textSize) {
+        if (App.Window.getDimensions() == null) {
+            return false;
+        }
         if (!setParent(parent)) {
             return false;
         }
@@ -98,7 +101,7 @@ public class UIGroup implements UIListener {
         setEnabled(true);
         setVisible(true);
         setGroupID(groupID);
-        if (!camera.initialize(Vector.Zero(), 1.0f, Angle.Zero())) {
+        if (!camera.initialize(App.Window.getDimensions().scalarMultiply(0.5f), 1.0f, Angle.Zero())) {
             return false;
         }
         nextComponentID = 1;
@@ -113,7 +116,9 @@ public class UIGroup implements UIListener {
             return;
         }
         for (UIComponent component : components) {
-            component.processInput();
+            if (component != null) {
+                component.processInput();
+            }
         }
     }
 
@@ -125,7 +130,9 @@ public class UIGroup implements UIListener {
             return;
         }
         for (UIComponent component : components) {
-            component.draw();
+            if (component != null) {
+                component.draw();
+            }
         }
     }
 
@@ -136,7 +143,9 @@ public class UIGroup implements UIListener {
     public void update(float deltaFrames) {
         camera.update(deltaFrames);
         for (UIComponent component : components) {
-            component.update(deltaFrames);
+            if (component != null) {
+                component.update(deltaFrames);
+            }
         }
         if (App.Window.getDimensions() == null) {
             updateWindowDimensions();
@@ -150,7 +159,9 @@ public class UIGroup implements UIListener {
      */
     public void destroy() {
         for (UIComponent component : components) {
-            component.destroy();
+            if (component != null) {
+                component.destroy();
+            }
         }
         components.clear();
         baseDepth = 0.0f;
@@ -201,6 +212,12 @@ public class UIGroup implements UIListener {
      */
     @Override
     public void componentEvent(int groupID, int componentID, UIEvent event) {
+        if (parent == null) {
+            return;
+        }
+        if (event == null) {
+            return;
+        }
         parent.componentEvent(groupID, componentID, event);
     }
 
@@ -296,6 +313,9 @@ public class UIGroup implements UIListener {
      */
     public UIComponent getComponent(int componentID) {
         for (UIComponent component : components) {
+            if (component == null) {
+                continue;
+            }
             if (component.getComponentID() == componentID) {
                 return component;
             }
@@ -309,6 +329,9 @@ public class UIGroup implements UIListener {
      * @return Whether the given component was added successfully
      */
     public boolean addComponent(UIComponent component) {
+        if (component == null) {
+            return false;
+        }
         if (components.contains(component)) {
             return false;
         }
@@ -324,6 +347,9 @@ public class UIGroup implements UIListener {
      * @return Whether the given component was removed successfully
      */
     public boolean removeComponent(UIComponent component) {
+        if (component == null) {
+            return false;
+        }
         if (!components.contains(component)) {
             return false;
         }
@@ -339,7 +365,9 @@ public class UIGroup implements UIListener {
      */
     public void setBaseDepth(float baseDepth) {
         for (UIComponent component : components) {
-            component.setBaseDepth(baseDepth);
+            if (component != null) {
+                component.setBaseDepth(baseDepth);
+            }
         }
         this.baseDepth = baseDepth;
     }
@@ -400,7 +428,9 @@ public class UIGroup implements UIListener {
      */
     public void setEnabled(boolean enabled) {
         for (UIComponent component : components) {
-            component.setEnabled(enabled);
+            if (component != null) {
+                component.setEnabled(enabled);
+            }
         }
         this.enabled = enabled;
     }
@@ -419,7 +449,9 @@ public class UIGroup implements UIListener {
      */
     public void setVisible(boolean visible) {
         for (UIComponent component : components) {
-            component.setVisible(visible);
+            if (component != null) {
+                component.setVisible(visible);
+            }
         }
         this.visible = visible;
     }

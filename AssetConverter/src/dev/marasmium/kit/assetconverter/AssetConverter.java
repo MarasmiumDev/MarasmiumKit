@@ -523,6 +523,7 @@ public class AssetConverter {
             System.out.println("Failed to initialize typeface");
             return false;
         }
+        typeface.setAnimationFilePath("-");
         System.out.println("Generated typeface: " + typeface);
         System.out.print("Output file path: " + App.Assets.getBasePath());
         String outputFilePath;

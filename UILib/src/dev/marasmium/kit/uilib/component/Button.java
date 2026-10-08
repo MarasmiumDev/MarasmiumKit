@@ -87,10 +87,10 @@ public class Button extends UIComponent {
         if (!addComponent(label)) {
             return false;
         }
-        if (!setPosition(position)) {
+        if (!setDimensions(dimensions)) {
             return false;
         }
-        if (!setDimensions(dimensions)) {
+        if (!setPosition(position)) {
             return false;
         }
         if (!setLabelAlignment(labelAlignment)) {
@@ -105,6 +105,9 @@ public class Button extends UIComponent {
     @Override
     public void processInput() {
         if (!enabled) {
+            return;
+        }
+        if (parent == null) {
             return;
         }
         label.processInput();
@@ -137,7 +140,9 @@ public class Button extends UIComponent {
         if (!visible) {
             return;
         }
-        App.Graphics.submit(parent.getCamera(), sprite);
+        if (parent != null) {
+            App.Graphics.submit(parent.getCamera(), sprite);
+        }
         label.draw();
     }
 
@@ -172,6 +177,10 @@ public class Button extends UIComponent {
      */
     @Override
     public boolean setPosition(Vector position) {
+        if (getDimensions() == null) {
+            System.out.println("Error");
+            return false;
+        }
         if (!super.setPosition(position)) {
             return false;
         }
@@ -184,7 +193,7 @@ public class Button extends UIComponent {
             labelPosition.setY(position.getY() - getDimensions().getY());
         } else if (labelAlignment == Alignment.Top) {
             labelPosition.setY(position.getY() + getDimensions().getY());
-        };
+        }
         if (!label.setPosition(labelPosition)) {
             return false;
         }
@@ -256,10 +265,12 @@ public class Button extends UIComponent {
         if (this.selected == selected) {
             return false;
         }
-        if (selected) {
-            parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Button_Selected);
-        } else {
-            parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Button_Unselected);
+        if (parent != null) {
+            if (selected) {
+                parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Button_Selected);
+            } else {
+                parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Button_Unselected);
+            }
         }
         this.selected = selected;
         sprite.stopAnimation();
@@ -288,11 +299,13 @@ public class Button extends UIComponent {
         if (this.pressed == pressed) {
             return false;
         }
-        if (pressed) {
-            parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Button_Pressed);
-        } else {
-            if (App.Input.mouse.getCursorPosition(parent.getCamera()).inside(sprite)) {
-                parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Button_Released);
+        if (parent != null) {
+            if (pressed) {
+                parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Button_Pressed);
+            } else {
+                if (App.Input.mouse.getCursorPosition(parent.getCamera()).inside(sprite)) {
+                    parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Button_Released);
+                }
             }
         }
         this.pressed = pressed;

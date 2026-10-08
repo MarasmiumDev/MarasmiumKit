@@ -36,7 +36,7 @@ public class Typeface implements Cloneable {
      * @return Whether all parameters were valid and this typeface was initialized successfully
      */
     public boolean initialize(String characters, Glyph[] glyphs, byte[] animationData) {
-        if (characters == null || glyphs == null || animationData == null) {
+        if (characters == null || glyphs == null) {
             return false;
         }
         if (characters.length() != glyphs.length) {
@@ -69,6 +69,7 @@ public class Typeface implements Cloneable {
             }
         }
         glyphs.clear();
+        animationData = null;
         animationFilePath = null;
         return success;
     }
@@ -81,9 +82,6 @@ public class Typeface implements Cloneable {
     public String toString() {
         if (animationData == null) {
             return "typeface(null)";
-        }
-        if (animationFilePath == null) {
-            return "typeface(" + glyphs.size() + " glyphs, " + animationData.length + "B)";
         }
         return "typeface(" + glyphs.size() + " glyphs, " + animationData.length + "B at \"" + animationFilePath + "\")";
     }

@@ -180,6 +180,9 @@ public class Line implements Serializable, Cloneable {
      * invalid
      */
     public static Line Parallel_Through(Line line, Vector point) {
+        if (line == null) {
+            return null;
+        }
         return Point_Slope(point, line.slope);
     }
 
@@ -191,6 +194,9 @@ public class Line implements Serializable, Cloneable {
      * invalid
      */
     public static Line Perpendicular_Through(Line line, Vector point) {
+        if (line == null) {
+            return null;
+        }
         if (line.isHorizontal()) {
             return Vertical(point);
         }
@@ -318,99 +324,110 @@ public class Line implements Serializable, Cloneable {
 
     /**
      * Test whether this line is parallel to another line
-     * @param l The line to test against this one
+     * @param line The line to test against this one
      * @return Whether this line is parallel to the given line
      */
-    public boolean parallelTo(Line l) {
-        if (l == null) {
+    public boolean parallelTo(Line line) {
+        if (line == null) {
             return false;
         }
-        if (isVertical() && l.isVertical()) {
+        if (isVertical() && line.isVertical()) {
             return true;
         }
-        return Math.abs(slope - l.slope) < Constants.Epsilon;
+        return Math.abs(slope - line.slope) < Constants.Epsilon;
     }
 
     /**
      * Test whether this line is perpendicular to another line
-     * @param l The line to test against this one
+     * @param line The line to test against this one
      * @return Whether this line is perpendicular to the given line
      */
-    public boolean perpendicularTo(Line l) {
-        if (l == null) {
+    public boolean perpendicularTo(Line line) {
+        if (line == null) {
             return false;
         }
-        if (isHorizontal() || isVertical() || l.isHorizontal() || l.isVertical()) {
-            return (isHorizontal() && l.isVertical()) || (isVertical() && l.isHorizontal());
+        if (isHorizontal() || isVertical() || line.isHorizontal() || line.isVertical()) {
+            return (isHorizontal() && line.isVertical()) || (isVertical() && line.isHorizontal());
         }
-        return Math.abs(slope + (1.0f / l.slope)) < Constants.Epsilon;
+        return Math.abs(slope + (1.0f / line.slope)) < Constants.Epsilon;
     }
 
     /**
      * Test whether this line contains a given point
-     * @param p The point to test against this line
+     * @param point The point to test against this line
      * @return Whether the given point lies on this line
      */
-    public boolean contains(Vector p) {
-        if (p == null) {
+    public boolean contains(Vector point) {
+        if (point == null) {
             return false;
         }
         if (isVertical()) {
-            return Math.abs(p.getX() - xIntercept) < Constants.Epsilon;
+            return Math.abs(point.getX() - xIntercept) < Constants.Epsilon;
         }
-        return Math.abs(sampleY(p.getX()) - p.getY()) < Constants.Epsilon;
+        return Math.abs(sampleY(point.getX()) - point.getY()) < Constants.Epsilon;
     }
 
     /**
      * Get the intersection point of this line and another line
-     * @param l The line to test against this one
+     * @param line The line to test against this one
      * @return The intersection point of this line and the given line or null if no intersection point exists
      */
-    public Vector intersectionPointWith(Line l) {
-        if (l == null) {
+    public Vector intersectionPointWith(Line line) {
+        if (line == null) {
             return null;
         }
-        if (parallelTo(l)) {
+        if (parallelTo(line)) {
             return null;
         }
         if (isVertical()) {
-            return Vector.Cartesian(xIntercept, l.sampleY(xIntercept));
+            return Vector.Cartesian(xIntercept, line.sampleY(xIntercept));
         }
-        if (l.isVertical()) {
-            return Vector.Cartesian(l.xIntercept, sampleY(l.xIntercept));
+        if (line.isVertical()) {
+            return Vector.Cartesian(line.xIntercept, sampleY(line.xIntercept));
         }
-        float x = (l.yIntercept - yIntercept) / (slope - l.slope);
+        float x = (line.yIntercept - yIntercept) / (slope - line.slope);
         return Vector.Cartesian(x, sampleY(x));
     }
 
     /**
      * Get the closest point on this line to a given point
-     * @param p The point to find the closest point to
+     * @param point The point to find the closest point to
      * @return The closest point on this line to the given point
      */
-    public Vector closestPointTo(Vector p) {
-        if (p == null) {
+    public Vector closestPointTo(Vector point) {
+        if (point == null) {
             return null;
         }
-        return Perpendicular_Through(this, p).intersectionPointWith(this);
+        Line perpendicular = Perpendicular_Through(this, point);
+        if (perpendicular == null) {
+            return null;
+        }
+        return perpendicular.intersectionPointWith(this);
     }
 
     /**
      * Get the distance from a given point to the closest point on this line
-     * @param p The point to find the distance to
+     * @param point The point to find the distance to
      * @return The distance between the given point and this line
      */
-    public float distanceTo(Vector p) {
-        return p.subtract(closestPointTo(p)).getLength();
+    public float distanceTo(Vector point) {
+        if (point == null) {
+            return Float.NaN;
+        }
+        Vector vectorTo = point.subtract(closestPointTo(point));
+        if (vectorTo == null) {
+            return Float.NaN;
+        }
+        return vectorTo.getLength();
     }
 
     /**
      * Test whether this line intersects with another line
-     * @param l The line to test against this one
+     * @param line The line to test against this one
      * @return Whether this line intersects with a given line
      */
-    public boolean intersectsWith(Line l) {
-        return !parallelTo(l);
+    public boolean intersectsWith(Line line) {
+        return !parallelTo(line);
     }
 
     /**
@@ -420,22 +437,23 @@ public class Line implements Serializable, Cloneable {
      */
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Line l)) {
+        if (!(o instanceof Line line)) {
             return false;
         }
-        if (isHorizontal() != l.isHorizontal()) {
+        if (isHorizontal() != line.isHorizontal()) {
             return false;
         }
-        if (isVertical() != l.isVertical()) {
+        if (isVertical() != line.isVertical()) {
             return false;
         }
         if (isHorizontal()) {
-            return Math.abs(yIntercept - l.yIntercept) < Constants.Epsilon;
+            return Math.abs(yIntercept - line.yIntercept) < Constants.Epsilon;
         } else if (isVertical()) {
-            return Math.abs(xIntercept - l.xIntercept) < Constants.Epsilon;
+            return Math.abs(xIntercept - line.xIntercept) < Constants.Epsilon;
         }
-        return Math.abs(slope - l.slope) < Constants.Epsilon && Math.abs(xIntercept - l.xIntercept) < Constants.Epsilon
-                && Math.abs(yIntercept - l.yIntercept) < Constants.Epsilon;
+        return Math.abs(slope - line.slope) < Constants.Epsilon
+                && Math.abs(xIntercept - line.xIntercept) < Constants.Epsilon
+                && Math.abs(yIntercept - line.yIntercept) < Constants.Epsilon;
     }
 
     /**

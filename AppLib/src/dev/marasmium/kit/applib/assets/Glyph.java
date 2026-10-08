@@ -71,7 +71,7 @@ public class Glyph implements Cloneable {
      */
     @Override
     public String toString() {
-        if (dimensions == null || advances == null) {
+        if (dimensions == null || advances == null || offsets == null) {
             return "glyph(null)";
         }
         return "glyph(frame " + animationFrame + ", dimensions " + dimensions + ", advances " + advances
@@ -91,6 +91,9 @@ public class Glyph implements Cloneable {
             return null;
         }
         glyph.animationFrame = animationFrame;
+        if (dimensions != null) {
+            glyph.dimensions = dimensions.clone();
+        }
         if (advances != null) {
             glyph.advances = advances.clone();
         }

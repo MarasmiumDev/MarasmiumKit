@@ -78,10 +78,14 @@ public class Label extends UIComponent {
         if (!visible) {
             return;
         }
-        App.Graphics.submit(parent.getCamera(), sprite);
-        App.Graphics.submit(parent.getCamera(), text, parent.getTypefaceFilePath(), sprite, parent.getTextPadding(),
-                parent.getBaseDepth() + 0.1f, parent.getTextSize(), textPosition, horizontalTextAlignment,
-                verticalTextAlignment);
+        if (parent != null) {
+            App.Graphics.submit(parent.getCamera(), sprite);
+            if (parent.getTypefaceFilePath() != null) {
+                App.Graphics.submit(parent.getCamera(), text, parent.getTypefaceFilePath(), sprite,
+                        parent.getTextPadding(), parent.getBaseDepth() + 0.1f, parent.getTextSize(), textPosition,
+                        horizontalTextAlignment, verticalTextAlignment);
+            }
+        }
     }
 
     /**

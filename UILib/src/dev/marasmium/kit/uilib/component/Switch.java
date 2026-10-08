@@ -64,6 +64,9 @@ public class Switch extends Button {
             return;
         }
         label.processInput();
+        if (parent == null) {
+            return;
+        }
         if (App.Input.mouse.getCursorPosition(parent.getCamera()).inside(sprite)) {
             if (App.Input.mouse.isButtonPressed(MouseButton.Left)) {
                 if (!selected) {
@@ -225,13 +228,17 @@ public class Switch extends Button {
             sprite.stopAnimation();
             sprite.setAnimationFilePath(unselectedAnimationFilePath);
             sprite.playAnimation(1);
-            parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Switch_Off);
+            if (parent != null) {
+                parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Switch_Off);
+            }
         } else if (on && !this.on) {
             this.on = true;
             sprite.stopAnimation();
             sprite.setAnimationFilePath(selectedAnimationFilePath);
             sprite.playAnimation(1);
-            parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Switch_On);
+            if (parent != null) {
+                parent.componentEvent(parent.getGroupID(), componentID, UIEvent.Switch_On);
+            }
         }
     }
 

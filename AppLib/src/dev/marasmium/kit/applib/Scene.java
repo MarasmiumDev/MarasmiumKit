@@ -99,10 +99,10 @@ public abstract class Scene implements InputListener, NetListener {
      */
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Scene s)) {
+        if (!(o instanceof Scene scene)) {
             return false;
         }
-        return sceneID == s.sceneID;
+        return sceneID == scene.sceneID;
     }
 
     /**
