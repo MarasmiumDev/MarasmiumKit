@@ -25,12 +25,11 @@ public class AudioDevice implements Cloneable {
     private String name = null;
 
     /**
-     * Initialize this audio device with an index and validate it
+     * Create an audio device with an index and validate it
      * @param index The index of this audio device in the local audio environment array of available devices
-     * @return Whether the given index could be validated
      */
-    public boolean initialize(int index) {
-        return setIndex(index);
+    public AudioDevice(int index) {
+        setIndex(index);
     }
 
     /**

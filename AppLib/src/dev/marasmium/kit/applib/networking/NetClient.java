@@ -42,20 +42,14 @@ public class NetClient implements NetListener {
 
     /**
      * Initialize the MarasmiumKit application framework's network client
-     * @param config The network client's configuration
-     * @return Whether the network client was initialized successfully
+     * @param maxMPU The maximum number of incoming messages for the network client to process each update
+     * @return Whether the parameter was valid and the network client was initialized successfully
      */
-    public boolean initialize(NetClientConfig config) {
-        if (config == null) {
-            App.Log.write(LogSource.Network, LogLevel.Error, "No configuration provided");
-            return false;
-        }
-        // Initialize memory
-        if (!setMaxMPU(config.maxMPU)) {
+    public boolean initialize(int maxMPU) {
+        if (!setMaxMPU(maxMPU)) {
             App.Log.write(LogSource.Network, LogLevel.Error, "Failed to set maximum messages to process per update");
             return false;
         }
-        // Initialize network connection
         if (!connection.initialize(this, 0)) {
             App.Log.write(LogSource.Network, LogLevel.Error, "Failed to initialize network connection");
             return false;

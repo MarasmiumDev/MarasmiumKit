@@ -169,6 +169,9 @@ public class Slider extends UIComponent {
             }
         }
         if (selected && App.Input.mouse.isButtonDown(MouseButton.Left)) {
+            if (App.Window.getDimensions().getX() == 0.0f) {
+                return;
+            }
             Vector mouseCursorPosition = App.Input.mouse.getCursorPosition(parent.getCamera());
             Vector cursorPosition = cursor.getPosition();
             cursorPosition.setX((mouseCursorPosition.getX() - cursor.getSprite().getDimensions().getX() * 0.5f)
@@ -527,8 +530,8 @@ public class Slider extends UIComponent {
         if (verticalCursorAlignment == null) {
             return false;
         }
-        if (cursor.getPosition() == null || App.Window.getDimensions() == null || getCursorDimensions() == null
-                || getDimensions() == null || sprite.getPosition() == null || sprite.getDimensions() == null) {
+        if (cursor.getPosition() == null || getCursorDimensions() == null || getDimensions() == null
+                || sprite.getPosition() == null || sprite.getDimensions() == null) {
             return false;
         }
         this.verticalCursorAlignment = verticalCursorAlignment;
@@ -645,8 +648,8 @@ public class Slider extends UIComponent {
         }
         this.value = value;
         float percent = (value - minimumValue) / (maximumValue - minimumValue);
-        if (cursor.getPosition() == null || App.Window.getDimensions() == null || sprite.getPosition() == null
-                || sprite.getDimensions() == null || cursor.getSprite() == null) {
+        if (cursor.getPosition() == null || sprite.getPosition() == null || sprite.getDimensions() == null
+                || cursor.getSprite() == null) {
             return false;
         }
         if (cursor.getSprite().getDimensions() == null) {

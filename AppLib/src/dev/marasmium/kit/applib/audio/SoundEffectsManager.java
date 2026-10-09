@@ -36,17 +36,12 @@ public class SoundEffectsManager {
     private final HashMap<Thread, SourceDataLine> playThreads = new HashMap<>();
 
     /**
-     * Initialize the sound effects audio subsystem's memory
-     * @param config The configuration for the subsystem
-     * @return Whether the subsystem was initialized successfully
+     * Initialize the MarasmiumKit application framework's sound effects manager
+     * @param defaultVolume The initial default volume to play sound effects at
+     * @return Whether the sound effects manager was initialized successfully
      */
-    public boolean initialize(SoundEffectsManagerConfig config) {
-        if (config == null) {
-            App.Log.write(LogSource.Audio, LogLevel.Error, "No configuration provided for sound effects audio ",
-                    "subsystem");
-            return false;
-        }
-        if (!setDefaultVolume(config.defaultVolume)) {
+    public boolean initialize(float defaultVolume) {
+        if (!setDefaultVolume(defaultVolume)) {
             App.Log.write(LogSource.Audio, LogLevel.Error, "Failed to set initial default volume for sound effects ",
                     "audio subsystem");
             return false;

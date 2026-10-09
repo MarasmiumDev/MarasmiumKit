@@ -365,7 +365,7 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
         float cameraScale = camera.getScale();
         Angle cameraAngle = camera.getAngle();
         Vector windowDimensions = App.Window.getDimensions();
-        if (cameraPosition == null || cameraAngle == null || windowDimensions == null) {
+        if (cameraPosition == null || cameraAngle == null) {
             return null;
         }
         return cursorPosition.scalarMultiply(2.0f).elementDivide(windowDimensions)

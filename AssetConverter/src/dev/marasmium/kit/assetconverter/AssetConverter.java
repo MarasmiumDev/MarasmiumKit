@@ -9,7 +9,6 @@ package dev.marasmium.kit.assetconverter;
 
 import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.assets.Animation;
-import dev.marasmium.kit.applib.assets.AssetManagerConfig;
 import dev.marasmium.kit.applib.assets.AudioTrack;
 import dev.marasmium.kit.applib.assets.Glyph;
 import dev.marasmium.kit.applib.assets.Typeface;
@@ -45,23 +44,7 @@ public class AssetConverter {
      */
     static void main() {
         System.out.println("MarasmiumKit Asset Converter");
-        // Get asset base path
         Scanner commandLine = new Scanner(System.in);
-        System.out.print("Base file path: ");
-        String basePath;
-        try {
-            basePath = commandLine.nextLine();
-        } catch (NoSuchElementException | IllegalStateException _) {
-            System.out.println("No user input available");
-            return;
-        }
-        // Initialize application framework asset manager
-        AssetManagerConfig config = new AssetManagerConfig();
-        config.basePath = basePath;
-        if (!App.Assets.initialize(config)) {
-            System.out.println("Failed to initialize asset management system");
-            return;
-        }
         boolean running = true;
         while (running) {
             // Switch between audio and animation file conversion
@@ -230,7 +213,7 @@ public class AssetConverter {
             return false;
         }
         System.out.println("Generated audio track: " + track);
-        System.out.print("Output file path: " + App.Assets.getBasePath());
+        System.out.print("Output file path: ");
         String outputFilePath;
         try {
             outputFilePath = commandLine.nextLine();
@@ -366,7 +349,7 @@ public class AssetConverter {
             return false;
         }
         System.out.println("Generated animation: " + animation);
-        System.out.print("Output file path: " + App.Assets.getBasePath());
+        System.out.print("Output file path: ");
         String outputFilePath;
         try {
             outputFilePath = commandLine.nextLine();
@@ -525,7 +508,7 @@ public class AssetConverter {
         }
         typeface.setAnimationFilePath("-");
         System.out.println("Generated typeface: " + typeface);
-        System.out.print("Output file path: " + App.Assets.getBasePath());
+        System.out.print("Output file path: ");
         String outputFilePath;
         try {
             outputFilePath = commandLine.nextLine();

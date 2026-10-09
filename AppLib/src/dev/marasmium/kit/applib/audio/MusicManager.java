@@ -55,16 +55,12 @@ public class MusicManager {
     private boolean paused = false;
 
     /**
-     * Initialize the music audio subsystem's memory
-     * @param config The configuration for the subsystem
-     * @return Whether the subsystem was initialized successfully
+     * Initialize the MarasmiumKit application framework's music manager
+     * @param volume The initial volume to play music tracks at
+     * @return Whether the music manager was initialized successfully
      */
-    public boolean initialize(MusicManagerConfig config) {
-        if (config == null) {
-            App.Log.write(LogSource.Audio, LogLevel.Error, "No configuration provided for music audio subsystem");
-            return false;
-        }
-        if (!setVolume(config.volume)) {
+    public boolean initialize(float volume) {
+        if (!setVolume(volume)) {
             App.Log.write(LogSource.Audio, LogLevel.Error, "Failed to set initial music volume");
             return false;
         }

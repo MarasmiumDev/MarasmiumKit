@@ -166,10 +166,10 @@ public abstract class UIComponent extends UIGroup {
      * @return Whether the given position was valid
      */
     public boolean setPosition(Vector position) {
-        windowDimensions = App.Window.getDimensions().clone();
-        if (windowDimensions == null || position == null) {
+        if (position == null) {
             return false;
         }
+        windowDimensions = App.Window.getDimensions().clone();
         return sprite.setPosition(position.elementMultiply(windowDimensions));
     }
 
@@ -190,10 +190,10 @@ public abstract class UIComponent extends UIGroup {
      * @return Whether the given dimensions were valid
      */
     public boolean setDimensions(Vector dimensions) {
-        windowDimensions = App.Window.getDimensions().clone();
-        if (windowDimensions == null || dimensions == null) {
+        if (dimensions == null) {
             return false;
         }
+        windowDimensions = App.Window.getDimensions().clone();
         Vector pixelDimensions = dimensions.elementMultiply(windowDimensions);
         if (minimumDimensions != null) {
             if (pixelDimensions.getX() < minimumDimensions.getX()) {

@@ -128,9 +128,6 @@ public class Camera extends Body {
             return null;
         }
         Vector windowDimensions = App.Window.getDimensions();
-        if (windowDimensions == null) {
-            return null;
-        }
         if (windowDimensions.getX() == 0.0f || windowDimensions.getY() == 0.0f) {
             return null;
         }

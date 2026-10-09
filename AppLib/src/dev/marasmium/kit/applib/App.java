@@ -8,13 +8,17 @@
 package dev.marasmium.kit.applib;
 
 import dev.marasmium.kit.applib.assets.AssetManager;
+import dev.marasmium.kit.applib.audio.AudioDevice;
 import dev.marasmium.kit.applib.audio.AudioManager;
+import dev.marasmium.kit.applib.data.Colour;
+import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.graphics.GraphicsManager;
 import dev.marasmium.kit.applib.input.InputManager;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogManager;
 import dev.marasmium.kit.applib.logging.LogSource;
 import dev.marasmium.kit.applib.networking.NetClient;
+import dev.marasmium.kit.applib.windowing.Monitor;
 import dev.marasmium.kit.applib.windowing.WindowManager;
 
 import java.util.ArrayList;
@@ -66,57 +70,43 @@ public class App {
      */
     private static Scene Current_Scene = null;
 
-    /**
-     * Initialize the MarasmiumKit's application framework
-     * @param config Configuration/settings structure for the application framework's systems
-     * @return Whether the application framework was successfully initialized
-     */
-    public static boolean Initialize(AppConfig config) {
-        if (config == null) {
-            return false;
-        }
-        // Initialize the logging system
-        if (!Log.initialize(config.log)) {
+    public static boolean Initialize(String logTimestampFormat, boolean logConsoleOutputEnabled,
+                                     boolean logOutputFileEnabled, String logOutputFilePath, String windowTitle,
+                                     Vector windowDimensions, Monitor windowMonitor, boolean windowFullscreen,
+                                     boolean windowMouseCursorVisible, int netClientMaxMPU, AudioDevice audioSpeaker,
+                                     float audioSoundEffectsDefaultVolume, float audioMusicVolume,
+                                     int graphicsTargetFPS, int graphicsMaxUPF, Colour graphicsClearColour,
+                                     Scene initialScene) {
+        if (!Log.initialize(logTimestampFormat, logConsoleOutputEnabled, logOutputFileEnabled, logOutputFilePath)) {
             return false;
         }
         Log.write(LogSource.App, LogLevel.Info, "Initialized logging system");
-        // Initialize the user-input management system
         if (!Input.initialize()) {
             Log.write(LogSource.App, LogLevel.Error, "Failed to initialize user-input management system");
             return false;
         }
         Log.write(LogSource.App, LogLevel.Info, "Initialized user-input management system");
-        // Initialize the windowing system
-        if (!Window.initialize(config.window)) {
+        if (!Window.initialize(windowTitle, windowDimensions, windowMonitor, windowFullscreen,
+                windowMouseCursorVisible)) {
             Log.write(LogSource.App, LogLevel.Error, "Failed to initialize windowing system");
             return false;
         }
         Log.write(LogSource.App, LogLevel.Info, "Initialized windowing system");
-        // Initialize the network client
-        if (!Network.initialize(config.network)) {
+        if (!Network.initialize(netClientMaxMPU)) {
             Log.write(LogSource.App, LogLevel.Error, "Failed to initialize network client");
             return false;
         }
         Log.write(LogSource.App, LogLevel.Info, "Initialized network client");
-        // Initialize the asset management system
-        if (!Assets.initialize(config.assets)) {
-            Log.write(LogSource.App, LogLevel.Error, "Failed to initialize asset management system");
-            return false;
-        }
-        Log.write(LogSource.App, LogLevel.Info, "Initialized asset management system");
-        // Initialize the audio system
-        if (!Audio.initialize(config.audio)) {
+        if (!Audio.initialize(audioSpeaker, audioSoundEffectsDefaultVolume, audioMusicVolume)) {
             Log.write(LogSource.App, LogLevel.Error, "Failed to initialize audio system");
             return false;
         }
-        // Initialize the graphics system
-        if (!Graphics.initialize(config.graphics)) {
+        if (!Graphics.initialize(graphicsTargetFPS, graphicsMaxUPF, graphicsClearColour)) {
             Log.write(LogSource.App, LogLevel.Error, "Failed to initialize graphics system");
             return false;
         }
         Log.write(LogSource.App, LogLevel.Info, "Initialized graphics system");
-        // Set initial scene
-        if (!SetCurrentScene(config.initialScene)) {
+        if (!SetCurrentScene(initialScene)) {
             Log.write(LogSource.App, LogLevel.Error, "Failed to set current scene");
             return false;
         }
@@ -189,7 +179,6 @@ public class App {
     public static boolean Destroy() {
         Log.write(LogSource.App, LogLevel.Info, "Destroying MarasmiumKit application framework");
         boolean success = true;
-        // Dispose of all scenes managed by the application
         Log.write(LogSource.App, LogLevel.Info, "Freeing all scenes");
         Next_Scene_ID = 0;
         if (Current_Scene != null) {
@@ -200,40 +189,33 @@ public class App {
             scene.destroy();
         }
         Scenes.clear();
-        // Free the graphics system
         Log.write(LogSource.App, LogLevel.Info, "Destroying graphics system");
         if (!Graphics.destroy()) {
             Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy graphics system");
             success = false;
         }
-        // Free the audio system
         Log.write(LogSource.App, LogLevel.Info, "Destroying audio system");
         if (!Audio.destroy()) {
             Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy audio system");
             success = false;
         }
-        // Free the asset management system
-        Log.write(LogSource.App, LogLevel.Info, "Destroying asset management system");
-        Assets.destroy();
-        // Free the network client
         Log.write(LogSource.App, LogLevel.Info, "Destroying network client");
         if (!Network.destroy()) {
             Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy network client");
             success = false;
         }
-        // Free the windowing system
         Log.write(LogSource.App, LogLevel.Info, "Destroying windowing system");
         if (!Window.destroy()) {
             Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy windowing system");
             success = false;
         }
-        // Free the user-input management system
         Log.write(LogSource.App, LogLevel.Info, "Destroying user-input management system");
         if (!Input.destroy()) {
             Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy user-input management system");
             success = false;
         }
-        // Free the logging system
+        Log.write(LogSource.App, LogLevel.Info, "Destroying asset management system");
+        Assets.destroy();
         Log.write(LogSource.App, LogLevel.Info, "Destroying logging system");
         if (!Log.destroy()) {
             success = false;

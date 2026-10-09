@@ -36,12 +36,11 @@ public class Monitor implements Cloneable {
     private Vector dimensions = null;
 
     /**
-     * Initialize this monitor with an index and validate it
+     * Create an monitor with an index and validate it
      * @param index The index of this monitor in the local graphics environment's array of screen devices
-     * @return Whether the index was validated and this monitor was successfully initialized
      */
-    public boolean initialize(int index) {
-        return setIndex(index);
+    public Monitor(int index) {
+        setIndex(index);
     }
 
     /**

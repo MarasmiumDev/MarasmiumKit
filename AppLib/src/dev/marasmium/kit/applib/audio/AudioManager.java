@@ -37,26 +37,24 @@ public class AudioManager {
     private AudioDevice speaker = null;
 
     /**
-     * Initialize the sound effects and music audio subsystems
-     * @param config The configuration for the audio system
-     * @return Whether the audio system was initialized successfully
+     * Initialize the MarasmiumKit application framework's audio system
+     * @param speaker The initial audio output device to play audio through
+     * @param soundEffectsDefaultVolume The initial volume for sound effects to be played at
+     * @param musicVolume The initial volume for music to be played at
+     * @return Whether the parameters were valid and the audio system was initialized successfully
      */
-    public boolean initialize(AudioConfig config) {
-        if (config == null) {
-            App.Log.write(LogSource.Audio, LogLevel.Error, "No configuration provided for audio system");
-            return false;
-        }
-        if (!setSpeaker(config.speaker)) {
+    public boolean initialize(AudioDevice speaker, float soundEffectsDefaultVolume, float musicVolume) {
+        if (!setSpeaker(speaker)) {
             App.Log.write(LogSource.Audio, LogLevel.Error, "Failed to set speaker");
             return false;
         }
         // Initialize the sound effect manager subsystem
-        if (!soundEffects.initialize(config.soundEffects)) {
+        if (!soundEffects.initialize(soundEffectsDefaultVolume)) {
             App.Log.write(LogSource.Audio, LogLevel.Error, "Failed to initialize sound effects audio subsystem");
             return false;
         }
         // Initialize the music manager subsystem
-        if (!music.initialize(config.music)) {
+        if (!music.initialize(musicVolume)) {
             App.Log.write(LogSource.Audio, LogLevel.Error, "Failed to initialize music audio subsystem");
             return false;
         }
@@ -118,12 +116,7 @@ public class AudioManager {
                 continue;
             }
             // Retrieve speaker information
-            AudioDevice speaker = new AudioDevice();
-            if (!speaker.initialize(index)) {
-                App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to access speaker ", index);
-                continue;
-            }
-            speakers.add(speaker);
+            speakers.add(new AudioDevice(index));
         }
         return speakers;
     }

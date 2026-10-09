@@ -44,15 +44,15 @@ public class WindowManager {
     /**
      * The current dimensions of the window in pixels
      */
-    private Vector dimensions = null;
+    private final Vector dimensions = Vector.Zero();
     /**
      * The dimensions of the window in pixels when in windowed mode
      */
-    private Vector windowedDimensions = null;
+    private final Vector windowedDimensions = Vector.Zero();
     /**
      * The horizontal and vertical padding around the window frame
      */
-    private Vector windowPadding = null;
+    private final Vector windowPadding = Vector.Zero();
     /**
      * Whether the window is currently in fullscreen mode
      */
@@ -79,15 +79,16 @@ public class WindowManager {
     private volatile boolean closeRequested = false;
 
     /**
-     * Open the application framework's window and set its parameters
-     * @param config The title, dimensions, fullscreen mode, and monitor parameters for the initial window to be opened
-     * @return Whether the initial window parameters were valid and the window opened successfully
+     * Initialize the MarasmiumKit application framework's window
+     * @param title The initial title to appear on the window
+     * @param dimensions The initial dimensions of the window when in windowed mode in pixels
+     * @param monitor The initial monitor for the window to appear on when in fullscreen mode
+     * @param fullscreen Whether the window should initially appear in fullscreen mode
+     * @param mouseCursorVisible Whether the mouse cursor will be initially visible on the window
+     * @return Whether the parameters were valid and the window was initialized successfully
      */
-    public boolean initialize(WindowManagerConfig config) {
-        if (config == null) {
-            App.Log.write(LogSource.Window, LogLevel.Error, "No configuration provided");
-            return false;
-        }
+    public boolean initialize(String title, Vector dimensions, Monitor monitor, boolean fullscreen,
+                              boolean mouseCursorVisible) {
         // Generate Java AWT window frame
         try {
             canvas = new GLCanvas(new GLCapabilities(GLProfile.get(GLProfile.GL3)));
@@ -128,20 +129,20 @@ public class WindowManager {
             App.Log.write(LogSource.Window, LogLevel.Info, "Generated new window frame");
         });
         // Set initial window parameters
-        if (!setTitle(config.title)) {
+        if (!setTitle(title)) {
             App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set window title");
             return false;
         }
-        if (!setDimensions(config.dimensions)) {
+        if (!setDimensions(dimensions)) {
             App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set window dimensions");
             return false;
         }
-        setMonitor(config.monitor);
-        if (!setFullscreen(config.fullscreen)) {
+        setMonitor(monitor);
+        if (!setFullscreen(fullscreen)) {
             App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set window fullscreen mode");
             return false;
         }
-        if (!setMouseCursorVisible(config.mouseCursorVisible)) {
+        if (!setMouseCursorVisible(mouseCursorVisible)) {
             App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set mouse cursor visibility");
             return false;
         }
@@ -160,8 +161,6 @@ public class WindowManager {
         App.Log.write(LogSource.Window, LogLevel.Info, "Destroying windowing system");
         // Free window parameter memory
         title = null;
-        dimensions = null;
-        windowedDimensions = null;
         fullscreen = false;
         if (monitor != null) {
             monitor.destroy();
@@ -224,12 +223,14 @@ public class WindowManager {
             return false;
         }
         // Update windowed mode dimensions
-        windowedDimensions = dimensions;
+        windowedDimensions.setX(dimensions.getX());
+        windowedDimensions.setY(dimensions.getY());
         if (fullscreen) {
             App.Log.write(LogSource.Window, LogLevel.Warning, "Can't directly set dimensions in fullscreen mode");
             return true;
         }
-        this.dimensions = dimensions;
+        this.dimensions.setX(dimensions.getX());
+        this.dimensions.setY(dimensions.getY());
         // Set current window dimensions (in windowed mode)
         SwingUtilities.invokeLater(() -> {
             canvas.setPreferredSize(new Dimension((int)dimensions.getX(), (int)dimensions.getY()));
@@ -266,10 +267,7 @@ public class WindowManager {
         }
         ArrayList<Monitor> monitors = new ArrayList<>();
         for (int index = 0; index < gds.length; index++) {
-            Monitor monitor = new Monitor();
-            if (monitor.initialize(index)) {
-                monitors.add(monitor);
-            }
+            monitors.add(new Monitor(index));
         }
         return monitors;
     }
@@ -331,10 +329,11 @@ public class WindowManager {
         SwingUtilities.invokeLater(() -> {
             if (fullscreen && !this.fullscreen) {
                 Vector windowedDimensions = this.windowedDimensions;
-                windowPadding = Vector.Cartesian(frame.getInsets().left + frame.getInsets().right,
-                        frame.getInsets().bottom + frame.getInsets().top);
+                windowPadding.setX(frame.getInsets().left + frame.getInsets().right);
+                windowPadding.setY(frame.getInsets().bottom + frame.getInsets().top);
                 setDimensions(Vector.Cartesian(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight()));
-                this.windowedDimensions = windowedDimensions;
+                this.windowedDimensions.setX(windowedDimensions.getX());
+                this.windowedDimensions.setY(windowedDimensions.getY());
                 this.fullscreen = true;
                 gd.setFullScreenWindow(frame);
                 App.Log.write(LogSource.Window, LogLevel.Info, "Set window to fullscreen mode");
@@ -342,7 +341,8 @@ public class WindowManager {
                 gd.setFullScreenWindow(null);
                 this.fullscreen = false;
                 setDimensions(windowedDimensions.add(windowPadding));
-                dimensions = windowedDimensions;
+                dimensions.setX(windowedDimensions.getX());
+                dimensions.setY(windowedDimensions.getY());
                 App.Log.write(LogSource.Window, LogLevel.Info, "Set window to windowed mode");
             }
         });

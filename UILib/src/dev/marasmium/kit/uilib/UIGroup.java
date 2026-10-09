@@ -82,9 +82,6 @@ public class UIGroup implements UIListener {
      */
     public boolean initialize(UIListener parent, int groupID, float baseDepth, String typefaceFilePath,
                               float textPadding, float textSize) {
-        if (App.Window.getDimensions() == null) {
-            return false;
-        }
         if (!setParent(parent)) {
             return false;
         }
@@ -147,9 +144,7 @@ public class UIGroup implements UIListener {
                 component.update(deltaFrames);
             }
         }
-        if (App.Window.getDimensions() == null) {
-            updateWindowDimensions();
-        } else if (!App.Window.getDimensions().equals(windowDimensions)) {
+        if (!App.Window.getDimensions().equals(windowDimensions)) {
             updateWindowDimensions();
         }
     }
@@ -183,9 +178,6 @@ public class UIGroup implements UIListener {
      * @return Whether all the user-interface components' dimensions were updated successfully
      */
     private boolean updateWindowDimensions() {
-        if (App.Window.getDimensions() == null) {
-            return false;
-        }
         windowDimensions = App.Window.getDimensions().clone();
         for (UIComponent component : components) {
             if (component == null) {

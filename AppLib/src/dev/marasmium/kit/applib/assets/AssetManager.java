@@ -29,10 +29,6 @@ import java.util.HashMap;
 public class AssetManager {
 
     /**
-     * The base path (directory) containing all assets for the application framework
-     */
-    private String basePath = null;
-    /**
      * The set of audio tracks cached in memory mapped to their file paths
      */
     private final HashMap<String, AudioTrack> audioTracks = new HashMap<>();
@@ -46,40 +42,19 @@ public class AssetManager {
     private final HashMap<String, Typeface> typefaces = new HashMap<>();
 
     /**
-     * Initialize the MarasmiumKit application framework's asset management system
-     * @param config The configuration of the asset management system
-     * @return Whether the configuration was valid and the asset management system was initialized successfully
-     */
-    public boolean initialize(AssetManagerConfig config) {
-        if (config == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Error, "No configuration provided");
-            return false;
-        }
-        if (!setBasePath(config.basePath)) {
-            App.Log.write(LogSource.Assets, LogLevel.Error, "Invalid base asset path");
-            return false;
-        }
-        App.Log.write(LogSource.Assets, LogLevel.Info, "Initialized asset management system");
-        return true;
-    }
-
-    /**
      * Attempt to load an audio track from the disk by its file path and place it in the asset management system's cache
-     * @param filePath The file path to load the audio track from in the base asset path
+     * @param filePath The file path to load the audio track from
      * @return Whether the audio track was successfully loaded from the given file path
      */
     public boolean readAudioTrack(String filePath) {
         // Ensure the file path is accessible
-        if (basePath == null) {
-            return false;
-        }
         if (filePath == null) {
             return false;
         }
         if (filePath.isEmpty()) {
             return false;
         }
-        File file = new File(basePath + filePath);
+        File file = new File(filePath);
         if (!file.canRead()) {
             return false;
         }
@@ -160,52 +135,36 @@ public class AssetManager {
     /**
      * Write the contents of an audio track to a file on disk
      * @param audioTrack The audio track to write
-     * @param filePath The destination file path to write to in the base asset path
+     * @param filePath The destination file path to write to
      * @return Whether the audio track was successfully written to the given file path
      */
     public boolean writeAudioTrack(AudioTrack audioTrack, String filePath) {
         // Ensure the output file is accessible
-        if (basePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Error, "No base asset path provided");
-            return false;
-        }
         if (audioTrack == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write audio track, none provided");
             return false;
         }
         if (filePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write audio track, no file path provided");
             return false;
         }
         if (filePath.isEmpty()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write audio track, empty file path provided");
             return false;
         }
-        App.Log.write(LogSource.Assets, LogLevel.Info, "Writing audio track ", audioTrack, " to \"",
-                basePath + filePath, "\"");
-        File file = new File(basePath + filePath);
+        File file = new File(filePath);
         if (!file.exists()) {
             try {
                 if (!file.createNewFile()) {
-                    App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to create new file for audio track at \"",
-                            basePath + filePath, "\"");
                     return false;
                 }
             } catch (IOException _) {
-                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to create new file for audio track at \"",
-                        basePath + filePath, "\"");
                 return false;
             }
         }
         if (!file.canWrite()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Cannot write audio track to file at \"",
-                    basePath + filePath, "\"");
             return false;
         }
         // Write audio track contents
         byte[] fileData = serializeAudioTrack(audioTrack);
         if (fileData == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to serialize audio track ", audioTrack);
             return false;
         }
         FileOutputStream outputStream;
@@ -214,8 +173,6 @@ public class AssetManager {
             outputStream.write(fileData);
             outputStream.close();
         } catch (IOException _) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write audio track data to file at \"",
-                    basePath + filePath, "\"");
             return false;
         }
         return true;
@@ -259,21 +216,18 @@ public class AssetManager {
 
     /**
      * Attempt to load an animation from the disk by its file path and place it in the asset management system's cache
-     * @param filePath The file path to load the animation from in the base asset path
+     * @param filePath The file path to load the animation from
      * @return Whether the animation was successfully loaded from the given file path
      */
     public boolean readAnimation(String filePath) {
         // Ensure the file path is accessible
-        if (basePath == null) {
-            return false;
-        }
         if (filePath == null) {
             return false;
         }
         if (filePath.isEmpty()) {
             return false;
         }
-        File file = new File(basePath + filePath);
+        File file = new File(filePath);
         if (!file.canRead()) {
             return false;
         }
@@ -365,52 +319,36 @@ public class AssetManager {
     /**
      * Write the contents of an animation to a file on disk
      * @param animation The animation to write
-     * @param filePath The destination file path to write to in the base asset path
+     * @param filePath The destination file path to write to
      * @return Whether the animation was successfully written to the given file path
      */
     public boolean writeAnimation(Animation animation, String filePath) {
         // Ensure output file is accessible
-        if (basePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
-            return false;
-        }
         if (animation == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write animation, none provided");
             return false;
         }
         if (filePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write animation, no file path provided");
             return false;
         }
         if (filePath.isEmpty()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write animation, empty file path provided");
             return false;
         }
-        App.Log.write(LogSource.Assets, LogLevel.Info, "Writing animation ", animation, " to \"", basePath + filePath,
-                "\"");
-        File file = new File(basePath + filePath);
+        File file = new File(filePath);
         if (!file.exists()) {
             try {
                 if (!file.createNewFile()) {
-                    App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to create new file for animation at \"",
-                            basePath + filePath, "\"");
                     return false;
                 }
             } catch (IOException _) {
-                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to create new file for animation at\"",
-                        basePath + filePath, "\"");
                 return false;
             }
         }
         if (!file.canWrite()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Cannot write animation to file at \"",
-                    basePath + filePath, "\"");
             return false;
         }
         // Write animation contents
         byte[] fileData = serializeAnimation(animation);
         if (fileData == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to serialize animation ", animation);
             return false;
         }
         FileOutputStream outputStream;
@@ -419,8 +357,6 @@ public class AssetManager {
             outputStream.write(fileData);
             outputStream.close();
         } catch (IOException _) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write animation data to file at \"",
-                    basePath + filePath, "\"");
             return false;
         }
         return true;
@@ -468,21 +404,18 @@ public class AssetManager {
 
     /**
      * Attempt to load a typeface from the disk by its file path and place it in the asset management system's cache
-     * @param filePath The file path to load the typeface from in the base asset path
+     * @param filePath The file path to load the typeface from
      * @return Whether the typeface was successfully loaded from the given file path
      */
     public boolean readTypeface(String filePath) {
         // Ensure the file path is accessible
-        if (basePath == null) {
-            return false;
-        }
         if (filePath == null) {
             return false;
         }
         if (filePath.isEmpty()) {
             return false;
         }
-        File file = new File(basePath + filePath);
+        File file = new File(filePath);
         if (!file.canRead()) {
             return false;
         }
@@ -611,52 +544,36 @@ public class AssetManager {
     /**
      * Write the contents of a typeface to a file on disk
      * @param typeface The typeface to write
-     * @param filePath The destination file path to write to in the base asset path
+     * @param filePath The destination file path to write to
      * @return Whether the typeface was successfully written to the given file path
      */
     public boolean writeTypeface(Typeface typeface, String filePath) {
         // Ensure the output file is accessible
-        if (basePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
-            return false;
-        }
         if (typeface == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write typeface, none provided");
             return false;
         }
         if (filePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write typeface, no file path provided");
             return false;
         }
         if (filePath.isEmpty()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write typeface, empty file path provided");
             return false;
         }
-        App.Log.write(LogSource.Assets, LogLevel.Info, "Writing typeface ", typeface, " to \"", basePath + filePath,
-                "\"");
-        File file = new File(basePath + filePath);
+        File file = new File(filePath);
         if (!file.exists()) {
             try {
                 if (!file.createNewFile()) {
-                    App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to create new file for typeface at \"",
-                            basePath + filePath, "\"");
                     return false;
                 }
             } catch (IOException _) {
-                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to create new file for typeface at \"",
-                        basePath + filePath, "\"");
                 return false;
             }
         }
         if (!file.canWrite()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Cannot write typeface to file at \"",
-                    basePath + filePath, "\"");
             return false;
         }
         // Write typeface contents
         byte[] fileData = serializeTypeface(typeface);
         if (fileData == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to serialise typeface ", typeface);
             return false;
         }
         FileOutputStream outputStream;
@@ -665,8 +582,6 @@ public class AssetManager {
             outputStream.write(fileData);
             outputStream.close();
         } catch (IOException _) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to write typeface data to file at \"",
-                    basePath + filePath, "\"");
             return false;
         }
         return true;
@@ -732,9 +647,8 @@ public class AssetManager {
      * @return Whether all assets were disposed of successfully
      */
     public boolean destroy() {
-        boolean success = true;
         App.Log.write(LogSource.Assets, LogLevel.Info, "Destroying asset management system");
-        basePath = null;
+        boolean success = true;
         // Free audio tracks
         App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing ", audioTracks.size(), " audio tracks");
         for (HashMap.Entry<String, AudioTrack> entry : audioTracks.entrySet()) {
@@ -743,8 +657,6 @@ public class AssetManager {
                     entry.getValue().destroy();
                 }
             } catch (IllegalStateException _) {
-                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to retrieve value to destroy in audio ",
-                        "tracks");
                 success = false;
             }
         }
@@ -757,7 +669,6 @@ public class AssetManager {
                     entry.getValue().destroy();
                 }
             } catch (IllegalStateException _) {
-                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to retrieve value to destroy in animations");
                 success = false;
             }
         }
@@ -770,7 +681,6 @@ public class AssetManager {
                     entry.getValue().destroy();
                 }
             } catch (IllegalStateException _) {
-                App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to retrieve value to destroy in typefaces");
                 success = false;
             }
         }
@@ -779,46 +689,8 @@ public class AssetManager {
     }
 
     /**
-     * Get the base path (directory) containing all assets for the application framework
-     * @return The application framework's base asset path
-     */
-    public String getBasePath() {
-        return basePath;
-    }
-
-    /**
-     * Set the base path (directory) containing all assets for the application framework
-     * @param basePath The application framework's new base asset path
-     * @return Whether the new base path was valid
-     */
-    public boolean setBasePath(String basePath) {
-        // Ensure the path is valid
-        if (basePath == null) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "No base asset path provided");
-            return false;
-        }
-        if (basePath.isEmpty()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Empty base asset path provided");
-            return false;
-        }
-        App.Log.write(LogSource.Assets, LogLevel.Info, "Setting base asset path \"", basePath, "\"");
-        File base = new File(basePath);
-        if (!base.exists()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to set base asset path, new path does not exist");
-            return false;
-        }
-        if (!base.isDirectory()) {
-            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to set base asset path, new path is not a ",
-                    "directory");
-            return false;
-        }
-        this.basePath = basePath;
-        return true;
-    }
-
-    /**
      * Retrieve a cached audio track from memory or attempt to load it from disk by its file path
-     * @param filePath The file path of the audio track to retrieve in the base asset path
+     * @param filePath The file path of the audio track to retrieve
      * @return The requested audio track either from memory or disk or null if the audio track could not be loaded
      */
     public AudioTrack getAudioTrack(String filePath) {
@@ -832,7 +704,7 @@ public class AssetManager {
 
     /**
      * Add an audio track to the asset management system's cache
-     * @param filePath The file path of the audio track to add in the base asset path
+     * @param filePath The file path of the audio track to add
      * @param audioTrack The audio track to add
      * @return Whether the audio track was not in memory and was added successfully
      */
@@ -841,14 +713,14 @@ public class AssetManager {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to add audio track, already cached");
             return false;
         }
-        App.Log.write(LogSource.Assets, LogLevel.Info, "Adding audio track at \"", basePath + filePath, "\"");
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Adding audio track at \"", filePath, "\"");
         audioTracks.put(filePath, audioTrack);
         return true;
     }
 
     /**
      * Remove an audio track from the asset management system's cache
-     * @param filePath The file path of the audio track to free in the base asset path
+     * @param filePath The file path of the audio track to free
      * @return Whether the audio track was in memory and was removed successfully
      */
     public boolean removeAudioTrack(String filePath) {
@@ -856,7 +728,7 @@ public class AssetManager {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "File path provided to free audio track not loaded");
             return false;
         }
-        App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing audio track at \"", basePath + filePath, "\"");
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing audio track at \"", filePath, "\"");
         if (audioTracks.get(filePath) != null) {
             audioTracks.get(filePath).destroy();
         }
@@ -865,7 +737,7 @@ public class AssetManager {
 
     /**
      * Retrieve a cached animation from memory or attempt to load it from disk by its file path
-     * @param filePath The file path of the animation to retrieve in the base asset path
+     * @param filePath The file path of the animation to retrieve
      * @return The requested animation from memory or disk or null if the animation could not be loaded
      */
     public Animation getAnimation(String filePath) {
@@ -879,7 +751,7 @@ public class AssetManager {
 
     /**
      * Add an animation to the asset management system's cache
-     * @param filePath The file path of the animation to add in the base asset path
+     * @param filePath The file path of the animation to add
      * @param animation The animation to add
      * @return Whether the animation was not in memory and was added successfully
      */
@@ -888,18 +760,18 @@ public class AssetManager {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to add animation, already cached");
             return false;
         }
-        App.Log.write(LogSource.Assets, LogLevel.Info, "Adding animation at \"", basePath + filePath, "\"");
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Adding animation at \"", filePath, "\"");
         animations.put(filePath, animation);
         return true;
     }
 
     /**
      * Remove an animation from the asset management system's cache
-     * @param filePath The file path of the animation to free in the base asset path
+     * @param filePath The file path of the animation to free
      * @return Whether the animation was in memory and was removed successfully
      */
     public boolean removeAnimation(String filePath) {
-        App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing animation at \"", basePath + filePath, "\"");
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing animation at \"", filePath, "\"");
         if (animations.get(filePath) != null) {
             animations.get(filePath).destroy();
         }
@@ -908,7 +780,7 @@ public class AssetManager {
 
     /**
      * Retrieve a cached typeface from memory or attempt to load it from disk by its file path
-     * @param filePath The file path of the typeface to retrieve in the base asset path
+     * @param filePath The file path of the typeface to retrieve
      * @return The requested typeface from memory or disk or null if the typeface could not be loaded
      */
     public Typeface getTypeface(String filePath) {
@@ -922,7 +794,7 @@ public class AssetManager {
 
     /**
      * Add a typeface to the asset management system's cache
-     * @param filePath The file path of the typeface to add in the base asset path
+     * @param filePath The file path of the typeface to add
      * @param typeface The typeface to add
      * @return Whether the typeface was not in memory and was added successfully
      */
@@ -931,7 +803,7 @@ public class AssetManager {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to add typeface, already cached");
             return false;
         }
-        App.Log.write(LogSource.Assets, LogLevel.Info, "Adding typeface at \"", basePath + filePath, "\"");
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Adding typeface at \"", filePath, "\"");
         typeface.setAnimationFilePath("animation:" + filePath);
         Animation animation = deserializeAnimation(typeface.getAnimationData());
         if (animation == null) {
@@ -948,7 +820,7 @@ public class AssetManager {
 
     /**
      * Remove a typeface from the asset management system's cache
-     * @param filePath The file path of the typeface to remove in the base asset path
+     * @param filePath The file path of the typeface to remove
      * @return Whether the typeface was in memory and was removed successfully
      */
     public boolean removeTypeface(String filePath) {
@@ -956,7 +828,7 @@ public class AssetManager {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "File path provided to free typeface not loaded");
             return false;
         }
-        App.Log.write(LogSource.Assets, LogLevel.Warning, "Freeing typeface at \"", basePath + filePath, "\"");
+        App.Log.write(LogSource.Assets, LogLevel.Warning, "Freeing typeface at \"", filePath, "\"");
         if (typefaces.get(filePath) != null) {
             if (animations.get(typefaces.get(filePath).getAnimationFilePath()) != null) {
                 animations.get(typefaces.get(filePath).getAnimationFilePath()).destroy();

@@ -69,30 +69,35 @@ public class NetServer implements NetListener {
     private int maxMPUPC = 0;
 
     /**
-     * Initialize the server's memory and prepare it to listen for client connections
-     * @param config The server's configuration structure
-     * @return Whether the server was initialized successfully
+     * Initialize this network server
+     * @param logTimestampFormat The initial timestamp format for this server's log
+     * @param logConsoleOutputEnabled Whether this server's log will initially write messages to the console
+     * @param logOutputFileEnabled Whether this server's log will initially write messages to a file
+     * @param logOutputFilePath The initial file for this server's log to write messages to
+     * @param parent The listener to subscribe to network events from this server
+     * @param port The port for this server to listen for new connections on
+     * @param maxClients The maximum number of clients allowed to connect to this server
+     * @param maxMPUPC The maximum number of messages per client for this server to process each update
+     * @return Whether the parameters were valid and this server was initialized successfully
      */
-    public boolean initialize(NetServerConfig config) {
-        if (config == null) {
-            return false;
-        }
+    public boolean initialize(String logTimestampFormat, boolean logConsoleOutputEnabled, boolean logOutputFileEnabled,
+                              String logOutputFilePath, NetListener parent, int port, int maxClients, int maxMPUPC) {
         // Initialize the server log
-        if (!log.initialize(config.log)) {
+        if (!log.initialize(logTimestampFormat, logConsoleOutputEnabled, logOutputFileEnabled, logOutputFilePath)) {
             return false;
         }
         log.write(logSource, LogLevel.Info, "Initialized logging system");
         // Initialize memory
-        if (!setParent(config.parent)) {
+        if (!setParent(parent)) {
             log.write(logSource, LogLevel.Error, "Failed to set parent listener");
             return false;
         }
-        this.port = config.port;
-        if (!setMaxClients(config.maxClients)) {
+        this.port = port;
+        if (!setMaxClients(maxClients)) {
             log.write(logSource, LogLevel.Error, "Failed to set maximum client count");
             return false;
         }
-        if (!setMaxMPUPC(config.maxMPUPC)) {
+        if (!setMaxMPUPC(maxMPUPC)) {
             log.write(logSource, LogLevel.Error, "Failed to set maximum messages processed per update per client");
             return false;
         }

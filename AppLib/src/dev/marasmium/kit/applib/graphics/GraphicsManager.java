@@ -116,26 +116,24 @@ public class GraphicsManager implements GLEventListener {
     private final ArrayList<Integer> textureIDs = new ArrayList<>();
 
     /**
-     * Initialize the application framework's graphics system
-     * @param config Graphics system configuration structure
-     * @return Whether the configuration was valid and the graphics system was initialized successfully
+     * Initialize the MarasmiumKit application framework's graphics system
+     * @param targetFPS The initial target number of graphics frames to draw per second
+     * @param maxUPF The initial maximum number of logic updates to allow per graphics frame
+     * @param clearColour The initial colour to clear the window to between frames
+     * @return Whether the parameters were valid and the graphics system was initialized successfully
      */
-    public boolean initialize(GraphicsManagerConfig config) {
-        if (config == null) {
-            App.Log.write(LogSource.Graphics, LogLevel.Error, "No configuration provided for graphics system");
-            return false;
-        }
-        if (!setTargetFPS(config.targetFPS)) {
+    public boolean initialize(int targetFPS, int maxUPF, Colour clearColour) {
+        if (!setTargetFPS(targetFPS)) {
             App.Log.write(LogSource.Graphics, LogLevel.Error, "Failed to initialize graphics system, initial target ",
                     "FPS invalid");
             return false;
         }
-        if (!setMaxUPF(config.maxUPF)) {
+        if (!setMaxUPF(maxUPF)) {
             App.Log.write(LogSource.Graphics, LogLevel.Error, "Failed to initialize graphics system, initial maximum ",
                     "UPF invalid");
             return false;
         }
-        if (!setClearColour(config.clearColour)) {
+        if (!setClearColour(clearColour)) {
             App.Log.write(LogSource.Graphics, LogLevel.Error, "Failed to initialize graphics system, initial clear ",
                     "colour invalid");
             return false;
@@ -163,9 +161,6 @@ public class GraphicsManager implements GLEventListener {
             return false;
         }
         Vector windowDimensions = App.Window.getDimensions();
-        if (windowDimensions == null) {
-            return false;
-        }
         Box windowBox = new Box();
         if (!windowBox.initialize(camera.getPosition().subtract(windowDimensions.scalarDivide(camera.getScale())
                         .scalarMultiply(0.5f)), 0.0f, windowDimensions.scalarDivide(camera.getScale()), Angle.Zero())) {
