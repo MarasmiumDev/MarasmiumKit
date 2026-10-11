@@ -8,6 +8,9 @@
 package dev.marasmium.kit.applib.data;
 
 import java.io.Serializable;
+import java.nio.BufferOverflowException;
+import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
 
 /**
  * RGBA colour data structure with related constants mathematical operations
@@ -17,39 +20,39 @@ public class Colour implements Serializable, Cloneable {
     /**
      * Blank colour constant
      */
-    public static final Colour Blank = Colour.Bytes(0x00000000);
+    public static final Colour Blank = Colour.Int(0x00000000);
     /**
      * Black colour constant
      */
-    public static final Colour Black = Colour.Bytes(0x000000FF);
+    public static final Colour Black = Colour.Int(0x000000FF);
     /**
      * Red colour constant
      */
-    public static final Colour Red = Colour.Bytes(0xFF0000FF);
+    public static final Colour Red = Colour.Int(0xFF0000FF);
     /**
      * Green colour constant
      */
-    public static final Colour Green = Colour.Bytes(0x00FF00FF);
+    public static final Colour Green = Colour.Int(0x00FF00FF);
     /**
      * Yellow colour constant
      */
-    public static final Colour Yellow = Colour.Bytes(0xFFFF00FF);
+    public static final Colour Yellow = Colour.Int(0xFFFF00FF);
     /**
      * Blue colour constant
      */
-    public static final Colour Blue = Colour.Bytes(0x0000FFFF);
+    public static final Colour Blue = Colour.Int(0x0000FFFF);
     /**
      * Magenta colour constant
      */
-    public static final Colour Magenta = Colour.Bytes(0xFF00FFFF);
+    public static final Colour Magenta = Colour.Int(0xFF00FFFF);
     /**
      * Cyan colour constant
      */
-    public static final Colour Cyan = Colour.Bytes(0x00FFFFFF);
+    public static final Colour Cyan = Colour.Int(0x00FFFFFF);
     /**
      * White colour constant
      */
-    public static final Colour White = Colour.Bytes(0xFFFFFFFF);
+    public static final Colour White = Colour.Int(0xFFFFFFFF);
 
     /**
      * Byte representation of RGBA channels
@@ -65,12 +68,12 @@ public class Colour implements Serializable, Cloneable {
      * @return A colour with the given RGBA channel values
      */
     public static Colour Channels(int red, int green, int blue, int alpha) {
-        Colour c = new Colour();
-        c.setRed(red);
-        c.setGreen(green);
-        c.setBlue(blue);
-        c.setAlpha(alpha);
-        return c;
+        Colour newColour = new Colour();
+        newColour.setRed(red);
+        newColour.setGreen(green);
+        newColour.setBlue(blue);
+        newColour.setAlpha(alpha);
+        return newColour;
     }
 
     /**
@@ -82,12 +85,12 @@ public class Colour implements Serializable, Cloneable {
      * @return A colour with the given RGBA channel values
      */
     public static Colour Channels(float red, float green, float blue, float alpha) {
-        Colour c = new Colour();
-        c.setRed((int)(256.0f * red));
-        c.setGreen((int)(256.0f * green));
-        c.setBlue((int)(256.0f * blue));
-        c.setAlpha((int)(256.0f * alpha));
-        return c;
+        Colour newColour = new Colour();
+        newColour.setRed((int)(256.0f * red));
+        newColour.setGreen((int)(256.0f * green));
+        newColour.setBlue((int)(256.0f * blue));
+        newColour.setAlpha((int)(256.0f * alpha));
+        return newColour;
     }
 
     /**
@@ -95,10 +98,28 @@ public class Colour implements Serializable, Cloneable {
      * @param RGBA Integer with byte values of RGBA channels
      * @return A colour with the given RGBA value
      */
-    public static Colour Bytes(int RGBA) {
-        Colour c = new Colour();
-        c.setRGBA(RGBA);
-        return c;
+    public static Colour Int(int RGBA) {
+        Colour newLine = new Colour();
+        newLine.setRGBA(RGBA);
+        return newLine;
+    }
+
+    /**
+     * Construct a colour given serialized data
+     * @param data The data to deserialize
+     * @return A deserialized colour
+     */
+    public static Colour Deserialize(byte[] data) {
+        if (data == null) {
+            return null;
+        }
+        Colour newColour = new Colour();
+        try {
+            newColour.setRGBA(ByteBuffer.wrap(data, 0, Integer.BYTES).getInt());
+        } catch (BufferUnderflowException _) {
+            return null;
+        }
+        return newColour;
     }
 
     /**
@@ -106,6 +127,23 @@ public class Colour implements Serializable, Cloneable {
      */
     private Colour() {
         this.RGBA = 0x00000000;
+    }
+
+    /**
+     * Convert this colour to serialized data
+     * @return This colour as serialized data
+     */
+    public byte[] serialize() {
+        byte[] data;
+        ByteBuffer buffer;
+        try {
+            buffer = ByteBuffer.allocate(Integer.BYTES);
+            buffer.putInt(RGBA);
+            data = buffer.array();
+        } catch (IllegalArgumentException | BufferOverflowException | UnsupportedOperationException _) {
+            return null;
+        }
+        return data;
     }
 
     /**
@@ -136,14 +174,14 @@ public class Colour implements Serializable, Cloneable {
      */
     @Override
     public Colour clone() {
-        Colour c;
+        Colour newColour;
         try {
-            c = (Colour)super.clone();
+            newColour = (Colour)super.clone();
         } catch (CloneNotSupportedException _) {
             return null;
         }
-        c.RGBA = RGBA;
-        return c;
+        newColour.RGBA = RGBA;
+        return newColour;
     }
 
     /**

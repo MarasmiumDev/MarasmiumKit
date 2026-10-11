@@ -40,6 +40,10 @@ public class AssetManager {
      * The set of typefaces cached in memory mapped to their file paths
      */
     private final HashMap<String, Typeface> typefaces = new HashMap<>();
+    /**
+     * The set of configurations cached in memory mapped to their file paths
+     */
+    private final HashMap<String, Configuration> configurations = new HashMap<>();
 
     /**
      * Attempt to load an audio track from the disk by its file path and place it in the asset management system's cache
@@ -303,7 +307,7 @@ public class AssetManager {
             try {
                 System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
                 offset += Integer.BYTES;
-                data[i] = Colour.Bytes(ByteBuffer.wrap(buffer).getInt());
+                data[i] = Colour.Int(ByteBuffer.wrap(buffer).getInt());
             } catch (IndexOutOfBoundsException | ArrayStoreException | BufferUnderflowException _) {
                 return null;
             }
@@ -643,6 +647,229 @@ public class AssetManager {
     }
 
     /**
+     * Attempt to load a configuration from the disk by its file path and place it in the asset management system's
+     * cache
+     * @param filePath The file path to load the configuration from
+     * @return Whether the configuration was successfully loaded from the given file path
+     */
+    public boolean readConfiguration(String filePath) {
+        // Ensure the file path is accessible
+        if (filePath == null) {
+            return false;
+        }
+        if (filePath.isEmpty()) {
+            return false;
+        }
+        File file = new File(filePath);
+        if (!file.canRead()) {
+            return false;
+        }
+        // Read all file data into memory
+        FileInputStream inputStream;
+        try {
+            inputStream = new FileInputStream(file);
+        } catch (FileNotFoundException _) {
+            return false;
+        }
+        byte[] fileData;
+        try {
+            fileData = inputStream.readAllBytes();
+            inputStream.close();
+        } catch (IOException _) {
+            return false;
+        }
+        return addConfiguration(filePath, deserializeConfiguration(fileData));
+    }
+
+    /**
+     * Convert a byte array to a configuration
+     * @param fileData The data to convert
+     * @return The deserialized configuration or null if deserialization failed
+     */
+    public Configuration deserializeConfiguration(byte[] fileData) {
+        if (fileData == null) {
+            return null;
+        }
+        // Allocate configuration parameters
+        int valueCount;
+        int valueNameSize;
+        String[] valueNames;
+        int valueDataSize;
+        byte[][] valueData;
+        byte[] buffer = new byte[Integer.BYTES];
+        int offset = 0;
+        if (fileData.length < Integer.BYTES) {
+            return null;
+        }
+        // Parse file data
+        try {
+            System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
+            offset += Integer.BYTES;
+            valueCount = ByteBuffer.wrap(buffer, 0, Integer.BYTES).getInt();
+        } catch (IndexOutOfBoundsException | ArrayStoreException | BufferUnderflowException _) {
+            return null;
+        }
+        if (valueCount < 0) {
+            return null;
+        }
+        valueNames = new String[valueCount];
+        valueData = new byte[valueCount][];
+        for (int i = 0; i < valueCount; i++) {
+            if (fileData.length < offset + Integer.BYTES) {
+                return null;
+            }
+            try {
+                System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
+                offset += Integer.BYTES;
+                valueNameSize = ByteBuffer.wrap(buffer, 0, Integer.BYTES).getInt();
+            } catch (IndexOutOfBoundsException | ArrayStoreException | BufferUnderflowException _) {
+                return null;
+            }
+            if (valueNameSize < 0) {
+                return null;
+            }
+            if (fileData.length < offset + valueNameSize + Integer.BYTES) {
+                return null;
+            }
+            byte[] valueNameBytes = new byte[valueNameSize];
+            try {
+                System.arraycopy(fileData, offset, valueNameBytes, 0, valueNameSize);
+                offset += valueNameSize;
+            } catch (IndexOutOfBoundsException | ArrayStoreException _) {
+                return null;
+            }
+            valueNames[i] = new String(valueNameBytes);
+            try {
+                System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
+                offset += Integer.BYTES;
+                valueDataSize = ByteBuffer.wrap(buffer, 0, Integer.BYTES).getInt();
+            } catch (IndexOutOfBoundsException | ArrayStoreException | BufferUnderflowException _) {
+                return null;
+            }
+            if (valueDataSize < 0) {
+                return null;
+            }
+            if (fileData.length < offset + valueDataSize) {
+                return null;
+            }
+            valueData[i] = new byte[valueDataSize];
+            try {
+                System.arraycopy(fileData, offset, valueData[i], 0, valueDataSize);
+                offset += valueDataSize;
+            } catch (IndexOutOfBoundsException | ArrayStoreException _) {
+                return null;
+            }
+        }
+        // Initialize configuration
+        Configuration configuration = new Configuration();
+        if (!configuration.initialize(valueNames, valueData)) {
+            return null;
+        }
+        return configuration;
+    }
+
+    /**
+     * Write the contents of a configuration to a file on disk
+     * @param configuration The configuration to write
+     * @param filePath The destination file path to write to
+     * @return Whether the configuration was successfully written to the given file path
+     */
+    public boolean writeConfiguration(Configuration configuration, String filePath) {
+        // Ensure the output file is accessible
+        if (configuration == null) {
+            return false;
+        }
+        if (filePath == null) {
+            return false;
+        }
+        if (filePath.isEmpty()) {
+            return false;
+        }
+        File file = new File(filePath);
+        if (!file.exists()) {
+            try {
+                if (!file.createNewFile()) {
+                    return false;
+                }
+            } catch (IOException _) {
+                return false;
+            }
+        }
+        if (!file.canWrite()) {
+            return false;
+        }
+        // Write configuration contents
+        byte[] fileData = serializeConfiguration(configuration);
+        if (fileData == null) {
+            return false;
+        }
+        FileOutputStream outputStream;
+        try {
+            outputStream = new FileOutputStream(file);
+            outputStream.write(fileData);
+            outputStream.close();
+        } catch (IOException _) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Convert a configuration to a byte array
+     * @param configuration The configuration to convert
+     * @return The serialized configuration or null if serialization failed
+     */
+    public byte[] serializeConfiguration(Configuration configuration) {
+        if (configuration == null) {
+            return null;
+        }
+        // Extract configuration parameters
+        int valueCount = configuration.getValueCount();
+        HashMap<String, byte[]> values = configuration.getValues();
+        if (values == null) {
+            return null;
+        }
+        // Compute file data size
+        int fileDataSize = Integer.BYTES;
+        for (HashMap.Entry<String, byte[]> entry : values.entrySet()) {
+            String valueName;
+            byte[] valueData;
+            try {
+                valueName = entry.getKey();
+                valueData = entry.getValue();
+            } catch (IllegalStateException _) {
+                return null;
+            }
+            fileDataSize += Integer.BYTES + valueName.getBytes().length + Integer.BYTES + valueData.length;
+        }
+        // Create file data buffer
+        byte[] fileData;
+        ByteBuffer buffer;
+        try {
+            buffer = ByteBuffer.allocate(fileDataSize);
+            buffer.putInt(valueCount);
+            for (HashMap.Entry<String, byte[]> entry : values.entrySet()) {
+                String valueName;
+                byte[] valueData;
+                try {
+                    valueName = entry.getKey();
+                    valueData = entry.getValue();
+                } catch (IllegalStateException _) {
+                    return null;
+                }
+                buffer.putInt(valueName.length());
+                buffer.put(valueName.getBytes());
+                buffer.putInt(valueData.length);
+                buffer.put(valueData);
+            }
+            fileData = buffer.array();
+        } catch (IllegalArgumentException | BufferOverflowException | UnsupportedOperationException _) {
+            return null;
+        }
+        return fileData;
+    }
+
+    /**
      * Dispose of all assets and free the asset management system's memory
      * @return Whether all assets were disposed of successfully
      */
@@ -685,6 +912,18 @@ public class AssetManager {
             }
         }
         typefaces.clear();
+        // Free configurations
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing ", configurations.size(), " configurations");
+        for (HashMap.Entry<String, Configuration> entry : configurations.entrySet()) {
+            try {
+                if (entry.getValue() != null) {
+                    entry.getValue().destroy();
+                }
+            } catch (IllegalStateException _) {
+                success = false;
+            }
+        }
+        configurations.clear();
         return success;
     }
 
@@ -837,6 +1076,49 @@ public class AssetManager {
             typefaces.get(filePath).destroy();
         }
         return typefaces.remove(filePath) != null;
+    }
+
+    /**
+     * Retrieve a cached configuration from memory or attempt to load it from disk by its file path
+     * @param filePath The file path of the configuration to retrieve
+     * @return The requested configuration from memory or disk or null if the configuration could not be loaded
+     */
+    public Configuration getConfiguration(String filePath) {
+        if (!configurations.containsKey(filePath)) {
+            if (!readConfiguration(filePath)) {
+                return null;
+            }
+        }
+        return configurations.get(filePath);
+    }
+
+    /**
+     * Add a configuration to the asset management system's cache
+     * @param filePath The file path of the configuration to add
+     * @param configuration The configuration to add
+     * @return Whether the configuration was not in memory and was added successfully
+     */
+    public boolean addConfiguration(String filePath, Configuration configuration) {
+        if (configurations.containsKey(filePath)) {
+            App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to add configuration, already cached");
+            return false;
+        }
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Adding configuration at \"", filePath, "\"");
+        configurations.put(filePath, configuration);
+        return true;
+    }
+
+    /**
+     * Remove a configuration from the asset management system's cache
+     * @param filePath The file path of the configuration to remove
+     * @return Whether the configuration was in memory and was removed successfully
+     */
+    public boolean removeConfiguration(String filePath) {
+        App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing configuration at \"", filePath, "\"");
+        if (configurations.get(filePath) != null) {
+            configurations.get(filePath).destroy();
+        }
+        return configurations.remove(filePath) != null;
     }
 
 }

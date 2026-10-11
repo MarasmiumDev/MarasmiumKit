@@ -8,6 +8,8 @@
 package dev.marasmium.kit.applib.data;
 
 import java.io.Serializable;
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
 
 /**
  * Linear function data structure representing a 2D line
@@ -36,11 +38,11 @@ public class Line implements Serializable, Cloneable {
         if (!Float.isFinite(yIntercept)) {
             return null;
         }
-        Line l = new Line();
-        l.slope = 0.0f;
-        l.xIntercept = Float.NaN;
-        l.yIntercept = yIntercept;
-        return l;
+        Line newLine = new Line();
+        newLine.slope = 0.0f;
+        newLine.xIntercept = Float.NaN;
+        newLine.yIntercept = yIntercept;
+        return newLine;
     }
 
     /**
@@ -64,11 +66,11 @@ public class Line implements Serializable, Cloneable {
         if (!Float.isFinite(xIntercept)) {
             return null;
         }
-        Line l = new Line();
-        l.slope = Float.NaN;
-        l.xIntercept = xIntercept;
-        l.yIntercept = Float.NaN;
-        return l;
+        Line newLine = new Line();
+        newLine.slope = Float.NaN;
+        newLine.xIntercept = xIntercept;
+        newLine.yIntercept = Float.NaN;
+        return newLine;
     }
 
     /**
@@ -99,11 +101,11 @@ public class Line implements Serializable, Cloneable {
         if (!Float.isFinite(slope)) {
             return Vertical(xIntercept);
         } else {
-            Line l = new Line();
-            l.slope = slope;
-            l.xIntercept = xIntercept;
-            l.yIntercept = -slope * xIntercept;
-            return l;
+            Line newLine = new Line();
+            newLine.slope = slope;
+            newLine.xIntercept = xIntercept;
+            newLine.yIntercept = -slope * xIntercept;
+            return newLine;
         }
     }
 
@@ -123,11 +125,11 @@ public class Line implements Serializable, Cloneable {
         if (Math.abs(slope) < Constants.Epsilon) {
             return Horizontal(yIntercept);
         } else {
-            Line l = new Line();
-            l.slope = slope;
-            l.xIntercept = -yIntercept / slope;
-            l.yIntercept = yIntercept;
-            return l;
+            Line newLine = new Line();
+            newLine.slope = slope;
+            newLine.xIntercept = -yIntercept / slope;
+            newLine.yIntercept = yIntercept;
+            return newLine;
         }
     }
 
@@ -147,11 +149,11 @@ public class Line implements Serializable, Cloneable {
         if (!Float.isFinite(slope)) {
             return Vertical(point);
         }
-        Line l = new Line();
-        l.slope = slope;
-        l.yIntercept = point.getY() - (slope * point.getX());
-        l.xIntercept = -l.yIntercept / slope;
-        return l;
+        Line newLine = new Line();
+        newLine.slope = slope;
+        newLine.yIntercept = point.getY() - (slope * point.getX());
+        newLine.xIntercept = -newLine.yIntercept / slope;
+        return newLine;
     }
 
     /**
@@ -208,11 +210,11 @@ public class Line implements Serializable, Cloneable {
      * @return The identity line
      */
     public static Line Identity() {
-        Line l = new Line();
-        l.slope = 1.0f;
-        l.xIntercept = 0.0f;
-        l.yIntercept = 0.0f;
-        return l;
+        Line newLine = new Line();
+        newLine.slope = 1.0f;
+        newLine.xIntercept = 0.0f;
+        newLine.yIntercept = 0.0f;
+        return newLine;
     }
 
     /**
@@ -220,11 +222,11 @@ public class Line implements Serializable, Cloneable {
      * @return The x-axis line
      */
     public static Line X_Axis() {
-        Line l = new Line();
-        l.slope = 0.0f;
-        l.xIntercept = Float.NaN;
-        l.yIntercept = 0.0f;
-        return l;
+        Line newLine = new Line();
+        newLine.slope = 0.0f;
+        newLine.xIntercept = Float.NaN;
+        newLine.yIntercept = 0.0f;
+        return newLine;
     }
 
     /**
@@ -232,11 +234,30 @@ public class Line implements Serializable, Cloneable {
      * @return  The y-axis line
      */
     public static Line Y_Axis() {
-        Line l = new Line();
-        l.slope = Float.NaN;
-        l.xIntercept = 0.0f;
-        l.yIntercept = Float.NaN;
-        return l;
+        Line newLine = new Line();
+        newLine.slope = Float.NaN;
+        newLine.xIntercept = 0.0f;
+        newLine.yIntercept = Float.NaN;
+        return newLine;
+    }
+
+    /**
+     * Construct a line given serialized data
+     * @param data The data to deserialize
+     * @return A deserialized line
+     */
+    public static Line Deserialize(byte[] data) {
+        if (data == null) {
+            return null;
+        }
+        int offset = 0;
+        Line newLine = new Line();
+        newLine.slope = ByteBuffer.wrap(data, offset, Float.BYTES).getFloat();
+        offset += Float.BYTES;
+        newLine.xIntercept = ByteBuffer.wrap(data, offset, Float.BYTES).getFloat();
+        offset += Float.BYTES;
+        newLine.yIntercept = ByteBuffer.wrap(data, offset, Float.BYTES).getFloat();
+        return newLine;
     }
 
     /**
@@ -257,23 +278,23 @@ public class Line implements Serializable, Cloneable {
         if (translation == null) {
             return null;
         }
-        Line l = new Line();
+        Line newLine = new Line();
         if (isHorizontal()) {
-            l.slope = 0.0f;
-            l.xIntercept = Float.NaN;
-            l.yIntercept = yIntercept + translation.getY();
-            return l;
+            newLine.slope = 0.0f;
+            newLine.xIntercept = Float.NaN;
+            newLine.yIntercept = yIntercept + translation.getY();
+            return newLine;
         }
         if (isVertical()) {
-            l.slope = Float.NaN;
-            l.xIntercept = xIntercept + translation.getX();
-            l.yIntercept = Float.NaN;
-            return l;
+            newLine.slope = Float.NaN;
+            newLine.xIntercept = xIntercept + translation.getX();
+            newLine.yIntercept = Float.NaN;
+            return newLine;
         }
-        l.slope = slope;
-        l.yIntercept = (-slope * translation.getX()) + yIntercept + translation.getY();
-        l.xIntercept = -l.yIntercept / slope;
-        return l;
+        newLine.slope = slope;
+        newLine.yIntercept = (-slope * translation.getX()) + yIntercept + translation.getY();
+        newLine.xIntercept = -newLine.yIntercept / slope;
+        return newLine;
     }
 
     /**
@@ -285,11 +306,11 @@ public class Line implements Serializable, Cloneable {
         if (isVertical()) {
             return this.clone();
         }
-        Line l = new Line();
-        l.slope = slope * s;
-        l.xIntercept = xIntercept;
-        l.yIntercept = yIntercept * s;
-        return l;
+        Line newLine = new Line();
+        newLine.slope = slope * s;
+        newLine.xIntercept = xIntercept;
+        newLine.yIntercept = yIntercept * s;
+        return newLine;
     }
 
     /**
@@ -431,6 +452,25 @@ public class Line implements Serializable, Cloneable {
     }
 
     /**
+     * Convert this line to serialized data
+     * @return This line as serialized data
+     */
+    public byte[] serialize() {
+        byte[] data;
+        ByteBuffer buffer;
+        try {
+            buffer = ByteBuffer.allocate(3 * Float.BYTES);
+            buffer.putFloat(slope);
+            buffer.putFloat(xIntercept);
+            buffer.putFloat(yIntercept);
+            data = buffer.array();
+        } catch (IllegalArgumentException | BufferOverflowException | UnsupportedOperationException _) {
+            return null;
+        }
+        return data;
+    }
+
+    /**
      * Test whether this line is equal to another object (must be an instance of Line)
      * @param o The reference object with which to compare.
      * @return Whether the given line has the same slope, x-intercept, and y-intercept as this one
@@ -476,16 +516,16 @@ public class Line implements Serializable, Cloneable {
      */
     @Override
     public Line clone() {
-        Line l;
+        Line newLine;
         try {
-            l = (Line)super.clone();
+            newLine = (Line)super.clone();
         } catch (CloneNotSupportedException _) {
             return null;
         }
-        l.slope = slope;
-        l.xIntercept = xIntercept;
-        l.yIntercept = yIntercept;
-        return l;
+        newLine.slope = slope;
+        newLine.xIntercept = xIntercept;
+        newLine.yIntercept = yIntercept;
+        return newLine;
     }
 
     /**

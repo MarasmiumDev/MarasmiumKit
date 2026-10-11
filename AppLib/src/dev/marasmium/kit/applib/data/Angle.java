@@ -9,6 +9,9 @@
 package dev.marasmium.kit.applib.data;
 
 import java.io.Serializable;
+import java.nio.BufferOverflowException;
+import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
 
 /**
  * Angle data structure and related constants and mathematical operations
@@ -26,9 +29,9 @@ public class Angle implements Serializable, Cloneable {
      * @return An angle with the given measure
      */
     public static Angle Radians(float theta) {
-        Angle a = new Angle();
-        a.setRadians(theta);
-        return a;
+        Angle newAngle = new Angle();
+        newAngle.setRadians(theta);
+        return newAngle;
     }
 
     /**
@@ -37,9 +40,9 @@ public class Angle implements Serializable, Cloneable {
      * @return An angle with the given measure
      */
     public static Angle Degrees(float theta) {
-        Angle a = new Angle();
-        a.setDegrees(theta);
-        return a;
+        Angle newAngle = new Angle();
+        newAngle.setDegrees(theta);
+        return newAngle;
     }
 
     /**
@@ -48,9 +51,9 @@ public class Angle implements Serializable, Cloneable {
      * @return An angle with the given measure
      */
     public static Angle Gradians(float theta) {
-        Angle a = new Angle();
-        a.setGradians(theta);
-        return a;
+        Angle newAngle = new Angle();
+        newAngle.setGradians(theta);
+        return newAngle;
     }
 
     /**
@@ -59,9 +62,9 @@ public class Angle implements Serializable, Cloneable {
      * @return An angle with the given measure
      */
     public static Angle Revolutions(float theta) {
-        Angle a = new Angle();
-        a.setRevolutions(theta);
-        return a;
+        Angle newAngle = new Angle();
+        newAngle.setRevolutions(theta);
+        return newAngle;
     }
 
     /**
@@ -77,9 +80,27 @@ public class Angle implements Serializable, Cloneable {
      * @return A right angle
      */
     public static Angle Right() {
-        Angle a = new Angle();
-        a.setRadians(Constants.Pi / 2.0f);
-        return a;
+        Angle newAngle = new Angle();
+        newAngle.setRadians(Constants.Pi / 2.0f);
+        return newAngle;
+    }
+
+    /**
+     * Construct an angle given serialized data
+     * @param data The data to deserialize
+     * @return A deserialized angle
+     */
+    public static Angle Deserialize(byte[] data) {
+        if (data == null) {
+            return null;
+        }
+        Angle newAngle = new Angle();
+        try {
+            newAngle.setRadians(ByteBuffer.wrap(data, 0, Float.BYTES).getFloat());
+        } catch (BufferUnderflowException _) {
+            return null;
+        }
+        return newAngle;
     }
 
     /**
@@ -136,21 +157,21 @@ public class Angle implements Serializable, Cloneable {
      * @return This angle in standard position
      */
     public Angle standardize() {
-        Angle angle = new Angle();
-        angle.theta = theta;
-        if (angle.isZero()) {
-            return angle;
+        Angle newAngle = new Angle();
+        newAngle.theta = theta;
+        if (newAngle.isZero()) {
+            return newAngle;
         }
-        if (angle.theta < 0.0f) {
-            while (angle.theta < 0.0f) {
-                angle.theta += 2.0f * Constants.Pi;
+        if (newAngle.theta < 0.0f) {
+            while (newAngle.theta < 0.0f) {
+                newAngle.theta += 2.0f * Constants.Pi;
             }
         } else {
-            while (angle.theta > 2.0f * Constants.Pi) {
-                angle.theta -= 2.0f * Constants.Pi;
+            while (newAngle.theta > 2.0f * Constants.Pi) {
+                newAngle.theta -= 2.0f * Constants.Pi;
             }
         }
-        return angle;
+        return newAngle;
     }
 
     /**
@@ -163,6 +184,23 @@ public class Angle implements Serializable, Cloneable {
             return false;
         }
         return standardize().equals(angle.standardize());
+    }
+
+    /**
+     * Convert this angle to serialized data
+     * @return This angle as serialized data
+     */
+    public byte[] serialize() {
+        byte[] data;
+        ByteBuffer buffer;
+        try {
+            buffer = ByteBuffer.allocate(Float.BYTES);
+            buffer.putFloat(theta);
+            data = buffer.array();
+        } catch (IllegalArgumentException | BufferOverflowException | UnsupportedOperationException _) {
+            return null;
+        }
+        return data;
     }
 
     /**
@@ -193,14 +231,14 @@ public class Angle implements Serializable, Cloneable {
      */
     @Override
     public Angle clone() {
-        Angle a;
+        Angle newAngle;
         try {
-            a = (Angle)super.clone();
+            newAngle = (Angle)super.clone();
         } catch (CloneNotSupportedException _) {
             return null;
         }
-        a.theta = theta;
-        return a;
+        newAngle.theta = theta;
+        return newAngle;
     }
 
     /**

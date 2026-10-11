@@ -10,6 +10,8 @@ package dev.marasmium.kit.applib.data;
 import dev.marasmium.kit.applib.graphics.Box;
 
 import java.io.Serializable;
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
 
 /**
  * 2D vector data structure with related constants and mathematical operations
@@ -32,10 +34,10 @@ public class Vector implements Serializable, Cloneable {
      * @return A vector to the Cartesian point (x, y)
      */
     public static Vector Cartesian(float x, float y) {
-        Vector v = new Vector();
-        v.setX(x);
-        v.setY(y);
-        return v;
+        Vector newVector = new Vector();
+        newVector.setX(x);
+        newVector.setY(y);
+        return newVector;
     }
 
     /**
@@ -48,11 +50,28 @@ public class Vector implements Serializable, Cloneable {
         if (angle == null) {
             return null;
         }
-        Vector v = new Vector();
-        v.setX(1.0f);
-        v.setLength(length);
-        v.setAngle(angle);
-        return v;
+        Vector newVector = new Vector();
+        newVector.setX(1.0f);
+        newVector.setLength(length);
+        newVector.setAngle(angle);
+        return newVector;
+    }
+
+    /**
+     * Construct a vector given serialized data
+     * @param data THe data to deserialize
+     * @return A deserialized vector
+     */
+    public static Vector Deserialize(byte[] data) {
+        if (data == null) {
+            return null;
+        }
+        int offset = 0;
+        Vector newVector = new Vector();
+        newVector.x = ByteBuffer.wrap(data, offset, Float.BYTES).getFloat();
+        offset += Float.BYTES;
+        newVector.y = ByteBuffer.wrap(data, offset, Float.BYTES).getFloat();
+        return newVector;
     }
 
     /**
@@ -422,6 +441,24 @@ public class Vector implements Serializable, Cloneable {
     }
 
     /**
+     * Convert this vector to serialized data
+     * @return This vector as serialized data
+     */
+    public byte[] serialize() {
+        byte[] data;
+        ByteBuffer buffer;
+        try {
+            buffer = ByteBuffer.allocate(2 * Float.BYTES);
+            buffer.putFloat(x);
+            buffer.putFloat(y);
+            data = buffer.array();
+        } catch (IllegalArgumentException | BufferOverflowException | UnsupportedOperationException _) {
+            return null;
+        }
+        return data;
+    }
+
+    /**
      * Test whether this vector is equal to another one
      * @param o The object to compare this vector to (must be a Vector)
      * @return Whether this vector is equal to o
@@ -449,15 +486,15 @@ public class Vector implements Serializable, Cloneable {
      */
     @Override
     public Vector clone() {
-        Vector v;
+        Vector vector;
         try {
-            v = (Vector)super.clone();
+            vector = (Vector)super.clone();
         } catch (CloneNotSupportedException _) {
             return null;
         }
-        v.x = x;
-        v.y = y;
-        return v;
+        vector.x = x;
+        vector.y = y;
+        return vector;
     }
 
     /**
@@ -548,9 +585,9 @@ public class Vector implements Serializable, Cloneable {
         if (isZero()) {
             return;
         }
-        Vector tmp = this.scalarMultiply(length / getLength());
-        this.x = tmp.x;
-        this.y = tmp.y;
+        Vector newVector = this.scalarMultiply(length / getLength());
+        this.x = newVector.x;
+        this.y = newVector.y;
     }
 
     /**
@@ -569,9 +606,9 @@ public class Vector implements Serializable, Cloneable {
         if (theta == null) {
             return;
         }
-        Vector tmp = this.rotate(Angle.Radians(theta.getRadians() - getAngle().getRadians()));
-        this.x = tmp.x;
-        this.y = tmp.y;
+        Vector newVector = this.rotate(Angle.Radians(theta.getRadians() - getAngle().getRadians()));
+        this.x = newVector.x;
+        this.y = newVector.y;
     }
 
 }

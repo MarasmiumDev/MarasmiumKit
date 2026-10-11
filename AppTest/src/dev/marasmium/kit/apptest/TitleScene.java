@@ -9,6 +9,10 @@ package dev.marasmium.kit.apptest;
 
 import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.Scene;
+import dev.marasmium.kit.applib.assets.Configuration;
+import dev.marasmium.kit.applib.data.Angle;
+import dev.marasmium.kit.applib.data.Colour;
+import dev.marasmium.kit.applib.data.Line;
 import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.graphics.Alignment;
 import dev.marasmium.kit.applib.input.KeyboardKey;
@@ -106,6 +110,32 @@ public class TitleScene extends Scene implements UIListener {
             }
             if (App.Input.keyboard.isKeyPressed(KeyboardKey.V)) {
                 UI.setVisible(!UI.isVisible());
+            }
+            if (App.Input.keyboard.isKeyPressed(KeyboardKey.C)) {
+                App.Log.write(logSource, LogLevel.Info, "Generating configuration");
+                Configuration outConfiguration = new Configuration();
+                outConfiguration.initialize();
+                outConfiguration.addVectorValue("vector", Vector.Cartesian(3.04f, -1.0f));
+                outConfiguration.addLineValue("line", Line.Slope_Y_Intercept(2.0f, 5.0f));
+                outConfiguration.addColourValue("colour", Colour.Channels(50, 0, 255, 128));
+                outConfiguration.addAngleValue("angle", Angle.Radians(0.5f));
+                outConfiguration.addIntegerValue("integer", 534);
+                outConfiguration.addFloatValue("float", 3.14159f);
+                outConfiguration.addStringValue("string", "Hello World!");
+                outConfiguration.addBooleanValue("boolean", false);
+                if (!App.Assets.writeConfiguration(outConfiguration, "Test.configuration")) {
+                    App.Log.write(logSource, LogLevel.Info, "Write error");
+                }
+                Configuration inConfiguration = App.Assets.getConfiguration("Test.configuration");
+                App.Log.write(logSource, LogLevel.Info, outConfiguration, " -> ", inConfiguration);
+                App.Log.write(logSource, LogLevel.Info, inConfiguration.getVectorValue("vector"));
+                App.Log.write(logSource, LogLevel.Info, inConfiguration.getLineValue("line"));
+                App.Log.write(logSource, LogLevel.Info, inConfiguration.getColourValue("colour"));
+                App.Log.write(logSource, LogLevel.Info, inConfiguration.getAngleValue("angle"));
+                App.Log.write(logSource, LogLevel.Info, inConfiguration.getIntegerValue("integer"));
+                App.Log.write(logSource, LogLevel.Info, inConfiguration.getFloatValue("float"));
+                App.Log.write(logSource, LogLevel.Info, inConfiguration.getStringValue("string"));
+                App.Log.write(logSource, LogLevel.Info, inConfiguration.getBooleanValue("boolean"));
             }
         }
         return true;
