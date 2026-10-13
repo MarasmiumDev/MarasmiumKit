@@ -59,6 +59,9 @@ public class Button extends UIComponent {
      */
     public boolean initialize(Vector position, Vector dimensions, String[] animationFilePaths, String labelText,
                               Alignment labelAlignment) {
+        if (parent == null) {
+            return false;
+        }
         if (animationFilePaths == null) {
             return false;
         }
@@ -67,7 +70,8 @@ public class Button extends UIComponent {
         }
         setEnabled(true);
         setVisible(true);
-        if (!sprite.initialize(Vector.Zero(), 0.0f, Vector.Zero(), Angle.Zero(), animationFilePaths[0])) {
+        if (!sprite.initialize(Vector.Zero(), parent.getBaseDepth(), Vector.Zero(), Angle.Zero(),
+                animationFilePaths[0])) {
             return false;
         }
         sprite.setAnimationFrame(sprite.getAnimationFrameCount() - 1);
@@ -80,11 +84,11 @@ public class Button extends UIComponent {
         if (!setPressedAnimationFilePath(animationFilePaths[2])) {
             return false;
         }
-        if (!label.initialize(Vector.Zero(), Vector.Zero(), "", labelText, Vector.Zero(), Alignment.Center,
-                Alignment.Center)) {
+        if (!addComponent(label)) {
             return false;
         }
-        if (!addComponent(label)) {
+        if (!label.initialize(Vector.Zero(), Vector.Zero(), "", labelText, Vector.Zero(), Alignment.Center,
+                Alignment.Center)) {
             return false;
         }
         if (!setDimensions(dimensions)) {

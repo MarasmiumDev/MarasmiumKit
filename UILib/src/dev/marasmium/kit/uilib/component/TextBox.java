@@ -109,6 +109,9 @@ public class TextBox extends Label {
                               Alignment labelAlignment, Vector cursorDimensions, String cursorAnimationFilePath,
                               Alignment verticalCursorAlignment, String allowedCharacters, int maximumCharacters,
                               int targetRPS, float repeatStartTime) {
+        if (parent == null) {
+            return false;
+        }
         if (animationFilePaths == null) {
             return false;
         }
@@ -116,7 +119,8 @@ public class TextBox extends Label {
             return false;
         }
         this.verticalCursorAlignment = verticalCursorAlignment;
-        if (!cursor.initialize(Vector.Zero(), 0.0f, Vector.Zero(), Angle.Zero(), cursorAnimationFilePath)) {
+        if (!cursor.initialize(Vector.Zero(), parent.getBaseDepth(), Vector.Zero(), Angle.Zero(),
+                cursorAnimationFilePath)) {
             return false;
         }
         cursor.playAnimation();
@@ -131,11 +135,11 @@ public class TextBox extends Label {
         if (!setSelectedAnimationFilePath(animationFilePaths[1])) {
             return false;
         }
-        if (!label.initialize(Vector.Zero(), Vector.Zero(), "", labelText, Vector.Zero(), Alignment.Center,
-                Alignment.Center)) {
+        if (!addComponent(label)) {
             return false;
         }
-        if (!addComponent(label)) {
+        if (!label.initialize(Vector.Zero(), Vector.Zero(), "", labelText, Vector.Zero(), Alignment.Center,
+                Alignment.Center)) {
             return false;
         }
         if (!setAllowedCharacters(allowedCharacters)) {

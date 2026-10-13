@@ -87,23 +87,23 @@ public class Carousel extends Label {
         if (buttonAnimationFilePaths.length != 3) {
             return false;
         }
-        if (!label.initialize(Vector.Zero(), Vector.Zero(), "", labelText, Vector.Zero(), Alignment.Center,
-                Alignment.Center)) {
-            return false;
-        }
         if (!addComponent(label)) {
             return false;
         }
-        if (!backButton.initialize(Vector.Zero(), Vector.Zero(), buttonAnimationFilePaths, "", Alignment.Center)) {
+        if (!label.initialize(Vector.Zero(), Vector.Zero(), "", labelText, Vector.Zero(), Alignment.Center,
+                Alignment.Center)) {
             return false;
         }
         if (!addComponent(backButton)) {
             return false;
         }
-        if (!nextButton.initialize(Vector.Zero(), Vector.Zero(), buttonAnimationFilePaths, "", Alignment.Center)) {
+        if (!backButton.initialize(Vector.Zero(), Vector.Zero(), buttonAnimationFilePaths, "", Alignment.Center)) {
             return false;
         }
         if (!addComponent(nextButton)) {
+            return false;
+        }
+        if (!nextButton.initialize(Vector.Zero(), Vector.Zero(), buttonAnimationFilePaths, "", Alignment.Center)) {
             return false;
         }
         this.horizontalButtonAlignment = horizontalButtonAlignment;

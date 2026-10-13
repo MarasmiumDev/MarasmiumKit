@@ -44,7 +44,7 @@ public class GraphicsManager implements GLEventListener {
     /**
      * The number of floating point values per vertex in a sprite to be rendered by the graphics system
      */
-    private static final int FloatsPerVertex = 4;
+    private static final int FloatsPerVertex = 5;
     /**
      * The number of indices of sprite vertex data to process when rendering sprites
      */
@@ -56,7 +56,7 @@ public class GraphicsManager implements GLEventListener {
     /**
      * The vertex data offset for texture positioning information
      */
-    private static final int TexturePositionOffset = 2;
+    private static final int TexturePositionOffset = 3;
 
     /**
      * The target (fractional) number of graphics frames to process per millisecond
@@ -302,18 +302,10 @@ public class GraphicsManager implements GLEventListener {
     }
 
     /**
-     * Sort the sprites submitted this frame by their depth and make the graphics system thread safe for rendering
+     * Make the graphics system thread safe for rendering
      * @return Whether the graphics system could be made thread safe
      */
     public boolean endFrame() {
-        for (HashMap.Entry<Camera, ArrayList<Sprite>> entry : spriteGroups.entrySet()) {
-            try {
-                entry.getValue().sort(Comparator.comparingDouble(Sprite::getDepth));
-            } catch (IllegalStateException _) {
-                App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to retrieve sprites from group for ",
-                        "rendering");
-            }
-        }
         try {
             spriteGroupsLock.unlock();
         } catch (IllegalMonitorStateException _) {
@@ -485,18 +477,23 @@ public class GraphicsManager implements GLEventListener {
         }
         gl3.glEnable(GL3.GL_BLEND);
         gl3.glBlendFunc(GL3.GL_SRC_ALPHA, GL3.GL_ONE_MINUS_SRC_ALPHA);
+        gl3.glEnable(GL3.GL_DEPTH_TEST);
+        gl3.glDepthFunc(GL3.GL_LEQUAL);
+        gl3.glEnable(GL3.GL_CULL_FACE);
+        gl3.glCullFace(GL3.GL_BACK);
+        gl3.glFrontFace(GL3.GL_CCW);
         // Create shader program
         int vertexShaderID = gl3.glCreateShader(GL3.GL_VERTEX_SHADER);
         final String[] vertexSources = {
                 """
                     #version 330 core
-                    layout (location = 0) in vec2 inSpritePosition;
+                    layout (location = 0) in vec3 inSpritePosition;
                     layout (location = 1) in vec2 inTexturePosition;
                     uniform mat4 cameraMatrix;
                     out vec2 texturePosition;
                     void main() {
                         texturePosition = inTexturePosition;
-                        gl_Position = cameraMatrix * vec4(inSpritePosition, 0.0, 1.0);
+                        gl_Position = cameraMatrix * vec4(inSpritePosition, 1.0);
                     }
                 """,
         };
@@ -525,7 +522,11 @@ public class GraphicsManager implements GLEventListener {
                     uniform sampler2D textureSampler;
                     out vec4 outColour;
                     void main() {
-                        outColour = texture(textureSampler, texturePosition);
+                        vec4 textureColour = texture(textureSampler, texturePosition);
+                        if (textureColour.a < 0.0001) {
+                            discard;
+                        }
+                        outColour = textureColour;
                     }
                 """,
         };
@@ -609,6 +610,25 @@ public class GraphicsManager implements GLEventListener {
         gl3.glClearColor(clearColour.getRed(), clearColour.getGreen(), clearColour.getBlue(), clearColour.getAlpha());
         gl3.glClear(GL3.GL_COLOR_BUFFER_BIT | GL3.GL_DEPTH_BUFFER_BIT);
         gl3.glBindVertexArray(VAOIDs[0]);
+        // Determine minimum and maximum depth
+        float minimumDepth = 0.0f;
+        float maximumDepth = 0.0f;
+        for (HashMap.Entry<Camera, ArrayList<Sprite>> spriteGroup : spriteGroups.entrySet()) {
+            ArrayList<Sprite> sprites;
+            try {
+                sprites = spriteGroup.getValue();
+            } catch (IllegalStateException _) {
+                return;
+            }
+            for (Sprite sprite : sprites) {
+                if (sprite == null) {
+                    continue;
+                }
+                minimumDepth = Math.min(minimumDepth, sprite.getDepth());
+                maximumDepth = Math.max(maximumDepth, sprite.getDepth());
+            }
+        }
+        float depthRange = maximumDepth - minimumDepth;
         // Define sprite group metrics
         int spriteCount = 0;
         int textureID = 0;
@@ -636,6 +656,7 @@ public class GraphicsManager implements GLEventListener {
                 if (spriteCorners == null) {
                     continue;
                 }
+                float spriteDepth = -(depthRange == 0.0f ? sprite.getDepth() : ((2.0f * ((sprite.getDepth() - minimumDepth) / depthRange)) - 1.0f));
                 // Copy animation metrics and upload texture if necessary
                 Animation animation = App.Assets.getAnimation(sprite.getAnimationFilePath());
                 if (animation == null) {
@@ -686,13 +707,13 @@ public class GraphicsManager implements GLEventListener {
                 }
                 // Allocate vertices and indices
                 float[] sVertices = {
-                        spriteCorners[0].getX(), spriteCorners[0].getY(),
+                        spriteCorners[0].getX(), spriteCorners[0].getY(), spriteDepth,
                         textureBottomLeft.getX(), textureBottomLeft.getY(),
-                        spriteCorners[1].getX(), spriteCorners[1].getY(),
+                        spriteCorners[1].getX(), spriteCorners[1].getY(), spriteDepth,
                         textureBottomRight.getX(), textureBottomRight.getY(),
-                        spriteCorners[3].getX(), spriteCorners[3].getY(),
+                        spriteCorners[3].getX(), spriteCorners[3].getY(), spriteDepth,
                         textureTopRight.getX(), textureTopRight.getY(),
-                        spriteCorners[2].getX(), spriteCorners[2].getY(),
+                        spriteCorners[2].getX(), spriteCorners[2].getY(), spriteDepth,
                         textureTopLeft.getX(), textureTopLeft.getY(),
                 };
                 FloatBuffer newVertices = Buffers.newDirectFloatBuffer(vertices.capacity() + sVertices.length);
@@ -705,7 +726,7 @@ public class GraphicsManager implements GLEventListener {
                 }
                 vertices = newVertices;
                 vertices.flip();
-                int baseIndex = spriteCount * FloatsPerVertex;
+                int baseIndex = spriteCount * VerticesPerSprite;
                 int[] sIndices = {
                         baseIndex, baseIndex + 1, baseIndex + 2,
                         baseIndex + 2, baseIndex + 3, baseIndex,

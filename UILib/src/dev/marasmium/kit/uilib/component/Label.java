@@ -47,9 +47,12 @@ public class Label extends UIComponent {
      */
     public boolean initialize(Vector position, Vector dimensions, String animationFilePath, String text,
                               Vector textPosition, Alignment horizontalAlignment, Alignment verticalAlignment) {
+        if (parent == null) {
+            return false;
+        }
         setEnabled(true);
         setVisible(true);
-        if (!sprite.initialize(Vector.Zero(), 0.0f, Vector.Zero(), Angle.Zero(), animationFilePath)) {
+        if (!sprite.initialize(Vector.Zero(), parent.getBaseDepth(), Vector.Zero(), Angle.Zero(), animationFilePath)) {
             return false;
         }
         sprite.stopAnimation();
@@ -79,7 +82,9 @@ public class Label extends UIComponent {
             return;
         }
         if (parent != null) {
-            App.Graphics.submit(parent.getCamera(), sprite);
+            if (!sprite.getAnimationFilePath().isEmpty()) {
+                App.Graphics.submit(parent.getCamera(), sprite);
+            }
             if (parent.getTypefaceFilePath() != null) {
                 App.Graphics.submit(parent.getCamera(), text, parent.getTypefaceFilePath(), sprite,
                         parent.getTextPadding(), parent.getBaseDepth() + 0.1f, parent.getTextSize(), textPosition,

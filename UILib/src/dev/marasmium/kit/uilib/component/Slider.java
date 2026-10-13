@@ -85,6 +85,9 @@ public class Slider extends UIComponent {
                               Alignment labelAlignment, Vector cursorDimensions, String[] cursorAnimationFilePaths,
                               Alignment verticalCursorAlignment, float minimumValue, float maximumValue,
                               int valueCount) {
+        if (parent == null) {
+            return false;
+        }
         if (animationFilePaths == null) {
             return false;
         }
@@ -93,7 +96,8 @@ public class Slider extends UIComponent {
         }
         setEnabled(true);
         setVisible(true);
-        if (!sprite.initialize(Vector.Zero(), 0.0f, Vector.Zero(), Angle.Zero(), animationFilePaths[0])) {
+        if (!sprite.initialize(Vector.Zero(), parent.getBaseDepth(), Vector.Zero(), Angle.Zero(),
+                animationFilePaths[0])) {
             return false;
         }
         sprite.setAnimationFrame(sprite.getAnimationFrameCount() - 1);
@@ -103,17 +107,17 @@ public class Slider extends UIComponent {
         if (!setSelectedAnimationFilePath(animationFilePaths[1])) {
             return false;
         }
+        if (!addComponent(label)) {
+            return false;
+        }
         if (!label.initialize(Vector.Zero(), Vector.Zero(), "", labelText, Vector.Zero(), Alignment.Center,
                 Alignment.Center)) {
             return false;
         }
-        if (!addComponent(label)) {
+        if (!addComponent(cursor)) {
             return false;
         }
         if (!cursor.initialize(Vector.Zero(), Vector.Zero(), cursorAnimationFilePaths, "", Alignment.Center)) {
-            return false;
-        }
-        if (!addComponent(cursor)) {
             return false;
         }
         setMinimumValue(minimumValue);

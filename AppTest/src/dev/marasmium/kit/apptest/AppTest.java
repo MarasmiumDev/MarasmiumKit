@@ -8,10 +8,7 @@
 package dev.marasmium.kit.apptest;
 
 import dev.marasmium.kit.applib.App;
-import dev.marasmium.kit.applib.audio.AudioDevice;
-import dev.marasmium.kit.applib.data.Colour;
-import dev.marasmium.kit.applib.data.Vector;
-import dev.marasmium.kit.applib.windowing.Monitor;
+import dev.marasmium.kit.apptest.scenes.TitleScene;
 
 public class AppTest {
 

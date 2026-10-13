@@ -274,7 +274,6 @@ public class App {
         if (configuration != null) {
             return configuration;
         }
-        System.out.println("Generating default configuration");
         configuration = new Configuration();
         configuration.initialize();
         configuration.setStringValue("logTimestampFormat", "yyyy.MM.dd@HH:mm:ss.SSS");
@@ -293,9 +292,7 @@ public class App {
         configuration.setIntegerValue("graphicsTargetFPS", 60);
         configuration.setIntegerValue("graphicsMaximumUPF", 8);
         configuration.setColourValue("graphicsClearColour", Colour.Black);
-        if (!Assets.writeConfiguration(configuration, configurationFilePath)) {
-            System.out.println("Failed to generate default configuration");
-        }
+        Assets.writeConfiguration(configuration, configurationFilePath);
         return configuration;
     }
 
