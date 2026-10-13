@@ -328,7 +328,7 @@ public class WindowManager {
         // Set fullscreen mode
         SwingUtilities.invokeLater(() -> {
             if (fullscreen && !this.fullscreen) {
-                Vector windowedDimensions = this.windowedDimensions;
+                Vector windowedDimensions = this.windowedDimensions.clone();
                 windowPadding.setX(frame.getInsets().left + frame.getInsets().right);
                 windowPadding.setY(frame.getInsets().bottom + frame.getInsets().top);
                 setDimensions(Vector.Cartesian(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight()));

@@ -18,9 +18,7 @@ public class AppTest {
     public static final TitleScene Title_Scene = new TitleScene();
 
     static void main() {
-        if (App.Initialize("yyyy.MM.dd@HH:mm:ss.SSS", true, true, "MarasmiumKit-AppTest.log", "MarasmiumKit App",
-                Vector.Cartesian(1280.0f, 720.0f), new Monitor(0), false, true, -1, new AudioDevice(0), 1.0f, 1.0f, 60,
-                10, Colour.Black, Title_Scene)) {
+        if (App.Initialize("MarasmiumKit-App.configuration", Title_Scene)) {
             System.out.println("Initialized application");
             App.Run();
         } else {

@@ -69,7 +69,7 @@ public class GraphicsManager implements GLEventListener {
     /**
      * The maximum number of logic updates allowed between graphics frames
      */
-    private int maxUPF = 0;
+    private int maximumUPF = 0;
     /**
      * The colour to clear the window to each frame
      */
@@ -118,17 +118,17 @@ public class GraphicsManager implements GLEventListener {
     /**
      * Initialize the MarasmiumKit application framework's graphics system
      * @param targetFPS The initial target number of graphics frames to draw per second
-     * @param maxUPF The initial maximum number of logic updates to allow per graphics frame
+     * @param maximumUPF The initial maximum number of logic updates to allow per graphics frame
      * @param clearColour The initial colour to clear the window to between frames
      * @return Whether the parameters were valid and the graphics system was initialized successfully
      */
-    public boolean initialize(int targetFPS, int maxUPF, Colour clearColour) {
+    public boolean initialize(int targetFPS, int maximumUPF, Colour clearColour) {
         if (!setTargetFPS(targetFPS)) {
             App.Log.write(LogSource.Graphics, LogLevel.Error, "Failed to initialize graphics system, initial target ",
                     "FPS invalid");
             return false;
         }
-        if (!setMaxUPF(maxUPF)) {
+        if (!setMaximumUPF(maximumUPF)) {
             App.Log.write(LogSource.Graphics, LogLevel.Error, "Failed to initialize graphics system, initial maximum ",
                     "UPF invalid");
             return false;
@@ -332,7 +332,7 @@ public class GraphicsManager implements GLEventListener {
         boolean success = true;
         targetFPMS = 0.0f;
         targetMSPF = 0;
-        maxUPF = 0;
+        maximumUPF = 0;
         clearColourLock.lock();
         clearColour = null;
         try {
@@ -835,22 +835,22 @@ public class GraphicsManager implements GLEventListener {
      * Get the maximum number of logic updates allowed per graphics frame
      * @return The maximum number of logic updates per frame
      */
-    public int getMaxUPF() {
-        return maxUPF;
+    public int getMaximumUPF() {
+        return maximumUPF;
     }
 
     /**
      * Set the maximum number of logic updates allowed per graphics frame
-     * @param maxUPF The new maximum number of logic updates per frame
+     * @param maximumUPF The new maximum number of logic updates per frame
      * @return Whether the given maximum UPF is valid
      */
-    public boolean setMaxUPF(int maxUPF) {
-        if (maxUPF <= 0) {
-            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Maximum UPF ", maxUPF, " invalid");
+    public boolean setMaximumUPF(int maximumUPF) {
+        if (maximumUPF <= 0) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Maximum UPF ", maximumUPF, " invalid");
             return false;
         }
-        this.maxUPF = maxUPF;
-        App.Log.write(LogSource.Graphics, LogLevel.Info, "Maximum UPF set to ", maxUPF);
+        this.maximumUPF = maximumUPF;
+        App.Log.write(LogSource.Graphics, LogLevel.Info, "Maximum UPF set to ", maximumUPF);
         return true;
     }
 

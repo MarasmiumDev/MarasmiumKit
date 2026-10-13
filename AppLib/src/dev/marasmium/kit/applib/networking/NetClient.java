@@ -26,7 +26,7 @@ public class NetClient implements NetListener {
     /**
      * The maximum number of incoming messages to process per logic update
      */
-    private int maxMPU = 0;
+    private int maximumMPU = 0;
     /**
      * Whether the network client is waiting to connect to a server
      */
@@ -42,11 +42,11 @@ public class NetClient implements NetListener {
 
     /**
      * Initialize the MarasmiumKit application framework's network client
-     * @param maxMPU The maximum number of incoming messages for the network client to process each update
+     * @param maximumMPU The maximum number of incoming messages for the network client to process each update
      * @return Whether the parameter was valid and the network client was initialized successfully
      */
-    public boolean initialize(int maxMPU) {
-        if (!setMaxMPU(maxMPU)) {
+    public boolean initialize(int maximumMPU) {
+        if (!setMaximumMPU(maximumMPU)) {
             App.Log.write(LogSource.Network, LogLevel.Error, "Failed to set maximum messages to process per update");
             return false;
         }
@@ -110,7 +110,7 @@ public class NetClient implements NetListener {
      * Update the network client's connection to process incoming messages
      */
     public void update() {
-        connection.update(maxMPU);
+        connection.update(maximumMPU);
     }
 
     /**
@@ -215,23 +215,23 @@ public class NetClient implements NetListener {
      * Get the maximum number of incoming messages to process per logic update
      * @return The maximum number of incoming messages to process per logic update
      */
-    public int getMaxMPU() {
-        return maxMPU;
+    public int getMaximumMPU() {
+        return maximumMPU;
     }
 
     /**
      * Set the maximum number of incoming messages to process per logic update
-     * @param maxMPU The new maximum number of incoming messages to process per logic update (-1 for infinite)
+     * @param maximumMPU The new maximum number of incoming messages to process per logic update (-1 for infinite)
      * @return Whether the given number was valid (positive or -1)
      */
-    public boolean setMaxMPU(int maxMPU) {
-        if (maxMPU == 0 || maxMPU < -1) {
+    public boolean setMaximumMPU(int maximumMPU) {
+        if (maximumMPU == 0 || maximumMPU < -1) {
             App.Log.write(LogSource.Network, LogLevel.Warning, "Invalid maximum messages to process per update ",
-                    maxMPU);
+                    maximumMPU);
             return false;
         }
-        this.maxMPU = maxMPU;
-        App.Log.write(LogSource.Network, LogLevel.Info, "Set maximum messages to process per update ", maxMPU);
+        this.maximumMPU = maximumMPU;
+        App.Log.write(LogSource.Network, LogLevel.Info, "Set maximum messages to process per update ", maximumMPU);
         return true;
     }
 

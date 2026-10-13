@@ -8,6 +8,7 @@
 package dev.marasmium.kit.applib;
 
 import dev.marasmium.kit.applib.assets.AssetManager;
+import dev.marasmium.kit.applib.assets.Configuration;
 import dev.marasmium.kit.applib.audio.AudioDevice;
 import dev.marasmium.kit.applib.audio.AudioManager;
 import dev.marasmium.kit.applib.data.Colour;
@@ -70,13 +71,52 @@ public class App {
      */
     private static Scene Current_Scene = null;
 
-    public static boolean Initialize(String logTimestampFormat, boolean logConsoleOutputEnabled,
-                                     boolean logOutputFileEnabled, String logOutputFilePath, String windowTitle,
-                                     Vector windowDimensions, Monitor windowMonitor, boolean windowFullscreen,
-                                     boolean windowMouseCursorVisible, int netClientMaxMPU, AudioDevice audioSpeaker,
-                                     float audioSoundEffectsDefaultVolume, float audioMusicVolume,
-                                     int graphicsTargetFPS, int graphicsMaxUPF, Colour graphicsClearColour,
-                                     Scene initialScene) {
+    /**
+     * Initialize all subsystems of the MarasmiumKit application framework
+     * @param configurationFilePath The file path to read the application framework's configuration from
+     * @param initialScene The initial scene to be managed by the application framework
+     * @return Whether the application was initialized successfully
+     */
+    public static boolean Initialize(String configurationFilePath, Scene initialScene) {
+        // Get the application framework's configuration
+        Configuration configuration = Read_Configuration(configurationFilePath);
+        String logTimestampFormat;
+        boolean logConsoleOutputEnabled;
+        boolean logOutputFileEnabled;
+        String logOutputFilePath;
+        String windowTitle;
+        Vector windowDimensions;
+        Monitor windowMonitor;
+        boolean windowFullscreen;
+        boolean windowMouseCursorVisible;
+        int netClientMaximumMPU;
+        AudioDevice audioSpeaker;
+        float audioSoundEffectsDefaultVolume;
+        float audioMusicVolume;
+        int graphicsTargetFPS;
+        int graphicsMaximumUPF;
+        Colour graphicsClearColour;
+        try {
+            logTimestampFormat = configuration.getStringValue("logTimestampFormat");
+            logConsoleOutputEnabled = configuration.getBooleanValue("logConsoleOutputEnabled");
+            logOutputFileEnabled = configuration.getBooleanValue("logOutputFileEnabled");
+            logOutputFilePath = configuration.getStringValue("logOutputFilePath");
+            windowTitle = configuration.getStringValue("windowTitle");
+            windowDimensions = configuration.getVectorValue("windowDimensions");
+            windowMonitor = new Monitor(configuration.getIntegerValue("windowMonitorIndex"));
+            windowFullscreen = configuration.getBooleanValue("windowFullscreen");
+            windowMouseCursorVisible = configuration.getBooleanValue("windowMouseCursorVisible");
+            netClientMaximumMPU = configuration.getIntegerValue("netClientMaximumMPU");
+            audioSpeaker = new AudioDevice(configuration.getIntegerValue("audioSpeakerIndex"));
+            audioSoundEffectsDefaultVolume = configuration.getFloatValue("audioSoundEffectsDefaultVolume");
+            audioMusicVolume = configuration.getFloatValue("audioMusicVolume");
+            graphicsTargetFPS = configuration.getIntegerValue("graphicsTargetFPS");
+            graphicsMaximumUPF = configuration.getIntegerValue("graphicsMaximumUPF");
+            graphicsClearColour = configuration.getColourValue("graphicsClearColour");
+        } catch (NullPointerException _) {
+            return false;
+        }
+        // Initialize subsystems
         if (!Log.initialize(logTimestampFormat, logConsoleOutputEnabled, logOutputFileEnabled, logOutputFilePath)) {
             return false;
         }
@@ -92,7 +132,7 @@ public class App {
             return false;
         }
         Log.write(LogSource.App, LogLevel.Info, "Initialized windowing system");
-        if (!Network.initialize(netClientMaxMPU)) {
+        if (!Network.initialize(netClientMaximumMPU)) {
             Log.write(LogSource.App, LogLevel.Error, "Failed to initialize network client");
             return false;
         }
@@ -101,7 +141,7 @@ public class App {
             Log.write(LogSource.App, LogLevel.Error, "Failed to initialize audio system");
             return false;
         }
-        if (!Graphics.initialize(graphicsTargetFPS, graphicsMaxUPF, graphicsClearColour)) {
+        if (!Graphics.initialize(graphicsTargetFPS, graphicsMaximumUPF, graphicsClearColour)) {
             Log.write(LogSource.App, LogLevel.Error, "Failed to initialize graphics system");
             return false;
         }
@@ -154,7 +194,7 @@ public class App {
             deltaElapsedMS = System.currentTimeMillis() - deltaStartMS;
             deltaStartMS = System.currentTimeMillis();
             deltaFrames = deltaElapsedMS * Graphics.getTargetFPMS();
-            while (count++ < Graphics.getMaxUPF() && deltaFrames > 1.0f) {
+            while (count++ < Graphics.getMaximumUPF() && deltaFrames > 1.0f) {
                 Current_Scene.update(1.0f);
                 deltaFrames -= 1.0f;
             }
@@ -221,6 +261,42 @@ public class App {
             success = false;
         }
         return success;
+    }
+
+    /**
+     * Read the MarasmiumKit application framework's configuration from the disk or generate a default configuration and
+     * attempt to write it
+     * @param configurationFilePath The file path to read the application framework's configuration from
+     * @return The configuration read from disk or the default configuration generated
+     */
+    private static Configuration Read_Configuration(String configurationFilePath) {
+        Configuration configuration = Assets.getConfiguration(configurationFilePath);
+        if (configuration != null) {
+            return configuration;
+        }
+        System.out.println("Generating default configuration");
+        configuration = new Configuration();
+        configuration.initialize();
+        configuration.addStringValue("logTimestampFormat", "yyyy.MM.dd@HH:mm:ss.SSS");
+        configuration.addBooleanValue("logConsoleOutputEnabled", true);
+        configuration.addBooleanValue("logOutputFileEnabled", true);
+        configuration.addStringValue("logOutputFilePath", "MarasmiumKit-App.log");
+        configuration.addStringValue("windowTitle", "MarasmiumKit App");
+        configuration.addVectorValue("windowDimensions", Vector.Cartesian(1280.0f, 720.0f));
+        configuration.addIntegerValue("windowMonitorIndex", 0);
+        configuration.addBooleanValue("windowFullscreen", false);
+        configuration.addBooleanValue("windowMouseCursorVisible", true);
+        configuration.addIntegerValue("netClientMaximumMPU", -1);
+        configuration.addIntegerValue("audioSpeakerIndex", 0);
+        configuration.addFloatValue("audioSoundEffectsDefaultVolume", 1.0f);
+        configuration.addFloatValue("audioMusicVolume", 1.0f);
+        configuration.addIntegerValue("graphicsTargetFPS", 60);
+        configuration.addIntegerValue("graphicsMaximumUPF", 8);
+        configuration.addColourValue("graphicsClearColour", Colour.Blue);
+        if (!Assets.writeConfiguration(configuration, configurationFilePath)) {
+            System.out.println("Failed to generate default configuration");
+        }
+        return configuration;
     }
 
     /**

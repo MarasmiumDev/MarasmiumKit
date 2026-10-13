@@ -394,7 +394,7 @@ public class Configuration implements Cloneable {
      * @return Whether all parameters were valid and the boolean was added successfully
      */
     public boolean addBooleanValue(String valueName, boolean booleanValue) {
-        return addValueData(valueName, new byte[] { booleanValue ? (byte)0x00 : (byte)0x01 });
+        return addValueData(valueName, new byte[] { booleanValue ? (byte)0x01 : (byte)0x00 });
     }
 
     /**
