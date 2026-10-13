@@ -49,7 +49,7 @@ public class Configuration implements Cloneable {
             return false;
         }
         for (int i = 0; i < valueNames.length; i++) {
-            if (!addValueData(valueNames[i], valueData[i])) {
+            if (!setValueData(valueNames[i], valueData[i])) {
                 return false;
             }
         }
@@ -265,19 +265,16 @@ public class Configuration implements Cloneable {
     }
 
     /**
-     * Add a serialized data value to this configuration
+     * Set a serialized data value to this configuration
      * @param valueName The name to assign to the data in this configuration
      * @param valueData The serialized data value to add
-     * @return Whether all parameters were valid and the data was added successfully
+     * @return Whether all parameters were valid and the data was set successfully
      */
-    public boolean addValueData(String valueName, byte[] valueData) {
+    public boolean setValueData(String valueName, byte[] valueData) {
         if (values == null) {
             return false;
         }
         if (valueName == null || valueData == null) {
-            return false;
-        }
-        if (values.containsKey(valueName)) {
             return false;
         }
         values.put(valueName, valueData.clone());
@@ -285,64 +282,64 @@ public class Configuration implements Cloneable {
     }
 
     /**
-     * Add a vector value to this configuration
+     * Set a vector value to this configuration
      * @param valueName The name to assign to the vector in this configuration
-     * @param vectorValue The vector value to add
-     * @return Whether all parameters were valid and the vector was added successfully
+     * @param vectorValue The vector value to set
+     * @return Whether all parameters were valid and the vector was set successfully
      */
-    public boolean addVectorValue(String valueName, Vector vectorValue) {
+    public boolean setVectorValue(String valueName, Vector vectorValue) {
         if (vectorValue == null) {
             return false;
         }
-        return addValueData(valueName, vectorValue.serialize());
+        return setValueData(valueName, vectorValue.serialize());
     }
 
     /**
-     * Add a line value to this configuration
+     * Set a line value to this configuration
      * @param valueName The name to assign to the line in this configuration
-     * @param lineValue The line value to add
-     * @return Whether all parameters were valid and the line was added successfully
+     * @param lineValue The line value to set
+     * @return Whether all parameters were valid and the line was set successfully
      */
-    public boolean addLineValue(String valueName, Line lineValue) {
+    public boolean setLineValue(String valueName, Line lineValue) {
         if (lineValue == null) {
             return false;
         }
-        return addValueData(valueName, lineValue.serialize());
+        return setValueData(valueName, lineValue.serialize());
     }
 
     /**
-     * Add a colour value to this configuration
+     * Set a colour value to this configuration
      * @param valueName The name to assign to the colour in this configuration
-     * @param colourValue The colour value to add
-     * @return Whether all parameters were valid and the colour was added successfully
+     * @param colourValue The colour value to set
+     * @return Whether all parameters were valid and the colour was set successfully
      */
-    public boolean addColourValue(String valueName, Colour colourValue) {
+    public boolean setColourValue(String valueName, Colour colourValue) {
         if (colourValue == null) {
             return false;
         }
-        return addValueData(valueName, colourValue.serialize());
+        return setValueData(valueName, colourValue.serialize());
     }
 
     /**
-     * Add an angle value to this configuration
+     * Set an angle value to this configuration
      * @param valueName The name to assign to the angle in this configuration
-     * @param angleValue The angle value to add
-     * @return Whether all parameters were valid and the angle was added successfully
+     * @param angleValue The angle value to set
+     * @return Whether all parameters were valid and the angle was set successfully
      */
-    public boolean addAngleValue(String valueName, Angle angleValue) {
+    public boolean setAngleValue(String valueName, Angle angleValue) {
         if (angleValue == null) {
             return false;
         }
-        return addValueData(valueName, angleValue.serialize());
+        return setValueData(valueName, angleValue.serialize());
     }
 
     /**
-     * Add an integer value to this configuration
+     * Set an integer value to this configuration
      * @param valueName The name to assign to the integer in this configuration
-     * @param integerValue The integer to add
-     * @return Whether all parameters were valid and the integer was added successfully
+     * @param integerValue The integer to set
+     * @return Whether all parameters were valid and the integer was set successfully
      */
-    public boolean addIntegerValue(String valueName, int integerValue) {
+    public boolean setIntegerValue(String valueName, int integerValue) {
         byte[] valueData;
         ByteBuffer buffer;
         try {
@@ -352,16 +349,16 @@ public class Configuration implements Cloneable {
         } catch (IllegalArgumentException | BufferOverflowException | UnsupportedOperationException _) {
             return false;
         }
-        return addValueData(valueName, valueData);
+        return setValueData(valueName, valueData);
     }
 
     /**
-     * Add a float value to this configuration
+     * Set a float value to this configuration
      * @param valueName The name to assign to the float in this configuration
-     * @param floatValue The float to add
-     * @return Whether all parameters were valid and the float was added successfully
+     * @param floatValue The float to set
+     * @return Whether all parameters were valid and the float was set successfully
      */
-    public boolean addFloatValue(String valueName, float floatValue) {
+    public boolean setFloatValue(String valueName, float floatValue) {
         byte[] valueData;
         ByteBuffer buffer;
         try {
@@ -371,30 +368,30 @@ public class Configuration implements Cloneable {
         } catch (IllegalArgumentException | BufferOverflowException | UnsupportedOperationException _) {
             return false;
         }
-        return addValueData(valueName, valueData);
+        return setValueData(valueName, valueData);
     }
 
     /**
-     * Add a string value to this configuration
+     * Set a string value to this configuration
      * @param valueName The name to assign to the string in this configuration
-     * @param stringValue The string to add
-     * @return Whether all parameters were valid and the string was added successfully
+     * @param stringValue The string to set
+     * @return Whether all parameters were valid and the string was set successfully
      */
-    public boolean addStringValue(String valueName, String stringValue) {
+    public boolean setStringValue(String valueName, String stringValue) {
         if (stringValue == null) {
             return false;
         }
-        return addValueData(valueName, stringValue.getBytes());
+        return setValueData(valueName, stringValue.getBytes());
     }
 
     /**
-     * Add a boolean value to this configuration
+     * Set a boolean value to this configuration
      * @param valueName The name to assign to the boolean in this configuration
-     * @param booleanValue The boolean to add
-     * @return Whether all parameters were valid and the boolean was added successfully
+     * @param booleanValue The boolean to set
+     * @return Whether all parameters were valid and the boolean was set successfully
      */
-    public boolean addBooleanValue(String valueName, boolean booleanValue) {
-        return addValueData(valueName, new byte[] { booleanValue ? (byte)0x01 : (byte)0x00 });
+    public boolean setBooleanValue(String valueName, boolean booleanValue) {
+        return setValueData(valueName, new byte[] { booleanValue ? (byte)0x01 : (byte)0x00 });
     }
 
     /**

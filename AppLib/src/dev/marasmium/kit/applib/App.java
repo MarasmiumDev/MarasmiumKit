@@ -277,22 +277,22 @@ public class App {
         System.out.println("Generating default configuration");
         configuration = new Configuration();
         configuration.initialize();
-        configuration.addStringValue("logTimestampFormat", "yyyy.MM.dd@HH:mm:ss.SSS");
-        configuration.addBooleanValue("logConsoleOutputEnabled", true);
-        configuration.addBooleanValue("logOutputFileEnabled", true);
-        configuration.addStringValue("logOutputFilePath", "MarasmiumKit-App.log");
-        configuration.addStringValue("windowTitle", "MarasmiumKit App");
-        configuration.addVectorValue("windowDimensions", Vector.Cartesian(1280.0f, 720.0f));
-        configuration.addIntegerValue("windowMonitorIndex", 0);
-        configuration.addBooleanValue("windowFullscreen", false);
-        configuration.addBooleanValue("windowMouseCursorVisible", true);
-        configuration.addIntegerValue("netClientMaximumMPU", -1);
-        configuration.addIntegerValue("audioSpeakerIndex", 0);
-        configuration.addFloatValue("audioSoundEffectsDefaultVolume", 1.0f);
-        configuration.addFloatValue("audioMusicVolume", 1.0f);
-        configuration.addIntegerValue("graphicsTargetFPS", 60);
-        configuration.addIntegerValue("graphicsMaximumUPF", 8);
-        configuration.addColourValue("graphicsClearColour", Colour.Blue);
+        configuration.setStringValue("logTimestampFormat", "yyyy.MM.dd@HH:mm:ss.SSS");
+        configuration.setBooleanValue("logConsoleOutputEnabled", true);
+        configuration.setBooleanValue("logOutputFileEnabled", true);
+        configuration.setStringValue("logOutputFilePath", "MarasmiumKit-App.log");
+        configuration.setStringValue("windowTitle", "MarasmiumKit App");
+        configuration.setVectorValue("windowDimensions", Vector.Cartesian(1280.0f, 720.0f));
+        configuration.setIntegerValue("windowMonitorIndex", 0);
+        configuration.setBooleanValue("windowFullscreen", false);
+        configuration.setBooleanValue("windowMouseCursorVisible", true);
+        configuration.setIntegerValue("netClientMaximumMPU", -1);
+        configuration.setIntegerValue("audioSpeakerIndex", 0);
+        configuration.setFloatValue("audioSoundEffectsDefaultVolume", 1.0f);
+        configuration.setFloatValue("audioMusicVolume", 1.0f);
+        configuration.setIntegerValue("graphicsTargetFPS", 60);
+        configuration.setIntegerValue("graphicsMaximumUPF", 8);
+        configuration.setColourValue("graphicsClearColour", Colour.Black);
         if (!Assets.writeConfiguration(configuration, configurationFilePath)) {
             System.out.println("Failed to generate default configuration");
         }
