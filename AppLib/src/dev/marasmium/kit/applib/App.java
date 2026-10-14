@@ -79,7 +79,7 @@ public class App {
      */
     public static boolean Initialize(String configurationFilePath, Scene initialScene) {
         // Get the application framework's configuration
-        Configuration configuration = Read_Configuration(configurationFilePath);
+        Configuration configuration = ReadConfiguration(configurationFilePath);
         String logTimestampFormat;
         boolean logConsoleOutputEnabled;
         boolean logOutputFileEnabled;
@@ -269,7 +269,7 @@ public class App {
      * @param configurationFilePath The file path to read the application framework's configuration from
      * @return The configuration read from disk or the default configuration generated
      */
-    private static Configuration Read_Configuration(String configurationFilePath) {
+    private static Configuration ReadConfiguration(String configurationFilePath) {
         Configuration configuration = Assets.getConfiguration(configurationFilePath);
         if (configuration != null) {
             return configuration;

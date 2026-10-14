@@ -28,6 +28,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ReadOnlyBufferException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
@@ -383,6 +384,7 @@ public class GraphicsManager implements GLEventListener {
         }
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Generated texture ID ", textureIDs[0], " for animation ",
                 animation);
+        gl3.glActiveTexture(GL3.GL_TEXTURE0);
         gl3.glBindTexture(GL3.GL_TEXTURE_2D, textureIDs[0]);
         gl3.glPixelStorei(GL3.GL_UNPACK_ALIGNMENT, 1);
         gl3.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_NEAREST);
@@ -590,166 +592,171 @@ public class GraphicsManager implements GLEventListener {
     @Override
     public void display(GLAutoDrawable drawable) {
         spriteGroupsLock.lock();
-        // Clear screen
-        GL3 gl3;
         try {
-            gl3 = drawable.getGL().getGL3();
-        } catch (GLException _) {
-            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to retrieve OpenGL instance");
-            return;
-        }
-        if (gl3 == null) {
-            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Retrieved invalid OpenGL instance from context");
-            return;
-        }
-        Colour clearColour = getClearColour();
-        if (clearColour == null) {
-            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Clear colour invalid");
-            return;
-        }
-        gl3.glClearColor(clearColour.getRed(), clearColour.getGreen(), clearColour.getBlue(), clearColour.getAlpha());
-        gl3.glClear(GL3.GL_COLOR_BUFFER_BIT | GL3.GL_DEPTH_BUFFER_BIT);
-        gl3.glBindVertexArray(VAOIDs[0]);
-        // Determine minimum and maximum depth
-        float minimumDepth = 0.0f;
-        float maximumDepth = 0.0f;
-        for (HashMap.Entry<Camera, ArrayList<Sprite>> spriteGroup : spriteGroups.entrySet()) {
-            ArrayList<Sprite> sprites;
+            // Clear screen
+            GL3 gl3;
             try {
-                sprites = spriteGroup.getValue();
-            } catch (IllegalStateException _) {
+                gl3 = drawable.getGL().getGL3();
+            } catch (GLException _) {
+                App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to retrieve OpenGL instance");
                 return;
             }
-            for (Sprite sprite : sprites) {
-                if (sprite == null) {
-                    continue;
-                }
-                minimumDepth = Math.min(minimumDepth, sprite.getDepth());
-                maximumDepth = Math.max(maximumDepth, sprite.getDepth());
+            if (gl3 == null) {
+                App.Log.write(LogSource.Graphics, LogLevel.Warning, "Retrieved invalid OpenGL instance from context");
+                return;
             }
-        }
-        float depthRange = maximumDepth - minimumDepth;
-        // Define sprite group metrics
-        int spriteCount = 0;
-        int textureID = 0;
-        FloatBuffer vertices = Buffers.newDirectFloatBuffer(0);
-        IntBuffer indices = Buffers.newDirectIntBuffer(0);
-        for (HashMap.Entry<Camera, ArrayList<Sprite>> spriteGroup : spriteGroups.entrySet()) {
-            Camera camera;
-            ArrayList<Sprite> sprites;
-            try {
-                camera = spriteGroup.getKey();
-                sprites = spriteGroup.getValue();
-            } catch (IllegalStateException _) {
-                App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to get camera and sprites from group");
-                continue;
+            Colour clearColour = getClearColour();
+            if (clearColour == null) {
+                App.Log.write(LogSource.Graphics, LogLevel.Warning, "Clear colour invalid");
+                return;
             }
-            if (camera == null || sprites == null) {
-                continue;
-            }
-            for (Sprite sprite : sprites) {
-                // Copy sprite metrics
-                if (sprite == null) {
-                    continue;
+            gl3.glClearColor(clearColour.getRed(), clearColour.getGreen(), clearColour.getBlue(),
+                    clearColour.getAlpha());
+            gl3.glClear(GL3.GL_COLOR_BUFFER_BIT | GL3.GL_DEPTH_BUFFER_BIT);
+            gl3.glBindVertexArray(VAOIDs[0]);
+            // Determine minimum and maximum depth
+            float minimumDepth = 0.0f;
+            float maximumDepth = 0.0f;
+            for (HashMap.Entry<Camera, ArrayList<Sprite>> spriteGroup : spriteGroups.entrySet()) {
+                ArrayList<Sprite> sprites;
+                try {
+                    sprites = spriteGroup.getValue();
+                } catch (IllegalStateException _) {
+                    return;
                 }
-                Vector[] spriteCorners = sprite.getCorners();
-                if (spriteCorners == null) {
-                    continue;
-                }
-                float spriteDepth = -(depthRange == 0.0f ? sprite.getDepth() : ((2.0f * ((sprite.getDepth() - minimumDepth) / depthRange)) - 1.0f));
-                // Copy animation metrics and upload texture if necessary
-                Animation animation = App.Assets.getAnimation(sprite.getAnimationFilePath());
-                if (animation == null) {
-                    continue;
-                }
-                if (animation.getTextureID() != textureID && spriteCount > 0) {
-                    draw(gl3, spriteCount, textureID, camera.getProjectionMatrix(), vertices, indices);
-                    spriteCount = 0;
-                    vertices = Buffers.newDirectFloatBuffer(0);
-                    indices = Buffers.newDirectIntBuffer(0);
-                }
-                textureID = animation.getTextureID();
-                if (textureID == 0) {
-                    if (!loadTextureID(gl3, animation)) {
+                for (Sprite sprite : sprites) {
+                    if (sprite == null) {
                         continue;
                     }
-                    textureID = animation.getTextureID();
-                    textureIDs.add(textureID);
+                    minimumDepth = Math.min(minimumDepth, sprite.getDepth());
+                    maximumDepth = Math.max(maximumDepth, sprite.getDepth());
                 }
-                // Copy texture positioning metrics
-                Vector texturePosition = animation.getFrameTexturePosition(sprite.getAnimationFrame());
-                Vector textureDimensions = animation.getFrameTextureDimensions();
-                if (texturePosition == null || textureDimensions == null) {
-                    continue;
-                }
-                Vector textureBottomLeft = Vector.Cartesian(texturePosition.getX(), texturePosition.getY());
-                Vector textureBottomRight = Vector.Cartesian(texturePosition.getX() + textureDimensions.getX(),
-                        texturePosition.getY());
-                Vector textureTopRight = Vector.Cartesian(texturePosition.getX() + textureDimensions.getX(),
-                        texturePosition.getY() + textureDimensions.getY());
-                Vector textureTopLeft = Vector.Cartesian(texturePosition.getX(),
-                        texturePosition.getY() + textureDimensions.getY());
-                if (sprite.isFlippedHorizontally()) {
-                    Vector copy = textureBottomRight.clone();
-                    textureBottomRight = textureBottomLeft.clone();
-                    textureBottomLeft = copy.clone();
-                    copy = textureTopRight.clone();
-                    textureTopRight = textureTopLeft.clone();
-                    textureTopLeft = copy.clone();
-                }
-                if (sprite.isFlippedVertically()) {
-                    Vector copy = textureBottomRight.clone();
-                    textureBottomRight = textureTopRight.clone();
-                    textureTopRight = copy.clone();
-                    copy = textureBottomLeft.clone();
-                    textureBottomLeft = textureTopLeft.clone();
-                    textureTopLeft = copy.clone();
-                }
-                // Allocate vertices and indices
-                float[] sVertices = {
-                        spriteCorners[0].getX(), spriteCorners[0].getY(), spriteDepth,
-                        textureBottomLeft.getX(), textureBottomLeft.getY(),
-                        spriteCorners[1].getX(), spriteCorners[1].getY(), spriteDepth,
-                        textureBottomRight.getX(), textureBottomRight.getY(),
-                        spriteCorners[3].getX(), spriteCorners[3].getY(), spriteDepth,
-                        textureTopRight.getX(), textureTopRight.getY(),
-                        spriteCorners[2].getX(), spriteCorners[2].getY(), spriteDepth,
-                        textureTopLeft.getX(), textureTopLeft.getY(),
-                };
-                FloatBuffer newVertices = Buffers.newDirectFloatBuffer(vertices.capacity() + sVertices.length);
-                try {
-                    newVertices.put(vertices);
-                    newVertices.put(sVertices);
-                } catch (BufferOverflowException | IllegalArgumentException | ReadOnlyBufferException _) {
-                    App.Log.write(LogSource.Graphics, LogLevel.Info, "Failed to add sprite vertex data to buffer");
-                    continue;
-                }
-                vertices = newVertices;
-                vertices.flip();
-                int baseIndex = spriteCount * VerticesPerSprite;
-                int[] sIndices = {
-                        baseIndex, baseIndex + 1, baseIndex + 2,
-                        baseIndex + 2, baseIndex + 3, baseIndex,
-                };
-                IntBuffer newIndices = Buffers.newDirectIntBuffer(indices.capacity() + sIndices.length);
-                try {
-                    newIndices.put(indices);
-                    newIndices.put(sIndices);
-                } catch (BufferOverflowException | IllegalArgumentException | ReadOnlyBufferException _) {
-                    App.Log.write(LogSource.Graphics, LogLevel.Info, "Failed to add sprite index data to buffer");
-                    continue;
-                }
-                indices = newIndices;
-                indices.flip();
-                spriteCount++;
             }
-            draw(gl3, spriteCount, textureID, camera.getProjectionMatrix(), vertices, indices);
+            float depthRange = maximumDepth - minimumDepth;
+            // Draw sprites
+            for (HashMap.Entry<Camera, ArrayList<Sprite>> spriteGroup : spriteGroups.entrySet()) {
+                int spriteCount = 0;
+                int textureID = 0;
+                FloatBuffer vertices = Buffers.newDirectFloatBuffer(0);
+                IntBuffer indices = Buffers.newDirectIntBuffer(0);
+                Camera camera;
+                ArrayList<Sprite> sprites;
+                try {
+                    camera = spriteGroup.getKey();
+                    sprites = spriteGroup.getValue();
+                } catch (IllegalStateException _) {
+                    App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to get camera and sprites from group");
+                    continue;
+                }
+                if (camera == null || sprites == null) {
+                    continue;
+                }
+                for (Sprite sprite : sprites) {
+                    // Copy sprite metrics
+                    if (sprite == null) {
+                        continue;
+                    }
+                    Vector[] spriteCorners = sprite.getCorners();
+                    if (spriteCorners == null) {
+                        continue;
+                    }
+                    float spriteDepth = -(depthRange == 0.0f ? sprite.getDepth()
+                            : ((2.0f * ((sprite.getDepth() - minimumDepth) / depthRange)) - 1.0f));
+                    // Copy animation metrics and upload texture if necessary
+                    Animation animation = App.Assets.getAnimation(sprite.getAnimationFilePath());
+                    if (animation == null) {
+                        continue;
+                    }
+                    if (animation.getTextureID() != textureID && spriteCount > 0) {
+                        draw(gl3, spriteCount, textureID, camera.getProjectionMatrix(), vertices, indices);
+                        spriteCount = 0;
+                        vertices = Buffers.newDirectFloatBuffer(0);
+                        indices = Buffers.newDirectIntBuffer(0);
+                    }
+                    textureID = animation.getTextureID();
+                    if (textureID == 0) {
+                        if (!loadTextureID(gl3, animation)) {
+                            continue;
+                        }
+                        textureID = animation.getTextureID();
+                        textureIDs.add(textureID);
+                    }
+                    // Copy texture positioning metrics
+                    Vector texturePosition = animation.getFrameTexturePosition(sprite.getAnimationFrame());
+                    Vector textureDimensions = animation.getFrameTextureDimensions();
+                    if (texturePosition == null || textureDimensions == null) {
+                        continue;
+                    }
+                    Vector textureBottomLeft = Vector.Cartesian(texturePosition.getX(), texturePosition.getY());
+                    Vector textureBottomRight = Vector.Cartesian(texturePosition.getX() + textureDimensions.getX(),
+                            texturePosition.getY());
+                    Vector textureTopRight = Vector.Cartesian(texturePosition.getX() + textureDimensions.getX(),
+                            texturePosition.getY() + textureDimensions.getY());
+                    Vector textureTopLeft = Vector.Cartesian(texturePosition.getX(),
+                            texturePosition.getY() + textureDimensions.getY());
+                    if (sprite.isFlippedHorizontally()) {
+                        Vector copy = textureBottomRight.clone();
+                        textureBottomRight = textureBottomLeft.clone();
+                        textureBottomLeft = copy.clone();
+                        copy = textureTopRight.clone();
+                        textureTopRight = textureTopLeft.clone();
+                        textureTopLeft = copy.clone();
+                    }
+                    if (sprite.isFlippedVertically()) {
+                        Vector copy = textureBottomRight.clone();
+                        textureBottomRight = textureTopRight.clone();
+                        textureTopRight = copy.clone();
+                        copy = textureBottomLeft.clone();
+                        textureBottomLeft = textureTopLeft.clone();
+                        textureTopLeft = copy.clone();
+                    }
+                    // Allocate vertices and indices
+                    float[] sVertices = {
+                            spriteCorners[0].getX(), spriteCorners[0].getY(), spriteDepth,
+                            textureBottomLeft.getX(), textureBottomLeft.getY(),
+                            spriteCorners[1].getX(), spriteCorners[1].getY(), spriteDepth,
+                            textureBottomRight.getX(), textureBottomRight.getY(),
+                            spriteCorners[3].getX(), spriteCorners[3].getY(), spriteDepth,
+                            textureTopRight.getX(), textureTopRight.getY(),
+                            spriteCorners[2].getX(), spriteCorners[2].getY(), spriteDepth,
+                            textureTopLeft.getX(), textureTopLeft.getY(),
+                    };
+                    FloatBuffer newVertices = Buffers.newDirectFloatBuffer(vertices.capacity() + sVertices.length);
+                    try {
+                        newVertices.put(vertices);
+                        newVertices.put(sVertices);
+                    } catch (BufferOverflowException | IllegalArgumentException | ReadOnlyBufferException _) {
+                        App.Log.write(LogSource.Graphics, LogLevel.Info, "Failed to add sprite vertex data to buffer");
+                        continue;
+                    }
+                    vertices = newVertices;
+                    vertices.flip();
+                    int baseIndex = spriteCount * VerticesPerSprite;
+                    int[] sIndices = {
+                            baseIndex, baseIndex + 1, baseIndex + 2,
+                            baseIndex + 2, baseIndex + 3, baseIndex,
+                    };
+                    IntBuffer newIndices = Buffers.newDirectIntBuffer(indices.capacity() + sIndices.length);
+                    try {
+                        newIndices.put(indices);
+                        newIndices.put(sIndices);
+                    } catch (BufferOverflowException | IllegalArgumentException | ReadOnlyBufferException _) {
+                        App.Log.write(LogSource.Graphics, LogLevel.Info, "Failed to add sprite index data to buffer");
+                        continue;
+                    }
+                    indices = newIndices;
+                    indices.flip();
+                    spriteCount++;
+                }
+                draw(gl3, spriteCount, textureID, camera.getProjectionMatrix(), vertices, indices);
+            }
             gl3.glBindVertexArray(0);
-        }
-        try {
-            spriteGroupsLock.unlock();
-        } catch (IllegalMonitorStateException _) {
-            App.Log.write(LogSource.Graphics, LogLevel.Error, "Failed to unlock sprite scope lock");
+        } finally {
+            try {
+                spriteGroupsLock.unlock();
+            } catch (IllegalMonitorStateException _) {
+                App.Log.write(LogSource.Graphics, LogLevel.Error, "Failed to unlock sprite scope lock");
+            }
         }
     }
 

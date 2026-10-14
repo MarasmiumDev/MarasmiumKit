@@ -9,11 +9,14 @@ package dev.marasmium.kit.apptest.scenes;
 
 import dev.marasmium.kit.applib.App;
 import dev.marasmium.kit.applib.Scene;
+import dev.marasmium.kit.applib.data.Angle;
 import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.graphics.Alignment;
+import dev.marasmium.kit.applib.graphics.Camera;
 import dev.marasmium.kit.applib.graphics.Sprite;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
+import dev.marasmium.kit.apptest.AppTest;
 import dev.marasmium.kit.apptest.sprites.Spark;
 import dev.marasmium.kit.uilib.UIEvent;
 import dev.marasmium.kit.uilib.UIGroup;
@@ -34,8 +37,10 @@ public class TitleScene extends Scene implements UIListener {
     private final Button startButton = new Button();
     private final Button optionsButton = new Button();
     private final Button quitButton = new Button();
+    private final Camera sparkCamera = new Camera();
     private final ArrayList<Spark> sparks = new ArrayList<>();
     private float sparkTimer = 0.0f;
+    private boolean running = false;
 
     @Override
     public boolean initialize() {
@@ -43,7 +48,7 @@ public class TitleScene extends Scene implements UIListener {
                 "Assets/Animations/UI/Button/Button_Selected.animation",
                 "Assets/Animations/UI/Button/Button_Pressed.animation"
         };
-        UI.initialize(this, 0, 1.245f, "Assets/Typefaces/Silkscreen.typeface", 4.0f, 0.35f);
+        UI.initialize(this, 0, 1.0f, "Assets/Typefaces/Silkscreen.typeface", 4.0f, 0.35f);
         UI.addComponent(label);
         UI.addComponent(startButton);
         UI.addComponent(optionsButton);
@@ -56,6 +61,8 @@ public class TitleScene extends Scene implements UIListener {
                 "OPTIONS", Alignment.Center);
         quitButton.initialize(Vector.Cartesian(0.33f, 0.20f), Vector.Cartesian(0.33f, 0.10f), buttonAnimations,
                 "QUIT", Alignment.Center);
+        sparkCamera.initialize(App.Window.getDimensions().scalarMultiply(0.5f), 1.0f, Angle.Zero());
+        running = true;
         return true;
     }
 
@@ -68,14 +75,14 @@ public class TitleScene extends Scene implements UIListener {
     @Override
     public boolean processInput() {
         UI.processInput();
-        return true;
+        return running;
     }
 
     @Override
     public void draw() {
         UI.draw();
         for (Spark spark : sparks) {
-            App.Graphics.submit(UI.getCamera(), spark);
+            App.Graphics.submit(sparkCamera, spark);
         }
     }
 
@@ -83,12 +90,13 @@ public class TitleScene extends Scene implements UIListener {
     public void update(float deltaFrames) {
         UI.update(deltaFrames);
         sparkTimer += deltaFrames;
-        if (sparkTimer > (float)App.Graphics.getTargetFPS() / 10.0f) {
+        if (sparkTimer > (float)App.Graphics.getTargetFPS() / 20.0f) {
             sparkTimer = 0.0f;
             Spark spark = new Spark();
             spark.initialize();
             sparks.add(spark);
         }
+        sparkCamera.update(deltaFrames);
         for (Spark spark : sparks) {
             spark.update(deltaFrames);
         }
@@ -97,18 +105,28 @@ public class TitleScene extends Scene implements UIListener {
 
     @Override
     public boolean leave(Scene nextScene) {
-        UI.destroy();
         return true;
     }
 
     @Override
     public boolean destroy() {
+        UI.destroy();
         return true;
     }
 
     @Override
     public void componentEvent(int groupID, int componentID, UIEvent event) {
-        App.Log.write(logSource, LogLevel.Info, "Component ", componentID, " in group ", groupID, " event ", event);
+        if (groupID == UI.getGroupID()) {
+            if (event == UIEvent.Button_Released) {
+                if (componentID == startButton.getComponentID()) {
+                    App.SetCurrentScene(AppTest.Connect_Scene);
+                } else if (componentID == optionsButton.getComponentID()) {
+                    App.SetCurrentScene(AppTest.Options_Scene);
+                } else if (componentID == quitButton.getComponentID()) {
+                    running = false;
+                }
+            }
+        }
     }
 
 }

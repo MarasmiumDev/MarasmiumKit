@@ -19,10 +19,12 @@ public class Spark extends Sprite {
 
     public void initialize() {
         Vector position = Vector.Cartesian((float)Math.random() * App.Window.getDimensions().getX(), -16.0f);
-        Angle angle = Angle.Radians((float)Math.random());
-        super.initialize(position, 0.0f, Vector.Cartesian(16.0f, 16.0f), angle, "Assets/Animations/Spark.animation");
+        Vector dimensions = Vector.Cartesian((float)Math.random() * 23.0f, (float)Math.random() * 24.0f);
+        super.initialize(position, 0.0f, dimensions, Angle.Zero(),
+                "Assets/Animations/Spark.animation");
         playAnimation(1);
         velocity = Vector.Cartesian(0.0f, (float)Math.random() * 10.0f);
+        rotation = Angle.Radians(((2.0f * (float)Math.random()) - 1.0f) * 0.1f);
     }
 
     public void update(float deltaFrames) {

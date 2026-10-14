@@ -8,11 +8,15 @@
 package dev.marasmium.kit.apptest;
 
 import dev.marasmium.kit.applib.App;
+import dev.marasmium.kit.apptest.scenes.ConnectScene;
+import dev.marasmium.kit.apptest.scenes.OptionsScene;
 import dev.marasmium.kit.apptest.scenes.TitleScene;
 
 public class AppTest {
 
     public static final TitleScene Title_Scene = new TitleScene();
+    public static final ConnectScene Connect_Scene = new ConnectScene();
+    public static final OptionsScene Options_Scene = new OptionsScene();
 
     static void main() {
         if (App.Initialize("MarasmiumKit-App.configuration", Title_Scene)) {
