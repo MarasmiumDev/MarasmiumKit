@@ -39,6 +39,11 @@ import java.util.Collections;
 public class WindowManager {
 
     /**
+     * Short time to wait before moving on from AWT frame sizing operations
+     */
+    private static final int PauseTime = 100;
+
+    /**
      * The title to appear on the window when in windowed mode
      */
     private String title = null;
@@ -142,11 +147,11 @@ public class WindowManager {
             App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set window title");
             return false;
         }
+        setMonitor(monitor);
         if (!setDimensions(dimensions)) {
             App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set window dimensions");
             return false;
         }
-        setMonitor(monitor);
         if (!setFullscreen(fullscreen)) {
             App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set window fullscreen mode");
             return false;
@@ -243,14 +248,10 @@ public class WindowManager {
             App.Log.write(LogSource.Window, LogLevel.Warning, "Can't directly set dimensions in fullscreen mode");
             return true;
         }
-        this.dimensions.setX(dimensions.getX());
-        this.dimensions.setY(dimensions.getY());
         // Set current window dimensions (in windowed mode)
         try {
             SwingUtilities.invokeAndWait(() -> {
                 canvas.setPreferredSize(new Dimension((int) dimensions.getX(), (int) dimensions.getY()));
-                canvas.setMinimumSize(new Dimension((int) dimensions.getX(), (int) dimensions.getY()));
-                canvas.setMaximumSize(new Dimension((int) dimensions.getX(), (int) dimensions.getY()));
                 canvas.setSize((int) dimensions.getX(), (int) dimensions.getY());
                 frame.pack();
                 Monitor monitor = getMonitor();
@@ -268,6 +269,8 @@ public class WindowManager {
             App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set AWT window dimensions");
             return false;
         }
+        this.dimensions.setX(canvas.getWidth());
+        this.dimensions.setY(canvas.getHeight());
         return true;
     }
 
@@ -312,6 +315,8 @@ public class WindowManager {
         if (fullscreen) {
             setFullscreen(false);
             setFullscreen(true);
+        } else {
+            setDimensions(dimensions);
         }
         App.Log.write(LogSource.Window, LogLevel.Info, "Set fullscreen monitor index ", monitor);
     }
@@ -358,6 +363,7 @@ public class WindowManager {
                     gd.setFullScreenWindow(frame);
                     fullscreenDevice = gd;
                 });
+                Thread.sleep(PauseTime);
             } catch (InterruptedException | InvocationTargetException _) {
                 App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set fullscreen monitor");
                 return false;
@@ -372,14 +378,13 @@ public class WindowManager {
                     fullscreenDevice.setFullScreenWindow(null);
                     fullscreenDevice = null;
                 });
+                Thread.sleep(PauseTime);
             } catch (InterruptedException | InvocationTargetException _) {
                 App.Log.write(LogSource.Window, LogLevel.Error, "Failed to remove fullscreen monitor");
                 return false;
             }
             this.fullscreen = false;
             setDimensions(windowedDimensions.add(windowPadding));
-            dimensions.setX(windowedDimensions.getX());
-            dimensions.setY(windowedDimensions.getY());
             App.Log.write(LogSource.Window, LogLevel.Info, "Set window to windowed mode");
         }
         return true;

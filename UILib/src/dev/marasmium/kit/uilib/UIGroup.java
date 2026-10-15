@@ -179,6 +179,13 @@ public class UIGroup implements UIListener {
      * @return Whether all the user-interface components' dimensions were updated successfully
      */
     private boolean updateWindowDimensions() {
+        if (windowDimensions != null && !(App.Window.getDimensions().getX() == 0.0f
+                || App.Window.getDimensions().getY() == 0.0f)) {
+            Vector scaling = App.Window.getDimensions().elementDivide(windowDimensions);
+            float averageScaling = scaling.getElementAverage();
+            textSize *= averageScaling;
+            textPadding *= averageScaling;
+        }
         windowDimensions = App.Window.getDimensions().clone();
         for (UIComponent component : components) {
             if (component == null) {

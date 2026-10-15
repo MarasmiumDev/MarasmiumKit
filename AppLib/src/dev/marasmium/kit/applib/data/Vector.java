@@ -546,6 +546,13 @@ public class Vector implements Serializable, Cloneable {
     }
 
     /**
+     * Get the average of the Cartesian coordinates of this vector
+     */
+    public float getElementAverage() {
+        return getElementSum() * 0.5f;
+    }
+
+    /**
      * Get the squared length/magnitude of this vector
      * @return The squared length of this vector
      */

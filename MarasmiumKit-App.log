@@ -1,155 +1,166 @@
-2026.10.15@15:14:24.128: [Logging System] [Information] Initialized logging system
-2026.10.15@15:14:24.128: [MarasmiumKit App] [Information] Initialized logging system
-2026.10.15@15:14:24.131: [User-Input Management System] [Information] Initialized keyboard user-input management system
-2026.10.15@15:14:24.132: [User-Input Management System] [Information] Initialized mouse user-input management system
-2026.10.15@15:14:24.132: [User-Input Management System] [Information] Initialized user-input management system
-2026.10.15@15:14:24.132: [MarasmiumKit App] [Information] Initialized user-input management system
-2026.10.15@15:14:25.457: [Windowing System] [Information] Generated new window frame
-2026.10.15@15:14:25.458: [Windowing System] [Information] Set window title "MarasmiumKit App"
-2026.10.15@15:14:25.463: [Windowing System] [Information] Set window dimensions vector(1280.0, 720.0)
-2026.10.15@15:14:25.464: [Windowing System] [Information] Set fullscreen monitor index monitor(index 2, "Display 3", dimensions vector(1920.0, 1080.0), position vector(1920.0, 0.0))
-2026.10.15@15:14:25.465: [Windowing System] [Information] Set mouse cursor visible
-2026.10.15@15:14:25.466: [Windowing System] [Information] Initialized windowing system
-2026.10.15@15:14:25.466: [MarasmiumKit App] [Information] Initialized windowing system
-2026.10.15@15:14:25.466: [Network Client] [Information] Set maximum messages to process per update -1
-2026.10.15@15:14:25.466: [Network Client] [Information] Initialized network client
-2026.10.15@15:14:25.466: [MarasmiumKit App] [Information] Initialized network client
-2026.10.15@15:14:25.473: [Audio System] [Information] Setting audio output speaker speaker(3, "Default Audio Device")
-2026.10.15@15:14:25.474: [Audio System] [Information] Stopping all sound effects
-2026.10.15@15:14:25.474: [Audio System] [Information] Set audio output speaker speaker(3, "Default Audio Device")
-2026.10.15@15:14:25.474: [Audio System] [Information] Set default sound effect volume 100%
-2026.10.15@15:14:25.474: [Audio System] [Information] Initialized sound effects audio subsystem
-2026.10.15@15:14:25.474: [Audio System] [Information] Set music volume 100%
-2026.10.15@15:14:25.474: [Audio System] [Information] Initialized music audio subsystem
-2026.10.15@15:14:25.474: [Audio System] [Information] Initialize audio system
-2026.10.15@15:14:25.474: [Graphics System] [Information] Target FPS set to 60 -> FPMS=0.06, MSPF=16
-2026.10.15@15:14:25.474: [Graphics System] [Information] Maximum UPF set to 8
-2026.10.15@15:14:25.474: [Graphics System] [Information] Set clear colour to colour(0, 0, 0, 255)
-2026.10.15@15:14:25.475: [Graphics System] [Information] Initialized graphics system
-2026.10.15@15:14:25.475: [MarasmiumKit App] [Information] Initialized graphics system
-2026.10.15@15:14:25.475: [MarasmiumKit App] [Information] Scene 0 not added
-2026.10.15@15:14:25.475: [MarasmiumKit App] [Information] Adding scene 0
-2026.10.15@15:14:25.475: [MarasmiumKit App] [Information] Scene 0 requires initialization
-2026.10.15@15:14:25.476: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Button/Button_Unselected.animation"
-2026.10.15@15:14:25.476: [MarasmiumKit App] [Information] Entering new scene 1
-2026.10.15@15:14:25.476: [User-Input Management System] [Information] Adding user-input listener
-2026.10.15@15:14:25.476: [Network Client] [Information] Adding network listener
-2026.10.15@15:14:25.477: [MarasmiumKit App] [Information] Set initial scene
-2026.10.15@15:14:25.477: [MarasmiumKit App] [Information] Initialized MarasmiumKit application framework
-2026.10.15@15:14:25.477: [MarasmiumKit App] [Information] Starting main application loop
-2026.10.15@15:14:25.484: [Asset Management System] [Information] Adding typeface at "Assets/Typefaces/Silkscreen.typeface"
-2026.10.15@15:14:25.512: [Graphics System] [Information] Initializing OpenGL parameters
-2026.10.15@15:14:25.514: [Graphics System] [Information] OpenGL version "4.1 Metal - 91.7"
-2026.10.15@15:14:25.519: [Graphics System] [Information] Compiled vertex shader 4
-2026.10.15@15:14:25.519: [Graphics System] [Information] Compiled fragment shader 5
-2026.10.15@15:14:25.520: [Graphics System] [Information] Generated shader program 6
-2026.10.15@15:14:25.522: [Graphics System] [Information] Generated VAO 2, VBO 1, and IBO 2
-2026.10.15@15:14:25.524: [Graphics System] [Information] Resized OpenGL viewport 1280x720
-2026.10.15@15:14:25.537: [Graphics System] [Information] Generated texture ID 3 for animation animation(0FPS, 95 frames arranged vector(95.0, 1.0), vector(100.0, 140.0)pixels, 5320000B, texture ID 0)
-2026.10.15@15:14:25.541: [Graphics System] [Information] Resizing OpenGL vertex buffer to 640B
-2026.10.15@15:14:25.543: [Graphics System] [Information] Resizing OpenGL index buffer to 192B
-2026.10.15@15:14:25.550: [Graphics System] [Information] Generated texture ID 4 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(1.0, 1.0)pixels, 8B, texture ID 0)
-2026.10.15@15:14:25.565: [Asset Management System] [Information] Adding animation at "Assets/Animations/Spark.animation"
-2026.10.15@15:14:25.568: [Graphics System] [Information] Generated texture ID 7 for animation animation(2FPS, 8 frames arranged vector(8.0, 1.0), vector(16.0, 16.0)pixels, 8192B, texture ID 0)
-2026.10.15@15:14:26.018: [Graphics System] [Information] Resizing OpenGL vertex buffer to 1280B
-2026.10.15@15:14:26.018: [Graphics System] [Information] Resizing OpenGL index buffer to 384B
-2026.10.15@15:14:26.213: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Button/Button_Selected.animation"
-2026.10.15@15:14:26.213: [Graphics System] [Information] Generated texture ID 6 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(1.0, 1.0)pixels, 8B, texture ID 0)
-2026.10.15@15:14:26.473: [Graphics System] [Information] Resizing OpenGL vertex buffer to 2560B
-2026.10.15@15:14:26.473: [Graphics System] [Information] Resizing OpenGL index buffer to 768B
-2026.10.15@15:14:26.528: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Button/Button_Pressed.animation"
-2026.10.15@15:14:26.529: [Graphics System] [Information] Generated texture ID 8 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(1.0, 1.0)pixels, 8B, texture ID 0)
-2026.10.15@15:14:26.601: [MarasmiumKit App] [Information] Leaving current scene 1
-2026.10.15@15:14:26.601: [User-Input Management System] [Information] Removing user-input listener
-2026.10.15@15:14:26.601: [Network Client] [Information] Removing network listener
-2026.10.15@15:14:26.601: [MarasmiumKit App] [Information] Scene 0 not added
-2026.10.15@15:14:26.601: [MarasmiumKit App] [Information] Adding scene 0
-2026.10.15@15:14:26.602: [MarasmiumKit App] [Information] Scene 0 requires initialization
-2026.10.15@15:14:26.604: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Carousel/Carousel_Button_Unselected.animation"
-2026.10.15@15:14:26.605: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Switch/Switch_Off.animation"
-2026.10.15@15:14:26.605: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Slider/Slider_Unselected.animation"
-2026.10.15@15:14:26.605: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Slider/Slider_Cursor_Unselected.animation"
-2026.10.15@15:14:26.606: [MarasmiumKit App] [Information] Entering new scene 2
-2026.10.15@15:14:26.607: [User-Input Management System] [Information] Adding user-input listener
-2026.10.15@15:14:26.607: [Network Client] [Information] Adding network listener
-2026.10.15@15:14:26.608: [Graphics System] [Information] Generated texture ID 10 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(15.0, 15.0)pixels, 1800B, texture ID 0)
-2026.10.15@15:14:26.609: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Carousel/Carousel.animation"
-2026.10.15@15:14:26.609: [Graphics System] [Information] Generated texture ID 11 for animation animation(0FPS, 1 frames arranged vector(1.0, 1.0), vector(1.0, 1.0)pixels, 4B, texture ID 0)
-2026.10.15@15:14:26.610: [Graphics System] [Information] Generated texture ID 12 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(1.0, 1.0)pixels, 8B, texture ID 0)
-2026.10.15@15:14:26.610: [Graphics System] [Information] Generated texture ID 13 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(1.0, 1.0)pixels, 8B, texture ID 0)
-2026.10.15@15:14:26.611: [Graphics System] [Information] Generated texture ID 14 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(1.0, 1.0)pixels, 8B, texture ID 0)
-2026.10.15@15:14:26.845: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Carousel/Carousel_Button_Selected.animation"
-2026.10.15@15:14:26.845: [Graphics System] [Information] Generated texture ID 16 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(15.0, 15.0)pixels, 1800B, texture ID 0)
-2026.10.15@15:14:27.587: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Switch/Switch_On.animation"
-2026.10.15@15:14:27.587: [Graphics System] [Information] Generated texture ID 17 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(1.0, 1.0)pixels, 8B, texture ID 0)
-2026.10.15@15:14:28.611: [Graphics System] [Information] Resizing OpenGL vertex buffer to 5120B
-2026.10.15@15:14:28.611: [Graphics System] [Information] Resizing OpenGL index buffer to 1536B
-2026.10.15@15:14:30.558: [Windowing System] [Information] Set window dimensions vector(1280.0, 720.0)
-2026.10.15@15:14:30.559: [Windowing System] [Information] Set fullscreen monitor index monitor(index 2, "Display 3", dimensions vector(1920.0, 1080.0), position vector(1920.0, 0.0))
-2026.10.15@15:14:30.563: [Windowing System] [Information] Set window dimensions vector(1920.0, 1080.0)
-2026.10.15@15:14:30.566: [Windowing System] [Information] Set window to fullscreen mode
-2026.10.15@15:14:30.566: [Audio System] [Information] Set music volume 100%
-2026.10.15@15:14:30.566: [Audio System] [Information] Set default sound effect volume 100%
-2026.10.15@15:14:30.566: [Graphics System] [Information] Resized OpenGL viewport 1920x1080
-2026.10.15@15:14:30.567: [Audio System] [Information] Setting audio output speaker speaker(3, "Default Audio Device")
-2026.10.15@15:14:30.568: [Audio System] [Information] Stopping all sound effects
-2026.10.15@15:14:30.568: [Audio System] [Information] Set audio output speaker speaker(3, "Default Audio Device")
-2026.10.15@15:14:30.588: [Graphics System] [Information] Resized OpenGL viewport 1920x1052
-2026.10.15@15:14:30.619: [Graphics System] [Information] Resized OpenGL viewport 1920x1052
-2026.10.15@15:14:30.622: [Graphics System] [Information] Resized OpenGL viewport 1920x1080
-2026.10.15@15:14:35.584: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Carousel/Carousel_Button_Pressed.animation"
-2026.10.15@15:14:35.584: [Graphics System] [Information] Generated texture ID 18 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(15.0, 15.0)pixels, 1800B, texture ID 0)
-2026.10.15@15:14:37.142: [Windowing System] [Warning] Can't directly set dimensions in fullscreen mode
-2026.10.15@15:14:37.144: [Windowing System] [Information] Set window dimensions vector(1280.0, 748.0)
-2026.10.15@15:14:37.144: [Windowing System] [Information] Set window to windowed mode
-2026.10.15@15:14:37.145: [Graphics System] [Information] Resized OpenGL viewport 1280x748
-2026.10.15@15:14:37.157: [Windowing System] [Information] Set window dimensions vector(1920.0, 1243.0)
-2026.10.15@15:14:37.157: [Windowing System] [Information] Set window to fullscreen mode
-2026.10.15@15:14:37.157: [Windowing System] [Information] Set fullscreen monitor index monitor(index 0, "Display 1", dimensions vector(1920.0, 1243.0), position vector(0.0, 0.0))
-2026.10.15@15:14:37.157: [Audio System] [Information] Set music volume 100%
-2026.10.15@15:14:37.157: [Audio System] [Information] Set default sound effect volume 100%
-2026.10.15@15:14:37.157: [Graphics System] [Information] Resized OpenGL viewport 1920x1243
-2026.10.15@15:14:37.158: [Audio System] [Information] Setting audio output speaker speaker(3, "Default Audio Device")
-2026.10.15@15:14:37.158: [Audio System] [Information] Stopping all sound effects
-2026.10.15@15:14:37.158: [Audio System] [Information] Set audio output speaker speaker(3, "Default Audio Device")
-2026.10.15@15:14:37.160: [Graphics System] [Information] Resized OpenGL viewport 1920x1080
-2026.10.15@15:14:37.170: [Graphics System] [Information] Resized OpenGL viewport 1280x720
-2026.10.15@15:14:37.172: [Graphics System] [Information] Resized OpenGL viewport 1280x720
-2026.10.15@15:14:37.175: [Graphics System] [Information] Resized OpenGL viewport 1920x1215
-2026.10.15@15:14:37.204: [Graphics System] [Information] Resized OpenGL viewport 1920x1215
-2026.10.15@15:14:37.208: [Graphics System] [Information] Resized OpenGL viewport 1920x1243
-2026.10.15@15:14:38.762: [MarasmiumKit App] [Information] Leaving current scene 2
-2026.10.15@15:14:38.762: [User-Input Management System] [Information] Removing user-input listener
-2026.10.15@15:14:38.762: [Network Client] [Information] Removing network listener
-2026.10.15@15:14:38.762: [MarasmiumKit App] [Information] Entering new scene 1
-2026.10.15@15:14:38.763: [User-Input Management System] [Information] Adding user-input listener
-2026.10.15@15:14:38.763: [Network Client] [Information] Adding network listener
-2026.10.15@15:14:40.894: [MarasmiumKit App] [Information] Finished main application loop
-2026.10.15@15:14:40.894: [MarasmiumKit App] [Information] Destroying MarasmiumKit application framework
-2026.10.15@15:14:40.894: [MarasmiumKit App] [Information] Freeing all scenes
-2026.10.15@15:14:40.895: [MarasmiumKit App] [Information] Destroying graphics system
-2026.10.15@15:14:40.895: [Graphics System] [Information] Destroying graphics system
-2026.10.15@15:14:40.895: [MarasmiumKit App] [Information] Destroying audio system
-2026.10.15@15:14:40.895: [Audio System] [Information] Destroying audio system
-2026.10.15@15:14:40.895: [Audio System] [Information] Destroying sound effects audio subsystem
-2026.10.15@15:14:40.895: [Audio System] [Information] Stopping all sound effects
-2026.10.15@15:14:40.895: [Audio System] [Information] Destroying music audio subsystem
-2026.10.15@15:14:40.895: [MarasmiumKit App] [Information] Destroying network client
-2026.10.15@15:14:40.895: [Network Client] [Information] Destroying network client
-2026.10.15@15:14:40.895: [Network Client] [Information] Destroyed network client
-2026.10.15@15:14:40.895: [MarasmiumKit App] [Information] Destroying windowing system
-2026.10.15@15:14:40.895: [Windowing System] [Information] Destroying windowing system
-2026.10.15@15:14:40.895: [Graphics System] [Information] Disposed of 13 OpenGL texture IDs
-2026.10.15@15:14:40.901: [Graphics System] [Information] Disposed of OpenGL utilities
-2026.10.15@15:14:40.912: [MarasmiumKit App] [Information] Destroying user-input management system
-2026.10.15@15:14:40.912: [User-Input Management System] [Information] Destroying user-input management system
-2026.10.15@15:14:40.912: [User-Input Management System] [Information] Destroying mouse user-input management system
-2026.10.15@15:14:40.912: [User-Input Management System] [Information] Destroying keyboard user-input management system
-2026.10.15@15:14:40.912: [MarasmiumKit App] [Information] Destroying asset management system
-2026.10.15@15:14:40.912: [Asset Management System] [Information] Destroying asset management system
-2026.10.15@15:14:40.912: [Asset Management System] [Information] Freeing 0 audio tracks
-2026.10.15@15:14:40.912: [Asset Management System] [Information] Freeing 13 animations
-2026.10.15@15:14:40.912: [Asset Management System] [Information] Freeing 1 typefaces
-2026.10.15@15:14:40.912: [Asset Management System] [Information] Freeing 1 configurations
-2026.10.15@15:14:40.912: [MarasmiumKit App] [Information] Destroying logging system
-2026.10.15@15:14:40.912: [Logging System] [Information] Destroying logging system
+2026.10.15@15:52:44.929: [Logging System] [Information] Initialized logging system
+2026.10.15@15:52:44.929: [MarasmiumKit App] [Information] Initialized logging system
+2026.10.15@15:52:44.931: [User-Input Management System] [Information] Initialized keyboard user-input management system
+2026.10.15@15:52:44.932: [User-Input Management System] [Information] Initialized mouse user-input management system
+2026.10.15@15:52:44.932: [User-Input Management System] [Information] Initialized user-input management system
+2026.10.15@15:52:44.932: [MarasmiumKit App] [Information] Initialized user-input management system
+2026.10.15@15:52:46.234: [Windowing System] [Information] Generated new window frame
+2026.10.15@15:52:46.234: [Windowing System] [Information] Set window title "MarasmiumKit App"
+2026.10.15@15:52:46.237: [Windowing System] [Information] Set window dimensions vector(0.0, 0.0)
+2026.10.15@15:52:46.238: [Windowing System] [Information] Set fullscreen monitor index monitor(index 0, "Display 1", dimensions vector(1920.0, 1243.0), position vector(0.0, 0.0))
+2026.10.15@15:52:46.240: [Windowing System] [Information] Set window dimensions vector(1280.0, 720.0)
+2026.10.15@15:52:46.240: [Windowing System] [Information] Set mouse cursor visible
+2026.10.15@15:52:46.240: [Windowing System] [Information] Initialized windowing system
+2026.10.15@15:52:46.240: [MarasmiumKit App] [Information] Initialized windowing system
+2026.10.15@15:52:46.240: [Network Client] [Information] Set maximum messages to process per update -1
+2026.10.15@15:52:46.240: [Network Client] [Information] Initialized network client
+2026.10.15@15:52:46.240: [MarasmiumKit App] [Information] Initialized network client
+2026.10.15@15:52:46.248: [Audio System] [Information] Setting audio output speaker speaker(3, "Default Audio Device")
+2026.10.15@15:52:46.248: [Audio System] [Information] Stopping all sound effects
+2026.10.15@15:52:46.248: [Audio System] [Information] Set audio output speaker speaker(3, "Default Audio Device")
+2026.10.15@15:52:46.249: [Audio System] [Information] Set default sound effect volume 100%
+2026.10.15@15:52:46.249: [Audio System] [Information] Initialized sound effects audio subsystem
+2026.10.15@15:52:46.249: [Audio System] [Information] Set music volume 100%
+2026.10.15@15:52:46.249: [Audio System] [Information] Initialized music audio subsystem
+2026.10.15@15:52:46.249: [Audio System] [Information] Initialize audio system
+2026.10.15@15:52:46.249: [Graphics System] [Information] Target FPS set to 60 -> FPMS=0.06, MSPF=16
+2026.10.15@15:52:46.249: [Graphics System] [Information] Maximum UPF set to 8
+2026.10.15@15:52:46.249: [Graphics System] [Information] Set clear colour to colour(0, 0, 0, 255)
+2026.10.15@15:52:46.249: [Graphics System] [Information] Initialized graphics system
+2026.10.15@15:52:46.249: [MarasmiumKit App] [Information] Initialized graphics system
+2026.10.15@15:52:46.249: [MarasmiumKit App] [Information] Scene 0 not added
+2026.10.15@15:52:46.249: [MarasmiumKit App] [Information] Adding scene 0
+2026.10.15@15:52:46.249: [MarasmiumKit App] [Information] Scene 0 requires initialization
+2026.10.15@15:52:46.250: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Button/Button_Unselected.animation"
+2026.10.15@15:52:46.250: [MarasmiumKit App] [Information] Entering new scene 1
+2026.10.15@15:52:46.250: [User-Input Management System] [Information] Adding user-input listener
+2026.10.15@15:52:46.250: [Network Client] [Information] Adding network listener
+2026.10.15@15:52:46.250: [MarasmiumKit App] [Information] Set initial scene
+2026.10.15@15:52:46.250: [MarasmiumKit App] [Information] Initialized MarasmiumKit application framework
+2026.10.15@15:52:46.250: [MarasmiumKit App] [Information] Starting main application loop
+2026.10.15@15:52:46.255: [Asset Management System] [Information] Adding typeface at "Assets/Typefaces/Silkscreen.typeface"
+2026.10.15@15:52:46.289: [Graphics System] [Information] Initializing OpenGL parameters
+2026.10.15@15:52:46.290: [Graphics System] [Information] OpenGL version "4.1 Metal - 91.7"
+2026.10.15@15:52:46.296: [Graphics System] [Information] Compiled vertex shader 4
+2026.10.15@15:52:46.296: [Graphics System] [Information] Compiled fragment shader 5
+2026.10.15@15:52:46.298: [Graphics System] [Information] Generated shader program 6
+2026.10.15@15:52:46.300: [Graphics System] [Information] Generated VAO 2, VBO 1, and IBO 2
+2026.10.15@15:52:46.302: [Graphics System] [Information] Resized OpenGL viewport 1280x720
+2026.10.15@15:52:46.314: [Graphics System] [Information] Generated texture ID 3 for animation animation(0FPS, 95 frames arranged vector(95.0, 1.0), vector(100.0, 140.0)pixels, 5320000B, texture ID 0)
+2026.10.15@15:52:46.318: [Graphics System] [Information] Resizing OpenGL vertex buffer to 640B
+2026.10.15@15:52:46.321: [Graphics System] [Information] Resizing OpenGL index buffer to 192B
+2026.10.15@15:52:46.322: [Graphics System] [Information] Generated texture ID 4 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(1.0, 1.0)pixels, 8B, texture ID 0)
+2026.10.15@15:52:46.329: [Graphics System] [Information] Resized OpenGL viewport 1280x720
+2026.10.15@15:52:46.334: [Asset Management System] [Information] Adding animation at "Assets/Animations/Spark.animation"
+2026.10.15@15:52:46.337: [Graphics System] [Information] Generated texture ID 7 for animation animation(2FPS, 8 frames arranged vector(8.0, 1.0), vector(16.0, 16.0)pixels, 8192B, texture ID 0)
+2026.10.15@15:52:46.785: [Graphics System] [Information] Resizing OpenGL vertex buffer to 1280B
+2026.10.15@15:52:46.785: [Graphics System] [Information] Resizing OpenGL index buffer to 384B
+2026.10.15@15:52:46.960: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Button/Button_Selected.animation"
+2026.10.15@15:52:46.960: [Graphics System] [Information] Generated texture ID 5 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(1.0, 1.0)pixels, 8B, texture ID 0)
+2026.10.15@15:52:47.216: [Graphics System] [Information] Resizing OpenGL vertex buffer to 2560B
+2026.10.15@15:52:47.216: [Graphics System] [Information] Resizing OpenGL index buffer to 768B
+2026.10.15@15:52:48.481: [Graphics System] [Information] Resizing OpenGL vertex buffer to 5120B
+2026.10.15@15:52:48.481: [Graphics System] [Information] Resizing OpenGL index buffer to 1536B
+2026.10.15@15:52:48.609: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Button/Button_Pressed.animation"
+2026.10.15@15:52:48.609: [Graphics System] [Information] Generated texture ID 9 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(1.0, 1.0)pixels, 8B, texture ID 0)
+2026.10.15@15:52:48.681: [MarasmiumKit App] [Information] Leaving current scene 1
+2026.10.15@15:52:48.681: [User-Input Management System] [Information] Removing user-input listener
+2026.10.15@15:52:48.681: [Network Client] [Information] Removing network listener
+2026.10.15@15:52:48.681: [MarasmiumKit App] [Information] Scene 0 not added
+2026.10.15@15:52:48.681: [MarasmiumKit App] [Information] Adding scene 0
+2026.10.15@15:52:48.681: [MarasmiumKit App] [Information] Scene 0 requires initialization
+2026.10.15@15:52:48.681: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Carousel/Carousel_Button_Unselected.animation"
+2026.10.15@15:52:48.682: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Switch/Switch_Off.animation"
+2026.10.15@15:52:48.682: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Slider/Slider_Unselected.animation"
+2026.10.15@15:52:48.682: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Slider/Slider_Cursor_Unselected.animation"
+2026.10.15@15:52:48.682: [MarasmiumKit App] [Information] Entering new scene 2
+2026.10.15@15:52:48.684: [User-Input Management System] [Information] Adding user-input listener
+2026.10.15@15:52:48.684: [Network Client] [Information] Adding network listener
+2026.10.15@15:52:48.685: [Graphics System] [Information] Generated texture ID 11 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(15.0, 15.0)pixels, 1800B, texture ID 0)
+2026.10.15@15:52:48.685: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Carousel/Carousel.animation"
+2026.10.15@15:52:48.685: [Graphics System] [Information] Generated texture ID 12 for animation animation(0FPS, 1 frames arranged vector(1.0, 1.0), vector(1.0, 1.0)pixels, 4B, texture ID 0)
+2026.10.15@15:52:48.686: [Graphics System] [Information] Generated texture ID 13 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(1.0, 1.0)pixels, 8B, texture ID 0)
+2026.10.15@15:52:48.686: [Graphics System] [Information] Generated texture ID 14 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(1.0, 1.0)pixels, 8B, texture ID 0)
+2026.10.15@15:52:48.687: [Graphics System] [Information] Generated texture ID 15 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(1.0, 1.0)pixels, 8B, texture ID 0)
+2026.10.15@15:52:49.484: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Switch/Switch_On.animation"
+2026.10.15@15:52:49.485: [Graphics System] [Information] Generated texture ID 16 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(1.0, 1.0)pixels, 8B, texture ID 0)
+2026.10.15@15:52:49.880: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Carousel/Carousel_Button_Selected.animation"
+2026.10.15@15:52:49.880: [Graphics System] [Information] Generated texture ID 17 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(15.0, 15.0)pixels, 1800B, texture ID 0)
+2026.10.15@15:52:50.070: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Carousel/Carousel_Button_Pressed.animation"
+2026.10.15@15:52:50.070: [Graphics System] [Information] Generated texture ID 18 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(15.0, 15.0)pixels, 1800B, texture ID 0)
+2026.10.15@15:52:51.551: [Windowing System] [Information] Set window dimensions vector(640.0, 360.0)
+2026.10.15@15:52:51.551: [Windowing System] [Information] Set window dimensions vector(640.0, 360.0)
+2026.10.15@15:52:51.551: [Windowing System] [Information] Set fullscreen monitor index monitor(index 0, "Display 1", dimensions vector(1920.0, 1243.0), position vector(0.0, 0.0))
+2026.10.15@15:52:51.552: [Windowing System] [Information] Set window dimensions vector(1920.0, 1243.0)
+2026.10.15@15:52:51.553: [Graphics System] [Information] Resized OpenGL viewport 640x360
+2026.10.15@15:52:51.558: [Graphics System] [Information] Resized OpenGL viewport 1920x1215
+2026.10.15@15:52:51.562: [Graphics System] [Information] Resized OpenGL viewport 1920x1243
+2026.10.15@15:52:51.572: [Graphics System] [Information] Resized OpenGL viewport 1920x1215
+2026.10.15@15:52:51.597: [Graphics System] [Information] Resized OpenGL viewport 1920x1215
+2026.10.15@15:52:51.602: [Graphics System] [Information] Resized OpenGL viewport 1920x1243
+2026.10.15@15:52:51.662: [Windowing System] [Information] Set window to fullscreen mode
+2026.10.15@15:52:51.662: [Audio System] [Information] Set music volume 100%
+2026.10.15@15:52:51.662: [Audio System] [Information] Set default sound effect volume 100%
+2026.10.15@15:52:51.663: [Audio System] [Information] Setting audio output speaker speaker(3, "Default Audio Device")
+2026.10.15@15:52:51.663: [Audio System] [Information] Stopping all sound effects
+2026.10.15@15:52:51.663: [Audio System] [Information] Set audio output speaker speaker(3, "Default Audio Device")
+2026.10.15@15:52:56.047: [Windowing System] [Warning] Can't directly set dimensions in fullscreen mode
+2026.10.15@15:52:56.061: [Graphics System] [Information] Resized OpenGL viewport 1920x1243
+2026.10.15@15:52:56.068: [Graphics System] [Information] Resized OpenGL viewport 640x360
+2026.10.15@15:52:56.153: [Windowing System] [Information] Set window dimensions vector(1280.0, 748.0)
+2026.10.15@15:52:56.153: [Windowing System] [Information] Set window to windowed mode
+2026.10.15@15:52:56.154: [Windowing System] [Information] Set window dimensions vector(1920.0, 1080.0)
+2026.10.15@15:52:56.154: [Graphics System] [Information] Resized OpenGL viewport 1920x1080
+2026.10.15@15:52:56.157: [Graphics System] [Information] Resized OpenGL viewport 1920x1052
+2026.10.15@15:52:56.160: [Graphics System] [Information] Resized OpenGL viewport 1920x1080
+2026.10.15@15:52:56.169: [Graphics System] [Information] Resized OpenGL viewport 1920x1052
+2026.10.15@15:52:56.191: [Graphics System] [Information] Resized OpenGL viewport 1920x1052
+2026.10.15@15:52:56.194: [Graphics System] [Information] Resized OpenGL viewport 1920x1080
+2026.10.15@15:52:56.262: [Windowing System] [Information] Set window to fullscreen mode
+2026.10.15@15:52:56.262: [Windowing System] [Information] Set fullscreen monitor index monitor(index 1, "Display 2", dimensions vector(1920.0, 1080.0), position vector(-1920.0, 0.0))
+2026.10.15@15:52:56.272: [Graphics System] [Information] Resized OpenGL viewport 1920x1080
+2026.10.15@15:52:56.276: [Graphics System] [Information] Resized OpenGL viewport 1280x748
+2026.10.15@15:52:56.364: [Windowing System] [Information] Set window dimensions vector(1280.0, 776.0)
+2026.10.15@15:52:56.364: [Windowing System] [Information] Set window to windowed mode
+2026.10.15@15:52:56.364: [Audio System] [Information] Set music volume 100%
+2026.10.15@15:52:56.364: [Audio System] [Information] Set default sound effect volume 100%
+2026.10.15@15:52:56.365: [Graphics System] [Information] Resized OpenGL viewport 1280x776
+2026.10.15@15:52:56.365: [Audio System] [Information] Setting audio output speaker speaker(3, "Default Audio Device")
+2026.10.15@15:52:56.366: [Audio System] [Information] Stopping all sound effects
+2026.10.15@15:52:56.366: [Audio System] [Information] Set audio output speaker speaker(3, "Default Audio Device")
+2026.10.15@15:52:56.367: [Graphics System] [Information] Resized OpenGL viewport 1280x776
+2026.10.15@15:53:03.084: [MarasmiumKit App] [Information] Leaving current scene 2
+2026.10.15@15:53:03.084: [User-Input Management System] [Information] Removing user-input listener
+2026.10.15@15:53:03.084: [Network Client] [Information] Removing network listener
+2026.10.15@15:53:03.084: [MarasmiumKit App] [Information] Entering new scene 1
+2026.10.15@15:53:03.084: [User-Input Management System] [Information] Adding user-input listener
+2026.10.15@15:53:03.084: [Network Client] [Information] Adding network listener
+2026.10.15@15:53:03.828: [MarasmiumKit App] [Information] Finished main application loop
+2026.10.15@15:53:03.828: [MarasmiumKit App] [Information] Destroying MarasmiumKit application framework
+2026.10.15@15:53:03.828: [MarasmiumKit App] [Information] Freeing all scenes
+2026.10.15@15:53:03.828: [MarasmiumKit App] [Information] Destroying graphics system
+2026.10.15@15:53:03.828: [Graphics System] [Information] Destroying graphics system
+2026.10.15@15:53:03.828: [MarasmiumKit App] [Information] Destroying audio system
+2026.10.15@15:53:03.828: [Audio System] [Information] Destroying audio system
+2026.10.15@15:53:03.828: [Audio System] [Information] Destroying sound effects audio subsystem
+2026.10.15@15:53:03.828: [Audio System] [Information] Stopping all sound effects
+2026.10.15@15:53:03.828: [Audio System] [Information] Destroying music audio subsystem
+2026.10.15@15:53:03.828: [MarasmiumKit App] [Information] Destroying network client
+2026.10.15@15:53:03.828: [Network Client] [Information] Destroying network client
+2026.10.15@15:53:03.828: [Network Client] [Information] Destroyed network client
+2026.10.15@15:53:03.828: [MarasmiumKit App] [Information] Destroying windowing system
+2026.10.15@15:53:03.828: [Windowing System] [Information] Destroying windowing system
+2026.10.15@15:53:03.829: [Graphics System] [Information] Disposed of 13 OpenGL texture IDs
+2026.10.15@15:53:03.835: [Graphics System] [Information] Disposed of OpenGL utilities
+2026.10.15@15:53:03.843: [MarasmiumKit App] [Information] Destroying user-input management system
+2026.10.15@15:53:03.843: [User-Input Management System] [Information] Destroying user-input management system
+2026.10.15@15:53:03.843: [User-Input Management System] [Information] Destroying mouse user-input management system
+2026.10.15@15:53:03.843: [User-Input Management System] [Information] Destroying keyboard user-input management system
+2026.10.15@15:53:03.843: [MarasmiumKit App] [Information] Destroying asset management system
+2026.10.15@15:53:03.843: [Asset Management System] [Information] Destroying asset management system
+2026.10.15@15:53:03.843: [Asset Management System] [Information] Freeing 0 audio tracks
+2026.10.15@15:53:03.843: [Asset Management System] [Information] Freeing 13 animations
+2026.10.15@15:53:03.843: [Asset Management System] [Information] Freeing 1 typefaces
+2026.10.15@15:53:03.843: [Asset Management System] [Information] Freeing 1 configurations
+2026.10.15@15:53:03.843: [MarasmiumKit App] [Information] Destroying logging system
+2026.10.15@15:53:03.843: [Logging System] [Information] Destroying logging system
