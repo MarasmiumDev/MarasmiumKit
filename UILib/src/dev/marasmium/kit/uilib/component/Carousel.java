@@ -745,6 +745,20 @@ public class Carousel extends Label {
     }
 
     /**
+     * Set the current value represented by this carousel by changing the value index or adding a value
+     * @param value The new value to be represented by this carousel
+     * @return Whether the given value was set successfully
+     */
+    public boolean setValue(String value) {
+        if (getValueIndex(value) == -1) {
+            if (!addValue(value)) {
+                return false;
+            }
+        }
+        return setValueIndex(getValueIndex(value));
+    }
+
+    /**
      * Add a value to be represented by this carousel at a given index in the pre-existing set of values
      * @param value The value to add
      * @param valueIndex The index to add the value at in the pre-existing set of values
@@ -762,6 +776,7 @@ public class Carousel extends Label {
         } else {
             values.add(valueIndex, value);
         }
+        setValueIndex(valueIndex);
         return true;
     }
 
@@ -790,11 +805,36 @@ public class Carousel extends Label {
     }
 
     /**
+     * Remove all values represented by this carousel
+     */
+    public void clearValues() {
+        values.clear();
+        setValueIndex(0);
+    }
+
+    /**
      * Get the index of the value currently represented by this carousel
      * @return This carousel's value index
      */
     public int getValueIndex() {
         return valueIndex;
+    }
+
+    /**
+     * Get the index of a given value represented by this carousel
+     * @param value The value to get the index of
+     * @return The index of the given value or -1 if the value was not found
+     */
+    public int getValueIndex(String value) {
+        if (value == null) {
+            return -1;
+        }
+        for (int i = 0; i < values.size(); i++) {
+            if (values.get(i).equals(value)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     /**

@@ -78,6 +78,12 @@ public class App {
      * @return Whether the application was initialized successfully
      */
     public static boolean Initialize(String configurationFilePath, Scene initialScene) {
+        // Set system properties
+        try {
+            System.setProperty("sun.java2d.uiScale.enabled", "false");
+        } catch (IllegalArgumentException _) {
+            return false;
+        }
         // Get the application framework's configuration
         Configuration configuration = ReadConfiguration(configurationFilePath);
         String logTimestampFormat;

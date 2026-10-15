@@ -116,8 +116,14 @@ public class Box extends Body {
         }
         for (int i = 0; i < 4; i++) {
             Line edge = edges[i];
+            if (edge == null) {
+                return false;
+            }
             for (int j = 0; j < 4; j++) {
                 Line boxEdge = boxEdges[j];
+                if (boxEdge == null) {
+                    return false;
+                }
                 Vector intersection = edge.intersectionPointWith(boxEdge);
                 if (intersection == null) {
                     continue;

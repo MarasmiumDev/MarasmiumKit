@@ -29,6 +29,7 @@ import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -57,6 +58,10 @@ public class WindowManager {
      * Whether the window is currently in fullscreen mode
      */
     private boolean fullscreen = false;
+    /**
+     * The graphics device (monitor) which the window is displayed on when in fullscreen mode
+     */
+    private GraphicsDevice fullscreenDevice = null;
     /**
      * The monitor for the window to appear on when in fullscreen mode
      */
@@ -91,43 +96,47 @@ public class WindowManager {
                               boolean mouseCursorVisible) {
         // Generate Java AWT window frame
         try {
-            canvas = new GLCanvas(new GLCapabilities(GLProfile.get(GLProfile.GL3)));
-        } catch (GLException _) {
-            App.Log.write(LogSource.Window, LogLevel.Error, "Failed to initialize JOGL canvas");
+            SwingUtilities.invokeAndWait(() -> {
+                frame = new Frame();
+                frame.setResizable(false);
+                frame.addWindowListener(new WindowAdapter() {
+
+                    /**
+                     * Callback for window close events
+                     *
+                     * @param e The event to be processed
+                     */
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        closeRequested = true;
+                    }
+
+                });
+                try {
+                    canvas = new GLCanvas(new GLCapabilities(GLProfile.get(GLProfile.GL3)));
+                } catch (GLException _) {
+                    App.Log.write(LogSource.Window, LogLevel.Error, "Failed to initialize JOGL canvas");
+                }
+                canvas.addKeyListener(App.Input.keyboard);
+                canvas.addMouseListener(App.Input.mouse);
+                canvas.addMouseMotionListener(App.Input.mouse);
+                canvas.addMouseWheelListener(App.Input.mouse);
+                try {
+                    canvas.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.emptySet());
+                    canvas.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, Collections.emptySet());
+                } catch (IllegalArgumentException _) {
+                    App.Log.write(LogSource.Window, LogLevel.Error, "Failed to disable focus tabbing");
+                    return;
+                }
+                frame.add(canvas);
+                frame.setVisible(true);
+                canvas.requestFocus();
+                App.Log.write(LogSource.Window, LogLevel.Info, "Generated new window frame");
+            });
+        } catch (InterruptedException | InvocationTargetException _) {
+            App.Log.write(LogSource.Window, LogLevel.Error, "Failed to initialize AWT frame");
             return false;
         }
-        SwingUtilities.invokeLater(() -> {
-            frame = new Frame();
-            frame.setResizable(false);
-            frame.addWindowListener(new WindowAdapter() {
-
-                /**
-                 * Callback for window close events
-                 * @param e The event to be processed
-                 */
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    closeRequested = true;
-                }
-
-            });
-            canvas.addKeyListener(App.Input.keyboard);
-            canvas.addMouseListener(App.Input.mouse);
-            canvas.addMouseMotionListener(App.Input.mouse);
-            canvas.addMouseWheelListener(App.Input.mouse);
-            try {
-                canvas.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.emptySet());
-                canvas.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, Collections.emptySet());
-            } catch (IllegalArgumentException _) {
-                App.Log.write(LogSource.Window, LogLevel.Error, "Failed to disable focus tabbing");
-                return;
-            }
-            canvas.addGLEventListener(App.Graphics);
-            frame.add(canvas);
-            frame.setVisible(true);
-            canvas.requestFocus();
-            App.Log.write(LogSource.Window, LogLevel.Info, "Generated new window frame");
-        });
         // Set initial window parameters
         if (!setTitle(title)) {
             App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set window title");
@@ -198,7 +207,12 @@ public class WindowManager {
             return false;
         }
         this.title = title;
-        SwingUtilities.invokeLater(() -> frame.setTitle(title));
+        try {
+            SwingUtilities.invokeAndWait(() -> frame.setTitle(title));
+        } catch (InterruptedException | InvocationTargetException _) {
+            App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set title");
+            return false;
+        }
         App.Log.write(LogSource.Window, LogLevel.Info, "Set window title \"", title, "\"");
         return true;
     }
@@ -232,23 +246,28 @@ public class WindowManager {
         this.dimensions.setX(dimensions.getX());
         this.dimensions.setY(dimensions.getY());
         // Set current window dimensions (in windowed mode)
-        SwingUtilities.invokeLater(() -> {
-            canvas.setPreferredSize(new Dimension((int)dimensions.getX(), (int)dimensions.getY()));
-            canvas.setMinimumSize(new Dimension((int)dimensions.getX(), (int)dimensions.getY()));
-            canvas.setMaximumSize(new Dimension((int)dimensions.getX(), (int)dimensions.getY()));
-            canvas.setSize((int)dimensions.getX(), (int)dimensions.getY());
-            frame.pack();
-            Monitor monitor = getMonitor();
-            if (monitor != null) {
-                Vector monitorPosition = getMonitor().getPosition();
-                Vector monitorDimensions = getMonitor().getDimensions();
-                Vector windowPosition = monitorPosition
-                        .add(monitorDimensions.scalarDivide(2.0f))
-                        .subtract(dimensions.scalarDivide(2.0f));
-                frame.setLocation((int) windowPosition.getX(), (int) windowPosition.getY());
-            }
-            App.Log.write(LogSource.Window, LogLevel.Info, "Set window dimensions ", dimensions);
-        });
+        try {
+            SwingUtilities.invokeAndWait(() -> {
+                canvas.setPreferredSize(new Dimension((int) dimensions.getX(), (int) dimensions.getY()));
+                canvas.setMinimumSize(new Dimension((int) dimensions.getX(), (int) dimensions.getY()));
+                canvas.setMaximumSize(new Dimension((int) dimensions.getX(), (int) dimensions.getY()));
+                canvas.setSize((int) dimensions.getX(), (int) dimensions.getY());
+                frame.pack();
+                Monitor monitor = getMonitor();
+                if (monitor != null) {
+                    Vector monitorPosition = getMonitor().getPosition();
+                    Vector monitorDimensions = getMonitor().getDimensions();
+                    Vector windowPosition = monitorPosition
+                            .add(monitorDimensions.scalarDivide(2.0f))
+                            .subtract(dimensions.scalarDivide(2.0f));
+                    frame.setLocation((int) windowPosition.getX(), (int) windowPosition.getY());
+                }
+                App.Log.write(LogSource.Window, LogLevel.Info, "Set window dimensions ", dimensions);
+            });
+        } catch (InterruptedException | InvocationTargetException _) {
+            App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set AWT window dimensions");
+            return false;
+        }
         return true;
     }
 
@@ -326,26 +345,43 @@ public class WindowManager {
             return false;
         }
         // Set fullscreen mode
-        SwingUtilities.invokeLater(() -> {
-            if (fullscreen && !this.fullscreen) {
-                Vector windowedDimensions = this.windowedDimensions.clone();
-                windowPadding.setX(frame.getInsets().left + frame.getInsets().right);
-                windowPadding.setY(frame.getInsets().bottom + frame.getInsets().top);
-                setDimensions(Vector.Cartesian(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight()));
-                this.windowedDimensions.setX(windowedDimensions.getX());
-                this.windowedDimensions.setY(windowedDimensions.getY());
-                this.fullscreen = true;
-                gd.setFullScreenWindow(frame);
-                App.Log.write(LogSource.Window, LogLevel.Info, "Set window to fullscreen mode");
-            } else if (!fullscreen && this.fullscreen) {
-                gd.setFullScreenWindow(null);
-                this.fullscreen = false;
-                setDimensions(windowedDimensions.add(windowPadding));
-                dimensions.setX(windowedDimensions.getX());
-                dimensions.setY(windowedDimensions.getY());
-                App.Log.write(LogSource.Window, LogLevel.Info, "Set window to windowed mode");
+        if (fullscreen && !this.fullscreen) {
+            Vector windowedDimensions = this.windowedDimensions.clone();
+            windowPadding.setX(frame.getInsets().left + frame.getInsets().right);
+            windowPadding.setY(frame.getInsets().bottom + frame.getInsets().top);
+            setDimensions(Vector.Cartesian(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight()));
+            this.windowedDimensions.setX(windowedDimensions.getX());
+            this.windowedDimensions.setY(windowedDimensions.getY());
+            this.fullscreen = true;
+            try {
+                SwingUtilities.invokeAndWait(() -> {
+                    gd.setFullScreenWindow(frame);
+                    fullscreenDevice = gd;
+                });
+            } catch (InterruptedException | InvocationTargetException _) {
+                App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set fullscreen monitor");
+                return false;
             }
-        });
+            App.Log.write(LogSource.Window, LogLevel.Info, "Set window to fullscreen mode");
+        } else if (!fullscreen && this.fullscreen) {
+            if (fullscreenDevice == null) {
+                return false;
+            }
+            try {
+                SwingUtilities.invokeAndWait(() -> {
+                    fullscreenDevice.setFullScreenWindow(null);
+                    fullscreenDevice = null;
+                });
+            } catch (InterruptedException | InvocationTargetException _) {
+                App.Log.write(LogSource.Window, LogLevel.Error, "Failed to remove fullscreen monitor");
+                return false;
+            }
+            this.fullscreen = false;
+            setDimensions(windowedDimensions.add(windowPadding));
+            dimensions.setX(windowedDimensions.getX());
+            dimensions.setY(windowedDimensions.getY());
+            App.Log.write(LogSource.Window, LogLevel.Info, "Set window to windowed mode");
+        }
         return true;
     }
 

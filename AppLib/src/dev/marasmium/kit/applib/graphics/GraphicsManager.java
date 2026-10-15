@@ -88,6 +88,10 @@ public class GraphicsManager implements GLEventListener {
      */
     private final ReentrantLock spriteGroupsLock = new ReentrantLock();
     /**
+     * Whether the OpenGL parameters for the graphics system have been initialized
+     */
+    private boolean JOGLInitialized = false;
+    /**
      * The set of OpenGL vertex array object IDs used by the graphics system
      */
     private final int[] VAOIDs = new int[1];
@@ -139,6 +143,7 @@ public class GraphicsManager implements GLEventListener {
                     "colour invalid");
             return false;
         }
+        App.Window.getCanvas().addGLEventListener(this);
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Initialized graphics system");
         return true;
     }
@@ -583,6 +588,7 @@ public class GraphicsManager implements GLEventListener {
         gl3.glEnableVertexAttribArray(0);
         gl3.glEnableVertexAttribArray(1);
         gl3.glBindVertexArray(0);
+        JOGLInitialized = true;
     }
 
     /**
@@ -591,6 +597,9 @@ public class GraphicsManager implements GLEventListener {
      */
     @Override
     public void display(GLAutoDrawable drawable) {
+        if (!JOGLInitialized) {
+            init(drawable);
+        }
         spriteGroupsLock.lock();
         try {
             // Clear screen

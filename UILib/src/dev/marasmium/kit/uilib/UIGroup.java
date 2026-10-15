@@ -138,6 +138,7 @@ public class UIGroup implements UIListener {
      * @param deltaFrames The number of frames elapsed since the last call to update
      */
     public void update(float deltaFrames) {
+        camera.setPosition(App.Window.getDimensions().scalarMultiply(0.5f));
         camera.update(deltaFrames);
         for (UIComponent component : components) {
             if (component != null) {
@@ -192,7 +193,6 @@ public class UIGroup implements UIListener {
                 return false;
             }
         }
-        camera.setPosition(windowDimensions.scalarMultiply(0.5f));
         return true;
     }
 

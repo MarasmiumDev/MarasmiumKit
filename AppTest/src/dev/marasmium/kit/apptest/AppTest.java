@@ -14,12 +14,13 @@ import dev.marasmium.kit.apptest.scenes.TitleScene;
 
 public class AppTest {
 
+    public static final String Configuration_File_Path = "MarasmiumKit-App.configuration";
     public static final TitleScene Title_Scene = new TitleScene();
     public static final ConnectScene Connect_Scene = new ConnectScene();
     public static final OptionsScene Options_Scene = new OptionsScene();
 
     static void main() {
-        if (App.Initialize("MarasmiumKit-App.configuration", Title_Scene)) {
+        if (App.Initialize(Configuration_File_Path, Title_Scene)) {
             System.out.println("Initialized application");
             App.Run();
         } else {

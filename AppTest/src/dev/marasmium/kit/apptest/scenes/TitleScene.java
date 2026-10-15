@@ -13,8 +13,6 @@ import dev.marasmium.kit.applib.data.Angle;
 import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.graphics.Alignment;
 import dev.marasmium.kit.applib.graphics.Camera;
-import dev.marasmium.kit.applib.graphics.Sprite;
-import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 import dev.marasmium.kit.apptest.AppTest;
 import dev.marasmium.kit.apptest.sprites.Spark;
@@ -22,10 +20,7 @@ import dev.marasmium.kit.uilib.UIEvent;
 import dev.marasmium.kit.uilib.UIGroup;
 import dev.marasmium.kit.uilib.UIListener;
 import dev.marasmium.kit.uilib.component.Button;
-import dev.marasmium.kit.uilib.component.Carousel;
 import dev.marasmium.kit.uilib.component.Label;
-import dev.marasmium.kit.uilib.component.Slider;
-import dev.marasmium.kit.uilib.component.TextBox;
 
 import java.util.ArrayList;
 
@@ -96,6 +91,7 @@ public class TitleScene extends Scene implements UIListener {
             spark.initialize();
             sparks.add(spark);
         }
+        sparkCamera.setPosition(App.Window.getDimensions().scalarMultiply(0.5f));
         sparkCamera.update(deltaFrames);
         for (Spark spark : sparks) {
             spark.update(deltaFrames);
