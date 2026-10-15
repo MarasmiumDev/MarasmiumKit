@@ -113,6 +113,7 @@ public class OptionsScene extends Scene implements UIListener {
                 buttonAnimationFilePaths, "DEFAULTS", Alignment.Center);
         saveButton.initialize(Vector.Cartesian(0.70f, 0.05f), Vector.Cartesian(0.25f, 0.10f), buttonAnimationFilePaths,
                 "SAVE", Alignment.Center);
+        // Initialize camera
         sparkCamera.initialize(App.Window.getDimensions().scalarMultiply(0.5f), 1.0f, Angle.Zero());
         return true;
     }
@@ -191,6 +192,10 @@ public class OptionsScene extends Scene implements UIListener {
     protected boolean destroy() {
         optionsUI.destroy();
         controlsUI.destroy();
+        for (Spark spark : sparks) {
+            spark.destroy();
+        }
+        sparks.clear();
         return true;
     }
 

@@ -107,6 +107,10 @@ public class TitleScene extends Scene implements UIListener {
     @Override
     public boolean destroy() {
         UI.destroy();
+        for (Spark spark : sparks) {
+            spark.destroy();
+        }
+        sparks.clear();
         return true;
     }
 
