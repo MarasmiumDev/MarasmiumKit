@@ -56,10 +56,6 @@ public class WindowManager {
      */
     private final Vector windowedDimensions = Vector.Zero();
     /**
-     * The horizontal and vertical padding around the window frame
-     */
-    private final Vector windowPadding = Vector.Zero();
-    /**
      * Whether the window is currently in fullscreen mode
      */
     private boolean fullscreen = false;
@@ -352,8 +348,6 @@ public class WindowManager {
         // Set fullscreen mode
         if (fullscreen && !this.fullscreen) {
             Vector windowedDimensions = this.windowedDimensions.clone();
-            windowPadding.setX(frame.getInsets().left + frame.getInsets().right);
-            windowPadding.setY(frame.getInsets().bottom + frame.getInsets().top);
             setDimensions(Vector.Cartesian(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight()));
             this.windowedDimensions.setX(windowedDimensions.getX());
             this.windowedDimensions.setY(windowedDimensions.getY());
@@ -384,7 +378,7 @@ public class WindowManager {
                 return false;
             }
             this.fullscreen = false;
-            setDimensions(windowedDimensions.add(windowPadding));
+            setDimensions(windowedDimensions);
             App.Log.write(LogSource.Window, LogLevel.Info, "Set window to windowed mode");
         }
         return true;

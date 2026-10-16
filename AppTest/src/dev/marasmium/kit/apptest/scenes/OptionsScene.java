@@ -8,6 +8,7 @@
 package dev.marasmium.kit.apptest.scenes;
 
 import dev.marasmium.kit.applib.App;
+import dev.marasmium.kit.applib.AppConfiguration;
 import dev.marasmium.kit.applib.Scene;
 import dev.marasmium.kit.applib.assets.Configuration;
 import dev.marasmium.kit.applib.audio.AudioDevice;
@@ -120,7 +121,6 @@ public class OptionsScene extends Scene implements UIListener {
 
     @Override
     public boolean enter(Scene lastScene) {
-        sparks.clear();
         // Display current options
         int windowWidth = (int)App.Window.getDimensions().getX();
         int windowHeight = (int)App.Window.getDimensions().getY();
@@ -201,9 +201,7 @@ public class OptionsScene extends Scene implements UIListener {
 
     @Override
     public void componentEvent(int groupID, int componentID, UIEvent event) {
-        if (groupID == optionsUI.getGroupID()) {
-
-        } else if (groupID == controlsUI.getGroupID()) {
+        if (groupID == controlsUI.getGroupID()) {
             if (event == UIEvent.Button_Released) {
                 if (componentID == backButton.getComponentID()) {
                     App.SetCurrentScene(AppTest.Title_Scene);
@@ -241,8 +239,9 @@ public class OptionsScene extends Scene implements UIListener {
                         App.Log.write(logSource, LogLevel.Error, "Invalid resolution dimensions");
                         return;
                     }
-                    configuration.setVectorValue("windowDimensions", Vector.Cartesian(windowWidth, windowHeight));
-                    configuration.setBooleanValue("windowFullscreen", fullscreenSwitch.isOn());
+                    configuration.setVectorValue(AppConfiguration.WindowDimensions,
+                            Vector.Cartesian(windowWidth, windowHeight));
+                    configuration.setBooleanValue(AppConfiguration.WindowFullscreen, fullscreenSwitch.isOn());
                     String[] monitorStrs = monitorCarousel.getValue().split(":");
                     if (monitorStrs.length != 2) {
                         App.Log.write(logSource, LogLevel.Error, "Invalid monitor");
@@ -254,9 +253,10 @@ public class OptionsScene extends Scene implements UIListener {
                         App.Log.write(logSource, LogLevel.Error, "Invalid monitor index");
                         return;
                     }
-                    configuration.setIntegerValue("windowMonitorIndex", monitorIndex);
-                    configuration.setFloatValue("audioMusicVolume", musicVolumeSlider.getValue());
-                    configuration.setFloatValue("audioSoundEffectsDefaultVolume", soundEffectsVolumeSlider.getValue());
+                    configuration.setIntegerValue(AppConfiguration.WindowMonitorIndex, monitorIndex);
+                    configuration.setFloatValue(AppConfiguration.AudioMusicVolume, musicVolumeSlider.getValue());
+                    configuration.setFloatValue(AppConfiguration.AudioSoundEffectsDefaultVolume,
+                            soundEffectsVolumeSlider.getValue());
                     String speakerStrs[] = speakerCarousel.getValue().split(":");
                     if (speakerStrs.length != 2) {
                         App.Log.write(logSource, LogLevel.Error, "Invalid speaker");
@@ -269,16 +269,19 @@ public class OptionsScene extends Scene implements UIListener {
                         App.Log.write(logSource, LogLevel.Error, "Invalid speaker index");
                         return;
                     }
-                    configuration.setIntegerValue("audioSpeakerIndex", speakerIndex);
+                    configuration.setIntegerValue(AppConfiguration.AudioSpeakerIndex, speakerIndex);
                     App.Assets.writeConfiguration(configuration, AppTest.Configuration_File_Path);
                     // Apply configuration
-                    App.Window.setDimensions(configuration.getVectorValue("windowDimensions"));
-                    App.Window.setMonitor(new Monitor(configuration.getIntegerValue("windowMonitorIndex")));
-                    App.Window.setFullscreen(configuration.getBooleanValue("windowFullscreen"));
-                    App.Audio.music.setVolume(configuration.getFloatValue("audioMusicVolume"));
+                    App.Window.setDimensions(configuration.getVectorValue(AppConfiguration.WindowDimensions));
+                    App.Window.setMonitor(new Monitor(configuration.getIntegerValue(
+                            AppConfiguration.WindowMonitorIndex)));
+                    App.Window.setFullscreen(configuration.getBooleanValue(AppConfiguration.WindowFullscreen));
+                    App.Audio.music.setVolume(configuration.getFloatValue(AppConfiguration.AudioMusicVolume));
                     App.Audio.soundEffects.setDefaultVolume(configuration.getFloatValue(
-                            "audioSoundEffectsDefaultVolume"));
-                    App.Audio.setSpeaker(new AudioDevice(configuration.getIntegerValue("audioSpeakerIndex")));
+                            AppConfiguration.AudioSoundEffectsDefaultVolume));
+                    App.Audio.setSpeaker(new AudioDevice(configuration.getIntegerValue(
+                            AppConfiguration.AudioSpeakerIndex)));
+                    enter(null);
                 }
             }
         }

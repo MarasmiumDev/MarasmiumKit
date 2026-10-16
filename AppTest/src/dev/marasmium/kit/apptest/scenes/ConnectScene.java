@@ -38,9 +38,12 @@ public class ConnectScene extends Scene implements UIListener, NetListener {
     private final UIGroup controlsUI = new UIGroup();
     private final Button backButton = new Button();
     private final Button connectButton = new Button();
+    private final UIGroup connectingUI = new UIGroup();
+    private final Label connectingLabel = new Label();
     private final Camera sparkCamera = new Camera();
     private final ArrayList<Spark> sparks = new ArrayList<>();
     private float sparkTimer = 0.0f;
+    private boolean connecting = false;
 
     @Override
     protected boolean initialize() {
@@ -76,6 +79,11 @@ public class ConnectScene extends Scene implements UIListener, NetListener {
                 "BACK", Alignment.Center);
         connectButton.initialize(Vector.Cartesian(0.70f, 0.05f), Vector.Cartesian(0.25f, 0.10f), buttonAnimationFilePaths,
                 "CONNECT", Alignment.Center);
+        // Initialize connecting UI components
+        connectingUI.initialize(this, 2, 1.0f, "Assets/Typefaces/Silkscreen.typeface", 4.0f, 0.35f);
+        connectingUI.addComponent(connectingLabel);
+        connectingLabel.initialize(Vector.Cartesian(0.25f, 0.5f), Vector.Cartesian(0.5f, 0.1f), "", "CONNECTING...",
+                Vector.Zero(), Alignment.Center, Alignment.Center);
         // Initialize camera
         sparkCamera.initialize(App.Window.getDimensions().scalarMultiply(0.5f), 1.0f, Angle.Zero());
         return true;
@@ -83,7 +91,12 @@ public class ConnectScene extends Scene implements UIListener, NetListener {
 
     @Override
     public boolean enter(Scene lastScene) {
-        sparks.clear();
+        connecting = false;
+        connectUI.setEnabled(true);
+        connectUI.setVisible(true);
+        connectButton.setEnabled(true);
+        connectingUI.setEnabled(false);
+        connectingUI.setVisible(false);
         addressTextBox.setText("");
         portTextBox.setText("");
         return true;
@@ -93,6 +106,7 @@ public class ConnectScene extends Scene implements UIListener, NetListener {
     public boolean processInput() {
         connectUI.processInput();
         controlsUI.processInput();
+        connectingUI.processInput();
         return true;
     }
 
@@ -100,6 +114,7 @@ public class ConnectScene extends Scene implements UIListener, NetListener {
     public void draw() {
         connectUI.draw();
         controlsUI.draw();
+        connectingUI.draw();
         for (Spark spark : sparks) {
             App.Graphics.submit(sparkCamera, spark);
         }
@@ -109,6 +124,7 @@ public class ConnectScene extends Scene implements UIListener, NetListener {
     public void update(float deltaFrames) {
         connectUI.update(deltaFrames);
         controlsUI.update(deltaFrames);
+        connectingUI.update(deltaFrames);
         sparkTimer += deltaFrames;
         if (sparkTimer > (float)App.Graphics.getTargetFPS() / 20.0f) {
             sparkTimer = 0.0f;
@@ -133,6 +149,7 @@ public class ConnectScene extends Scene implements UIListener, NetListener {
     protected boolean destroy() {
         connectUI.destroy();
         controlsUI.destroy();
+        connectingUI.destroy();
         for (Spark spark : sparks) {
             spark.destroy();
         }
@@ -145,7 +162,17 @@ public class ConnectScene extends Scene implements UIListener, NetListener {
         if (groupID == controlsUI.getGroupID()) {
             if (event == UIEvent.Button_Released) {
                 if (componentID == backButton.getComponentID()) {
-                    App.SetCurrentScene(AppTest.Title_Scene);
+                    if (!connecting) {
+                        App.SetCurrentScene(AppTest.Title_Scene);
+                    } else {
+                        App.Network.disconnect();
+                        connecting = false;
+                        connectUI.setEnabled(true);
+                        connectUI.setVisible(true);
+                        connectButton.setEnabled(true);
+                        connectingUI.setEnabled(false);
+                        connectingUI.setVisible(false);
+                    }
                 } else if (componentID == connectButton.getComponentID()) {
                     String address = addressTextBox.getText();
                     if (address == null) {
@@ -164,6 +191,12 @@ public class ConnectScene extends Scene implements UIListener, NetListener {
                     } catch (NumberFormatException _) {
                         return;
                     }
+                    connecting = true;
+                    connectUI.setEnabled(false);
+                    connectUI.setVisible(false);
+                    connectButton.setEnabled(false);
+                    connectingUI.setEnabled(true);
+                    connectingUI.setVisible(true);
                     App.Network.connect(address, port, 10);
                 }
             }
@@ -179,6 +212,12 @@ public class ConnectScene extends Scene implements UIListener, NetListener {
     @Override
     public void netDisconnected(int clientID) {
         App.Log.write(logSource, LogLevel.Info, "Disconnected from server");
+        connecting = false;
+        connectUI.setEnabled(true);
+        connectUI.setVisible(true);
+        connectButton.setEnabled(true);
+        connectingUI.setEnabled(false);
+        connectingUI.setVisible(false);
     }
 
 }

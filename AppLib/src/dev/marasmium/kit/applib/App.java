@@ -103,22 +103,23 @@ public class App {
         int graphicsMaximumUPF;
         Colour graphicsClearColour;
         try {
-            logTimestampFormat = configuration.getStringValue("logTimestampFormat");
-            logConsoleOutputEnabled = configuration.getBooleanValue("logConsoleOutputEnabled");
-            logOutputFileEnabled = configuration.getBooleanValue("logOutputFileEnabled");
-            logOutputFilePath = configuration.getStringValue("logOutputFilePath");
-            windowTitle = configuration.getStringValue("windowTitle");
-            windowDimensions = configuration.getVectorValue("windowDimensions");
-            windowMonitor = new Monitor(configuration.getIntegerValue("windowMonitorIndex"));
-            windowFullscreen = configuration.getBooleanValue("windowFullscreen");
-            windowMouseCursorVisible = configuration.getBooleanValue("windowMouseCursorVisible");
-            netClientMaximumMPU = configuration.getIntegerValue("netClientMaximumMPU");
-            audioSpeaker = new AudioDevice(configuration.getIntegerValue("audioSpeakerIndex"));
-            audioSoundEffectsDefaultVolume = configuration.getFloatValue("audioSoundEffectsDefaultVolume");
-            audioMusicVolume = configuration.getFloatValue("audioMusicVolume");
-            graphicsTargetFPS = configuration.getIntegerValue("graphicsTargetFPS");
-            graphicsMaximumUPF = configuration.getIntegerValue("graphicsMaximumUPF");
-            graphicsClearColour = configuration.getColourValue("graphicsClearColour");
+            logTimestampFormat = configuration.getStringValue(AppConfiguration.LogTimestampFormat);
+            logConsoleOutputEnabled = configuration.getBooleanValue(AppConfiguration.LogConsoleOutputEnabled);
+            logOutputFileEnabled = configuration.getBooleanValue(AppConfiguration.LogOutputFileEnabled);
+            logOutputFilePath = configuration.getStringValue(AppConfiguration.LogOutputFilePath);
+            windowTitle = configuration.getStringValue(AppConfiguration.WindowTitle);
+            windowDimensions = configuration.getVectorValue(AppConfiguration.WindowDimensions);
+            windowMonitor = new Monitor(configuration.getIntegerValue(AppConfiguration.WindowMonitorIndex));
+            windowFullscreen = configuration.getBooleanValue(AppConfiguration.WindowFullscreen);
+            windowMouseCursorVisible = configuration.getBooleanValue(AppConfiguration.WindowMouseCursorVisible);
+            netClientMaximumMPU = configuration.getIntegerValue(AppConfiguration.NetClientMaximumMPU);
+            audioSpeaker = new AudioDevice(configuration.getIntegerValue(AppConfiguration.AudioSpeakerIndex));
+            audioSoundEffectsDefaultVolume = configuration.getFloatValue(
+                    AppConfiguration.AudioSoundEffectsDefaultVolume);
+            audioMusicVolume = configuration.getFloatValue(AppConfiguration.AudioMusicVolume);
+            graphicsTargetFPS = configuration.getIntegerValue(AppConfiguration.GraphicsTargetFPS);
+            graphicsMaximumUPF = configuration.getIntegerValue(AppConfiguration.GraphicsMaximumUPF);
+            graphicsClearColour = configuration.getColourValue(AppConfiguration.GraphicsClearColour);
         } catch (NullPointerException _) {
             return false;
         }
@@ -282,22 +283,27 @@ public class App {
         }
         configuration = new Configuration();
         configuration.initialize();
-        configuration.setStringValue("logTimestampFormat", "yyyy.MM.dd@HH:mm:ss.SSS");
-        configuration.setBooleanValue("logConsoleOutputEnabled", true);
-        configuration.setBooleanValue("logOutputFileEnabled", true);
-        configuration.setStringValue("logOutputFilePath", "MarasmiumKit-App.log");
-        configuration.setStringValue("windowTitle", "MarasmiumKit App");
-        configuration.setVectorValue("windowDimensions", Vector.Cartesian(1280.0f, 720.0f));
-        configuration.setIntegerValue("windowMonitorIndex", 0);
-        configuration.setBooleanValue("windowFullscreen", false);
-        configuration.setBooleanValue("windowMouseCursorVisible", true);
-        configuration.setIntegerValue("netClientMaximumMPU", -1);
-        configuration.setIntegerValue("audioSpeakerIndex", 0);
-        configuration.setFloatValue("audioSoundEffectsDefaultVolume", 1.0f);
-        configuration.setFloatValue("audioMusicVolume", 1.0f);
-        configuration.setIntegerValue("graphicsTargetFPS", 60);
-        configuration.setIntegerValue("graphicsMaximumUPF", 8);
-        configuration.setColourValue("graphicsClearColour", Colour.Black);
+        configuration.setStringValue(AppConfiguration.LogTimestampFormat, AppConfiguration.LogTimestampFormatDefault);
+        configuration.setBooleanValue(AppConfiguration.LogConsoleOutputEnabled,
+                AppConfiguration.LogConsoleOutputEnabledDefault);
+        configuration.setBooleanValue(AppConfiguration.LogOutputFileEnabled,
+                AppConfiguration.LogOutputFileEnabledDefault);
+        configuration.setStringValue(AppConfiguration.LogOutputFilePath, AppConfiguration.LogOutputFilePathDefault);
+        configuration.setStringValue(AppConfiguration.WindowTitle, AppConfiguration.WindowTitleDefault);
+        configuration.setVectorValue(AppConfiguration.WindowDimensions, AppConfiguration.WindowDimensionsDefault);
+        configuration.setIntegerValue(AppConfiguration.WindowMonitorIndex, AppConfiguration.WindowMonitorIndexDefault);
+        configuration.setBooleanValue(AppConfiguration.WindowFullscreen, AppConfiguration.WindowFullscreenDefault);
+        configuration.setBooleanValue(AppConfiguration.WindowMouseCursorVisible,
+                AppConfiguration.WindowMouseCursorVisibleDefault);
+        configuration.setIntegerValue(AppConfiguration.NetClientMaximumMPU,
+                AppConfiguration.NetClientMaximumMPUDefault);
+        configuration.setIntegerValue(AppConfiguration.AudioSpeakerIndex, AppConfiguration.AudioSpeakerIndexDefault);
+        configuration.setFloatValue(AppConfiguration.AudioSoundEffectsDefaultVolume,
+                AppConfiguration.AudioSoundEffectsDefaultVolumeDefault);
+        configuration.setFloatValue(AppConfiguration.AudioMusicVolume, AppConfiguration.AudioMusicVolumeDefault);
+        configuration.setIntegerValue(AppConfiguration.GraphicsTargetFPS, AppConfiguration.GraphicsTargetFPSDefault);
+        configuration.setIntegerValue(AppConfiguration.GraphicsMaximumUPF, AppConfiguration.GraphicsMaximumUPFDefault);
+        configuration.setColourValue(AppConfiguration.GraphicsClearColour, AppConfiguration.GraphicsClearColourDefault);
         Assets.writeConfiguration(configuration, configurationFilePath);
         return configuration;
     }

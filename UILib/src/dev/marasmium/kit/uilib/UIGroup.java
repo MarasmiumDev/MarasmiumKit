@@ -8,6 +8,7 @@
 package dev.marasmium.kit.uilib;
 
 import dev.marasmium.kit.applib.App;
+import dev.marasmium.kit.applib.AppConfiguration;
 import dev.marasmium.kit.applib.data.Angle;
 import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.graphics.Camera;
@@ -37,11 +38,12 @@ public class UIGroup implements UIListener {
      */
     protected String typefaceFilePath = null;
     /**
-     * The size to draw text at on this group's user-interface components
+     * The size to draw text at on this group's user-interface components in percent of the typeface's original size
+     * on the framework's default window size
      */
     protected float textSize = 0.0f;
     /**
-     * The padding to be placed around text drawn on this group's user-interface components
+     * The padding to be placed around text drawn on this group's user-interface components in pixels
      */
     protected float textPadding = 0.0f;
     /**
@@ -77,7 +79,8 @@ public class UIGroup implements UIListener {
      * @param baseDepth The smallest depth to draw user-interface components in this group at
      * @param typefaceFilePath The typeface to draw text in on this group's user-interface components
      * @param textPadding The padding to place around text drawn on this group's user-interface components
-     * @param textSize The size to draw text at on this group's user-interface components
+     * @param textSize The size to draw text at on this group's user-interface components in percent of the original
+     *                 typeface's size on the framework's default window size
      * @return Whether all parameters were valid and this group was initialized successfully
      */
     public boolean initialize(UIListener parent, int groupID, float baseDepth, String typefaceFilePath,
@@ -90,6 +93,10 @@ public class UIGroup implements UIListener {
             return false;
         }
         if (!setTextSize(textSize)) {
+            return false;
+        }
+        if (!setTextSize(textSize * App.Window.getDimensions().elementDivide(AppConfiguration.WindowDimensionsDefault)
+                .getElementAverage())) {
             return false;
         }
         if (!setTextPadding(textPadding)) {
@@ -181,10 +188,10 @@ public class UIGroup implements UIListener {
     private boolean updateWindowDimensions() {
         if (windowDimensions != null && !(App.Window.getDimensions().getX() == 0.0f
                 || App.Window.getDimensions().getY() == 0.0f)) {
-            Vector scaling = App.Window.getDimensions().elementDivide(windowDimensions);
-            float averageScaling = scaling.getElementAverage();
-            textSize *= averageScaling;
-            textPadding *= averageScaling;
+            if (!setTextSize(textSize * App.Window.getDimensions().elementDivide(windowDimensions)
+                    .getElementAverage())) {
+                return false;
+            }
         }
         windowDimensions = App.Window.getDimensions().clone();
         for (UIComponent component : components) {
@@ -249,7 +256,7 @@ public class UIGroup implements UIListener {
 
     /**
      * Get the size text is drawn in on this group's user-interface components in percent of the typeface's original
-     * size
+     * size on the framework's default window size
      * @return This group's text size
      */
     @Override
@@ -389,7 +396,9 @@ public class UIGroup implements UIListener {
 
     /**
      * Set the size to draw text at on this group's user-interface components in percent of the typeface's original size
-     * @param textSize This group's new text size in percent of the typeface's original size
+     * on the framework's default window size
+     * @param textSize This group's new text size in percent of the typeface's original size on the framework's default
+     *                 window size
      * @return Whether the given text size was valid
      */
     public boolean setTextSize(float textSize) {

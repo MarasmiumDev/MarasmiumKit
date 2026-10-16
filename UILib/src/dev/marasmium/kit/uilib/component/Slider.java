@@ -45,6 +45,10 @@ public class Slider extends UIComponent {
      */
     protected final Button cursor = new Button();
     /**
+     * The dimensions of this slider's cursor in percent of its background dimensions
+     */
+    protected Vector cursorDimensions = null;
+    /**
      * The vertical alignment of this slider's cursor within its background
      */
     protected Alignment verticalCursorAlignment = null;
@@ -120,6 +124,9 @@ public class Slider extends UIComponent {
         if (!cursor.initialize(Vector.Zero(), Vector.Zero(), cursorAnimationFilePaths, "", Alignment.Center)) {
             return false;
         }
+        if (!setCursorDimensions(cursorDimensions)) {
+            return false;
+        }
         setMinimumValue(minimumValue);
         setMaximumValue(maximumValue);
         if (!setValueCount(valueCount)) {
@@ -130,9 +137,6 @@ public class Slider extends UIComponent {
             return false;
         }
         if (!setDimensions(dimensions)) {
-            return false;
-        }
-        if (!setCursorDimensions(cursorDimensions)) {
             return false;
         }
         if (!setVerticalCursorAlignment(verticalCursorAlignment)) {
@@ -283,14 +287,13 @@ public class Slider extends UIComponent {
      */
     @Override
     public boolean setDimensions(Vector dimensions) {
-        Vector cursorDimensions = getCursorDimensions();
         if (!super.setDimensions(dimensions)) {
             return false;
         }
         if (!label.setDimensions(dimensions)) {
             return false;
         }
-        if (!setCursorDimensions(cursorDimensions)) {
+        if (!cursor.setDimensions(cursorDimensions.elementMultiply(dimensions))) {
             return false;
         }
         if (getPosition() == null) {
@@ -465,10 +468,7 @@ public class Slider extends UIComponent {
      * @return This slider's cursor dimensions in percent of its background's dimensions
      */
     public Vector getCursorDimensions() {
-        if (cursor.getDimensions() == null || getDimensions() == null) {
-            return null;
-        }
-        return cursor.getDimensions().elementDivide(getDimensions());
+        return cursorDimensions;
     }
 
     /**
@@ -477,10 +477,11 @@ public class Slider extends UIComponent {
      * @return Whether the given dimensions were valid
      */
     public boolean setCursorDimensions(Vector cursorDimensions) {
-        if (cursorDimensions == null || getDimensions() == null) {
+        if (cursorDimensions == null) {
             return false;
         }
-        return cursor.setDimensions(cursorDimensions.elementMultiply(getDimensions()));
+        this.cursorDimensions = cursorDimensions;
+        return true;
     }
 
     /**

@@ -64,7 +64,6 @@ public class TitleScene extends Scene implements UIListener {
 
     @Override
     public boolean enter(Scene lastScene) {
-        sparks.clear();
         return true;
     }
 
