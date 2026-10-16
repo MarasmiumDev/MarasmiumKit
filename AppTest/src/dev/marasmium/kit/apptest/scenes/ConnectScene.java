@@ -15,6 +15,8 @@ import dev.marasmium.kit.applib.graphics.Alignment;
 import dev.marasmium.kit.applib.graphics.Camera;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
+import dev.marasmium.kit.applib.networking.NetListener;
+import dev.marasmium.kit.applib.networking.NetMessage;
 import dev.marasmium.kit.apptest.AppTest;
 import dev.marasmium.kit.apptest.sprites.Spark;
 import dev.marasmium.kit.uilib.UIEvent;
@@ -26,9 +28,9 @@ import dev.marasmium.kit.uilib.component.TextBox;
 
 import java.util.ArrayList;
 
-public class ConnectScene extends Scene implements UIListener {
+public class ConnectScene extends Scene implements UIListener, NetListener {
 
-    private final LogSource logSource = new LogSource();
+    private final LogSource logSource = new LogSource("Connect Scene");
     private final UIGroup connectUI = new UIGroup();
     private final Label connectLabel = new Label();
     private final TextBox addressTextBox = new TextBox();
@@ -145,10 +147,38 @@ public class ConnectScene extends Scene implements UIListener {
                 if (componentID == backButton.getComponentID()) {
                     App.SetCurrentScene(AppTest.Title_Scene);
                 } else if (componentID == connectButton.getComponentID()) {
-                    App.Log.write(logSource, LogLevel.Info, "Connect to server at ", addressTextBox.getText(), ":",
-                            portTextBox.getText());
+                    String address = addressTextBox.getText();
+                    if (address == null) {
+                        return;
+                    }
+                    if (address.isEmpty()) {
+                        return;
+                    }
+                    String portStr = portTextBox.getText();
+                    if (portStr == null) {
+                        return;
+                    }
+                    int port;
+                    try {
+                        port = Integer.parseInt(portStr);
+                    } catch (NumberFormatException _) {
+                        return;
+                    }
+                    App.Network.connect(address, port, 10);
                 }
             }
         }
     }
+
+    @Override
+    public boolean netConnected(int clientID) {
+        App.Log.write(logSource, LogLevel.Info, "Connected to server");
+        return true;
+    }
+
+    @Override
+    public void netDisconnected(int clientID) {
+        App.Log.write(logSource, LogLevel.Info, "Disconnected from server");
+    }
+
 }

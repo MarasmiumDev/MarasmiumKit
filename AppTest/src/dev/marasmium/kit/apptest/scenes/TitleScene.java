@@ -39,7 +39,8 @@ public class TitleScene extends Scene implements UIListener {
 
     @Override
     public boolean initialize() {
-        final String[] buttonAnimations = { "Assets/Animations/UI/Button/Button_Unselected.animation",
+        final String[] buttonAnimations = {
+                "Assets/Animations/UI/Button/Button_Unselected.animation",
                 "Assets/Animations/UI/Button/Button_Selected.animation",
                 "Assets/Animations/UI/Button/Button_Pressed.animation"
         };

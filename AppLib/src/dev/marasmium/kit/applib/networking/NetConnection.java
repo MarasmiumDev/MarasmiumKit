@@ -43,6 +43,10 @@ public class NetConnection {
      */
     private volatile boolean wasConnected = false;
     /**
+     * Whether this client failed to connect to the last remote host it attempted connection to
+     */
+    private volatile boolean connectionFailed = false;
+    /**
      * Whether a connection from this client has been rejected by its parent class
      */
     private volatile boolean rejected = false;
@@ -112,6 +116,7 @@ public class NetConnection {
         try {
             socket.connect(address, timeout * 1000);
         } catch (IOException | IllegalBlockingModeException | IllegalArgumentException e) {
+            connectionFailed = true;
             disconnect();
             return false;
         }
@@ -120,12 +125,14 @@ public class NetConnection {
             outputStream = new ObjectOutputStream(socket.getOutputStream());
             outputStream.flush();
         } catch (IOException | NullPointerException _) {
+            connectionFailed = true;
             disconnect();
             return false;
         }
         try {
             inputStream = new ObjectInputStream(socket.getInputStream());
         } catch (IOException | IllegalStateException | NullPointerException _) {
+            connectionFailed = true;
             disconnect();
             return false;
         }
@@ -152,6 +159,7 @@ public class NetConnection {
         try {
             inputStream = new ObjectInputStream(socket.getInputStream());
         } catch (IOException | IllegalStateException | NullPointerException _) {
+            connectionFailed = true;
             disconnect();
             return false;
         }
@@ -159,6 +167,7 @@ public class NetConnection {
             outputStream = new ObjectOutputStream(socket.getOutputStream());
             outputStream.flush();
         } catch (IOException | NullPointerException _) {
+            connectionFailed = true;
             disconnect();
             return false;
         }
@@ -182,8 +191,9 @@ public class NetConnection {
                 return;
             }
         }
-        if (!connected && wasConnected) {
+        if ((!connected && wasConnected) || connectionFailed) {
             wasConnected = false;
+            connectionFailed = false;
             parent.netDisconnected(clientID);
         }
         // Process incoming messages
