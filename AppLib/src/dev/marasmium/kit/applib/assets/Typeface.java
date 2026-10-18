@@ -29,49 +29,6 @@ public class Typeface implements Cloneable {
     private String animationFilePath = null;
 
     /**
-     * Initialize this typeface with a set of characters mapped to glyph metrics and an animation file path
-     * @param characters The set of characters in this typeface
-     * @param glyphs The set of glyph metrics corresponding to the characters of this typeface
-     * @param animationData The serialized animation containing the glyph images of this typeface
-     * @return Whether all parameters were valid and this typeface was initialized successfully
-     */
-    public boolean initialize(String characters, Glyph[] glyphs, byte[] animationData) {
-        if (characters == null || glyphs == null) {
-            return false;
-        }
-        if (characters.length() != glyphs.length) {
-            return false;
-        }
-        for (int i = 0; i < characters.length(); i++) {
-            if (!addGlyph(characters.charAt(i), glyphs[i])) {
-                return false;
-            }
-        }
-        return setAnimationData(animationData);
-    }
-
-    /**
-     * Free this typeface's memory
-     * @return Whether this typeface's memory could be freed safely
-     */
-    public boolean destroy() {
-        boolean success = true;
-        for (HashMap.Entry<Character, Glyph> entry : glyphs.entrySet()) {
-            try {
-                if (entry.getValue() != null) {
-                    entry.getValue().destroy();
-                }
-            } catch (IllegalStateException _) {
-                success = false;
-            }
-        }
-        glyphs.clear();
-        animationData = null;
-        animationFilePath = null;
-        return success;
-    }
-
-    /**
      * Get a string representing this typeface
      * @return This typeface's string representation
      */
@@ -112,6 +69,49 @@ public class Typeface implements Cloneable {
         }
         typeface.animationFilePath = animationFilePath;
         return typeface;
+    }
+
+    /**
+     * Initialize this typeface with a set of characters mapped to glyph metrics and an animation file path
+     * @param characters The set of characters in this typeface
+     * @param glyphs The set of glyph metrics corresponding to the characters of this typeface
+     * @param animationData The serialized animation containing the glyph images of this typeface
+     * @return Whether all parameters were valid and this typeface was initialized successfully
+     */
+    public boolean initialize(String characters, Glyph[] glyphs, byte[] animationData) {
+        if (characters == null || glyphs == null) {
+            return false;
+        }
+        if (characters.length() != glyphs.length) {
+            return false;
+        }
+        for (int i = 0; i < characters.length(); i++) {
+            if (!addGlyph(characters.charAt(i), glyphs[i])) {
+                return false;
+            }
+        }
+        return setAnimationData(animationData);
+    }
+
+    /**
+     * Free this typeface's memory
+     * @return Whether this typeface's memory could be freed safely
+     */
+    public boolean destroy() {
+        boolean success = true;
+        for (HashMap.Entry<Character, Glyph> entry : glyphs.entrySet()) {
+            try {
+                if (entry.getValue() != null) {
+                    entry.getValue().destroy();
+                }
+            } catch (IllegalStateException _) {
+                success = false;
+            }
+        }
+        glyphs.clear();
+        animationData = null;
+        animationFilePath = null;
+        return success;
     }
 
     /**

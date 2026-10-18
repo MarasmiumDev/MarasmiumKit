@@ -33,6 +33,19 @@ public class Body {
     protected Angle rotation = null;
 
     /**
+     * Get a string representation of this body
+     * @return A string representation of this body
+     */
+    @Override
+    public String toString() {
+        if (position == null || velocity == null || angle == null || rotation == null) {
+            return "body(null)";
+        }
+        return "body(position " + position + ", velocity " + velocity + ", angle " + angle + ", rotation " + rotation
+                + ")";
+    }
+
+    /**
      * Initialize this body with a position and an angle
      * @param position The position for this body in world coordinates
      * @param angle The angle of this body
@@ -75,19 +88,6 @@ public class Body {
         velocity = null;
         angle = null;
         rotation = null;
-    }
-
-    /**
-     * Get a string representation of this body
-     * @return A string representation of this body
-     */
-    @Override
-    public String toString() {
-        if (position == null || velocity == null || angle == null || rotation == null) {
-            return "body(null)";
-        }
-        return "body(position " + position + ", velocity " + velocity + ", angle " + angle + ", rotation " + rotation
-                + ")";
     }
 
     /**

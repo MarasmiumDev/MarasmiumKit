@@ -31,37 +31,6 @@ public class AudioTrack implements Cloneable {
     private byte[] data = null;
 
     /**
-     * Initialize this audio track with its sample rate, sample size, channel count, and audio data
-     * @param sampleRate The sample rate for this audio track in Hz
-     * @param sampleSize The sample size for this audio track in bytes
-     * @param channelCount The number of channels in this audio track
-     * @param data This track's audio data
-     * @return Whether the parameters were all valid and this audio track was initialized successfully
-     */
-    public boolean initialize(int sampleRate, int sampleSize, int channelCount, byte[] data) {
-        if (!setSampleRate(sampleRate)) {
-            return false;
-        }
-        if (!setSampleSize(sampleSize)) {
-            return false;
-        }
-        if (!setChannelCount(channelCount)) {
-            return false;
-        }
-        return setData(data);
-    }
-
-    /**
-     * Free this audio track's memory
-     */
-    public void destroy() {
-        sampleRate = 0;
-        sampleSize = 0;
-        channelCount = 0;
-        data = null;
-    }
-
-    /**
      * Convert this audio track to a string containing its format, size, and duration
      * @return The string representation of this audio track
      */
@@ -98,6 +67,37 @@ public class AudioTrack implements Cloneable {
             }
         }
         return audioTrack;
+    }
+
+    /**
+     * Initialize this audio track with its sample rate, sample size, channel count, and audio data
+     * @param sampleRate The sample rate for this audio track in Hz
+     * @param sampleSize The sample size for this audio track in bytes
+     * @param channelCount The number of channels in this audio track
+     * @param data This track's audio data
+     * @return Whether the parameters were all valid and this audio track was initialized successfully
+     */
+    public boolean initialize(int sampleRate, int sampleSize, int channelCount, byte[] data) {
+        if (!setSampleRate(sampleRate)) {
+            return false;
+        }
+        if (!setSampleSize(sampleSize)) {
+            return false;
+        }
+        if (!setChannelCount(channelCount)) {
+            return false;
+        }
+        return setData(data);
+    }
+
+    /**
+     * Free this audio track's memory
+     */
+    public void destroy() {
+        sampleRate = 0;
+        sampleSize = 0;
+        channelCount = 0;
+        data = null;
     }
 
     /**

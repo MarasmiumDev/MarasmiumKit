@@ -8,10 +8,9 @@
 package dev.marasmium.kit.applib.logging;
 
 /**
- * Record providing constants for logging system message source flags
- * @param sourceName The name of this message source flag
+ * Data structure providing constants for logging system message source flags
  */
-public record LogSource(String sourceName) {
+public class LogSource {
 
     /**
      * Logging system message source flag for the main App class
@@ -47,10 +46,23 @@ public record LogSource(String sourceName) {
     public static final LogSource Graphics = new LogSource("Graphics System");
 
     /**
-     * Construct a blank logging system message source flag record with default name "-"
+     * The name of this log source
+     */
+    private String sourceName;
+
+    /**
+     * Construct a blank logging system message source flag with default name "-"
      */
     public LogSource() {
         this("-");
+    }
+
+    /**
+     * Construct a logging system message source flag with a name
+     * @param sourceName This log source's name
+     */
+    public LogSource(String sourceName) {
+        this.sourceName = sourceName;
     }
 
     /**

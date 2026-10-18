@@ -26,36 +26,6 @@ public abstract class Scene implements InputListener, NetListener {
     private int sceneID = 0;
 
     /**
-     * External initialization function for this scene intended to only be called by the application framework when
-     * adding it to the app, assigns the scene's ID and calls its internal initialization function
-     * @param sceneID The ID number assigned by the application framework
-     * @return Whether this scene was initialized successfully
-     */
-    public boolean initializeScene(int sceneID) {
-        if (initialized) {
-            return false;
-        }
-        setSceneID(sceneID);
-        initialized = initialize();
-        return initialized;
-    }
-
-    /**
-     * External destruction function for this scene intended to be called only by the application framework when
-     * removing it from the app, frees the scene's ID and calls its internal destroy function
-     * @return Whether this scene was destroyed safely
-     */
-    public boolean destroyScene() {
-        if (!initialized) {
-            return false;
-        }
-        boolean success = destroy();
-        sceneID = 0;
-        initialized = false;
-        return success;
-    }
-
-    /**
      * Initialize this scene's memory
      * @return Whether this scene was initialized successfully
      */
@@ -93,6 +63,12 @@ public abstract class Scene implements InputListener, NetListener {
     public abstract boolean leave(Scene nextScene);
 
     /**
+     * Free this scene's memory
+     * @return Whether this scene was destroyed successfully
+     */
+    protected abstract boolean destroy();
+
+    /**
      * Test whether this scene has the same ID as another instance
      * @param o The object to compare this scene to (must be an instance of Scene)
      * @return Whether o has the same scene ID as this one
@@ -106,10 +82,34 @@ public abstract class Scene implements InputListener, NetListener {
     }
 
     /**
-     * Free this scene's memory
-     * @return Whether this scene was destroyed successfully
+     * External initialization function for this scene intended to only be called by the application framework when
+     * adding it to the app, assigns the scene's ID and calls its internal initialization function
+     * @param sceneID The ID number assigned by the application framework
+     * @return Whether this scene was initialized successfully
      */
-    protected abstract boolean destroy();
+    public boolean initializeScene(int sceneID) {
+        if (initialized) {
+            return false;
+        }
+        setSceneID(sceneID);
+        initialized = initialize();
+        return initialized;
+    }
+
+    /**
+     * External destruction function for this scene intended to be called only by the application framework when
+     * removing it from the app, frees the scene's ID and calls its internal destroy function
+     * @return Whether this scene was destroyed safely
+     */
+    public boolean destroyScene() {
+        if (!initialized) {
+            return false;
+        }
+        boolean success = destroy();
+        sceneID = 0;
+        initialized = false;
+        return success;
+    }
 
     /**
      * Test whether this scene has been initialized by its external initialization function

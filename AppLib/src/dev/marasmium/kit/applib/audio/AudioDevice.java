@@ -33,37 +33,6 @@ public class AudioDevice implements Cloneable {
     }
 
     /**
-     * Free this audio device's memory
-     */
-    public void destroy() {
-        index = 0;
-        name = null;
-    }
-
-    /**
-     * Ensure that this audio device's index is still available in the local audio environment's array of available
-     * devices, and change to the default (the first available or -1)
-     * @return Whether the audio device was available
-     */
-    private boolean validate() {
-        Mixer.Info[] mixers = AudioSystem.getMixerInfo();
-        // Ensure that there are audio devices available
-        if (mixers.length == 0) {
-            index = -1;
-            name = null;
-            return false;
-        }
-        // Check the index and set the audio device name
-        boolean success = true;
-        if (index < 0 || index >= mixers.length) {
-            index = 0;
-            success = false;
-        }
-        name = mixers[index].getName();
-        return success;
-    }
-
-    /**
      * Convert this audio device to a string
      * @return The string representation of this audio device
      */
@@ -105,6 +74,35 @@ public class AudioDevice implements Cloneable {
         audioDevice.index = index;
         audioDevice.name = name;
         return audioDevice;
+    }
+
+    /**
+     * Free this audio device's memory
+     */
+    public void destroy() {
+        index = 0;
+        name = null;
+    }
+
+    /**
+     * Ensure that this audio device's index is still available in the local audio environment's array of available
+     * devices, and change to the default (the first available or -1)
+     * @return Whether the audio device was available
+     */
+    private boolean validate() {
+        Mixer.Info[] mixers = AudioSystem.getMixerInfo();
+        if (mixers.length == 0) {
+            index = -1;
+            name = null;
+            return false;
+        }
+        boolean success = true;
+        if (index < 0 || index >= mixers.length) {
+            index = 0;
+            success = false;
+        }
+        name = mixers[index].getName();
+        return success;
     }
 
     /**

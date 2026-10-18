@@ -42,48 +42,6 @@ public class Animation implements Cloneable {
     private int textureID = 0;
 
     /**
-     * Initialize this animation with a target FPS, sheet and frame dimensions, frame count, and pixel data
-     * @param targetFPS The target FPS to draw of this animation
-     * @param sheetDimensions The dimensions of this animation's texture in frames
-     * @param frameDimensions The dimensions of this animation's frame's in pixels
-     * @param frameCount The number of frames to store in this animation
-     * @param data The pixel colour data for this animation's texture
-     * @return Whether this animation was initialized successfully
-     */
-    public boolean initialize(int targetFPS, Vector sheetDimensions, Vector frameDimensions, int frameCount,
-                              Colour[] data) {
-        if (!setTargetFPS(targetFPS)) {
-            return false;
-        }
-        if (!setSheetDimensions(sheetDimensions)) {
-            return false;
-        }
-        if (!setFrameDimensions(frameDimensions)) {
-            return false;
-        }
-        if (!setFrameCount(frameCount)) {
-            return false;
-        }
-        if (!setData(data)) {
-            return false;
-        }
-        setTextureID(0);
-        return true;
-    }
-
-    /**
-     * Free this animation's memory
-     */
-    public void destroy() {
-        targetFPS = 0;
-        sheetDimensions = null;
-        frameDimensions = null;
-        frameCount = 0;
-        data = null;
-        textureID = 0;
-    }
-
-    /**
      * Convert this animation to a string
      * @return The string representation of this animation
      */
@@ -126,6 +84,48 @@ public class Animation implements Cloneable {
         }
         animation.textureID = textureID;
         return animation;
+    }
+
+    /**
+     * Initialize this animation with a target FPS, sheet and frame dimensions, frame count, and pixel data
+     * @param targetFPS The target FPS to draw of this animation
+     * @param sheetDimensions The dimensions of this animation's texture in frames
+     * @param frameDimensions The dimensions of this animation's frame's in pixels
+     * @param frameCount The number of frames to store in this animation
+     * @param data The pixel colour data for this animation's texture
+     * @return Whether this animation was initialized successfully
+     */
+    public boolean initialize(int targetFPS, Vector sheetDimensions, Vector frameDimensions, int frameCount,
+                              Colour[] data) {
+        if (!setTargetFPS(targetFPS)) {
+            return false;
+        }
+        if (!setSheetDimensions(sheetDimensions)) {
+            return false;
+        }
+        if (!setFrameDimensions(frameDimensions)) {
+            return false;
+        }
+        if (!setFrameCount(frameCount)) {
+            return false;
+        }
+        if (!setData(data)) {
+            return false;
+        }
+        setTextureID(0);
+        return true;
+    }
+
+    /**
+     * Free this animation's memory
+     */
+    public void destroy() {
+        targetFPS = 0;
+        sheetDimensions = null;
+        frameDimensions = null;
+        frameCount = 0;
+        data = null;
+        textureID = 0;
     }
 
     /**

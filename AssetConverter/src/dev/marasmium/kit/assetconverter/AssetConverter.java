@@ -47,7 +47,6 @@ public class AssetConverter {
         Scanner commandLine = new Scanner(System.in);
         boolean running = true;
         while (running) {
-            // Switch between audio and animation file conversion
             System.out.println("1. Audio");
             System.out.println("2. Animation");
             System.out.println("3. Typeface");
@@ -101,7 +100,6 @@ public class AssetConverter {
      * @return Whether a file was converted successfully
      */
     private static boolean convertAudio(Scanner commandLine) {
-        // Read format and data from input file
         System.out.print("Input file path: ");
         String inputFilePath;
         try {
@@ -138,7 +136,6 @@ public class AssetConverter {
         System.out.println("Input sample rate: " + inputFormat.getSampleRate() + "Hz");
         System.out.println("Input sample size: " + (inputFormat.getSampleSizeInBits() / 8) + "B");
         System.out.println("Input channel count: " + inputFormat.getChannels());
-        // Read desired output format
         System.out.print("Output sample rate (Hz): ");
         String sampleRateStr;
         try {
@@ -184,7 +181,6 @@ public class AssetConverter {
             System.out.println("Failed to parse new channel count");
             return false;
         }
-        // Convert data to output format
         AudioFormat outputFormat = new AudioFormat(sampleRate, 8 * sampleSize, channelCount, true, false);
         if (!AudioSystem.isConversionSupported(inputFormat, outputFormat)) {
             System.out.println("Invalid format conversion");
@@ -206,7 +202,6 @@ public class AssetConverter {
             System.out.println("Failed to perform conversion");
             return false;
         }
-        // Write converted audio track
         AudioTrack track = new AudioTrack();
         if (!track.initialize(sampleRate, sampleSize, channelCount, data)) {
             System.out.println("Failed to initialize audio track");
@@ -235,7 +230,6 @@ public class AssetConverter {
      * @return Whether a file was converted successfully
      */
     private static boolean convertAnimation(Scanner commandLine) {
-        // Read format and data from input file
         System.out.print("Input file path: ");
         String inputFilePath;
         try {
@@ -259,7 +253,6 @@ public class AssetConverter {
         System.out.println("Read image file (" + inputFile.length() + "B), format:");
         System.out.println("Input dimensions: " + inputImage.getWidth() + "x" + inputImage.getHeight() + "pixels");
         System.out.println("Input image type: " + inputImage.getType());
-        // Read desired output format
         System.out.print("Target FPS: ");
         String targetFPSStr;
         try {
@@ -320,7 +313,6 @@ public class AssetConverter {
             System.out.println("Failed to parse new frame count");
             return false;
         }
-        // Convert data to output format
         int imageWidth = inputImage.getWidth();
         int imageHeight = inputImage.getHeight();
         BufferedImage convertedImage = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
@@ -340,7 +332,6 @@ public class AssetConverter {
                 dataIndex++;
             }
         }
-        // Write converted animation
         Animation animation = new Animation();
         if (!animation.initialize(targetFPS, Vector.Cartesian(sheetWidth, sheetHeight),
                 Vector.Cartesian((float)(imageWidth / sheetWidth), (float)(imageHeight / sheetHeight)), frameCount,
@@ -371,7 +362,6 @@ public class AssetConverter {
      * @return Whether a file was converted successfully
      */
     private static boolean convertTypeface(Scanner commandLine) {
-        // Read format and data from input file
         System.out.print("Input file path: ");
         String inputFilePath;
         try {
@@ -415,7 +405,6 @@ public class AssetConverter {
         System.out.println("Input font name: " + inputFont.getName());
         System.out.println("Input font size: " + inputFont.getSize());
         System.out.println("Input font glyph count: " + inputFont.getNumGlyphs());
-        // Read desired output format
         System.out.print("Output colour: ");
         String colourStr;
         try {
@@ -500,7 +489,6 @@ public class AssetConverter {
             return false;
         }
         byte[] animationData = App.Assets.serializeAnimation(animation);
-        // Write converted typeface
         Typeface typeface = new Typeface();
         if (!typeface.initialize(characters, glyphs, animationData)) {
             System.out.println("Failed to initialize typeface");

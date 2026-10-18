@@ -121,343 +121,6 @@ public class GraphicsManager implements GLEventListener {
     private final ArrayList<Integer> textureIDs = new ArrayList<>();
 
     /**
-     * Initialize the MarasmiumKit application framework's graphics system
-     * @param targetFPS The initial target number of graphics frames to draw per second
-     * @param maximumUPF The initial maximum number of logic updates to allow per graphics frame
-     * @param clearColour The initial colour to clear the window to between frames
-     * @return Whether the parameters were valid and the graphics system was initialized successfully
-     */
-    public boolean initialize(int targetFPS, int maximumUPF, Colour clearColour) {
-        if (!setTargetFPS(targetFPS)) {
-            App.Log.write(LogSource.Graphics, LogLevel.Error, "Failed to initialize graphics system, initial target ",
-                    "FPS invalid");
-            return false;
-        }
-        if (!setMaximumUPF(maximumUPF)) {
-            App.Log.write(LogSource.Graphics, LogLevel.Error, "Failed to initialize graphics system, initial maximum ",
-                    "UPF invalid");
-            return false;
-        }
-        if (!setClearColour(clearColour)) {
-            App.Log.write(LogSource.Graphics, LogLevel.Error, "Failed to initialize graphics system, initial clear ",
-                    "colour invalid");
-            return false;
-        }
-        App.Window.getCanvas().addGLEventListener(this);
-        App.Log.write(LogSource.Graphics, LogLevel.Info, "Initialized graphics system");
-        return true;
-    }
-
-    /**
-     * Make the graphics system thread safe to submit sprites for rendering
-     */
-    public void beginFrame() {
-        spriteGroupsLock.lock();
-        spriteGroups.clear();
-    }
-
-    /**
-     * Submit a sprite to the graphics system for rendering
-     * @param camera The camera to render this sprite through
-     * @param sprite The sprite to render
-     * @return Whether the sprite was submitted successfully
-     */
-    public boolean submit(Camera camera, Sprite sprite) {
-        if (camera == null || sprite == null) {
-            return false;
-        }
-        Vector windowDimensions = App.Window.getDimensions();
-        Box windowBox = new Box();
-        if (!windowBox.initialize(camera.getPosition().subtract(windowDimensions.scalarDivide(camera.getScale())
-                        .scalarMultiply(0.5f)), 0.0f, windowDimensions.scalarDivide(camera.getScale()), Angle.Zero())) {
-            return false;
-        }
-        if (!sprite.intersectsWith(windowBox)) {
-            return false;
-        }
-        if (!spriteGroups.containsKey(camera)) {
-            spriteGroups.put(camera, new ArrayList<>());
-        }
-        spriteGroups.get(camera).add(sprite);
-        return true;
-    }
-
-    /**
-     * Submit a list of sprites to the graphics system for rendering
-     * @param camera The camera to render these sprites through
-     * @param sprites The sprites to render
-     * @return Whether the sprites were submitted successfully
-     */
-    public boolean submit(Camera camera, ArrayList<Sprite> sprites) {
-        if (sprites == null) {
-            return false;
-        }
-        boolean success = true;
-        for (Sprite sprite : sprites) {
-            if (!submit(camera, sprite)) {
-                success = false;
-            }
-        }
-        return success;
-    }
-
-    /**
-     * Submit a string of text to the graphics system for rendering
-     * @param camera The camera to render the text through
-     * @param text The text to render
-     * @param typefaceFilePath The typeface to render the text in
-     * @param boundingBox The bounding box for the text to be aligned and contained within
-     * @param padding The spacing between the text and the edges of the bounding box
-     * @param depth The depth to render the text characters at in the scene
-     * @param size The scale on the default pixel size of the typeface to draw the text at
-     * @param position The default position to start drawing text at before alignment within its bounding box
-     * @param horizontalAlignment The horizontal alignment of the text within its bounding box
-     * @param verticalAlignment The vertical alignment of the text within its bounding box
-     * @return Whether the text was submitted successfully
-     */
-    public boolean submit(Camera camera, String text, String typefaceFilePath, Box boundingBox, float padding,
-                          float depth, float size, Vector position, Alignment horizontalAlignment,
-                          Alignment verticalAlignment) {
-        // Check parameters
-        if (text == null || typefaceFilePath == null || boundingBox == null
-                || (position == null && (horizontalAlignment == null || verticalAlignment == null))) {
-            return false;
-        }
-        if (text.isEmpty()) {
-            return false;
-        }
-        // Load typeface and required animation
-        Typeface typeface = App.Assets.getTypeface(typefaceFilePath);
-        if (typeface == null) {
-            return false;
-        }
-        Animation animation = App.Assets.getAnimation(typeface.getAnimationFilePath());
-        if (animation == null) {
-            return false;
-        }
-        Glyph[] glyphs = new Glyph[text.length()];
-        Vector textDimensions = Vector.Zero();
-        float maxOffset = 0.0f;
-        Sprite[] sprites = new Sprite[text.length()];
-        // Compute character metrics
-        for (int i = 0; i < text.length(); i++) {
-            glyphs[i] = typeface.getGlyph(text.charAt(i));
-            if (glyphs[i] == null) {
-                return false;
-            }
-            textDimensions.setX(textDimensions.getX() - (glyphs[i].getOffsets().getX() * size)
-                    + (glyphs[i].getAdvances().getX() * size));
-            textDimensions.setY(Math.max(textDimensions.getY(),
-                    (glyphs[i].getDimensions().getY() * size) + (glyphs[i].getOffsets().getY() * size)));
-            maxOffset = Math.max(maxOffset, -glyphs[i].getOffsets().getY() * size);
-            sprites[i] = new Sprite();
-            sprites[i].setVelocity(Vector.Zero());
-            sprites[i].setAngle(Angle.Zero());
-            sprites[i].setRotation(Angle.Zero());
-            sprites[i].setDepth(depth);
-            sprites[i].setDimensions(animation.getFrameDimensions().scalarMultiply(size));
-            sprites[i].setGrowth(Vector.Zero());
-            sprites[i].setAnimationFilePath(typeface.getAnimationFilePath());
-            sprites[i].setAnimationFrame(glyphs[i].getAnimationFrame());
-        }
-        // Compute starting position based on alignment
-        Vector startPosition = boundingBox.getPosition().clone();
-        if (horizontalAlignment == Alignment.Left) {
-            startPosition.setX(boundingBox.getPosition().getX() + padding);
-        } else if (horizontalAlignment == Alignment.Right) {
-            startPosition.setX(boundingBox.getPosition().getX() + boundingBox.getDimensions().getX()
-                    - textDimensions.getX() - padding);
-        } else if (horizontalAlignment == Alignment.Center) {
-            startPosition.setX(boundingBox.getPosition().getX() + ((boundingBox.getDimensions().getX()
-                    - textDimensions.getX()) * 0.5f));
-        } else if (horizontalAlignment == null) {
-            startPosition.setX(position.getX());
-        }
-        if (verticalAlignment == Alignment.Bottom) {
-            startPosition.setY(boundingBox.getPosition().getY() + maxOffset + padding);
-        } else if (verticalAlignment == Alignment.Top) {
-            startPosition.setY(boundingBox.getPosition().getY() + boundingBox.getDimensions().getY()
-                    - textDimensions.getY() - padding);
-        } else if (verticalAlignment == Alignment.Center) {
-            startPosition.setY(boundingBox.getPosition().getY() + maxOffset
-                    + ((boundingBox.getDimensions().getY() - textDimensions.getY()) * 0.5f));
-        } else if (verticalAlignment == null) {
-            startPosition.setY(position.getY());
-        }
-        // Set character sprite positions
-        Vector spritePosition = startPosition.clone();
-        for (int i = 0; i < text.length(); i++) {
-            spritePosition.setY(startPosition.getY() + (glyphs[i].getOffsets().getY() * size));
-            sprites[i].setPosition(spritePosition.clone());
-            spritePosition.setX(spritePosition.getX() - (glyphs[i].getOffsets().getX() * size)
-                    + (glyphs[i].getAdvances().getX() * size));
-        }
-        ArrayList<Sprite> spritesList = new ArrayList<>();
-        // Draw within bounding box
-        for (int i = 0; i < text.length(); i++) {
-            Box spriteBox = new Box();
-            if (!spriteBox.initialize(sprites[i].getPosition(), 0.0f, glyphs[i].getDimensions().scalarMultiply(size),
-                    Angle.Zero())) {
-                return false;
-            }
-            if (boundingBox.contains(spriteBox)) {
-                spritesList.add(sprites[i]);
-            }
-        }
-        return submit(camera, spritesList);
-    }
-
-    /**
-     * Make the graphics system thread safe for rendering
-     * @return Whether the graphics system could be made thread safe
-     */
-    public boolean endFrame() {
-        try {
-            spriteGroupsLock.unlock();
-        } catch (IllegalMonitorStateException _) {
-            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to unlock sprite groups to end graphics frame");
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Free the application framework graphics system's memory
-     * @return Whether the graphics system was destroyed successfully
-     */
-    public boolean destroy() {
-        App.Log.write(LogSource.Graphics, LogLevel.Info, "Destroying graphics system");
-        boolean success = true;
-        targetFPMS = 0.0f;
-        targetMSPF = 0;
-        maximumUPF = 0;
-        clearColourLock.lock();
-        clearColour = null;
-        try {
-            clearColourLock.unlock();
-        } catch (IllegalMonitorStateException _) {
-            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to unlock clear colour");
-            success = false;
-        }
-        spriteGroupsLock.lock();
-        spriteGroups.clear();
-        try {
-            spriteGroupsLock.unlock();
-        } catch (IllegalMonitorStateException _) {
-            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to unlock sprite groups");
-            success = false;
-        }
-        return success;
-    }
-
-    /**
-     * Load an animation's texture data into OpenGL video memory
-     * @param gl3 An instance of OpenGL to upload texture data to
-     * @param animation The animation to upload the texture from
-     * @return Whether the texture was loaded successfully
-     */
-    private boolean loadTextureID(GL3 gl3, Animation animation) {
-        if (gl3 == null || animation == null) {
-            return false;
-        }
-        // Get the dimensions and colour data of the animation's texture
-        if (animation.getSheetDimensions() == null || animation.getFrameDimensions() == null) {
-            return false;
-        }
-        Vector dimensions = animation.getSheetDimensions().elementMultiply(animation.getFrameDimensions());
-        if (dimensions == null) {
-            return false;
-        }
-        if (animation.getData() == null) {
-            return false;
-        }
-        ByteBuffer pixels = Buffers.newDirectByteBuffer((int)(dimensions.getX() * dimensions.getY()) * Integer.BYTES);
-        for (Colour pixel : animation.getData()) {
-            pixels.put((byte)pixel.getRed());
-            pixels.put((byte)pixel.getGreen());
-            pixels.put((byte)pixel.getBlue());
-            pixels.put((byte)pixel.getAlpha());
-        }
-        pixels.flip();
-        // Upload the texture to OpenGL
-        int[] textureIDs = new int[1];
-        gl3.glGenTextures(1, textureIDs, 0);
-        if (textureIDs[0] == 0) {
-            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to generate texture ID for animation ",
-                    animation);
-            return false;
-        }
-        App.Log.write(LogSource.Graphics, LogLevel.Info, "Generated texture ID ", textureIDs[0], " for animation ",
-                animation);
-        gl3.glActiveTexture(GL3.GL_TEXTURE0);
-        gl3.glBindTexture(GL3.GL_TEXTURE_2D, textureIDs[0]);
-        gl3.glPixelStorei(GL3.GL_UNPACK_ALIGNMENT, 1);
-        gl3.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_NEAREST);
-        gl3.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_NEAREST);
-        gl3.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_WRAP_S, GL3.GL_CLAMP_TO_EDGE);
-        gl3.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_WRAP_T, GL3.GL_CLAMP_TO_EDGE);
-        gl3.glTexImage2D(GL3.GL_TEXTURE_2D, 0, GL3.GL_RGBA8, (int)dimensions.getX(), (int)dimensions.getY(), 0,
-                GL3.GL_RGBA, GL3.GL_UNSIGNED_BYTE, pixels);
-        boolean success = true;
-        if (gl3.glGetError() != GL3.GL_NO_ERROR) {
-            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to upload texture data for animation ",
-                    animation);
-            gl3.glDeleteTextures(1, textureIDs, 0);
-            textureIDs[0] = 0;
-            success = false;
-        }
-        gl3.glBindTexture(GL3.GL_TEXTURE_2D, 0);
-        animation.setTextureID(textureIDs[0]);
-        return success;
-    }
-
-    /**
-     * Render the set of sprites currently cached in the graphics system's memory
-     * @param gl3 An instance of OpenGL to render sprites with
-     * @param spriteCount The number of sprites to be rendered
-     * @param textureID The texture ID to display on the sprites
-     * @param cameraMatrix The camera matrix to display sprites through
-     * @param vertices The vertex data of the sprites to render
-     * @param indices The indices of the vertex data to render
-     */
-    private void draw(GL3 gl3, int spriteCount, int textureID, float[] cameraMatrix, FloatBuffer vertices,
-                      IntBuffer indices) {
-        if (gl3 == null || spriteCount <= 0 || textureID <= 0 || cameraMatrix == null || vertices == null
-                || indices == null) {
-            return;
-        }
-        // Upload geometry
-        gl3.glBindBuffer(GL3.GL_ARRAY_BUFFER, VBOIDs[0]);
-        int verticesSize = spriteCount * VerticesPerSprite * FloatsPerVertex * Float.BYTES;
-        if (verticesSize > vertexBufferSize) {
-            vertexBufferSize = Math.max(verticesSize, vertexBufferSize * 2);
-            App.Log.write(LogSource.Graphics, LogLevel.Info, "Resizing OpenGL vertex buffer to ", vertexBufferSize,
-                    "B");
-            gl3.glBufferData(GL3.GL_ARRAY_BUFFER, vertexBufferSize, null, GL3.GL_DYNAMIC_DRAW);
-        }
-        gl3.glBufferSubData(GL3.GL_ARRAY_BUFFER, 0, verticesSize, vertices);
-        gl3.glBindBuffer(GL3.GL_ELEMENT_ARRAY_BUFFER, IBOIDs[0]);
-        int indicesSize = spriteCount * IndicesPerSprite * Integer.BYTES;
-        if (indicesSize > indexBufferSize) {
-            indexBufferSize = Math.max(indicesSize, indexBufferSize * 2);
-            App.Log.write(LogSource.Graphics, LogLevel.Info, "Resizing OpenGL index buffer to ", indexBufferSize, "B");
-            gl3.glBufferData(GL3.GL_ELEMENT_ARRAY_BUFFER, indexBufferSize, null, GL3.GL_DYNAMIC_DRAW);
-        }
-        gl3.glBufferSubData(GL3.GL_ELEMENT_ARRAY_BUFFER, 0, indicesSize, indices);
-        // Set texture and camera matrix
-        gl3.glBindTexture(GL3.GL_TEXTURE_2D, textureID);
-        gl3.glUseProgram(shaderID);
-        int cameraUniformLocation = gl3.glGetUniformLocation(shaderID, "cameraMatrix");
-        gl3.glUniformMatrix4fv(cameraUniformLocation, 1, false, cameraMatrix, 0);
-        // Draw geometry
-        gl3.glDrawElements(GL3.GL_TRIANGLES, IndicesPerSprite * spriteCount, GL3.GL_UNSIGNED_INT, 0);
-        gl3.glBindBuffer(GL3.GL_ARRAY_BUFFER, 0);
-        gl3.glBindBuffer(GL3.GL_ELEMENT_ARRAY_BUFFER, 0);
-        gl3.glUseProgram(0);
-        gl3.glBindTexture(GL3.GL_TEXTURE_2D, 0);
-    }
-
-    /**
      * Set up OpenGL rendering parameters, VAO, VBO, IBO, and shaders
      * @param drawable An instance of the OpenGL context
      */
@@ -474,7 +137,6 @@ public class GraphicsManager implements GLEventListener {
             App.Log.write(LogSource.Graphics, LogLevel.Error, "Retrieved invalid OpenGL instance from context");
             return;
         }
-        // Set OpenGL flags
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Initializing OpenGL parameters");
         String OpenGLVersion = gl3.glGetString(GL3.GL_VERSION);
         if (OpenGLVersion == null) {
@@ -489,7 +151,6 @@ public class GraphicsManager implements GLEventListener {
         gl3.glEnable(GL3.GL_CULL_FACE);
         gl3.glCullFace(GL3.GL_BACK);
         gl3.glFrontFace(GL3.GL_CCW);
-        // Create shader program
         int vertexShaderID = gl3.glCreateShader(GL3.GL_VERTEX_SHADER);
         final String[] vertexSources = {
                 """
@@ -571,7 +232,6 @@ public class GraphicsManager implements GLEventListener {
         gl3.glDeleteShader(vertexShaderID);
         gl3.glDeleteShader(fragmentShaderID);
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Generated shader program ", shaderID);
-        // Create VAO, VBO, and IBO
         gl3.glGenVertexArrays(1, VAOIDs, 0);
         gl3.glBindVertexArray(VAOIDs[0]);
         gl3.glGenBuffers(1, VBOIDs, 0);
@@ -580,7 +240,6 @@ public class GraphicsManager implements GLEventListener {
         gl3.glBindBuffer(GL3.GL_ELEMENT_ARRAY_BUFFER, IBOIDs[0]);
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Generated VAO ", VAOIDs[0], ", VBO ", VBOIDs[0], ", and IBO ",
                 IBOIDs[0]);
-        // Configure vertex attributes
         gl3.glVertexAttribPointer(0, 3, GL3.GL_FLOAT, false, FloatsPerVertex * Float.BYTES,
                 SpritePositionOffset * Float.BYTES);
         gl3.glVertexAttribPointer(1, 2, GL3.GL_FLOAT, false, FloatsPerVertex * Float.BYTES,
@@ -602,7 +261,6 @@ public class GraphicsManager implements GLEventListener {
         }
         spriteGroupsLock.lock();
         try {
-            // Clear screen
             GL3 gl3;
             try {
                 gl3 = drawable.getGL().getGL3();
@@ -623,7 +281,6 @@ public class GraphicsManager implements GLEventListener {
                     clearColour.getAlpha());
             gl3.glClear(GL3.GL_COLOR_BUFFER_BIT | GL3.GL_DEPTH_BUFFER_BIT);
             gl3.glBindVertexArray(VAOIDs[0]);
-            // Determine minimum and maximum depth
             float minimumDepth = 0.0f;
             float maximumDepth = 0.0f;
             for (HashMap.Entry<Camera, ArrayList<Sprite>> spriteGroup : spriteGroups.entrySet()) {
@@ -642,7 +299,6 @@ public class GraphicsManager implements GLEventListener {
                 }
             }
             float depthRange = maximumDepth - minimumDepth;
-            // Draw sprites
             for (HashMap.Entry<Camera, ArrayList<Sprite>> spriteGroup : spriteGroups.entrySet()) {
                 int spriteCount = 0;
                 int textureID = 0;
@@ -661,7 +317,6 @@ public class GraphicsManager implements GLEventListener {
                     continue;
                 }
                 for (Sprite sprite : sprites) {
-                    // Copy sprite metrics
                     if (sprite == null) {
                         continue;
                     }
@@ -671,7 +326,6 @@ public class GraphicsManager implements GLEventListener {
                     }
                     float spriteDepth = -(depthRange == 0.0f ? sprite.getDepth()
                             : ((2.0f * ((sprite.getDepth() - minimumDepth) / depthRange)) - 1.0f));
-                    // Copy animation metrics and upload texture if necessary
                     Animation animation = App.Assets.getAnimation(sprite.getAnimationFilePath());
                     if (animation == null) {
                         continue;
@@ -690,7 +344,6 @@ public class GraphicsManager implements GLEventListener {
                         textureID = animation.getTextureID();
                         textureIDs.add(textureID);
                     }
-                    // Copy texture positioning metrics
                     Vector texturePosition = animation.getFrameTexturePosition(sprite.getAnimationFrame());
                     Vector textureDimensions = animation.getFrameTextureDimensions();
                     if (texturePosition == null || textureDimensions == null) {
@@ -719,7 +372,6 @@ public class GraphicsManager implements GLEventListener {
                         textureBottomLeft = textureTopLeft.clone();
                         textureTopLeft = copy.clone();
                     }
-                    // Allocate vertices and indices
                     float[] sVertices = {
                             spriteCorners[0].getX(), spriteCorners[0].getY(), spriteDepth,
                             textureBottomLeft.getX(), textureBottomLeft.getY(),
@@ -822,6 +474,332 @@ public class GraphicsManager implements GLEventListener {
         gl3.glDeleteBuffers(1, IBOIDs, 0);
         gl3.glDeleteProgram(shaderID);
         App.Log.write(LogSource.Graphics, LogLevel.Info, "Disposed of OpenGL utilities");
+    }
+
+    /**
+     * Initialize the MarasmiumKit application framework's graphics system
+     * @param targetFPS The initial target number of graphics frames to draw per second
+     * @param maximumUPF The initial maximum number of logic updates to allow per graphics frame
+     * @param clearColour The initial colour to clear the window to between frames
+     * @return Whether the parameters were valid and the graphics system was initialized successfully
+     */
+    public boolean initialize(int targetFPS, int maximumUPF, Colour clearColour) {
+        if (!setTargetFPS(targetFPS)) {
+            App.Log.write(LogSource.Graphics, LogLevel.Error, "Failed to initialize graphics system, initial target ",
+                    "FPS invalid");
+            return false;
+        }
+        if (!setMaximumUPF(maximumUPF)) {
+            App.Log.write(LogSource.Graphics, LogLevel.Error, "Failed to initialize graphics system, initial maximum ",
+                    "UPF invalid");
+            return false;
+        }
+        if (!setClearColour(clearColour)) {
+            App.Log.write(LogSource.Graphics, LogLevel.Error, "Failed to initialize graphics system, initial clear ",
+                    "colour invalid");
+            return false;
+        }
+        App.Window.getCanvas().addGLEventListener(this);
+        App.Log.write(LogSource.Graphics, LogLevel.Info, "Initialized graphics system");
+        return true;
+    }
+
+    /**
+     * Make the graphics system thread safe to submit sprites for rendering
+     */
+    public void beginFrame() {
+        spriteGroupsLock.lock();
+        spriteGroups.clear();
+    }
+
+    /**
+     * Submit a sprite to the graphics system for rendering
+     * @param camera The camera to render this sprite through
+     * @param sprite The sprite to render
+     * @return Whether the sprite was submitted successfully
+     */
+    public boolean submit(Camera camera, Sprite sprite) {
+        if (camera == null || sprite == null) {
+            return false;
+        }
+        Vector windowDimensions = App.Window.getDimensions();
+        Box windowBox = new Box();
+        if (!windowBox.initialize(camera.getPosition().subtract(windowDimensions.scalarDivide(camera.getScale())
+                        .scalarMultiply(0.5f)), 0.0f, windowDimensions.scalarDivide(camera.getScale()), Angle.Zero())) {
+            return false;
+        }
+        if (!sprite.intersectsWith(windowBox)) {
+            return false;
+        }
+        if (!spriteGroups.containsKey(camera)) {
+            spriteGroups.put(camera, new ArrayList<>());
+        }
+        spriteGroups.get(camera).add(sprite);
+        return true;
+    }
+
+    /**
+     * Submit a list of sprites to the graphics system for rendering
+     * @param camera The camera to render these sprites through
+     * @param sprites The sprites to render
+     * @return Whether the sprites were submitted successfully
+     */
+    public boolean submit(Camera camera, ArrayList<Sprite> sprites) {
+        if (sprites == null) {
+            return false;
+        }
+        boolean success = true;
+        for (Sprite sprite : sprites) {
+            if (!submit(camera, sprite)) {
+                success = false;
+            }
+        }
+        return success;
+    }
+
+    /**
+     * Submit a string of text to the graphics system for rendering
+     * @param camera The camera to render the text through
+     * @param text The text to render
+     * @param typefaceFilePath The typeface to render the text in
+     * @param boundingBox The bounding box for the text to be aligned and contained within
+     * @param padding The spacing between the text and the edges of the bounding box
+     * @param depth The depth to render the text characters at in the scene
+     * @param size The scale on the default pixel size of the typeface to draw the text at
+     * @param position The default position to start drawing text at before alignment within its bounding box
+     * @param horizontalAlignment The horizontal alignment of the text within its bounding box
+     * @param verticalAlignment The vertical alignment of the text within its bounding box
+     * @return Whether the text was submitted successfully
+     */
+    public boolean submit(Camera camera, String text, String typefaceFilePath, Box boundingBox, float padding,
+                          float depth, float size, Vector position, Alignment horizontalAlignment,
+                          Alignment verticalAlignment) {
+        if (text == null || typefaceFilePath == null || boundingBox == null
+                || (position == null && (horizontalAlignment == null || verticalAlignment == null))) {
+            return false;
+        }
+        if (text.isEmpty()) {
+            return false;
+        }
+        Typeface typeface = App.Assets.getTypeface(typefaceFilePath);
+        if (typeface == null) {
+            return false;
+        }
+        Animation animation = App.Assets.getAnimation(typeface.getAnimationFilePath());
+        if (animation == null) {
+            return false;
+        }
+        Glyph[] glyphs = new Glyph[text.length()];
+        Vector textDimensions = Vector.Zero();
+        float maxOffset = 0.0f;
+        Sprite[] sprites = new Sprite[text.length()];
+        for (int i = 0; i < text.length(); i++) {
+            glyphs[i] = typeface.getGlyph(text.charAt(i));
+            if (glyphs[i] == null) {
+                return false;
+            }
+            textDimensions.setX(textDimensions.getX() - (glyphs[i].getOffsets().getX() * size)
+                    + (glyphs[i].getAdvances().getX() * size));
+            textDimensions.setY(Math.max(textDimensions.getY(),
+                    (glyphs[i].getDimensions().getY() * size) + (glyphs[i].getOffsets().getY() * size)));
+            maxOffset = Math.max(maxOffset, -glyphs[i].getOffsets().getY() * size);
+            sprites[i] = new Sprite();
+            sprites[i].setVelocity(Vector.Zero());
+            sprites[i].setAngle(Angle.Zero());
+            sprites[i].setRotation(Angle.Zero());
+            sprites[i].setDepth(depth);
+            sprites[i].setDimensions(animation.getFrameDimensions().scalarMultiply(size));
+            sprites[i].setGrowth(Vector.Zero());
+            sprites[i].setAnimationFilePath(typeface.getAnimationFilePath());
+            sprites[i].setAnimationFrame(glyphs[i].getAnimationFrame());
+        }
+        Vector startPosition = boundingBox.getPosition().clone();
+        if (horizontalAlignment == Alignment.Left) {
+            startPosition.setX(boundingBox.getPosition().getX() + padding);
+        } else if (horizontalAlignment == Alignment.Right) {
+            startPosition.setX(boundingBox.getPosition().getX() + boundingBox.getDimensions().getX()
+                    - textDimensions.getX() - padding);
+        } else if (horizontalAlignment == Alignment.Center) {
+            startPosition.setX(boundingBox.getPosition().getX() + ((boundingBox.getDimensions().getX()
+                    - textDimensions.getX()) * 0.5f));
+        } else if (horizontalAlignment == null) {
+            startPosition.setX(position.getX());
+        }
+        if (verticalAlignment == Alignment.Bottom) {
+            startPosition.setY(boundingBox.getPosition().getY() + maxOffset + padding);
+        } else if (verticalAlignment == Alignment.Top) {
+            startPosition.setY(boundingBox.getPosition().getY() + boundingBox.getDimensions().getY()
+                    - textDimensions.getY() - padding);
+        } else if (verticalAlignment == Alignment.Center) {
+            startPosition.setY(boundingBox.getPosition().getY() + maxOffset
+                    + ((boundingBox.getDimensions().getY() - textDimensions.getY()) * 0.5f));
+        } else if (verticalAlignment == null) {
+            startPosition.setY(position.getY());
+        }
+        Vector spritePosition = startPosition.clone();
+        for (int i = 0; i < text.length(); i++) {
+            spritePosition.setY(startPosition.getY() + (glyphs[i].getOffsets().getY() * size));
+            sprites[i].setPosition(spritePosition.clone());
+            spritePosition.setX(spritePosition.getX() - (glyphs[i].getOffsets().getX() * size)
+                    + (glyphs[i].getAdvances().getX() * size));
+        }
+        ArrayList<Sprite> spritesList = new ArrayList<>();
+        for (int i = 0; i < text.length(); i++) {
+            Box spriteBox = new Box();
+            if (!spriteBox.initialize(sprites[i].getPosition(), 0.0f, glyphs[i].getDimensions().scalarMultiply(size),
+                    Angle.Zero())) {
+                return false;
+            }
+            if (boundingBox.contains(spriteBox)) {
+                spritesList.add(sprites[i]);
+            }
+        }
+        return submit(camera, spritesList);
+    }
+
+    /**
+     * Make the graphics system thread safe for rendering
+     * @return Whether the graphics system could be made thread safe
+     */
+    public boolean endFrame() {
+        try {
+            spriteGroupsLock.unlock();
+        } catch (IllegalMonitorStateException _) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to unlock sprite groups to end graphics frame");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Free the application framework graphics system's memory
+     * @return Whether the graphics system was destroyed successfully
+     */
+    public boolean destroy() {
+        App.Log.write(LogSource.Graphics, LogLevel.Info, "Destroying graphics system");
+        boolean success = true;
+        targetFPMS = 0.0f;
+        targetMSPF = 0;
+        maximumUPF = 0;
+        clearColourLock.lock();
+        clearColour = null;
+        try {
+            clearColourLock.unlock();
+        } catch (IllegalMonitorStateException _) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to unlock clear colour");
+            success = false;
+        }
+        spriteGroupsLock.lock();
+        spriteGroups.clear();
+        try {
+            spriteGroupsLock.unlock();
+        } catch (IllegalMonitorStateException _) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to unlock sprite groups");
+            success = false;
+        }
+        return success;
+    }
+
+    /**
+     * Load an animation's texture data into OpenGL video memory
+     * @param gl3 An instance of OpenGL to upload texture data to
+     * @param animation The animation to upload the texture from
+     * @return Whether the texture was loaded successfully
+     */
+    private boolean loadTextureID(GL3 gl3, Animation animation) {
+        if (gl3 == null || animation == null) {
+            return false;
+        }
+        if (animation.getSheetDimensions() == null || animation.getFrameDimensions() == null) {
+            return false;
+        }
+        Vector dimensions = animation.getSheetDimensions().elementMultiply(animation.getFrameDimensions());
+        if (dimensions == null) {
+            return false;
+        }
+        if (animation.getData() == null) {
+            return false;
+        }
+        ByteBuffer pixels = Buffers.newDirectByteBuffer((int)(dimensions.getX() * dimensions.getY()) * Integer.BYTES);
+        for (Colour pixel : animation.getData()) {
+            pixels.put((byte)pixel.getRed());
+            pixels.put((byte)pixel.getGreen());
+            pixels.put((byte)pixel.getBlue());
+            pixels.put((byte)pixel.getAlpha());
+        }
+        pixels.flip();
+        int[] textureIDs = new int[1];
+        gl3.glGenTextures(1, textureIDs, 0);
+        if (textureIDs[0] == 0) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to generate texture ID for animation ",
+                    animation);
+            return false;
+        }
+        App.Log.write(LogSource.Graphics, LogLevel.Info, "Generated texture ID ", textureIDs[0], " for animation ",
+                animation);
+        gl3.glActiveTexture(GL3.GL_TEXTURE0);
+        gl3.glBindTexture(GL3.GL_TEXTURE_2D, textureIDs[0]);
+        gl3.glPixelStorei(GL3.GL_UNPACK_ALIGNMENT, 1);
+        gl3.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_NEAREST);
+        gl3.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_NEAREST);
+        gl3.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_WRAP_S, GL3.GL_CLAMP_TO_EDGE);
+        gl3.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_WRAP_T, GL3.GL_CLAMP_TO_EDGE);
+        gl3.glTexImage2D(GL3.GL_TEXTURE_2D, 0, GL3.GL_RGBA8, (int)dimensions.getX(), (int)dimensions.getY(), 0,
+                GL3.GL_RGBA, GL3.GL_UNSIGNED_BYTE, pixels);
+        boolean success = true;
+        if (gl3.glGetError() != GL3.GL_NO_ERROR) {
+            App.Log.write(LogSource.Graphics, LogLevel.Warning, "Failed to upload texture data for animation ",
+                    animation);
+            gl3.glDeleteTextures(1, textureIDs, 0);
+            textureIDs[0] = 0;
+            success = false;
+        }
+        gl3.glBindTexture(GL3.GL_TEXTURE_2D, 0);
+        animation.setTextureID(textureIDs[0]);
+        return success;
+    }
+
+    /**
+     * Render the set of sprites currently cached in the graphics system's memory
+     * @param gl3 An instance of OpenGL to render sprites with
+     * @param spriteCount The number of sprites to be rendered
+     * @param textureID The texture ID to display on the sprites
+     * @param cameraMatrix The camera matrix to display sprites through
+     * @param vertices The vertex data of the sprites to render
+     * @param indices The indices of the vertex data to render
+     */
+    private void draw(GL3 gl3, int spriteCount, int textureID, float[] cameraMatrix, FloatBuffer vertices,
+                      IntBuffer indices) {
+        if (gl3 == null || spriteCount <= 0 || textureID <= 0 || cameraMatrix == null || vertices == null
+                || indices == null) {
+            return;
+        }
+        gl3.glBindBuffer(GL3.GL_ARRAY_BUFFER, VBOIDs[0]);
+        int verticesSize = spriteCount * VerticesPerSprite * FloatsPerVertex * Float.BYTES;
+        if (verticesSize > vertexBufferSize) {
+            vertexBufferSize = Math.max(verticesSize, vertexBufferSize * 2);
+            App.Log.write(LogSource.Graphics, LogLevel.Info, "Resizing OpenGL vertex buffer to ", vertexBufferSize,
+                    "B");
+            gl3.glBufferData(GL3.GL_ARRAY_BUFFER, vertexBufferSize, null, GL3.GL_DYNAMIC_DRAW);
+        }
+        gl3.glBufferSubData(GL3.GL_ARRAY_BUFFER, 0, verticesSize, vertices);
+        gl3.glBindBuffer(GL3.GL_ELEMENT_ARRAY_BUFFER, IBOIDs[0]);
+        int indicesSize = spriteCount * IndicesPerSprite * Integer.BYTES;
+        if (indicesSize > indexBufferSize) {
+            indexBufferSize = Math.max(indicesSize, indexBufferSize * 2);
+            App.Log.write(LogSource.Graphics, LogLevel.Info, "Resizing OpenGL index buffer to ", indexBufferSize, "B");
+            gl3.glBufferData(GL3.GL_ELEMENT_ARRAY_BUFFER, indexBufferSize, null, GL3.GL_DYNAMIC_DRAW);
+        }
+        gl3.glBufferSubData(GL3.GL_ELEMENT_ARRAY_BUFFER, 0, indicesSize, indices);
+        gl3.glBindTexture(GL3.GL_TEXTURE_2D, textureID);
+        gl3.glUseProgram(shaderID);
+        int cameraUniformLocation = gl3.glGetUniformLocation(shaderID, "cameraMatrix");
+        gl3.glUniformMatrix4fv(cameraUniformLocation, 1, false, cameraMatrix, 0);
+        gl3.glDrawElements(GL3.GL_TRIANGLES, IndicesPerSprite * spriteCount, GL3.GL_UNSIGNED_INT, 0);
+        gl3.glBindBuffer(GL3.GL_ARRAY_BUFFER, 0);
+        gl3.glBindBuffer(GL3.GL_ELEMENT_ARRAY_BUFFER, 0);
+        gl3.glUseProgram(0);
+        gl3.glBindTexture(GL3.GL_TEXTURE_2D, 0);
     }
 
     /**

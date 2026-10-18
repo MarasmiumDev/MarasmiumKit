@@ -78,13 +78,11 @@ public class App {
      * @return Whether the application was initialized successfully
      */
     public static boolean Initialize(String configurationFilePath, Scene initialScene) {
-        // Set system properties
         try {
             System.setProperty("sun.java2d.uiScale.enabled", "false");
         } catch (IllegalArgumentException _) {
             return false;
         }
-        // Get the application framework's configuration
         Configuration configuration = ReadConfiguration(configurationFilePath);
         String logTimestampFormat;
         boolean logConsoleOutputEnabled;
@@ -123,7 +121,6 @@ public class App {
         } catch (NullPointerException _) {
             return false;
         }
-        // Initialize subsystems
         if (!Log.initialize(logTimestampFormat, logConsoleOutputEnabled, logOutputFileEnabled, logOutputFilePath)) {
             return false;
         }
@@ -170,7 +167,6 @@ public class App {
         if (Current_Scene == null) {
             return;
         }
-        // Initialize timing
         long deltaStartMS = System.currentTimeMillis();
         long deltaElapsedMS;
         float deltaFrames;
@@ -180,14 +176,12 @@ public class App {
         int count = 0;
         while (!Window.isCloseRequested()) {
             waitStartMS = System.currentTimeMillis();
-            // Process input and network events
             if (!Current_Scene.processInput()) {
                 break;
             }
             Input.update();
             Network.update();
             Audio.update();
-            // Draw graphics
             Graphics.beginFrame();
             Current_Scene.draw();
             if (!Graphics.endFrame()) {
@@ -197,7 +191,6 @@ public class App {
             if (Window.getCanvas() != null) {
                 Window.getCanvas().display();
             }
-            // Perform timed updates
             deltaElapsedMS = System.currentTimeMillis() - deltaStartMS;
             deltaStartMS = System.currentTimeMillis();
             deltaFrames = deltaElapsedMS * Graphics.getTargetFPMS();
@@ -217,6 +210,60 @@ public class App {
             } catch (IllegalArgumentException _) {}
         }
         Log.write(LogSource.App, LogLevel.Info, "Finished main application loop");
+    }
+
+    /**
+     * Add a scene to the application framework to be managed by it
+     * @param scene The scene to add to the application framework - if not initialized, this will initialize it
+     * @return Whether the scene was not already present and was initialized successfully
+     */
+    public static boolean AddScene(Scene scene) {
+        if (scene == null) {
+            return false;
+        }
+        Log.write(LogSource.App, LogLevel.Info, "Adding scene ", scene.getSceneID());
+        if (Scenes.contains(scene)) {
+            Log.write(LogSource.App, LogLevel.Warning, "Scene ", scene.getSceneID(), " already present");
+            return false;
+        }
+        if (!scene.isInitialized()) {
+            Log.write(LogSource.App, LogLevel.Info, "Scene ", scene.getSceneID(), " requires initialization");
+            if (!scene.initializeScene(++Next_Scene_ID)) {
+                Log.write(LogSource.App, LogLevel.Warning, "Failed to initialize scene ", scene.getSceneID());
+                return false;
+            }
+        }
+        Scenes.add(scene);
+        return true;
+    }
+
+    /**
+     * Remove a scene from the application framework no longer to be managed by it
+     * @param scene The scene to remove from the application framework - this will destroy it
+     * @return Whether the scene was present and was destroyed successfully
+     */
+    public static boolean RemoveScene(Scene scene) {
+        if (scene == null) {
+            return false;
+        }
+        Log.write(LogSource.App, LogLevel.Info, "Removing scene ", scene.getSceneID());
+        if (!Scenes.contains(scene)) {
+            Log.write(LogSource.App, LogLevel.Warning, "Scene ", scene.getSceneID(), " not present");
+            return false;
+        }
+        boolean success = true;
+        if (scene.isInitialized()) {
+            Log.write(LogSource.App, LogLevel.Info, "Scene ", scene.getSceneID(), " requires destruction");
+            if (!scene.destroyScene()) {
+                Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy scene ", scene.getSceneID());
+                success = false;
+            }
+        }
+        if (!Scenes.remove(scene)) {
+            Log.write(LogSource.App, LogLevel.Warning, "Failed to remove scene ", scene.getSceneID(), " from list");
+            success = false;
+        }
+        return success;
     }
 
     /**
@@ -309,62 +356,6 @@ public class App {
     }
 
     /**
-     * Add a scene to the application framework to be managed by it
-     * @param scene The scene to add to the application framework - if not initialized, this will initialize it
-     * @return Whether the scene was not already present and was initialized successfully
-     */
-    public static boolean AddScene(Scene scene) {
-        if (scene == null) {
-            return false;
-        }
-        Log.write(LogSource.App, LogLevel.Info, "Adding scene ", scene.getSceneID());
-        if (Scenes.contains(scene)) {
-            Log.write(LogSource.App, LogLevel.Warning, "Scene ", scene.getSceneID(), " already present");
-            return false;
-        }
-        // Add the scene and initialize if necessary
-        if (!scene.isInitialized()) {
-            Log.write(LogSource.App, LogLevel.Info, "Scene ", scene.getSceneID(), " requires initialization");
-            if (!scene.initializeScene(++Next_Scene_ID)) {
-                Log.write(LogSource.App, LogLevel.Warning, "Failed to initialize scene ", scene.getSceneID());
-                return false;
-            }
-        }
-        Scenes.add(scene);
-        return true;
-    }
-
-    /**
-     * Remove a scene from the application framework no longer to be managed by it
-     * @param scene The scene to remove from the application framework - this will destroy it
-     * @return Whether the scene was present and was destroyed successfully
-     */
-    public static boolean RemoveScene(Scene scene) {
-        if (scene == null) {
-            return false;
-        }
-        Log.write(LogSource.App, LogLevel.Info, "Removing scene ", scene.getSceneID());
-        if (!Scenes.contains(scene)) {
-            Log.write(LogSource.App, LogLevel.Warning, "Scene ", scene.getSceneID(), " not present");
-            return false;
-        }
-        boolean success = true;
-        // Remove the scene and destroy if necessary
-        if (scene.isInitialized()) {
-            Log.write(LogSource.App, LogLevel.Info, "Scene ", scene.getSceneID(), " requires destruction");
-            if (!scene.destroyScene()) {
-                Log.write(LogSource.App, LogLevel.Warning, "Failed to destroy scene ", scene.getSceneID());
-                success = false;
-            }
-        }
-        if (!Scenes.remove(scene)) {
-            Log.write(LogSource.App, LogLevel.Warning, "Failed to remove scene ", scene.getSceneID(), " from list");
-            success = false;
-        }
-        return success;
-    }
-
-    /**
      * Get the current scene displayed by the application framework
      * @return The application framework's current scene
      */
@@ -383,7 +374,6 @@ public class App {
             Log.write(LogSource.App, LogLevel.Warning, "Failed to set new scene - null");
             return false;
         }
-        // Leave old scene
         if (Current_Scene != null) {
             Log.write(LogSource.App, LogLevel.Info, "Leaving current scene ", Current_Scene.getSceneID());
             if (!Input.removeListener(Current_Scene)) {
@@ -399,7 +389,6 @@ public class App {
                 return false;
             }
         }
-        // Enter new scene
         if (!Scenes.contains(scene)) {
             Log.write(LogSource.App, LogLevel.Info, "Scene ", scene.getSceneID(), " not added");
             if (!AddScene(scene)) {
@@ -416,15 +405,11 @@ public class App {
             return false;
         }
         if (!Network.addListener(scene)) {
-            Log.write(LogSource.App, LogLevel.Error, "Failed to add scene ", scene.getSceneID(), " to network listeners");
+            Log.write(LogSource.App, LogLevel.Error, "Failed to add scene ", scene.getSceneID(), " to network ",
+                    "listeners");
         }
         Current_Scene = scene;
         return true;
     }
-
-    /**
-     * Disabled constructor for singleton App class
-     */
-    private App() {}
 
 }

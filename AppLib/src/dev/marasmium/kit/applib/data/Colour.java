@@ -18,43 +18,6 @@ import java.nio.ByteBuffer;
 public class Colour implements Serializable, Cloneable {
 
     /**
-     * Blank colour constant
-     */
-    public static final Colour Blank = Colour.Int(0x00000000);
-    /**
-     * Black colour constant
-     */
-    public static final Colour Black = Colour.Int(0x000000FF);
-    /**
-     * Red colour constant
-     */
-    public static final Colour Red = Colour.Int(0xFF0000FF);
-    /**
-     * Green colour constant
-     */
-    public static final Colour Green = Colour.Int(0x00FF00FF);
-    /**
-     * Yellow colour constant
-     */
-    public static final Colour Yellow = Colour.Int(0xFFFF00FF);
-    /**
-     * Blue colour constant
-     */
-    public static final Colour Blue = Colour.Int(0x0000FFFF);
-    /**
-     * Magenta colour constant
-     */
-    public static final Colour Magenta = Colour.Int(0xFF00FFFF);
-    /**
-     * Cyan colour constant
-     */
-    public static final Colour Cyan = Colour.Int(0x00FFFFFF);
-    /**
-     * White colour constant
-     */
-    public static final Colour White = Colour.Int(0xFFFFFFFF);
-
-    /**
      * Byte representation of RGBA channels
      */
     private int RGBA;
@@ -105,6 +68,54 @@ public class Colour implements Serializable, Cloneable {
     }
 
     /**
+     * Create a blank, transparent colour
+     * @return The blank colour
+     */
+    public static Colour Blank() {
+        return Int(0x00000000);
+    }
+
+    /**
+     * Create an opaque black colour
+     * @return The colour black
+     */
+    public static Colour Black() {
+        return Int(0x000000FF);
+    }
+
+    /**
+     * Create an opaque red colour
+     * @return The colour red
+     */
+    public static Colour Red() {
+        return Int(0xFF0000FF);
+    }
+
+    /**
+     * Create an opaque green colour
+     * @return The colour green
+     */
+    public static Colour Green() {
+        return Int(0x00FF00FF);
+    }
+
+    /**
+     * Create an opaque blue colour
+     * @return The colour blue
+     */
+    public static Colour Blue() {
+        return Int(0x0000FFFF);
+    }
+
+    /**
+     * Create an opaque white colour
+     * @return The colour white
+     */
+    public static Colour White() {
+        return Int(0xFFFFFFFF);
+    }
+
+    /**
      * Construct a colour given serialized data
      * @param data The data to deserialize
      * @return A deserialized colour
@@ -127,23 +138,6 @@ public class Colour implements Serializable, Cloneable {
      */
     private Colour() {
         this.RGBA = 0x00000000;
-    }
-
-    /**
-     * Convert this colour to serialized data
-     * @return This colour as serialized data
-     */
-    public byte[] serialize() {
-        byte[] data;
-        ByteBuffer buffer;
-        try {
-            buffer = ByteBuffer.allocate(Integer.BYTES);
-            buffer.putInt(RGBA);
-            data = buffer.array();
-        } catch (IllegalArgumentException | BufferOverflowException | UnsupportedOperationException _) {
-            return null;
-        }
-        return data;
     }
 
     /**
@@ -182,6 +176,23 @@ public class Colour implements Serializable, Cloneable {
         }
         newColour.RGBA = RGBA;
         return newColour;
+    }
+
+    /**
+     * Convert this colour to serialized data
+     * @return This colour as serialized data
+     */
+    public byte[] serialize() {
+        byte[] data;
+        ByteBuffer buffer;
+        try {
+            buffer = ByteBuffer.allocate(Integer.BYTES);
+            buffer.putInt(RGBA);
+            data = buffer.array();
+        } catch (IllegalArgumentException | BufferOverflowException | UnsupportedOperationException _) {
+            return null;
+        }
+        return data;
     }
 
     /**

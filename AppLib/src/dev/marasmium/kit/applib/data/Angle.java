@@ -111,6 +111,44 @@ public class Angle implements Serializable, Cloneable {
     }
 
     /**
+     * Test whether this angle has the same measure as another one
+     * @param o The object to compare against (must be an Angle)
+     * @return Whether this angle is equal to o
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Angle angle)) {
+            return false;
+        }
+        return Math.abs(theta - angle.theta) < Constants.Epsilon;
+    }
+
+    /**
+     * Convert this angle to a string
+     * @return The string representation of this angle
+     */
+    @Override
+    public String toString() {
+        return "angle(" + theta + "rad)";
+    }
+
+    /**
+     * Make a copy of this angle
+     * @return A copy of this angle
+     */
+    @Override
+    public Angle clone() {
+        Angle newAngle;
+        try {
+            newAngle = (Angle)super.clone();
+        } catch (CloneNotSupportedException _) {
+            return null;
+        }
+        newAngle.theta = theta;
+        return newAngle;
+    }
+
+    /**
      * Compute the sum of this vector and another one
      * @param angle The angle to add to this one
      * @return The sum of this angle and theta
@@ -201,44 +239,6 @@ public class Angle implements Serializable, Cloneable {
             return null;
         }
         return data;
-    }
-
-    /**
-     * Test whether this angle has the same measure as another one
-     * @param o The object to compare against (must be an Angle)
-     * @return Whether this angle is equal to o
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Angle angle)) {
-            return false;
-        }
-        return Math.abs(theta - angle.theta) < Constants.Epsilon;
-    }
-
-    /**
-     * Convert this angle to a string
-     * @return The string representation of this angle
-     */
-    @Override
-    public String toString() {
-        return "angle(" + theta + "rad)";
-    }
-
-    /**
-     * Make a copy of this angle
-     * @return A copy of this angle
-     */
-    @Override
-    public Angle clone() {
-        Angle newAngle;
-        try {
-            newAngle = (Angle)super.clone();
-        } catch (CloneNotSupportedException _) {
-            return null;
-        }
-        newAngle.theta = theta;
-        return newAngle;
     }
 
     /**

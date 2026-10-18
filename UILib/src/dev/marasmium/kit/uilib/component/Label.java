@@ -35,45 +35,6 @@ public class Label extends UIComponent {
     protected Alignment verticalTextAlignment = null;
 
     /**
-     * Initialize this label's memory
-     * @param position The initial position of this label in percent of the application's window dimensions
-     * @param dimensions The initial dimensions of this label in percent of the application's window dimensions
-     * @param animationFilePath The animation to be drawn on the background of this label
-     * @param text The text to appear in this label
-     * @param textPosition The starting position of the text to appear in this label when not aligned in pixels
-     * @param horizontalAlignment The horizontal alignment of this label's text within its background
-     * @param verticalAlignment The vertical alignment of this label's text within its background
-     * @return Whether all parameters were valid and this label was initialized successfully
-     */
-    public boolean initialize(Vector position, Vector dimensions, String animationFilePath, String text,
-                              Vector textPosition, Alignment horizontalAlignment, Alignment verticalAlignment) {
-        if (parent == null) {
-            return false;
-        }
-        setEnabled(true);
-        setVisible(true);
-        if (!sprite.initialize(Vector.Zero(), parent.getBaseDepth(), Vector.Zero(), Angle.Zero(), animationFilePath)) {
-            return false;
-        }
-        sprite.stopAnimation();
-        if (!setText(text)) {
-            return false;
-        }
-        if (!setTextPosition(textPosition)) {
-            return false;
-        }
-        setHorizontalTextAlignment(horizontalAlignment);
-        setVerticalTextAlignment(verticalAlignment);
-        if (!setPosition(position)) {
-            return false;
-        }
-        if (!setDimensions(dimensions)) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * Draw graphics for this label's background and text if this label is visible
      */
     @Override
@@ -111,6 +72,45 @@ public class Label extends UIComponent {
         text = null;
         horizontalTextAlignment = null;
         verticalTextAlignment = null;
+    }
+
+    /**
+     * Initialize this label's memory
+     * @param position The initial position of this label in percent of the application's window dimensions
+     * @param dimensions The initial dimensions of this label in percent of the application's window dimensions
+     * @param animationFilePath The animation to be drawn on the background of this label
+     * @param text The text to appear in this label
+     * @param textPosition The starting position of the text to appear in this label when not aligned in pixels
+     * @param horizontalAlignment The horizontal alignment of this label's text within its background
+     * @param verticalAlignment The vertical alignment of this label's text within its background
+     * @return Whether all parameters were valid and this label was initialized successfully
+     */
+    public boolean initialize(Vector position, Vector dimensions, String animationFilePath, String text,
+                              Vector textPosition, Alignment horizontalAlignment, Alignment verticalAlignment) {
+        if (parent == null) {
+            return false;
+        }
+        setEnabled(true);
+        setVisible(true);
+        if (!sprite.initialize(Vector.Zero(), parent.getBaseDepth(), Vector.Zero(), Angle.Zero(), animationFilePath)) {
+            return false;
+        }
+        sprite.stopAnimation();
+        if (!setText(text)) {
+            return false;
+        }
+        if (!setTextPosition(textPosition)) {
+            return false;
+        }
+        setHorizontalTextAlignment(horizontalAlignment);
+        setVerticalTextAlignment(verticalAlignment);
+        if (!setPosition(position)) {
+            return false;
+        }
+        if (!setDimensions(dimensions)) {
+            return false;
+        }
+        return true;
     }
 
     /**

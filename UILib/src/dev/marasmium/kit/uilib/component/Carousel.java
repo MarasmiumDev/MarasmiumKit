@@ -60,90 +60,6 @@ public class Carousel extends Label {
     protected int valueIndex = 0;
 
     /**
-     * Initialize this carousel's memory
-     * @param position The initial position of this carousel in percent of the application's window dimensions
-     * @param dimensions The initial dimensions of this carousel in percent of the application's window dimensions
-     * @param animationFilePath The animation for the background of this carousel
-     * @param horizontalTextAlignment The horizontal alignment of the value text in this carousel
-     * @param verticalTextAlignment The vertical alignment of the value text in this carousel
-     * @param labelText The text to appear on this carousel's label
-     * @param labelAlignment The alignment of this carousel's text label about its background
-     * @param buttonAnimationFilePaths The unselected, selected, and pressed, animations of this carousel's back and
-     *                                 next buttons
-     * @param buttonWidth The width of this carousel's back and next buttons in percent of its background's width
-     * @param horizontalButtonAlignment The horizontal alignment of this carousel's back and next buttons about its
-     *                                  background
-     * @param values The initial set of values to be represented by this carousel
-     * @param valueIndex The initial index of the value to be represented by this carousel
-     * @return Whether all parameters were valid and this carousel was initialized successfully
-     */
-    public boolean initialize(Vector position, Vector dimensions, String animationFilePath,
-                              Alignment horizontalTextAlignment, Alignment verticalTextAlignment, String labelText,
-                              Alignment labelAlignment, String[] buttonAnimationFilePaths, float buttonWidth,
-                              Alignment horizontalButtonAlignment, String[] values, int valueIndex) {
-        if (buttonAnimationFilePaths == null) {
-            return false;
-        }
-        if (buttonAnimationFilePaths.length != 3) {
-            return false;
-        }
-        if (!addComponent(label)) {
-            return false;
-        }
-        if (!label.initialize(Vector.Zero(), Vector.Zero(), "", labelText, Vector.Zero(), Alignment.Center,
-                Alignment.Center)) {
-            return false;
-        }
-        if (!addComponent(backButton)) {
-            return false;
-        }
-        if (!backButton.initialize(Vector.Zero(), Vector.Zero(), buttonAnimationFilePaths, "", Alignment.Center)) {
-            return false;
-        }
-        if (!addComponent(nextButton)) {
-            return false;
-        }
-        if (!nextButton.initialize(Vector.Zero(), Vector.Zero(), buttonAnimationFilePaths, "", Alignment.Center)) {
-            return false;
-        }
-        this.horizontalButtonAlignment = horizontalButtonAlignment;
-        if (!setDimensions(dimensions)) {
-            return false;
-        }
-        if (!setPosition(position)) {
-            return false;
-        }
-        if (!super.initialize(position, dimensions, animationFilePath, "", Vector.Zero(), horizontalTextAlignment,
-                verticalTextAlignment)) {
-            return false;
-        }
-        if (!setDimensions(dimensions)) {
-            return false;
-        }
-        if (!setPosition(position)) {
-            return false;
-        }
-        if (!setButtonWidth(buttonWidth)) {
-            return false;
-        }
-        if (!setLabelAlignment(labelAlignment)) {
-            return false;
-        }
-        if (!setHorizontalButtonAlignment(horizontalButtonAlignment)) {
-            return false;
-        }
-        for (String value : values) {
-            if (!addValue(value)) {
-                return false;
-            }
-        }
-        if (!setValueIndex(valueIndex)) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * Process user-input to this carousel's back and next buttons
      */
     @Override
@@ -258,7 +174,6 @@ public class Carousel extends Label {
                 || super.getDimensions() == null) {
             return false;
         }
-        // Update position depending on button alignment
         if (horizontalButtonAlignment == Alignment.Left) {
             if (!backButton.setPosition(Vector.Cartesian(position.getX(),
                     position.getY() + nextButton.getDimensions().getY()))) {
@@ -298,7 +213,6 @@ public class Carousel extends Label {
         } else {
             return false;
         }
-        // Update label position
         Vector labelPosition = position.clone();
         if (labelAlignment == Alignment.Left) {
             labelPosition.setX(position.getX() - getDimensions().getX());
@@ -341,7 +255,6 @@ public class Carousel extends Label {
      */
     @Override
     public boolean setDimensions(Vector dimensions) {
-        // Set background dimensions depending on button alignment
         if (horizontalButtonAlignment == Alignment.Center) {
             if (!super.setDimensions(Vector.Cartesian(dimensions.getX() - (dimensions.getX() * buttonWidth * 2.0f),
                     dimensions.getY()))) {
@@ -367,7 +280,6 @@ public class Carousel extends Label {
                 return false;
             }
         }
-        // Set label dimensions and update positioning
         if (!label.setDimensions(dimensions)) {
             return false;
         }
@@ -404,7 +316,6 @@ public class Carousel extends Label {
      */
     @Override
     public boolean setMinimumDimensions(Vector minimumDimensions) {
-        // Clear minimum dimensions if none are given
         if (minimumDimensions == null) {
             if (!super.setMinimumDimensions(null)) {
                 return false;
@@ -420,7 +331,6 @@ public class Carousel extends Label {
             }
             return true;
         }
-        // Set minimum dimensions by button alignment
         if (horizontalButtonAlignment == Alignment.Center) {
             if (!super.setMinimumDimensions(Vector.Cartesian(minimumDimensions.getX()
                     - (minimumDimensions.getX() * buttonWidth * 2.0f), minimumDimensions.getY()))) {
@@ -448,7 +358,6 @@ public class Carousel extends Label {
                 return false;
             }
         }
-        // Set label minimum dimensions
         if (!label.setMinimumDimensions(minimumDimensions)) {
             return false;
         }
@@ -482,7 +391,6 @@ public class Carousel extends Label {
      */
     @Override
     public boolean setMaximumDimensions(Vector maximumDimensions) {
-        // Clear maximum dimensions if none are given
         if (maximumDimensions == null) {
             if (!super.setMaximumDimensions(null)) {
                 return false;
@@ -498,7 +406,6 @@ public class Carousel extends Label {
             }
             return true;
         }
-        // Set maximum dimensions by button alignment
         if (horizontalButtonAlignment == Alignment.Center) {
             if (!super.setMaximumDimensions(Vector.Cartesian(maximumDimensions.getX()
                     - (maximumDimensions.getX() * buttonWidth * 2.0f), maximumDimensions.getY()))) {
@@ -526,11 +433,94 @@ public class Carousel extends Label {
                 return false;
             }
         }
-        // Set minimum label dimensions
         if (!label.setMaximumDimensions(maximumDimensions)) {
             return false;
         }
         return setPosition(getPosition().clone());
+    }
+
+    /**
+     * Initialize this carousel's memory
+     * @param position The initial position of this carousel in percent of the application's window dimensions
+     * @param dimensions The initial dimensions of this carousel in percent of the application's window dimensions
+     * @param animationFilePath The animation for the background of this carousel
+     * @param horizontalTextAlignment The horizontal alignment of the value text in this carousel
+     * @param verticalTextAlignment The vertical alignment of the value text in this carousel
+     * @param labelText The text to appear on this carousel's label
+     * @param labelAlignment The alignment of this carousel's text label about its background
+     * @param buttonAnimationFilePaths The unselected, selected, and pressed, animations of this carousel's back and
+     *                                 next buttons
+     * @param buttonWidth The width of this carousel's back and next buttons in percent of its background's width
+     * @param horizontalButtonAlignment The horizontal alignment of this carousel's back and next buttons about its
+     *                                  background
+     * @param values The initial set of values to be represented by this carousel
+     * @param valueIndex The initial index of the value to be represented by this carousel
+     * @return Whether all parameters were valid and this carousel was initialized successfully
+     */
+    public boolean initialize(Vector position, Vector dimensions, String animationFilePath,
+                              Alignment horizontalTextAlignment, Alignment verticalTextAlignment, String labelText,
+                              Alignment labelAlignment, String[] buttonAnimationFilePaths, float buttonWidth,
+                              Alignment horizontalButtonAlignment, String[] values, int valueIndex) {
+        if (buttonAnimationFilePaths == null) {
+            return false;
+        }
+        if (buttonAnimationFilePaths.length != 3) {
+            return false;
+        }
+        if (!addComponent(label)) {
+            return false;
+        }
+        if (!label.initialize(Vector.Zero(), Vector.Zero(), "", labelText, Vector.Zero(), Alignment.Center,
+                Alignment.Center)) {
+            return false;
+        }
+        if (!addComponent(backButton)) {
+            return false;
+        }
+        if (!backButton.initialize(Vector.Zero(), Vector.Zero(), buttonAnimationFilePaths, "", Alignment.Center)) {
+            return false;
+        }
+        if (!addComponent(nextButton)) {
+            return false;
+        }
+        if (!nextButton.initialize(Vector.Zero(), Vector.Zero(), buttonAnimationFilePaths, "", Alignment.Center)) {
+            return false;
+        }
+        this.horizontalButtonAlignment = horizontalButtonAlignment;
+        if (!setDimensions(dimensions)) {
+            return false;
+        }
+        if (!setPosition(position)) {
+            return false;
+        }
+        if (!super.initialize(position, dimensions, animationFilePath, "", Vector.Zero(), horizontalTextAlignment,
+                verticalTextAlignment)) {
+            return false;
+        }
+        if (!setDimensions(dimensions)) {
+            return false;
+        }
+        if (!setPosition(position)) {
+            return false;
+        }
+        if (!setButtonWidth(buttonWidth)) {
+            return false;
+        }
+        if (!setLabelAlignment(labelAlignment)) {
+            return false;
+        }
+        if (!setHorizontalButtonAlignment(horizontalButtonAlignment)) {
+            return false;
+        }
+        for (String value : values) {
+            if (!addValue(value)) {
+                return false;
+            }
+        }
+        if (!setValueIndex(valueIndex)) {
+            return false;
+        }
+        return true;
     }
 
     /**

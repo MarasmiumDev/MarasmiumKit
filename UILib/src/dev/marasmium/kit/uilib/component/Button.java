@@ -49,61 +49,6 @@ public class Button extends UIComponent {
     protected Alignment labelAlignment = null;
 
     /**
-     * Initialize this button's memory
-     * @param position The initial position for this button in percent of the application's window dimensions
-     * @param dimensions The initial dimensions for this button in percent of the application's window dimensions
-     * @param animationFilePaths The animations to play when this button is unselected, selected, and pressed
-     * @param labelText The text to appear on this button's label
-     * @param labelAlignment The alignment for this button's label about its background
-     * @return Whether all parameters wre valid and this button was initialized successfully
-     */
-    public boolean initialize(Vector position, Vector dimensions, String[] animationFilePaths, String labelText,
-                              Alignment labelAlignment) {
-        if (parent == null) {
-            return false;
-        }
-        if (animationFilePaths == null) {
-            return false;
-        }
-        if (animationFilePaths.length != 3) {
-            return false;
-        }
-        setEnabled(true);
-        setVisible(true);
-        if (!sprite.initialize(Vector.Zero(), parent.getBaseDepth(), Vector.Zero(), Angle.Zero(),
-                animationFilePaths[0])) {
-            return false;
-        }
-        sprite.setAnimationFrame(sprite.getAnimationFrameCount() - 1);
-        if (!setUnselectedAnimationFilePath(animationFilePaths[0])) {
-            return false;
-        }
-        if (!setSelectedAnimationFilePath(animationFilePaths[1])) {
-            return false;
-        }
-        if (!setPressedAnimationFilePath(animationFilePaths[2])) {
-            return false;
-        }
-        if (!addComponent(label)) {
-            return false;
-        }
-        if (!label.initialize(Vector.Zero(), Vector.Zero(), "", labelText, Vector.Zero(), Alignment.Center,
-                Alignment.Center)) {
-            return false;
-        }
-        if (!setDimensions(dimensions)) {
-            return false;
-        }
-        if (!setPosition(position)) {
-            return false;
-        }
-        if (!setLabelAlignment(labelAlignment)) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * Process user-input to this button
      */
     @Override
@@ -246,6 +191,61 @@ public class Button extends UIComponent {
             return false;
         }
         if (!label.setMaximumDimensions(maximumDimensions)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Initialize this button's memory
+     * @param position The initial position for this button in percent of the application's window dimensions
+     * @param dimensions The initial dimensions for this button in percent of the application's window dimensions
+     * @param animationFilePaths The animations to play when this button is unselected, selected, and pressed
+     * @param labelText The text to appear on this button's label
+     * @param labelAlignment The alignment for this button's label about its background
+     * @return Whether all parameters wre valid and this button was initialized successfully
+     */
+    public boolean initialize(Vector position, Vector dimensions, String[] animationFilePaths, String labelText,
+                              Alignment labelAlignment) {
+        if (parent == null) {
+            return false;
+        }
+        if (animationFilePaths == null) {
+            return false;
+        }
+        if (animationFilePaths.length != 3) {
+            return false;
+        }
+        setEnabled(true);
+        setVisible(true);
+        if (!sprite.initialize(Vector.Zero(), parent.getBaseDepth(), Vector.Zero(), Angle.Zero(),
+                animationFilePaths[0])) {
+            return false;
+        }
+        sprite.setAnimationFrame(sprite.getAnimationFrameCount() - 1);
+        if (!setUnselectedAnimationFilePath(animationFilePaths[0])) {
+            return false;
+        }
+        if (!setSelectedAnimationFilePath(animationFilePaths[1])) {
+            return false;
+        }
+        if (!setPressedAnimationFilePath(animationFilePaths[2])) {
+            return false;
+        }
+        if (!addComponent(label)) {
+            return false;
+        }
+        if (!label.initialize(Vector.Zero(), Vector.Zero(), "", labelText, Vector.Zero(), Alignment.Center,
+                Alignment.Center)) {
+            return false;
+        }
+        if (!setDimensions(dimensions)) {
+            return false;
+        }
+        if (!setPosition(position)) {
+            return false;
+        }
+        if (!setLabelAlignment(labelAlignment)) {
             return false;
         }
         return true;

@@ -69,6 +69,54 @@ public class NetServer implements NetListener {
     private int maxMPUPC = 0;
 
     /**
+     * A new client has connected to the server
+     * @param clientID The ID number of the connected network connection
+     * @return Whether the client connection was accepted by the server
+     */
+    @Override
+    public boolean netConnected(int clientID) {
+        if (clients.size() > maxClients && maxClients != -1) {
+            log.write(logSource, LogLevel.Warning, "Maximum client count exceeded, rejecting client ", clientID);
+            getClient(clientID).setRejected(true);
+            return false;
+        }
+        if (!parent.netConnected(clientID)) {
+            log.write(logSource, LogLevel.Warning, "Client ", clientID, " rejected by server logic");
+            getClient(clientID).setRejected(true);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * The server has received a message from a client
+     * @param clientID The ID number of the network connection
+     * @param message The message received
+     */
+    @Override
+    public void netMessageReceived(int clientID, NetMessage message) {
+        if (message == null) {
+            return;
+        }
+        parent.netMessageReceived(clientID, message);
+    }
+
+    /**
+     * A client has disconnected from the server
+     * @param clientID The ID number of the disconnected network connection
+     */
+    @Override
+    public void netDisconnected(int clientID) {
+        NetConnection client = getClient(clientID);
+        if (client != null) {
+            if (!client.isRejected()) {
+                parent.netDisconnected(clientID);
+            }
+            clients.remove(client);
+        }
+    }
+
+    /**
      * Initialize this network server
      * @param logTimestampFormat The initial timestamp format for this server's log
      * @param logConsoleOutputEnabled Whether this server's log will initially write messages to the console
@@ -82,12 +130,10 @@ public class NetServer implements NetListener {
      */
     public boolean initialize(String logTimestampFormat, boolean logConsoleOutputEnabled, boolean logOutputFileEnabled,
                               String logOutputFilePath, NetListener parent, int port, int maxClients, int maxMPUPC) {
-        // Initialize the server log
         if (!log.initialize(logTimestampFormat, logConsoleOutputEnabled, logOutputFileEnabled, logOutputFilePath)) {
             return false;
         }
         log.write(logSource, LogLevel.Info, "Initialized logging system");
-        // Initialize memory
         if (!setParent(parent)) {
             log.write(logSource, LogLevel.Error, "Failed to set parent listener");
             return false;
@@ -109,7 +155,6 @@ public class NetServer implements NetListener {
      */
     public void run() {
         acceptThread = new Thread(() -> {
-            // Open the listening socket
             log.write(logSource, LogLevel.Info, "Opening server socket on port ", port);
             try {
                 serverSocket = new ServerSocket(port);
@@ -119,7 +164,6 @@ public class NetServer implements NetListener {
             }
             running = true;
             log.write(logSource, LogLevel.Info, "Now accepting clients");
-            // Accept clients
             while (running) {
                 Socket socket;
                 try {
@@ -206,13 +250,11 @@ public class NetServer implements NetListener {
         if (message == null) {
             return false;
         }
-        // Check the ignored client ID
         if (ignoredClientID < -1) {
             log.write(logSource, LogLevel.Error, "Ignored client ID ", ignoredClientID, " out of bounds for broadcast");
             return false;
         }
         boolean success = true;
-        // Broadcast to all clients
         for (NetConnection client : clients) {
             if (client.getClientID() == ignoredClientID) {
                 continue;
@@ -232,7 +274,6 @@ public class NetServer implements NetListener {
         boolean success = true;
         log.write(logSource, LogLevel.Info, "Stopping server");
         running = false;
-        // Stop accepting new clients
         if (serverSocket != null) {
             try {
                 serverSocket.close();
@@ -254,7 +295,6 @@ public class NetServer implements NetListener {
             acceptThread = null;
         }
         log.write(logSource, LogLevel.Info, "Stopped client-accepting thread");
-        // Disconnect all clients
         nextClientID = 0;
         for (NetConnection client : clients) {
             log.write(logSource, LogLevel.Info, "Disconnecting client ", client.getClientID());
@@ -273,7 +313,6 @@ public class NetServer implements NetListener {
     public boolean destroy() {
         log.write(logSource, LogLevel.Info, "Destroying network server");
         boolean success = true;
-        // Stop the server
         if (running) {
             log.write(logSource, LogLevel.Info, "Stopping server connection threads");
             if (!stop()) {
@@ -281,7 +320,6 @@ public class NetServer implements NetListener {
                 success = false;
             }
         }
-        // Free memory
         maxClients = 0;
         maxMPUPC = 0;
         log.write(logSource, LogLevel.Info, "Destroying server log");
@@ -289,56 +327,6 @@ public class NetServer implements NetListener {
             success = false;
         }
         return success;
-    }
-
-    /**
-     * A new client has connected to the server
-     * @param clientID The ID number of the connected network connection
-     * @return Whether the client connection was accepted by the server
-     */
-    @Override
-    public boolean netConnected(int clientID) {
-        // Check against maximum client count
-        if (clients.size() > maxClients && maxClients != -1) {
-            log.write(logSource, LogLevel.Warning, "Maximum client count exceeded, rejecting client ", clientID);
-            getClient(clientID).setRejected(true);
-            return false;
-        }
-        // Check against server logic
-        if (!parent.netConnected(clientID)) {
-            log.write(logSource, LogLevel.Warning, "Client ", clientID, " rejected by server logic");
-            getClient(clientID).setRejected(true);
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * The server has received a message from a client
-     * @param clientID The ID number of the network connection
-     * @param message The message received
-     */
-    @Override
-    public void netMessageReceived(int clientID, NetMessage message) {
-        if (message == null) {
-            return;
-        }
-        parent.netMessageReceived(clientID, message);
-    }
-
-    /**
-     * A client has disconnected from the server
-     * @param clientID The ID number of the disconnected network connection
-     */
-    @Override
-    public void netDisconnected(int clientID) {
-        NetConnection client = getClient(clientID);
-        if (client != null) {
-            if (!client.isRejected()) {
-                parent.netDisconnected(clientID);
-            }
-            clients.remove(client);
-        }
     }
 
     /**

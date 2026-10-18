@@ -8,10 +8,9 @@
 package dev.marasmium.kit.applib.logging;
 
 /**
- * Record providing constants for logging system message level/severity flags
- * @param levelName The name of this message level flag
+ * Data structure providing constants for logging system message level/severity flags
  */
-public record LogLevel(String levelName) {
+public class LogLevel {
 
     /**
      * Logging system message source flag for informational messages
@@ -27,10 +26,23 @@ public record LogLevel(String levelName) {
     public static final LogLevel Error = new LogLevel("Error");
 
     /**
-     * Construct a blank logging system message level flag record with default name "-"
+     * The name of this log level
+     */
+    private String levelName;
+
+    /**
+     * Construct a blank logging system message level flag with default name "-"
      */
     public LogLevel() {
         this("-");
+    }
+
+    /**
+     * Create a logging system message level flag with a name
+     * @param levelName The log level's name
+     */
+    public LogLevel(String levelName) {
+        this.levelName = levelName;
     }
 
     /**

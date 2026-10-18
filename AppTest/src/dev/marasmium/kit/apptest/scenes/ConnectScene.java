@@ -28,26 +28,74 @@ import dev.marasmium.kit.uilib.component.TextBox;
 
 import java.util.ArrayList;
 
+/**
+ * The connect scene for the MarasmiumKit application framework's app test program
+ */
 public class ConnectScene extends Scene implements UIListener, NetListener {
 
+    /**
+     * Logging system message source flag for the connect scene
+     */
     private final LogSource logSource = new LogSource("Connect Scene");
+    /**
+     * UI group for main UI components
+     */
     private final UIGroup connectUI = new UIGroup();
+    /**
+     * Main label for the connect scene
+     */
     private final Label connectLabel = new Label();
+    /**
+     * Text box for the server's IP address
+     */
     private final TextBox addressTextBox = new TextBox();
+    /**
+     * Text box for the port to connect to the server on
+     */
     private final TextBox portTextBox = new TextBox();
+    /**
+     * UI group for scene control UI components
+     */
     private final UIGroup controlsUI = new UIGroup();
+    /**
+     * Button to go back to the title scene or cancel a connection to the server
+     */
     private final Button backButton = new Button();
+    /**
+     * Button to attempt a connection to the server
+     */
     private final Button connectButton = new Button();
+    /**
+     * UI group for the connecting status label
+     */
     private final UIGroup connectingUI = new UIGroup();
+    /**
+     * Label to indicate a connection attempt to the server
+     */
     private final Label connectingLabel = new Label();
+    /**
+     * Camera for the background visual artifacts in the connect scene
+     */
     private final Camera sparkCamera = new Camera();
+    /**
+     * The set of background sparks in the connect scene
+     */
     private final ArrayList<Spark> sparks = new ArrayList<>();
+    /**
+     * Timer for adding new background sparks
+     */
     private float sparkTimer = 0.0f;
+    /**
+     * Whether the app test program is currently attempting a connection to the server
+     */
     private boolean connecting = false;
 
+    /**
+     * Initialize the connect scene's memory and UI components
+     * @return Whether the connect scene was initialized successfully
+     */
     @Override
     protected boolean initialize() {
-        // Declare component animations
         final String[] textBoxAnimationFilePaths = new String[] {
                 "Assets/Animations/UI/Text_Box/Text_Box_Unselected.animation",
                 "Assets/Animations/UI/Text_Box/Text_Box_Selected.animation",
@@ -58,7 +106,6 @@ public class ConnectScene extends Scene implements UIListener, NetListener {
                 "Assets/Animations/UI/Button/Button_Selected.animation",
                 "Assets/Animations/UI/Button/Button_Pressed.animation",
         };
-        // Initialize connection UI components
         connectUI.initialize(this, 0, 1.0f, "Assets/Typefaces/Silkscreen.typeface", 4.0f, 0.20f);
         connectUI.addComponent(connectLabel);
         connectUI.addComponent(addressTextBox);
@@ -71,24 +118,26 @@ public class ConnectScene extends Scene implements UIListener, NetListener {
         portTextBox.initialize(Vector.Cartesian(0.25f, 0.35f), Vector.Cartesian(0.50f, 0.10f),
                 textBoxAnimationFilePaths, "PORT", Alignment.Top, Vector.Cartesian(0.01f, 0.9f),
                 textBoxCursorAnimationFilePath, Alignment.Center, "0123456789", 5, 8, 1.5f);
-        // Initialize controls UI components
         controlsUI.initialize(this, 1, 1.0f, "Assets/Typefaces/Silkscreen.typeface", 4.0f, 0.35f);
         controlsUI.addComponent(backButton);
         controlsUI.addComponent(connectButton);
         backButton.initialize(Vector.Cartesian(0.05f, 0.05f), Vector.Cartesian(0.25f, 0.10f), buttonAnimationFilePaths,
                 "BACK", Alignment.Center);
-        connectButton.initialize(Vector.Cartesian(0.70f, 0.05f), Vector.Cartesian(0.25f, 0.10f), buttonAnimationFilePaths,
-                "CONNECT", Alignment.Center);
-        // Initialize connecting UI components
+        connectButton.initialize(Vector.Cartesian(0.70f, 0.05f), Vector.Cartesian(0.25f, 0.10f),
+                buttonAnimationFilePaths, "CONNECT", Alignment.Center);
         connectingUI.initialize(this, 2, 1.0f, "Assets/Typefaces/Silkscreen.typeface", 4.0f, 0.35f);
         connectingUI.addComponent(connectingLabel);
         connectingLabel.initialize(Vector.Cartesian(0.25f, 0.5f), Vector.Cartesian(0.5f, 0.1f), "", "CONNECTING...",
                 Vector.Zero(), Alignment.Center, Alignment.Center);
-        // Initialize camera
         sparkCamera.initialize(App.Window.getDimensions().scalarMultiply(0.5f), 1.0f, Angle.Zero());
         return true;
     }
 
+    /**
+     * Enter the connect scene from another scene
+     * @param lastScene Reference to the previous scene displayed by the application framework
+     * @return Whether the connect scene was entered successfully
+     */
     @Override
     public boolean enter(Scene lastScene) {
         connecting = false;
@@ -97,11 +146,15 @@ public class ConnectScene extends Scene implements UIListener, NetListener {
         connectButton.setEnabled(true);
         connectingUI.setEnabled(false);
         connectingUI.setVisible(false);
-        addressTextBox.setText("");
-        portTextBox.setText("");
+        addressTextBox.setText("127.0.0.1");
+        portTextBox.setText("222");
         return true;
     }
 
+    /**
+     * Process user-input to the connect scene
+     * @return Whether the application should continue running
+     */
     @Override
     public boolean processInput() {
         connectUI.processInput();
@@ -110,6 +163,9 @@ public class ConnectScene extends Scene implements UIListener, NetListener {
         return true;
     }
 
+    /**
+     * Draw the connect scene's graphics
+     */
     @Override
     public void draw() {
         connectUI.draw();
@@ -120,6 +176,10 @@ public class ConnectScene extends Scene implements UIListener, NetListener {
         }
     }
 
+    /**
+     * Update the connect scene's logic and UI components
+     * @param deltaFrames The target number of frames to have elapsed since the last update
+     */
     @Override
     public void update(float deltaFrames) {
         connectUI.update(deltaFrames);
@@ -140,11 +200,20 @@ public class ConnectScene extends Scene implements UIListener, NetListener {
         sparks.removeIf(spark -> !spark.isAlive());
     }
 
+    /**
+     * Leave the connect scene from another scene
+     * @param nextScene Reference to the next scene to be displayed by the application framework
+     * @return Whether the connect scene was left successfully
+     */
     @Override
     public boolean leave(Scene nextScene) {
         return true;
     }
 
+    /**
+     * Free the connect scene's memory
+     * @return Whether the connect scene was destroyed successfully
+     */
     @Override
     protected boolean destroy() {
         connectUI.destroy();
@@ -157,6 +226,12 @@ public class ConnectScene extends Scene implements UIListener, NetListener {
         return true;
     }
 
+    /**
+     * Callback for a user-interface component event on the options scene
+     * @param groupID The ID of the user-interface group the relevant component is in
+     * @param componentID The ID of the relevant component
+     * @param event The event identifier
+     */
     @Override
     public void componentEvent(int groupID, int componentID, UIEvent event) {
         if (groupID == controlsUI.getGroupID()) {
@@ -203,12 +278,22 @@ public class ConnectScene extends Scene implements UIListener, NetListener {
         }
     }
 
+    /**
+     * Callback for a connection to the server
+     * @param clientID The ID number of the connected network connection
+     * @return Whether the connection should be accepted
+     */
     @Override
     public boolean netConnected(int clientID) {
         App.Log.write(logSource, LogLevel.Info, "Connected to server");
+        App.SetCurrentScene(AppTest.Game_Scene);
         return true;
     }
 
+    /**
+     * Callback for a disconnection from the server
+     * @param clientID The ID number of the disconnected network connection
+     */
     @Override
     public void netDisconnected(int clientID) {
         App.Log.write(logSource, LogLevel.Info, "Disconnected from server");

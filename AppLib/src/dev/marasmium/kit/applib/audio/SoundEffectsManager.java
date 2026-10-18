@@ -57,7 +57,6 @@ public class SoundEffectsManager {
      * @return Whether the sound effect could be started
      */
     public boolean play(String filePath, float volume) {
-        // Ensure given file path is populated
         if (filePath == null) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "No file path provided for sound effect");
             return false;
@@ -66,7 +65,6 @@ public class SoundEffectsManager {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Empty file path provided for sound effect");
             return false;
         }
-        // Load the sound effect audio track and its format
         AudioTrack track = App.Assets.getAudioTrack(filePath);
         if (track == null) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to retrieve audio track \"", filePath, "\"");
@@ -74,7 +72,6 @@ public class SoundEffectsManager {
         }
         AudioFormat format = new AudioFormat(track.getSampleRate(), 8 * track.getSampleSize(), track.getChannelCount(),
                 true, false);
-        // Open a new audio line in the loaded format
         DataLine.Info playerInfo = new DataLine.Info(SourceDataLine.class, format);
         AudioDevice speaker = App.Audio.getSpeaker();
         if (speaker == null) {
@@ -104,7 +101,6 @@ public class SoundEffectsManager {
                     filePath, "\"");
             return false;
         }
-        // Set the volume of the line and start playing the sound effect
         FloatControl gainControl;
         try {
             gainControl = (FloatControl)player.getControl(FloatControl.Type.MASTER_GAIN);

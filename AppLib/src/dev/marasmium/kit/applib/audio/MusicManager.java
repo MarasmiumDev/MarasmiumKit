@@ -82,7 +82,6 @@ public class MusicManager {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Cannot play music track, empty file path given");
             return false;
         }
-        // Stop any current music track
         if (playing) {
             if (!stop()) {
                 App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to stop current music track to play \"",
@@ -92,7 +91,6 @@ public class MusicManager {
         }
         playing = true;
         paused = false;
-        // Load the music track and its format
         AudioTrack track = App.Assets.getAudioTrack(filePath);
         if (track == null) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to retrieve audio track \"", filePath, "\"");
@@ -101,7 +99,6 @@ public class MusicManager {
         App.Log.write(LogSource.Audio, LogLevel.Info, "Loaded music track: ", track);
         AudioFormat format = new AudioFormat(track.getSampleRate(), 8 * track.getSampleSize(), track.getChannelCount(),
                 true, false);
-        // Open a new audio line in the loaded format
         DataLine.Info playerInfo = new DataLine.Info(SourceDataLine.class, format);
         AudioDevice speaker = App.Audio.getSpeaker();
         if (speaker == null) {
@@ -137,7 +134,6 @@ public class MusicManager {
             player = null;
             return false;
         }
-        // Set the volume of the music track and start playing
         if (!setVolume(volume)) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to set volume for music track \"", filePath, "\"");
             return false;
@@ -150,7 +146,6 @@ public class MusicManager {
             int chunkSize = track.getSampleSize() * track.getChannelCount() * 64;
             int written;
             int copyOffset;
-            // Write audio data in chunks
             while (playing) {
                 try {
                     written = player.write(data, trackOffset, data.length > trackOffset + chunkSize
@@ -197,7 +192,6 @@ public class MusicManager {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to pause music track, none playing");
             return false;
         }
-        // Save the current music track and stop it
         String filePath = this.filePath;
         int offset = this.trackOffset;
         if (!stop()) {
@@ -275,7 +269,6 @@ public class MusicManager {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Invalid music volume");
             return false;
         }
-        // Set volume of current music track
         if (player != null) {
             FloatControl gainControl;
             try {

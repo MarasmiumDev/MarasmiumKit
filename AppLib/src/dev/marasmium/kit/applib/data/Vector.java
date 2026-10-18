@@ -91,6 +91,45 @@ public class Vector implements Serializable, Cloneable {
     }
 
     /**
+     * Test whether this vector is equal to another one
+     * @param o The object to compare this vector to (must be a Vector)
+     * @return Whether this vector is equal to o
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Vector vector)) {
+            return false;
+        }
+        return Math.abs(x - vector.x) < Constants.Epsilon && Math.abs(y - vector.y) < Constants.Epsilon;
+    }
+
+    /**
+     * Convert this vector to a string
+     * @return The string representation of this vector
+     */
+    @Override
+    public String toString() {
+        return "vector(" + x + ", " + y + ")";
+    }
+
+    /**
+     * Make a copy of this vector
+     * @return A copy of this vector
+     */
+    @Override
+    public Vector clone() {
+        Vector vector;
+        try {
+            vector = (Vector)super.clone();
+        } catch (CloneNotSupportedException _) {
+            return null;
+        }
+        vector.x = x;
+        vector.y = y;
+        return vector;
+    }
+
+    /**
      * Compute the sum of this vector and another one
      * @param vector The vector to add to this one
      * @return The sum of this vector and v
@@ -262,7 +301,7 @@ public class Vector implements Serializable, Cloneable {
      * @param vector The vector to compare to
      * @return The angle between this vector and v
      */
-    public Angle getAngleTo(Vector vector) {
+    public Angle angleTo(Vector vector) {
         if (vector == null) {
             return null;
         }
@@ -456,45 +495,6 @@ public class Vector implements Serializable, Cloneable {
             return null;
         }
         return data;
-    }
-
-    /**
-     * Test whether this vector is equal to another one
-     * @param o The object to compare this vector to (must be a Vector)
-     * @return Whether this vector is equal to o
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Vector vector)) {
-            return false;
-        }
-        return Math.abs(x - vector.x) < Constants.Epsilon && Math.abs(y - vector.y) < Constants.Epsilon;
-    }
-
-    /**
-     * Convert this vector to a string
-     * @return The string representation of this vector
-     */
-    @Override
-    public String toString() {
-        return "vector(" + x + ", " + y + ")";
-    }
-
-    /**
-     * Make a copy of this vector
-     * @return A copy of this vector
-     */
-    @Override
-    public Vector clone() {
-        Vector vector;
-        try {
-            vector = (Vector)super.clone();
-        } catch (CloneNotSupportedException _) {
-            return null;
-        }
-        vector.x = x;
-        vector.y = y;
-        return vector;
     }
 
     /**

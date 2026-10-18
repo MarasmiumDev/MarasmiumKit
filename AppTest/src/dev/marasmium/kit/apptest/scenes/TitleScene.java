@@ -24,19 +24,56 @@ import dev.marasmium.kit.uilib.component.Label;
 
 import java.util.ArrayList;
 
+/**
+ * The title scene of the application framework's test program
+ */
 public class TitleScene extends Scene implements UIListener {
 
+    /**
+     * This scene's log message source flag
+     */
     private final LogSource logSource = new LogSource("Title Scene");
-    private final UIGroup UI = new UIGroup();
+    /**
+     * The main UI group for the title scene
+     */
+    private final UIGroup startUI = new UIGroup();
+    /**
+     * The title label for the title scene
+     */
     private final Label label = new Label();
+    /**
+     * The start button to go to the connect scene
+     */
     private final Button startButton = new Button();
+    /**
+     * The options button to go to the options scene
+     */
     private final Button optionsButton = new Button();
+    /**
+     * The quit button to end the test program
+     */
     private final Button quitButton = new Button();
+    /**
+     * Camera for the sparks appearing in the background of the title scene
+     */
     private final Camera sparkCamera = new Camera();
+    /**
+     * The set of sparks in the background of the title scene
+     */
     private final ArrayList<Spark> sparks = new ArrayList<>();
+    /**
+     * Timer for adding new sparks to the title scene's background
+     */
     private float sparkTimer = 0.0f;
+    /**
+     * Whether the application should continue running
+     */
     private boolean running = false;
 
+    /**
+     * Initialize the title scene
+     * @return Whether the title scene was initialized successfully
+     */
     @Override
     public boolean initialize() {
         final String[] buttonAnimations = {
@@ -44,11 +81,11 @@ public class TitleScene extends Scene implements UIListener {
                 "Assets/Animations/UI/Button/Button_Selected.animation",
                 "Assets/Animations/UI/Button/Button_Pressed.animation"
         };
-        UI.initialize(this, 0, 1.0f, "Assets/Typefaces/Silkscreen.typeface", 4.0f, 0.35f);
-        UI.addComponent(label);
-        UI.addComponent(startButton);
-        UI.addComponent(optionsButton);
-        UI.addComponent(quitButton);
+        startUI.initialize(this, 0, 1.0f, "Assets/Typefaces/Silkscreen.typeface", 4.0f, 0.35f);
+        startUI.addComponent(label);
+        startUI.addComponent(startButton);
+        startUI.addComponent(optionsButton);
+        startUI.addComponent(quitButton);
         label.initialize(Vector.Cartesian(0.33f, 0.75f), Vector.Cartesian(0.33f, 0.1f), "", "APP TEST", Vector.Zero(),
                 Alignment.Center, Alignment.Center);
         startButton.initialize(Vector.Cartesian(0.33f, 0.50f), Vector.Cartesian(0.33f, 0.10f), buttonAnimations,
@@ -62,28 +99,44 @@ public class TitleScene extends Scene implements UIListener {
         return true;
     }
 
+    /**
+     * Enter the title scene from another scene
+     * @param lastScene Reference to the previous scene displayed by the application framework
+     * @return Whether the title scene was entered successfully
+     */
     @Override
     public boolean enter(Scene lastScene) {
         return true;
     }
 
+    /**
+     * Process user-input to the title scene
+     * @return Whether the application should continue running
+     */
     @Override
     public boolean processInput() {
-        UI.processInput();
+        startUI.processInput();
         return running;
     }
 
+    /**
+     * Draw the title scene's graphics
+     */
     @Override
     public void draw() {
-        UI.draw();
+        startUI.draw();
         for (Spark spark : sparks) {
             App.Graphics.submit(sparkCamera, spark);
         }
     }
 
+    /**
+     * Update the title scene's background sparks and user-interface components
+     * @param deltaFrames The target number of frames to have elapsed since the last update
+     */
     @Override
     public void update(float deltaFrames) {
-        UI.update(deltaFrames);
+        startUI.update(deltaFrames);
         sparkTimer += deltaFrames;
         if (sparkTimer > (float)App.Graphics.getTargetFPS() / 20.0f) {
             sparkTimer = 0.0f;
@@ -99,14 +152,23 @@ public class TitleScene extends Scene implements UIListener {
         sparks.removeIf(spark -> !spark.isAlive());
     }
 
+    /**
+     * Leave the title scene for another scene
+     * @param nextScene Reference to the next scene to be displayed by the application framework
+     * @return Whether the title scene was left successfully
+     */
     @Override
     public boolean leave(Scene nextScene) {
         return true;
     }
 
+    /**
+     * Free the title scene memory
+     * @return Whether the title scene was destroyed successfully
+     */
     @Override
     public boolean destroy() {
-        UI.destroy();
+        startUI.destroy();
         for (Spark spark : sparks) {
             spark.destroy();
         }
@@ -114,9 +176,15 @@ public class TitleScene extends Scene implements UIListener {
         return true;
     }
 
+    /**
+     * Callback for a component event on the title scene
+     * @param groupID The ID of the user-interface group the relevant component is in
+     * @param componentID The ID of the relevant component
+     * @param event The event identifier
+     */
     @Override
     public void componentEvent(int groupID, int componentID, UIEvent event) {
-        if (groupID == UI.getGroupID()) {
+        if (groupID == startUI.getGroupID()) {
             if (event == UIEvent.Button_Released) {
                 if (componentID == startButton.getComponentID()) {
                     App.SetCurrentScene(AppTest.Connect_Scene);

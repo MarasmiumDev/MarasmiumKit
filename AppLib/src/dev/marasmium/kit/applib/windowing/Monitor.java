@@ -44,56 +44,6 @@ public class Monitor implements Cloneable {
     }
 
     /**
-     * Free this monitor's memory
-     */
-    public void destroy() {
-        index = 0;
-        description = null;
-        position = null;
-        dimensions = null;
-    }
-
-    /**
-     * Check that this monitor is still available to the system and update its reported description, position, and
-     * dimensions and change the index to the default if unavailable
-     * @return Whether the monitor was still available and was validated successfully
-     */
-    private boolean validate() {
-        // Retrieve available monitors
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice[] gds;
-        try {
-            gds = ge.getScreenDevices();
-        } catch (HeadlessException _) {
-            index = -1;
-            description = "";
-            position = null;
-            dimensions = null;
-            return false;
-        }
-        if (gds.length == 0) {
-            index = -1;
-            description = "";
-            position = null;
-            dimensions = null;
-            return false;
-        }
-        // Check index
-        boolean success = true;
-        if (index < 0 || index >= gds.length) {
-            index = 0;
-            success = false;
-        }
-        // Retrieve monitor attributes
-        position = Vector.Cartesian((float)gds[index].getDefaultConfiguration().getBounds().getX(),
-                (float)gds[index].getDefaultConfiguration().getBounds().getY());
-        description = gds[index].getIDstring();
-        dimensions = Vector.Cartesian((float)gds[index].getDefaultConfiguration().getBounds().getWidth(),
-                (float)gds[index].getDefaultConfiguration().getBounds().getHeight());
-        return success;
-    }
-
-    /**
      * Convert this monitor to a string
      * @return This monitor's string representation
      */
@@ -143,6 +93,53 @@ public class Monitor implements Cloneable {
             monitor.dimensions = dimensions.clone();
         }
         return monitor;
+    }
+
+    /**
+     * Free this monitor's memory
+     */
+    public void destroy() {
+        index = 0;
+        description = null;
+        position = null;
+        dimensions = null;
+    }
+
+    /**
+     * Check that this monitor is still available to the system and update its reported description, position, and
+     * dimensions and change the index to the default if unavailable
+     * @return Whether the monitor was still available and was validated successfully
+     */
+    private boolean validate() {
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] gds;
+        try {
+            gds = ge.getScreenDevices();
+        } catch (HeadlessException _) {
+            index = -1;
+            description = "";
+            position = null;
+            dimensions = null;
+            return false;
+        }
+        if (gds.length == 0) {
+            index = -1;
+            description = "";
+            position = null;
+            dimensions = null;
+            return false;
+        }
+        boolean success = true;
+        if (index < 0 || index >= gds.length) {
+            index = 0;
+            success = false;
+        }
+        position = Vector.Cartesian((float)gds[index].getDefaultConfiguration().getBounds().getX(),
+                (float)gds[index].getDefaultConfiguration().getBounds().getY());
+        description = gds[index].getIDstring();
+        dimensions = Vector.Cartesian((float)gds[index].getDefaultConfiguration().getBounds().getWidth(),
+                (float)gds[index].getDefaultConfiguration().getBounds().getHeight());
+        return success;
     }
 
     /**

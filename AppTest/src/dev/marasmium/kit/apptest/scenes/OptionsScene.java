@@ -32,27 +32,78 @@ import dev.marasmium.kit.uilib.component.Switch;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
+/**
+ * The options scene of the MarasmiumKit application framework's app test program
+ */
 public class OptionsScene extends Scene implements UIListener {
 
+    /**
+     * Logging system message source flag for this scene
+     */
     private final LogSource logSource = new LogSource("Options Scene");
+    /**
+     * UI group for application options components
+     */
     private final UIGroup optionsUI = new UIGroup();
+    /**
+     * Carousel for switching window resolutions
+     */
     private final Carousel resolutionCarousel = new Carousel();
+    /**
+     * Switch for toggling fullscreen mode
+     */
     private final Switch fullscreenSwitch = new Switch();
+    /**
+     * Carousel for switching the fullscreen monitor
+     */
     private final Carousel monitorCarousel = new Carousel();
+    /**
+     * Slider for controlling music volume
+     */
     private final Slider musicVolumeSlider = new Slider();
+    /**
+     * Slider for controlling sound effects volume
+     */
     private final Slider soundEffectsVolumeSlider = new Slider();
+    /**
+     * Carousel for switching the audio speaker
+     */
     private final Carousel speakerCarousel = new Carousel();
+    /**
+     * UI group for scene options
+     */
     private final UIGroup controlsUI = new UIGroup();
+    /**
+     * Back button to go back to the title scene
+     */
     private final Button backButton = new Button();
+    /**
+     * Button for setting all options to their defaults
+     */
     private final Button defaultsButton = new Button();
+    /**
+     * Button for saving options to the configuration file and the currently running application
+     */
     private final Button saveButton = new Button();
+    /**
+     * Camera for the background visual artifacts in this scene
+     */
     private final Camera sparkCamera = new Camera();
+    /**
+     * The set of background sparks in this scene
+     */
     private final ArrayList<Spark> sparks = new ArrayList<>();
+    /**
+     * Timer for creating new sparks in the background of this scene
+     */
     private float sparkTimer = 0.0f;
 
+    /**
+     * Initialize the options scene's memory and UI components
+     * @return Whether the options scene was initialized successfully
+     */
     @Override
     protected boolean initialize() {
-        // Declare component animations
         final String carouselAnimationFilePath = "Assets/Animations/UI/Carousel/Carousel.animation";
         final String[] carouselButtonAnimationFilePaths = new String[] {
                 "Assets/Animations/UI/Carousel/Carousel_Button_Unselected.animation",
@@ -77,7 +128,6 @@ public class OptionsScene extends Scene implements UIListener {
                 "Assets/Animations/UI/Button/Button_Selected.animation",
                 "Assets/Animations/UI/Button/Button_Pressed.animation"
         };
-        // Initialize options UI components
         optionsUI.initialize(this, 0, 1.0f, "Assets/Typefaces/Silkscreen.typeface", 4.0f, 0.20f);
         optionsUI.addComponent(resolutionCarousel);
         optionsUI.addComponent(fullscreenSwitch);
@@ -103,7 +153,6 @@ public class OptionsScene extends Scene implements UIListener {
         speakerCarousel.initialize(Vector.Cartesian(0.525f, 0.40f), Vector.Cartesian(0.425f, 0.10f),
                 carouselAnimationFilePath, Alignment.Center, Alignment.Center, "SPEAKER", Alignment.Top,
                 carouselButtonAnimationFilePaths, 0.1f, Alignment.Center, new String[] {}, 0);
-        // Initialize control UI components
         controlsUI.initialize(this, 1, 1.0f, "Assets/Typefaces/Silkscreen.typeface", 4.0f, 0.35f);
         controlsUI.addComponent(backButton);
         controlsUI.addComponent(defaultsButton);
@@ -114,14 +163,17 @@ public class OptionsScene extends Scene implements UIListener {
                 buttonAnimationFilePaths, "DEFAULTS", Alignment.Center);
         saveButton.initialize(Vector.Cartesian(0.70f, 0.05f), Vector.Cartesian(0.25f, 0.10f), buttonAnimationFilePaths,
                 "SAVE", Alignment.Center);
-        // Initialize camera
         sparkCamera.initialize(App.Window.getDimensions().scalarMultiply(0.5f), 1.0f, Angle.Zero());
         return true;
     }
 
+    /**
+     * Enter the options scene from another scene
+     * @param lastScene Reference to the previous scene displayed by the application framework
+     * @return Whether the options scene was initialized successfully
+     */
     @Override
     public boolean enter(Scene lastScene) {
-        // Display current options
         int windowWidth = (int)App.Window.getDimensions().getX();
         int windowHeight = (int)App.Window.getDimensions().getY();
         resolutionCarousel.setValue(Integer.toString(windowWidth) + "x" + Integer.toString(windowHeight));
@@ -145,6 +197,10 @@ public class OptionsScene extends Scene implements UIListener {
         return true;
     }
 
+    /**
+     * Process user-input to the options scene
+     * @return Whether the application should continue running
+     */
     @Override
     public boolean processInput() {
         optionsUI.processInput();
@@ -152,6 +208,9 @@ public class OptionsScene extends Scene implements UIListener {
         return true;
     }
 
+    /**
+     * Draw the options scene's graphics
+     */
     @Override
     public void draw() {
         optionsUI.draw();
@@ -161,6 +220,10 @@ public class OptionsScene extends Scene implements UIListener {
         }
     }
 
+    /**
+     * Update the options scene's logic and UI components
+     * @param deltaFrames The target number of frames to have elapsed since the last update
+     */
     @Override
     public void update(float deltaFrames) {
         optionsUI.update(deltaFrames);
@@ -183,11 +246,20 @@ public class OptionsScene extends Scene implements UIListener {
                 + (int)(soundEffectsVolumeSlider.getValue() * 100.0f) + "%");
     }
 
+    /**
+     * Leave the options scene for another scene
+     * @param nextScene Reference to the next scene to be displayed by the application framework
+     * @return Whether the options scene was left successfully
+     */
     @Override
     public boolean leave(Scene nextScene) {
         return true;
     }
 
+    /**
+     * Free the options scene's memory
+     * @return Whether the options scene was destroyed successfully
+     */
     @Override
     protected boolean destroy() {
         optionsUI.destroy();
@@ -199,6 +271,12 @@ public class OptionsScene extends Scene implements UIListener {
         return true;
     }
 
+    /**
+     * Callback for user-interface component events on the options scene
+     * @param groupID The ID of the user-interface group the relevant component is in
+     * @param componentID The ID of the relevant component
+     * @param event The event identifier
+     */
     @Override
     public void componentEvent(int groupID, int componentID, UIEvent event) {
         if (groupID == controlsUI.getGroupID()) {
@@ -206,16 +284,17 @@ public class OptionsScene extends Scene implements UIListener {
                 if (componentID == backButton.getComponentID()) {
                     App.SetCurrentScene(AppTest.Title_Scene);
                 } else if (componentID == defaultsButton.getComponentID()) {
-                    resolutionCarousel.setValue("1280x720");
-                    fullscreenSwitch.setOn(false);
+                    resolutionCarousel.setValue((int)AppConfiguration.WindowDimensionsDefault.getX() + "x"
+                            + (int)AppConfiguration.WindowDimensionsDefault.getY());
+                    fullscreenSwitch.setOn(AppConfiguration.WindowFullscreenDefault);
                     try {
                         Monitor defaultMonitor = App.Window.getMonitors().getFirst();
                         monitorCarousel.setValue(defaultMonitor.getIndex() + ": " + defaultMonitor.getDescription());
                     } catch (NoSuchElementException _) {
                         App.Log.write(logSource, LogLevel.Error, "No monitors available");
                     }
-                    musicVolumeSlider.setValue(1.0f);
-                    soundEffectsVolumeSlider.setValue(1.0f);
+                    musicVolumeSlider.setValue(AppConfiguration.AudioMusicVolumeDefault);
+                    soundEffectsVolumeSlider.setValue(AppConfiguration.AudioSoundEffectsDefaultVolumeDefault);
                     try {
                         AudioDevice defaultSpeaker = App.Audio.getSpeakers().getFirst();
                         speakerCarousel.setValue(defaultSpeaker.getIndex() + ": " + defaultSpeaker.getName());
@@ -223,7 +302,6 @@ public class OptionsScene extends Scene implements UIListener {
                         App.Log.write(logSource, LogLevel.Error, "No speakers available");
                     }
                 } else if (componentID == saveButton.getComponentID()) {
-                    // Update and write configuration
                     Configuration configuration = App.Assets.getConfiguration(AppTest.Configuration_File_Path);
                     String[] resolutionStrs = resolutionCarousel.getValue().split("x");
                     if (resolutionStrs.length != 2) {
@@ -271,7 +349,6 @@ public class OptionsScene extends Scene implements UIListener {
                     }
                     configuration.setIntegerValue(AppConfiguration.AudioSpeakerIndex, speakerIndex);
                     App.Assets.writeConfiguration(configuration, AppTest.Configuration_File_Path);
-                    // Apply configuration
                     App.Window.setDimensions(configuration.getVectorValue(AppConfiguration.WindowDimensions));
                     App.Window.setMonitor(new Monitor(configuration.getIntegerValue(
                             AppConfiguration.WindowMonitorIndex)));

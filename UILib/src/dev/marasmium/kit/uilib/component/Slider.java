@@ -70,88 +70,6 @@ public class Slider extends UIComponent {
     protected float value = 0.0f;
 
     /**
-     * Initialize this slider's memory
-     * @param position The initial position of this slider in percent of the application's window dimensions
-     * @param dimensions The initial dimensions of this slider in percent of the application's window dimensions
-     * @param animationFilePaths This slider's unselected and selected animations
-     * @param labelText The text to appear in this slider's label
-     * @param labelAlignment The alignment for this slider's text label about its background
-     * @param cursorDimensions The initial dimensions of this slider's cursor/indicator in percent of its background's
-     *                         dimensions
-     * @param cursorAnimationFilePaths The unselected, selected, and pressed animations for this slider's cursor
-     * @param verticalCursorAlignment The vertical alignment for this slider's cursor on its background
-     * @param minimumValue The minimum value for this slider to represent
-     * @param maximumValue The maximum value for this slider to represent
-     * @param valueCount The number of discrete, evenly-spaced values for this slider's cursor to snap to
-     * @return Whether all parameters were valid and this slider was initialized successfully
-     */
-    public boolean initialize(Vector position, Vector dimensions, String[] animationFilePaths, String labelText,
-                              Alignment labelAlignment, Vector cursorDimensions, String[] cursorAnimationFilePaths,
-                              Alignment verticalCursorAlignment, float minimumValue, float maximumValue,
-                              int valueCount) {
-        if (parent == null) {
-            return false;
-        }
-        if (animationFilePaths == null) {
-            return false;
-        }
-        if (animationFilePaths.length != 2) {
-            return false;
-        }
-        setEnabled(true);
-        setVisible(true);
-        if (!sprite.initialize(Vector.Zero(), parent.getBaseDepth(), Vector.Zero(), Angle.Zero(),
-                animationFilePaths[0])) {
-            return false;
-        }
-        sprite.setAnimationFrame(sprite.getAnimationFrameCount() - 1);
-        if (!setUnselectedAnimationFilePath(animationFilePaths[0])) {
-            return false;
-        }
-        if (!setSelectedAnimationFilePath(animationFilePaths[1])) {
-            return false;
-        }
-        if (!addComponent(label)) {
-            return false;
-        }
-        if (!label.initialize(Vector.Zero(), Vector.Zero(), "", labelText, Vector.Zero(), Alignment.Center,
-                Alignment.Center)) {
-            return false;
-        }
-        if (!addComponent(cursor)) {
-            return false;
-        }
-        if (!cursor.initialize(Vector.Zero(), Vector.Zero(), cursorAnimationFilePaths, "", Alignment.Center)) {
-            return false;
-        }
-        if (!setCursorDimensions(cursorDimensions)) {
-            return false;
-        }
-        setMinimumValue(minimumValue);
-        setMaximumValue(maximumValue);
-        if (!setValueCount(valueCount)) {
-            return false;
-        }
-        this.verticalCursorAlignment = verticalCursorAlignment;
-        if (!setPosition(position)) {
-            return false;
-        }
-        if (!setDimensions(dimensions)) {
-            return false;
-        }
-        if (!setVerticalCursorAlignment(verticalCursorAlignment)) {
-            return false;
-        }
-        if (!setLabelAlignment(labelAlignment)) {
-            return false;
-        }
-        if (!setValue(minimumValue)) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * Process user-input to this slider
      */
     @Override
@@ -338,6 +256,88 @@ public class Slider extends UIComponent {
             return true;
         }
         return setPosition(getPosition().clone());
+    }
+
+    /**
+     * Initialize this slider's memory
+     * @param position The initial position of this slider in percent of the application's window dimensions
+     * @param dimensions The initial dimensions of this slider in percent of the application's window dimensions
+     * @param animationFilePaths This slider's unselected and selected animations
+     * @param labelText The text to appear in this slider's label
+     * @param labelAlignment The alignment for this slider's text label about its background
+     * @param cursorDimensions The initial dimensions of this slider's cursor/indicator in percent of its background's
+     *                         dimensions
+     * @param cursorAnimationFilePaths The unselected, selected, and pressed animations for this slider's cursor
+     * @param verticalCursorAlignment The vertical alignment for this slider's cursor on its background
+     * @param minimumValue The minimum value for this slider to represent
+     * @param maximumValue The maximum value for this slider to represent
+     * @param valueCount The number of discrete, evenly-spaced values for this slider's cursor to snap to
+     * @return Whether all parameters were valid and this slider was initialized successfully
+     */
+    public boolean initialize(Vector position, Vector dimensions, String[] animationFilePaths, String labelText,
+                              Alignment labelAlignment, Vector cursorDimensions, String[] cursorAnimationFilePaths,
+                              Alignment verticalCursorAlignment, float minimumValue, float maximumValue,
+                              int valueCount) {
+        if (parent == null) {
+            return false;
+        }
+        if (animationFilePaths == null) {
+            return false;
+        }
+        if (animationFilePaths.length != 2) {
+            return false;
+        }
+        setEnabled(true);
+        setVisible(true);
+        if (!sprite.initialize(Vector.Zero(), parent.getBaseDepth(), Vector.Zero(), Angle.Zero(),
+                animationFilePaths[0])) {
+            return false;
+        }
+        sprite.setAnimationFrame(sprite.getAnimationFrameCount() - 1);
+        if (!setUnselectedAnimationFilePath(animationFilePaths[0])) {
+            return false;
+        }
+        if (!setSelectedAnimationFilePath(animationFilePaths[1])) {
+            return false;
+        }
+        if (!addComponent(label)) {
+            return false;
+        }
+        if (!label.initialize(Vector.Zero(), Vector.Zero(), "", labelText, Vector.Zero(), Alignment.Center,
+                Alignment.Center)) {
+            return false;
+        }
+        if (!addComponent(cursor)) {
+            return false;
+        }
+        if (!cursor.initialize(Vector.Zero(), Vector.Zero(), cursorAnimationFilePaths, "", Alignment.Center)) {
+            return false;
+        }
+        if (!setCursorDimensions(cursorDimensions)) {
+            return false;
+        }
+        setMinimumValue(minimumValue);
+        setMaximumValue(maximumValue);
+        if (!setValueCount(valueCount)) {
+            return false;
+        }
+        this.verticalCursorAlignment = verticalCursorAlignment;
+        if (!setPosition(position)) {
+            return false;
+        }
+        if (!setDimensions(dimensions)) {
+            return false;
+        }
+        if (!setVerticalCursorAlignment(verticalCursorAlignment)) {
+            return false;
+        }
+        if (!setLabelAlignment(labelAlignment)) {
+            return false;
+        }
+        if (!setValue(minimumValue)) {
+            return false;
+        }
+        return true;
     }
 
     /**

@@ -270,6 +270,64 @@ public class Line implements Serializable, Cloneable {
     }
 
     /**
+     * Test whether this line is equal to another object (must be an instance of Line)
+     * @param o The reference object with which to compare.
+     * @return Whether the given line has the same slope, x-intercept, and y-intercept as this one
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Line line)) {
+            return false;
+        }
+        if (isHorizontal() != line.isHorizontal()) {
+            return false;
+        }
+        if (isVertical() != line.isVertical()) {
+            return false;
+        }
+        if (isHorizontal()) {
+            return Math.abs(yIntercept - line.yIntercept) < Constants.Epsilon;
+        } else if (isVertical()) {
+            return Math.abs(xIntercept - line.xIntercept) < Constants.Epsilon;
+        }
+        return Math.abs(slope - line.slope) < Constants.Epsilon
+                && Math.abs(xIntercept - line.xIntercept) < Constants.Epsilon
+                && Math.abs(yIntercept - line.yIntercept) < Constants.Epsilon;
+    }
+
+    /**
+     * Convert this line to a string representation
+     * @return The string representation of the equation of this line
+     */
+    @Override
+    public String toString() {
+        if (isHorizontal()) {
+            return "line(y = " + yIntercept + ")";
+        } else if (isVertical()) {
+            return "line(x = " + xIntercept + ")";
+        }
+        return "line(y = " + slope + " x + " + yIntercept + ")";
+    }
+
+    /**
+     * Make a copy of this line with the same slope and x and y-intercepts
+     * @return A copy of this line
+     */
+    @Override
+    public Line clone() {
+        Line newLine;
+        try {
+            newLine = (Line)super.clone();
+        } catch (CloneNotSupportedException _) {
+            return null;
+        }
+        newLine.slope = slope;
+        newLine.xIntercept = xIntercept;
+        newLine.yIntercept = yIntercept;
+        return newLine;
+    }
+
+    /**
      * Compute the line with a given horizontal and vertical translation from this line
      * @param translation The horizontal and vertical translation to apply
      * @return The translated line
@@ -468,64 +526,6 @@ public class Line implements Serializable, Cloneable {
             return null;
         }
         return data;
-    }
-
-    /**
-     * Test whether this line is equal to another object (must be an instance of Line)
-     * @param o The reference object with which to compare.
-     * @return Whether the given line has the same slope, x-intercept, and y-intercept as this one
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Line line)) {
-            return false;
-        }
-        if (isHorizontal() != line.isHorizontal()) {
-            return false;
-        }
-        if (isVertical() != line.isVertical()) {
-            return false;
-        }
-        if (isHorizontal()) {
-            return Math.abs(yIntercept - line.yIntercept) < Constants.Epsilon;
-        } else if (isVertical()) {
-            return Math.abs(xIntercept - line.xIntercept) < Constants.Epsilon;
-        }
-        return Math.abs(slope - line.slope) < Constants.Epsilon
-                && Math.abs(xIntercept - line.xIntercept) < Constants.Epsilon
-                && Math.abs(yIntercept - line.yIntercept) < Constants.Epsilon;
-    }
-
-    /**
-     * Convert this line to a string representation
-     * @return The string representation of the equation of this line
-     */
-    @Override
-    public String toString() {
-        if (isHorizontal()) {
-            return "line(y = " + yIntercept + ")";
-        } else if (isVertical()) {
-            return "line(x = " + xIntercept + ")";
-        }
-        return "line(y = " + slope + " x + " + yIntercept + ")";
-    }
-
-    /**
-     * Make a copy of this line with the same slope and x and y-intercepts
-     * @return A copy of this line
-     */
-    @Override
-    public Line clone() {
-        Line newLine;
-        try {
-            newLine = (Line)super.clone();
-        } catch (CloneNotSupportedException _) {
-            return null;
-        }
-        newLine.slope = slope;
-        newLine.xIntercept = xIntercept;
-        newLine.yIntercept = yIntercept;
-        return newLine;
     }
 
     /**

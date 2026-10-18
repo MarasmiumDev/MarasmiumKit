@@ -24,38 +24,6 @@ public class Switch extends Button {
     protected boolean on = false;
 
     /**
-     * Initialize this switch's memory
-     * @param position The initial position for this switch in percent of the application's window dimensions
-     * @param dimensions The initial dimensions for this switch in percent of the application's window dimensions
-     * @param animationFilePaths The animations to play when this switch is toggled off and on
-     * @param labelText The text to appear on this switch's label
-     * @param labelAlignment The alignment for this switch's label about its background
-     * @return Whether all parameters were valid and this switch was initialized successfully
-     */
-    public boolean initialize(Vector position, Vector dimensions, String[] animationFilePaths, String labelText,
-                              Alignment labelAlignment) {
-        if (animationFilePaths == null) {
-            return false;
-        }
-        if (animationFilePaths.length != 2) {
-            return false;
-        }
-        if (!super.initialize(position, dimensions, new String[] { "", "", "" }, labelText, labelAlignment)) {
-            return false;
-        }
-        if (!setOffAnimationFilePath(animationFilePaths[0])) {
-            return false;
-        }
-        if (!setOnAnimationFilePath(animationFilePaths[1])) {
-            return false;
-        }
-        sprite.setAnimationFilePath(animationFilePaths[0]);
-        sprite.setAnimationFrame(sprite.getAnimationFrameCount() - 1);
-        setOn(false);
-        return true;
-    }
-
-    /**
      * Process user-input to this switch
      */
     @Override
@@ -166,6 +134,38 @@ public class Switch extends Button {
     @Override
     public boolean setSelected(boolean selected) {
         return false;
+    }
+
+    /**
+     * Initialize this switch's memory
+     * @param position The initial position for this switch in percent of the application's window dimensions
+     * @param dimensions The initial dimensions for this switch in percent of the application's window dimensions
+     * @param animationFilePaths The animations to play when this switch is toggled off and on
+     * @param labelText The text to appear on this switch's label
+     * @param labelAlignment The alignment for this switch's label about its background
+     * @return Whether all parameters were valid and this switch was initialized successfully
+     */
+    public boolean initialize(Vector position, Vector dimensions, String[] animationFilePaths, String labelText,
+                              Alignment labelAlignment) {
+        if (animationFilePaths == null) {
+            return false;
+        }
+        if (animationFilePaths.length != 2) {
+            return false;
+        }
+        if (!super.initialize(position, dimensions, new String[] { "", "", "" }, labelText, labelAlignment)) {
+            return false;
+        }
+        if (!setOffAnimationFilePath(animationFilePaths[0])) {
+            return false;
+        }
+        if (!setOnAnimationFilePath(animationFilePaths[1])) {
+            return false;
+        }
+        sprite.setAnimationFilePath(animationFilePaths[0]);
+        sprite.setAnimationFrame(sprite.getAnimationFrameCount() - 1);
+        setOn(false);
+        return true;
     }
 
     /**

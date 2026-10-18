@@ -34,54 +34,6 @@ public class InputManager implements InputListener {
     private final ArrayList<InputListener> listeners = new ArrayList<>();
 
     /**
-     * Initialize the user-input management system and its subsystems
-     * @return Whether the user-input management system's subsystems was initialized successfully
-     */
-    public boolean initialize() {
-        // Initialize the keyboard manager subsystem
-        if (!keyboard.initialize()) {
-            App.Log.write(LogSource.Input, LogLevel.Error, "Failed to initialize keyboard user-input manager");
-            return false;
-        }
-        // Initialize the mouse manager subsystem
-        if (!mouse.initialize()) {
-            App.Log.write(LogSource.Input, LogLevel.Error, "Failed to initialize mouse user-input manager");
-            return false;
-        }
-        App.Log.write(LogSource.Input, LogLevel.Info, "Initialized user-input management system");
-        return true;
-    }
-
-    /**
-     * Update the user-input management system's subsystems
-     */
-    public void update() {
-        keyboard.update();
-        mouse.update();
-    }
-
-    /**
-     * Free the user-input management system's memory and destroy its subsystems
-     * @return Whether the user-input management system was destroyed successfully
-     */
-    public boolean destroy() {
-        App.Log.write(LogSource.Input, LogLevel.Info, "Destroying user-input management system");
-        boolean success = true;
-        listeners.clear();
-        // Free the mouse manager subsystem
-        if (!mouse.destroy()) {
-            App.Log.write(LogSource.Input, LogLevel.Warning, "Failed to destroy mouse user-input manager");
-            success = false;
-        }
-        // Free the keyboard manager subsystem
-        if (!keyboard.destroy()) {
-            App.Log.write(LogSource.Input, LogLevel.Warning, "Failed to destroy keyboard user-input manager");
-            success = false;
-        }
-        return success;
-    }
-
-    /**
      * Callback for a key pressed on the keyboard
      * @param key The pressed key
      */
@@ -175,6 +127,50 @@ public class InputManager implements InputListener {
         for (InputListener listener : listeners) {
             listener.mouseScrollMoved(movement);
         }
+    }
+
+    /**
+     * Initialize the user-input management system and its subsystems
+     * @return Whether the user-input management system's subsystems was initialized successfully
+     */
+    public boolean initialize() {
+        if (!keyboard.initialize()) {
+            App.Log.write(LogSource.Input, LogLevel.Error, "Failed to initialize keyboard user-input manager");
+            return false;
+        }
+        if (!mouse.initialize()) {
+            App.Log.write(LogSource.Input, LogLevel.Error, "Failed to initialize mouse user-input manager");
+            return false;
+        }
+        App.Log.write(LogSource.Input, LogLevel.Info, "Initialized user-input management system");
+        return true;
+    }
+
+    /**
+     * Update the user-input management system's subsystems
+     */
+    public void update() {
+        keyboard.update();
+        mouse.update();
+    }
+
+    /**
+     * Free the user-input management system's memory and destroy its subsystems
+     * @return Whether the user-input management system was destroyed successfully
+     */
+    public boolean destroy() {
+        App.Log.write(LogSource.Input, LogLevel.Info, "Destroying user-input management system");
+        boolean success = true;
+        listeners.clear();
+        if (!mouse.destroy()) {
+            App.Log.write(LogSource.Input, LogLevel.Warning, "Failed to destroy mouse user-input manager");
+            success = false;
+        }
+        if (!keyboard.destroy()) {
+            App.Log.write(LogSource.Input, LogLevel.Warning, "Failed to destroy keyboard user-input manager");
+            success = false;
+        }
+        return success;
     }
 
     /**

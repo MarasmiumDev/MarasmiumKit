@@ -90,93 +90,6 @@ public class TextBox extends Label {
     private float repeatStartTimer = 0.0f;
 
     /**
-     * Initialize this text box's memory
-     * @param position The initial position for this text box in percent of the application's window dimensions
-     * @param dimensions The initial dimensions for this text box in percent of the application's window dimensions
-     * @param animationFilePaths The unselected and selected animations for this text box
-     * @param labelText The text to appear in this text box's label
-     * @param labelAlignment The alignment of this text box's text label abouts its background
-     * @param cursorDimensions The dimensions of this text box's cursor in percent of its background's dimensions
-     * @param cursorAnimationFilePath The animation for this text box's cursor
-     * @param verticalCursorAlignment The vertical alignment of this text box's cursor within its background
-     * @param allowedCharacters The set of characters allowed to be typed in this text box
-     * @param maximumCharacters The maximum number of characters allowed to be typed in this text box
-     * @param targetRPS The target number of repeated inputs per second when this text box's controls are held down
-     * @param repeatStartTime The time to wait before starting to repeat inputs when controls are held down in seconds
-     * @return Whether all given parameters were valid and this text box was initialized successfully
-     */
-    public boolean initialize(Vector position, Vector dimensions, String[] animationFilePaths, String labelText,
-                              Alignment labelAlignment, Vector cursorDimensions, String cursorAnimationFilePath,
-                              Alignment verticalCursorAlignment, String allowedCharacters, int maximumCharacters,
-                              int targetRPS, float repeatStartTime) {
-        if (parent == null) {
-            return false;
-        }
-        if (animationFilePaths == null) {
-            return false;
-        }
-        if (animationFilePaths.length != 2) {
-            return false;
-        }
-        this.verticalCursorAlignment = verticalCursorAlignment;
-        if (!cursor.initialize(Vector.Zero(), parent.getBaseDepth(), Vector.Zero(), Angle.Zero(),
-                cursorAnimationFilePath)) {
-            return false;
-        }
-        cursor.playAnimation();
-        if (!super.initialize(position, dimensions, "", "", Vector.Zero(), null, verticalCursorAlignment)) {
-            return false;
-        }
-        sprite.setAnimationFilePath(animationFilePaths[0]);
-        sprite.setAnimationFrame(sprite.getAnimationFrameCount() - 1);
-        if (!setUnselectedAnimationFilePath(animationFilePaths[0])) {
-            return false;
-        }
-        if (!setSelectedAnimationFilePath(animationFilePaths[1])) {
-            return false;
-        }
-        if (!addComponent(label)) {
-            return false;
-        }
-        if (!label.initialize(Vector.Zero(), Vector.Zero(), "", labelText, Vector.Zero(), Alignment.Center,
-                Alignment.Center)) {
-            return false;
-        }
-        if (!setAllowedCharacters(allowedCharacters)) {
-            return false;
-        }
-        if (!setMaximumCharacters(maximumCharacters)) {
-            return false;
-        }
-        if (!setPosition(position)) {
-            return false;
-        }
-        if (!setDimensions(dimensions)) {
-            return false;
-        }
-        if (!setCursorDimensions(cursorDimensions)) {
-            return false;
-        }
-        if (!setVerticalCursorAlignment(verticalCursorAlignment)) {
-            return false;
-        }
-        if (!setLabelAlignment(labelAlignment)) {
-            return false;
-        }
-        textX = sprite.getPosition().getX();
-        if (!setCursorIndex(0)) {
-            return false;
-        }
-        if (!setTargetRPS(targetRPS)) {
-            return false;
-        }
-        if (!setRepeatStartTime(repeatStartTime)) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * Process user-input to this text box
      */
     @Override
@@ -200,7 +113,6 @@ public class TextBox extends Label {
             return;
         }
         if (selected) {
-            // Text controls
             boolean textUpdated = false;
             if (App.Input.keyboard.isKeyDown(KeyboardKey.Left)) {
                 if (!repeatStarting) {
@@ -300,7 +212,6 @@ public class TextBox extends Label {
                     }
                 }
             }
-            // Cursor position control
             if (App.Input.mouse.isButtonDown(MouseButton.Left) && !text.isEmpty()) {
                 Typeface typeface = App.Assets.getTypeface(parent.getTypefaceFilePath());
                 float cursorX = App.Input.mouse.getCursorPosition(parent.getCamera()).getX();
@@ -352,12 +263,10 @@ public class TextBox extends Label {
      */
     @Override
     public void update(float deltaFrames) {
-        // Update animations
         super.update(deltaFrames);
         label.update(deltaFrames);
         cursor.update(deltaFrames);
         repeatTimer += deltaFrames;
-        // Update input repeat timers
         if (repeatTimer > ((float)App.Graphics.getTargetFPS() * (float)targetRPS)) {
             repeatTimer = 0.0f;
         }
@@ -367,7 +276,6 @@ public class TextBox extends Label {
                 repeatStartTimer = 0.0f;
             }
         }
-        // Update cursor positioning
         if (parent == null || cursor.getPosition() == null || cursor.getDimensions() == null
                 || sprite.getPosition() == null || sprite.getDimensions() == null) {
             return;
@@ -533,6 +441,93 @@ public class TextBox extends Label {
         }
         this.text = text;
         setCursorIndex(cursorIndex);
+        return true;
+    }
+
+    /**
+     * Initialize this text box's memory
+     * @param position The initial position for this text box in percent of the application's window dimensions
+     * @param dimensions The initial dimensions for this text box in percent of the application's window dimensions
+     * @param animationFilePaths The unselected and selected animations for this text box
+     * @param labelText The text to appear in this text box's label
+     * @param labelAlignment The alignment of this text box's text label abouts its background
+     * @param cursorDimensions The dimensions of this text box's cursor in percent of its background's dimensions
+     * @param cursorAnimationFilePath The animation for this text box's cursor
+     * @param verticalCursorAlignment The vertical alignment of this text box's cursor within its background
+     * @param allowedCharacters The set of characters allowed to be typed in this text box
+     * @param maximumCharacters The maximum number of characters allowed to be typed in this text box
+     * @param targetRPS The target number of repeated inputs per second when this text box's controls are held down
+     * @param repeatStartTime The time to wait before starting to repeat inputs when controls are held down in seconds
+     * @return Whether all given parameters were valid and this text box was initialized successfully
+     */
+    public boolean initialize(Vector position, Vector dimensions, String[] animationFilePaths, String labelText,
+                              Alignment labelAlignment, Vector cursorDimensions, String cursorAnimationFilePath,
+                              Alignment verticalCursorAlignment, String allowedCharacters, int maximumCharacters,
+                              int targetRPS, float repeatStartTime) {
+        if (parent == null) {
+            return false;
+        }
+        if (animationFilePaths == null) {
+            return false;
+        }
+        if (animationFilePaths.length != 2) {
+            return false;
+        }
+        this.verticalCursorAlignment = verticalCursorAlignment;
+        if (!cursor.initialize(Vector.Zero(), parent.getBaseDepth(), Vector.Zero(), Angle.Zero(),
+                cursorAnimationFilePath)) {
+            return false;
+        }
+        cursor.playAnimation();
+        if (!super.initialize(position, dimensions, "", "", Vector.Zero(), null, verticalCursorAlignment)) {
+            return false;
+        }
+        sprite.setAnimationFilePath(animationFilePaths[0]);
+        sprite.setAnimationFrame(sprite.getAnimationFrameCount() - 1);
+        if (!setUnselectedAnimationFilePath(animationFilePaths[0])) {
+            return false;
+        }
+        if (!setSelectedAnimationFilePath(animationFilePaths[1])) {
+            return false;
+        }
+        if (!addComponent(label)) {
+            return false;
+        }
+        if (!label.initialize(Vector.Zero(), Vector.Zero(), "", labelText, Vector.Zero(), Alignment.Center,
+                Alignment.Center)) {
+            return false;
+        }
+        if (!setAllowedCharacters(allowedCharacters)) {
+            return false;
+        }
+        if (!setMaximumCharacters(maximumCharacters)) {
+            return false;
+        }
+        if (!setPosition(position)) {
+            return false;
+        }
+        if (!setDimensions(dimensions)) {
+            return false;
+        }
+        if (!setCursorDimensions(cursorDimensions)) {
+            return false;
+        }
+        if (!setVerticalCursorAlignment(verticalCursorAlignment)) {
+            return false;
+        }
+        if (!setLabelAlignment(labelAlignment)) {
+            return false;
+        }
+        textX = sprite.getPosition().getX();
+        if (!setCursorIndex(0)) {
+            return false;
+        }
+        if (!setTargetRPS(targetRPS)) {
+            return false;
+        }
+        if (!setRepeatStartTime(repeatStartTime)) {
+            return false;
+        }
         return true;
     }
 

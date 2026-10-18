@@ -32,37 +32,6 @@ public class Glyph implements Cloneable {
     private Vector offsets = null;
 
     /**
-     * Initialize this glyph with an animation frame index, horizontal advance, and vertical offset
-     * @param animationFrame The frame index of this glyph's image in the typeface's animation
-     * @param dimensions The dimensions of this glyph in pixels
-     * @param advances The horizontal and vertical advances of this glyph
-     * @param offsets The horizontal and vertical offsets of this glyph
-     * @return Whether all parameters were valid and this glyph was initialized successfully
-     */
-    public boolean initialize(int animationFrame, Vector dimensions, Vector advances, Vector offsets) {
-        if (!setAnimationFrame(animationFrame)) {
-            return false;
-        }
-        if (!setDimensions(dimensions)) {
-            return false;
-        }
-        if (!setAdvances(advances)) {
-            return false;
-        }
-        return setOffsets(offsets);
-    }
-
-    /**
-     * Free this glyph's memory
-     */
-    public void destroy() {
-        animationFrame = 0;
-        dimensions = null;
-        advances = null;
-        offsets = null;
-    }
-
-    /**
      * Get a string representing this glyph
      * @return This glyph's string representation
      */
@@ -98,6 +67,37 @@ public class Glyph implements Cloneable {
             glyph.offsets = offsets.clone();
         }
         return glyph;
+    }
+
+    /**
+     * Initialize this glyph with an animation frame index, horizontal advance, and vertical offset
+     * @param animationFrame The frame index of this glyph's image in the typeface's animation
+     * @param dimensions The dimensions of this glyph in pixels
+     * @param advances The horizontal and vertical advances of this glyph
+     * @param offsets The horizontal and vertical offsets of this glyph
+     * @return Whether all parameters were valid and this glyph was initialized successfully
+     */
+    public boolean initialize(int animationFrame, Vector dimensions, Vector advances, Vector offsets) {
+        if (!setAnimationFrame(animationFrame)) {
+            return false;
+        }
+        if (!setDimensions(dimensions)) {
+            return false;
+        }
+        if (!setAdvances(advances)) {
+            return false;
+        }
+        return setOffsets(offsets);
+    }
+
+    /**
+     * Free this glyph's memory
+     */
+    public void destroy() {
+        animationFrame = 0;
+        dimensions = null;
+        advances = null;
+        offsets = null;
     }
 
     /**

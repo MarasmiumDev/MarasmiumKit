@@ -48,12 +48,10 @@ public class AudioManager {
             App.Log.write(LogSource.Audio, LogLevel.Error, "Failed to set speaker");
             return false;
         }
-        // Initialize the sound effect manager subsystem
         if (!soundEffects.initialize(soundEffectsDefaultVolume)) {
             App.Log.write(LogSource.Audio, LogLevel.Error, "Failed to initialize sound effects audio subsystem");
             return false;
         }
-        // Initialize the music manager subsystem
         if (!music.initialize(musicVolume)) {
             App.Log.write(LogSource.Audio, LogLevel.Error, "Failed to initialize music audio subsystem");
             return false;
@@ -76,17 +74,14 @@ public class AudioManager {
     public boolean destroy() {
         App.Log.write(LogSource.Audio, LogLevel.Info, "Destroying audio system");
         boolean success = true;
-        // Free the speaker
         if (speaker != null) {
             speaker.destroy();
             speaker = null;
         }
-        // Free the sound effect manager subsystem
         if (!soundEffects.destroy()) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to destroy sound effect manager");
             success = false;
         }
-        // Free the music manager subsystem
         if (!music.destroy()) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to destroy music manager");
             success = false;
@@ -99,11 +94,9 @@ public class AudioManager {
      * @return The set of available speakers
      */
     public ArrayList<AudioDevice> getSpeakers() {
-        // Get mixers in local audio environment
         Mixer.Info[] mixers = AudioSystem.getMixerInfo();
         ArrayList<AudioDevice> speakers = new ArrayList<>();
         for (int index = 0; index < mixers.length; index++) {
-            // Ensure mixer is available for audio output
             DataLine.Info output = new DataLine.Info(SourceDataLine.class, null);
             Mixer mixer;
             try {
@@ -115,7 +108,6 @@ public class AudioManager {
             if (!mixer.isLineSupported(output)) {
                 continue;
             }
-            // Retrieve speaker information
             speakers.add(new AudioDevice(index));
         }
         return speakers;
@@ -139,7 +131,6 @@ public class AudioManager {
             App.Log.write(LogSource.Audio, LogLevel.Error, "No speakers are available");
             return false;
         }
-        // Ensure speaker availability
         if (speaker == null) {
             App.Log.write(LogSource.Audio, LogLevel.Warning, "No speaker provided, setting default");
             this.speaker = getSpeakers().getFirst();
@@ -152,7 +143,6 @@ public class AudioManager {
             return true;
         }
         boolean success = true;
-        // Update speaker and restart sound effects and music
         if (this.speaker != null) {
             this.speaker.destroy();
         }

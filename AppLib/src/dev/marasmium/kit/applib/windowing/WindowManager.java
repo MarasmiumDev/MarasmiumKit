@@ -95,7 +95,6 @@ public class WindowManager {
      */
     public boolean initialize(String title, Vector dimensions, Monitor monitor, boolean fullscreen,
                               boolean mouseCursorVisible) {
-        // Generate Java AWT window frame
         try {
             SwingUtilities.invokeAndWait(() -> {
                 frame = new Frame();
@@ -138,7 +137,6 @@ public class WindowManager {
             App.Log.write(LogSource.Window, LogLevel.Error, "Failed to initialize AWT frame");
             return false;
         }
-        // Set initial window parameters
         if (!setTitle(title)) {
             App.Log.write(LogSource.Window, LogLevel.Error, "Failed to set window title");
             return false;
@@ -157,7 +155,6 @@ public class WindowManager {
             return false;
         }
         closeRequested = false;
-        // Acquire OpenGL context
         App.Log.write(LogSource.Window, LogLevel.Info, "Initialized windowing system");
         return true;
     }
@@ -169,14 +166,12 @@ public class WindowManager {
     public boolean destroy() {
         boolean success = true;
         App.Log.write(LogSource.Window, LogLevel.Info, "Destroying windowing system");
-        // Free window parameter memory
         title = null;
         fullscreen = false;
         if (monitor != null) {
             monitor.destroy();
             monitor = null;
         }
-        // Close the window
         if (canvas != null) {
             canvas.destroy();
             canvas = null;
@@ -237,14 +232,12 @@ public class WindowManager {
             App.Log.write(LogSource.Window, LogLevel.Warning, "No dimensions provided");
             return false;
         }
-        // Update windowed mode dimensions
         windowedDimensions.setX(dimensions.getX());
         windowedDimensions.setY(dimensions.getY());
         if (fullscreen) {
             App.Log.write(LogSource.Window, LogLevel.Warning, "Can't directly set dimensions in fullscreen mode");
             return true;
         }
-        // Set current window dimensions (in windowed mode)
         try {
             SwingUtilities.invokeAndWait(() -> {
                 canvas.setPreferredSize(new Dimension((int) dimensions.getX(), (int) dimensions.getY()));
@@ -331,7 +324,6 @@ public class WindowManager {
      * @return Whether the window switched modes (if necessary) successfully
      */
     public boolean setFullscreen(boolean fullscreen) {
-        // Retrieve and validate monitor
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice[] gds;
         try {
@@ -345,7 +337,6 @@ public class WindowManager {
             App.Log.write(LogSource.Window, LogLevel.Error, "Fullscreen not supported on current monitor");
             return false;
         }
-        // Set fullscreen mode
         if (fullscreen && !this.fullscreen) {
             Vector windowedDimensions = this.windowedDimensions.clone();
             setDimensions(Vector.Cartesian(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight()));

@@ -56,7 +56,6 @@ public class LogManager {
      */
     public boolean initialize(String timestampFormat, boolean consoleOutputEnabled, boolean outputFileEnabled,
                               String outputFilePath) {
-        // Initialize memory
         if (!setTimestampFormat(timestampFormat)) {
             return false;
         }
@@ -80,7 +79,6 @@ public class LogManager {
             return;
         }
         logLock.lock();
-        // Compile message data
         StringBuilder message = new StringBuilder(getTimestamp() + ": [" + source + "] [" + level + "] ");
         for (Object o : data) {
             if (o != null) {
@@ -90,7 +88,6 @@ public class LogManager {
             }
         }
         message.append("\n");
-        // Print to the console and/or output file
         if (consoleOutputEnabled) {
             System.out.print(message);
         }
@@ -147,13 +144,11 @@ public class LogManager {
     public boolean destroy() {
         App.Log.write(LogSource.Log, LogLevel.Info, "Destroying logging system");
         boolean success = true;
-        // Reset memory
         timestampFormat = "";
         consoleOutputEnabled = false;
         outputFileEnabled = false;
         outputFilePath = "";
         if (outputFileWriter != null) {
-            // Close the still-open output file
             try {
                 outputFileWriter.flush();
                 outputFileWriter.close();
@@ -174,13 +169,11 @@ public class LogManager {
             return "";
         }
         DateTimeFormatter formatter;
-        // Use the current timestamp format if valid
         try {
             formatter = DateTimeFormatter.ofPattern(timestampFormat);
         } catch (IllegalArgumentException _) {
             formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
         }
-        // Test if the format can be used on this system
         String timestamp;
         try {
             timestamp = formatter.format(LocalDateTime.now());
@@ -210,13 +203,11 @@ public class LogManager {
         if (timestampFormat == null) {
             return false;
         }
-        // Test whether the new format is valid
         try {
             DateTimeFormatter.ofPattern(timestampFormat);
         } catch (IllegalArgumentException _) {
             return false;
         }
-        // Test whether the new format can be used on this system
         String current = this.timestampFormat;
         this.timestampFormat = timestampFormat;
         if (getTimestamp().isEmpty()) {
@@ -280,7 +271,6 @@ public class LogManager {
         }
         this.outputFilePath = outputFilePath;
         boolean success = true;
-        // Close the old output file
         if (outputFileWriter != null) {
             try {
                 outputFileWriter.flush();
@@ -290,7 +280,6 @@ public class LogManager {
             }
             outputFileWriter = null;
         }
-        // Open a new output file if one was given
         if (outputFilePath.isEmpty()) {
             return success;
         }

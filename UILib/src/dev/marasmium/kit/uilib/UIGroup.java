@@ -73,6 +73,87 @@ public class UIGroup implements UIListener {
     private Vector windowDimensions = null;
 
     /**
+     * Pass a user-interface component event to this group's parent user-interface listener
+     * @param groupID The ID of the user-interface group the relevant component is in
+     * @param componentID The ID of the relevant component
+     * @param event The event identifier
+     */
+    @Override
+    public void componentEvent(int groupID, int componentID, UIEvent event) {
+        if (parent == null) {
+            return;
+        }
+        if (event == null) {
+            return;
+        }
+        parent.componentEvent(groupID, componentID, event);
+    }
+
+    /**
+     * Get the parent user-interface listener of this group
+     * @return This group's parent
+     */
+    @Override
+    public UIListener getParent() {
+        return parent;
+    }
+
+    /**
+     * Get the smallest depth which this group's user-interface components are drawn at
+     * @return This group's base depth
+     */
+    @Override
+    public float getBaseDepth() {
+        return baseDepth;
+    }
+
+    /**
+     * Get the typeface text is drawn in on this group's user-interface components
+     * @return This group's typeface
+     */
+    @Override
+    public String getTypefaceFilePath() {
+        return typefaceFilePath;
+    }
+
+    /**
+     * Get the size text is drawn in on this group's user-interface components in percent of the typeface's original
+     * size on the framework's default window size
+     * @return This group's text size
+     */
+    @Override
+    public float getTextSize() {
+        return textSize;
+    }
+
+    /**
+     * Get the padding placed around text drawn on this group's user-interface components in pixels
+     * @return This group's text padding
+     */
+    @Override
+    public float getTextPadding() {
+        return textPadding;
+    }
+
+    /**
+     * Get the group's ID
+     * @return This group's ID
+     */
+    @Override
+    public int getGroupID() {
+        return groupID;
+    }
+
+    /**
+     * Get the camera used to draw this group's user-interface components
+     * @return This group's camera
+     */
+    @Override
+    public Camera getCamera() {
+        return camera;
+    }
+
+    /**
      * Initialize this user-interface group's memory
      * @param parent The parent user-interface listener for this group
      * @param groupID The ID for this group
@@ -208,87 +289,6 @@ public class UIGroup implements UIListener {
             }
         }
         return true;
-    }
-
-    /**
-     * Pass a user-interface component event to this group's parent user-interface listener
-     * @param groupID The ID of the user-interface group the relevant component is in
-     * @param componentID The ID of the relevant component
-     * @param event The event identifier
-     */
-    @Override
-    public void componentEvent(int groupID, int componentID, UIEvent event) {
-        if (parent == null) {
-            return;
-        }
-        if (event == null) {
-            return;
-        }
-        parent.componentEvent(groupID, componentID, event);
-    }
-
-    /**
-     * Get the parent user-interface listener of this group
-     * @return This group's parent
-     */
-    @Override
-    public UIListener getParent() {
-        return parent;
-    }
-
-    /**
-     * Get the smallest depth which this group's user-interface components are drawn at
-     * @return This group's base depth
-     */
-    @Override
-    public float getBaseDepth() {
-        return baseDepth;
-    }
-
-    /**
-     * Get the typeface text is drawn in on this group's user-interface components
-     * @return This group's typeface
-     */
-    @Override
-    public String getTypefaceFilePath() {
-        return typefaceFilePath;
-    }
-
-    /**
-     * Get the size text is drawn in on this group's user-interface components in percent of the typeface's original
-     * size on the framework's default window size
-     * @return This group's text size
-     */
-    @Override
-    public float getTextSize() {
-        return textSize;
-    }
-
-    /**
-     * Get the padding placed around text drawn on this group's user-interface components in pixels
-     * @return This group's text padding
-     */
-    @Override
-    public float getTextPadding() {
-        return textPadding;
-    }
-
-    /**
-     * Get the group's ID
-     * @return This group's ID
-     */
-    @Override
-    public int getGroupID() {
-        return groupID;
-    }
-
-    /**
-     * Get the camera used to draw this group's user-interface components
-     * @return This group's camera
-     */
-    @Override
-    public Camera getCamera() {
-        return camera;
     }
 
     /**

@@ -58,110 +58,6 @@ public class KeyboardManager implements KeyListener {
     private final ReentrantLock typedCharsLock = new ReentrantLock();
 
     /**
-     * Initialize the keyboard user-input manager's memory and subscribe to input events from the AWT window panel
-     * @return Whether the keyboard user-input manager was initialized successfully
-     */
-    public boolean initialize() {
-        // Register all keyboard keys with their AWT virtual key codes
-        for (KeyboardKey key : KeyboardKey.values()) {
-            Field field;
-            try {
-                field = KeyEvent.class.getField(key.toString());
-            } catch (NoSuchFieldException _) {
-                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to map \"", key, "\" key, no AWT field");
-                return false;
-            }
-            int AWTKeyCode;
-            try {
-                AWTKeyCode = field.getInt(null);
-            } catch (IllegalArgumentException | IllegalAccessException | NullPointerException
-                     | ExceptionInInitializerError _) {
-                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to map \"", key, "\" key, inaccessible ",
-                        "AWT field");
-                return false;
-            }
-            AWTKeyCodes.put(AWTKeyCode, key);
-        }
-        typedChars = "";
-        App.Log.write(LogSource.Input, LogLevel.Info, "Initialized keyboard user-input management system");
-        return true;
-    }
-
-    /**
-     * Update the keyboard user-input manager's internal state of the keyboard
-     */
-    public void update() {
-        // Update key up/down states
-        for (HashMap.Entry<KeyboardKey, KeyState> entry : keyStates.entrySet()) {
-            KeyboardKey key;
-            try {
-                key = entry.getKey();
-            } catch (IllegalStateException _) {
-                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to retrieve keyboard key entry");
-                continue;
-            }
-            KeyState keyState;
-            try {
-                keyState = entry.getValue();
-            } catch (IllegalStateException _) {
-                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to retrieve keyboard key state entry");
-                continue;
-            }
-            if (keyState.isDown != keyState.wasDown) {
-                if (keyState.isDown) {
-                    App.Input.keyboardKeyPressed(key);
-                } else {
-                    App.Input.keyboardKeyReleased(key);
-                }
-                keyState.wasDown = keyState.isDown;
-            }
-        }
-        // Update typed characters
-        typedCharsLock.lock();
-        if (typedChars != null) {
-            for (char c : typedChars.toCharArray()) {
-                App.Input.keyboardCharTyped(c);
-            }
-            typedChars = "";
-        }
-        try {
-            typedCharsLock.unlock();
-        } catch (IllegalMonitorStateException _) {
-            App.Log.write(LogSource.Input, LogLevel.Error, "Typed characters scope-lock failed to release");
-        }
-    }
-
-    /**
-     * Free the keyboard user-input manager's memory and unsubscribe it from AWT input events
-     * @return Whether the keyboard user-input manager was destroyed successfully
-     */
-    public boolean destroy() {
-        App.Log.write(LogSource.Input, LogLevel.Info, "Destroying keyboard user-input management system");
-        boolean success = true;
-        // Free memory
-        AWTKeyCodes.clear();
-        keyStates.clear();
-        typedChars = null;
-        return success;
-    }
-
-    /**
-     * Test whether a key was down on the keyboard in the last logic update
-     * @param key The key to test
-     * @return Whether the given key was down in the last logic update
-     */
-    private boolean wasKeyDown(KeyboardKey key) {
-        if (key == null) {
-            return false;
-        }
-        KeyState state = keyStates.get(key);
-        if (state == null) {
-            return false;
-        }
-        return state.wasDown;
-    }
-
-    /**
      * Callback function for Java AWT key press events
      * @param e The event to be processed
      */
@@ -218,6 +114,106 @@ public class KeyboardManager implements KeyListener {
         } catch (IllegalMonitorStateException _) {
             App.Log.write(LogSource.Input, LogLevel.Error, "Typed characters scope lock failed to release");
         }
+    }
+
+    /**
+     * Initialize the keyboard user-input manager's memory and subscribe to input events from the AWT window panel
+     * @return Whether the keyboard user-input manager was initialized successfully
+     */
+    public boolean initialize() {
+        for (KeyboardKey key : KeyboardKey.values()) {
+            Field field;
+            try {
+                field = KeyEvent.class.getField(key.toString());
+            } catch (NoSuchFieldException _) {
+                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to map \"", key, "\" key, no AWT field");
+                return false;
+            }
+            int AWTKeyCode;
+            try {
+                AWTKeyCode = field.getInt(null);
+            } catch (IllegalArgumentException | IllegalAccessException | NullPointerException
+                     | ExceptionInInitializerError _) {
+                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to map \"", key, "\" key, inaccessible ",
+                        "AWT field");
+                return false;
+            }
+            AWTKeyCodes.put(AWTKeyCode, key);
+        }
+        typedChars = "";
+        App.Log.write(LogSource.Input, LogLevel.Info, "Initialized keyboard user-input management system");
+        return true;
+    }
+
+    /**
+     * Update the keyboard user-input manager's internal state of the keyboard
+     */
+    public void update() {
+        for (HashMap.Entry<KeyboardKey, KeyState> entry : keyStates.entrySet()) {
+            KeyboardKey key;
+            try {
+                key = entry.getKey();
+            } catch (IllegalStateException _) {
+                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to retrieve keyboard key entry");
+                continue;
+            }
+            KeyState keyState;
+            try {
+                keyState = entry.getValue();
+            } catch (IllegalStateException _) {
+                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to retrieve keyboard key state entry");
+                continue;
+            }
+            if (keyState.isDown != keyState.wasDown) {
+                if (keyState.isDown) {
+                    App.Input.keyboardKeyPressed(key);
+                } else {
+                    App.Input.keyboardKeyReleased(key);
+                }
+                keyState.wasDown = keyState.isDown;
+            }
+        }
+        typedCharsLock.lock();
+        if (typedChars != null) {
+            for (char c : typedChars.toCharArray()) {
+                App.Input.keyboardCharTyped(c);
+            }
+            typedChars = "";
+        }
+        try {
+            typedCharsLock.unlock();
+        } catch (IllegalMonitorStateException _) {
+            App.Log.write(LogSource.Input, LogLevel.Error, "Typed characters scope-lock failed to release");
+        }
+    }
+
+    /**
+     * Free the keyboard user-input manager's memory and unsubscribe it from AWT input events
+     * @return Whether the keyboard user-input manager was destroyed successfully
+     */
+    public boolean destroy() {
+        App.Log.write(LogSource.Input, LogLevel.Info, "Destroying keyboard user-input management system");
+        boolean success = true;
+        AWTKeyCodes.clear();
+        keyStates.clear();
+        typedChars = null;
+        return success;
+    }
+
+    /**
+     * Test whether a key was down on the keyboard in the last logic update
+     * @param key The key to test
+     * @return Whether the given key was down in the last logic update
+     */
+    private boolean wasKeyDown(KeyboardKey key) {
+        if (key == null) {
+            return false;
+        }
+        KeyState state = keyStates.get(key);
+        if (state == null) {
+            return false;
+        }
+        return state.wasDown;
     }
 
     /**

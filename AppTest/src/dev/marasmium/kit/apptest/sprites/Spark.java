@@ -12,11 +12,23 @@ import dev.marasmium.kit.applib.data.Angle;
 import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.graphics.Sprite;
 
+/**
+ * A sprite representing a spark / small visual artifact
+ */
 public class Spark extends Sprite {
 
+    /**
+     * Whether this spark's animation has ended
+     */
     private boolean alive = false;
+    /**
+     * Timer for velocity changes
+     */
     private float timer = 0.0f;
 
+    /**
+     * Initialize this spark at the bottom of the window and set its initial dimensions and velocity
+     */
     public void initialize() {
         Vector position = Vector.Cartesian((float)Math.random() * App.Window.getDimensions().getX(), -16.0f);
         Vector dimensions = Vector.Cartesian((float)Math.random() * 23.0f, (float)Math.random() * 24.0f);
@@ -27,6 +39,10 @@ public class Spark extends Sprite {
         rotation = Angle.Radians(((2.0f * (float)Math.random()) - 1.0f) * 0.1f);
     }
 
+    /**
+     * Update this spark's position and velocity
+     * @param deltaFrames The number of frames elapsed since the last call to update
+     */
     public void update(float deltaFrames) {
         super.update(deltaFrames);
         alive = isAnimationPlaying();
@@ -37,6 +53,10 @@ public class Spark extends Sprite {
         }
     }
 
+    /**
+     * Test whether this spark's animation has ended
+     * @return Whether this spark is still alive
+     */
     public boolean isAlive() {
         return alive;
     }

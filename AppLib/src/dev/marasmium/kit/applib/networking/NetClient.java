@@ -41,6 +41,47 @@ public class NetClient implements NetListener {
     private final ArrayList<NetListener> listeners = new ArrayList<>();
 
     /**
+     * The network client has connected to a remote server
+     * @param clientID The ID number of the connected network connection (unused by the network client)
+     * @return Whether the connection should be accepted (unused by the network client)
+     */
+    @Override
+    public boolean netConnected(int clientID) {
+        App.Log.write(LogSource.Network, LogLevel.Info, "Connected to ", getHostName(), ":", getPort());
+        for (NetListener listener : listeners) {
+            listener.netConnected(clientID);
+        }
+        return true;
+    }
+
+    /**
+     * The network client has received a message from a remote server
+     * @param clientID The ID number of the network connection (unused by the network client)
+     * @param message The message received
+     */
+    @Override
+    public void netMessageReceived(int clientID, NetMessage message) {
+        if (message == null) {
+            return;
+        }
+        for (NetListener listener : listeners) {
+            listener.netMessageReceived(clientID, message);
+        }
+    }
+
+    /**
+     * The network client has disconnected from a remote server
+     * @param clientID The ID number of the disconnected network connection (unused by the network client)
+     */
+    @Override
+    public void netDisconnected(int clientID) {
+        App.Log.write(LogSource.Network, LogLevel.Info, "Disconnected");
+        for (NetListener listener : listeners) {
+            listener.netDisconnected(clientID);
+        }
+    }
+
+    /**
      * Initialize the MarasmiumKit application framework's network client
      * @param maximumMPU The maximum number of incoming messages for the network client to process each update
      * @return Whether the parameter was valid and the network client was initialized successfully
@@ -76,7 +117,6 @@ public class NetClient implements NetListener {
             App.Log.write(LogSource.Network, LogLevel.Warning, "Already connected to ", getHostName(), ":", getPort());
             disconnect();
         }
-        // Attempt to resolve the server address
         InetSocketAddress address;
         try {
             address = new InetSocketAddress(hostName, port);
@@ -88,7 +128,6 @@ public class NetClient implements NetListener {
             App.Log.write(LogSource.Network, LogLevel.Warning, "Failed to resolve host address ", hostName, ":", port);
             return false;
         }
-        // Start the connection attempt
         connectThread = new Thread(() -> {
             App.Log.write(LogSource.Network, LogLevel.Info, "Started connection thread");
             connecting = true;
@@ -133,12 +172,10 @@ public class NetClient implements NetListener {
         boolean success = true;
         App.Log.write(LogSource.Network, LogLevel.Info, "Disconnecting network client from ", getHostName(), ":",
                 getPort());
-        // Disconnect the network connection
         if (!connection.disconnect()) {
             App.Log.write(LogSource.Network, LogLevel.Warning, "Failed to safely disconnect network connection");
             success = false;
         }
-        // Stop the connection thread
         if (connectThread != null) {
             connectThread.interrupt();
             try {
@@ -161,7 +198,6 @@ public class NetClient implements NetListener {
     public boolean destroy() {
         App.Log.write(LogSource.Network, LogLevel.Info, "Destroying network client");
         boolean success = true;
-        // Disconnect the network client if connected
         if (connecting || connection.isConnected()) {
             App.Log.write(LogSource.Network, LogLevel.Warning, "Currently connecting or connected to ", getHostName(),
                     ":", getPort());
@@ -170,7 +206,6 @@ public class NetClient implements NetListener {
                 success = false;
             }
         }
-        // Free memory
         if (!connection.destroy()) {
             success = false;
         }
@@ -285,47 +320,6 @@ public class NetClient implements NetListener {
         App.Log.write(LogSource.Network, LogLevel.Info, "Removing network listener");
         listeners.remove(listener);
         return true;
-    }
-
-    /**
-     * The network client has connected to a remote server
-     * @param clientID The ID number of the connected network connection (unused by the network client)
-     * @return Whether the connection should be accepted (unused by the network client)
-     */
-    @Override
-    public boolean netConnected(int clientID) {
-        App.Log.write(LogSource.Network, LogLevel.Info, "Connected to ", getHostName(), ":", getPort());
-        for (NetListener listener : listeners) {
-            listener.netConnected(clientID);
-        }
-        return true;
-    }
-
-    /**
-     * The network client has received a message from a remote server
-     * @param clientID The ID number of the network connection (unused by the network client)
-     * @param message The message received
-     */
-    @Override
-    public void netMessageReceived(int clientID, NetMessage message) {
-        if (message == null) {
-            return;
-        }
-        for (NetListener listener : listeners) {
-            listener.netMessageReceived(clientID, message);
-        }
-    }
-
-    /**
-     * The network client has disconnected from a remote server
-     * @param clientID The ID number of the disconnected network connection (unused by the network client)
-     */
-    @Override
-    public void netDisconnected(int clientID) {
-        App.Log.write(LogSource.Network, LogLevel.Info, "Disconnected");
-        for (NetListener listener : listeners) {
-            listener.netDisconnected(clientID);
-        }
     }
 
 }

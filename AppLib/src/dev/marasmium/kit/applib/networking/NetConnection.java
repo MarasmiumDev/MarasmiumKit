@@ -90,7 +90,6 @@ public class NetConnection {
      * @return Whether this client was initialized successfully
      */
     public boolean initialize(NetListener parent, int clientID) {
-        // Initialize memory
         if (!setParent(parent)) {
             return false;
         }
@@ -111,7 +110,6 @@ public class NetConnection {
         if (connected) {
             disconnect();
         }
-        // Connect socket
         socket = new Socket();
         try {
             socket.connect(address, timeout * 1000);
@@ -120,7 +118,6 @@ public class NetConnection {
             disconnect();
             return false;
         }
-        // Open input and output streams
         try {
             outputStream = new ObjectOutputStream(socket.getOutputStream());
             outputStream.flush();
@@ -136,7 +133,6 @@ public class NetConnection {
             disconnect();
             return false;
         }
-        // Start reading messages asynchronously
         read();
         return true;
     }
@@ -155,7 +151,6 @@ public class NetConnection {
         }
         rejected = false;
         this.socket = socket;
-        // Open input and output streams
         try {
             inputStream = new ObjectInputStream(socket.getInputStream());
         } catch (IOException | IllegalStateException | NullPointerException _) {
@@ -183,7 +178,6 @@ public class NetConnection {
         if (parent == null) {
             return;
         }
-        // Process connect and disconnect events
         if (connected && !wasConnected) {
             wasConnected = true;
             if (!parent.netConnected(clientID)) {
@@ -196,7 +190,6 @@ public class NetConnection {
             connectionFailed = false;
             parent.netDisconnected(clientID);
         }
-        // Process incoming messages
         int i = 0;
         inputLock.lock();
         while (!inputMessages.isEmpty() && (i < maxMessages || maxMessages == -1)) {
@@ -222,7 +215,6 @@ public class NetConnection {
         if (!connected) {
             return false;
         }
-        // Add message to outgoing list
         outputLock.lock();
         boolean writeRequired = outputMessages.isEmpty();
         outputMessages.addLast(message.clone());
@@ -232,7 +224,6 @@ public class NetConnection {
             disconnect();
             return false;
         }
-        // Start asynchronous writing thread if necessary
         if (writeRequired) {
             write();
         }
@@ -246,7 +237,6 @@ public class NetConnection {
     public boolean disconnect() {
         boolean success = true;
         connected = false;
-        // Close output stream
         if (outputStream != null) {
             try {
                 outputStream.close();
@@ -268,7 +258,6 @@ public class NetConnection {
             message.destroy();
         }
         outputMessages.clear();
-        // Close input stream
         if (inputStream != null) {
             try {
                 inputStream.close();
@@ -290,7 +279,6 @@ public class NetConnection {
             message.destroy();
         }
         inputMessages.clear();
-        // Close TCP socket connection
         if (socket != null) {
             try {
                 socket.close();
@@ -308,13 +296,11 @@ public class NetConnection {
      */
     public boolean destroy() {
         boolean success = true;
-        // Disconnect if connected
         if (connected) {
             if (!disconnect()) {
                 success = false;
             }
         }
-        // Free memory
         parent = null;
         clientID = 0;
         return success;
@@ -330,7 +316,6 @@ public class NetConnection {
                 if (inputStream == null) {
                     return;
                 }
-                // Read a message
                 NetMessage message;
                 try {
                     message = (NetMessage)inputStream.readObject();
@@ -338,7 +323,6 @@ public class NetConnection {
                     disconnect();
                     return;
                 }
-                // Add to the incoming messages queue
                 inputLock.lock();
                 inputMessages.addLast(message);
                 try {
@@ -366,7 +350,6 @@ public class NetConnection {
                 if (outputStream == null) {
                     return;
                 }
-                // Retrieve and write a message
                 outputLock.lock();
                 NetMessage message = outputMessages.removeFirst();
                 try {
@@ -376,7 +359,7 @@ public class NetConnection {
                     disconnect();
                     return;
                 }
-                //message.destroy();
+                message.destroy();
                 done = outputMessages.isEmpty();
                 try {
                     outputLock.unlock();

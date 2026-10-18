@@ -28,6 +28,42 @@ public class Configuration implements Cloneable {
     private HashMap<String, byte[]> values = null;
 
     /**
+     * Convert this configuration to a string
+     * @return The string representation of this configuration
+     */
+    @Override
+    public String toString() {
+        if (values == null) {
+            return "configuration(null)";
+        }
+        return "configuration(" + values.size() + " values, " + getValueDataSize() + "B)";
+    }
+
+    /**
+     * Make a copy of this configuration with the same key-value pairs
+     * @return A clone of this configuration
+     */
+    @Override
+    public Configuration clone() {
+        Configuration configuration;
+        try {
+            configuration = (Configuration)super.clone();
+        } catch (CloneNotSupportedException _) {
+            return null;
+        }
+        if (values != null) {
+            for (HashMap.Entry<String, byte[]> entry : values.entrySet()) {
+                try {
+                    configuration.values.put(entry.getKey(), entry.getValue().clone());
+                } catch (IllegalStateException _) {
+                    return null;
+                }
+            }
+        }
+        return configuration;
+    }
+
+    /**
      * Initialize this configuration's memory
      */
     public void initialize() {
@@ -64,42 +100,6 @@ public class Configuration implements Cloneable {
             values.clear();
             values = null;
         }
-    }
-
-    /**
-     * Convert this configuration to a string
-     * @return The string representation of this configuration
-     */
-    @Override
-    public String toString() {
-        if (values == null) {
-            return "configuration(null)";
-        }
-        return "configuration(" + values.size() + " values, " + getValueDataSize() + "B)";
-    }
-
-    /**
-     * Make a copy of this configuration with the same key-value pairs
-     * @return A clone of this configuration
-     */
-    @Override
-    public Configuration clone() {
-        Configuration configuration;
-        try {
-            configuration = (Configuration)super.clone();
-        } catch (CloneNotSupportedException _) {
-            return null;
-        }
-        if (values != null) {
-            for (HashMap.Entry<String, byte[]> entry : values.entrySet()) {
-                try {
-                    configuration.values.put(entry.getKey(), entry.getValue().clone());
-                } catch (IllegalStateException _) {
-                    return null;
-                }
-            }
-        }
-        return configuration;
     }
 
     /**

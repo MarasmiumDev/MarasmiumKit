@@ -26,24 +26,6 @@ public class Camera extends Body {
     private float zoom = 0.0f;
 
     /**
-     * Initialize this camera with a position, scale, and angle
-     * @param position The initial position of the centre of this camera's view
-     * @param scale The initial scale of this camera's view
-     * @param angle The initial angle of this camera's view
-     * @return Whether the given position, scale, and angle were valid
-     */
-    public boolean initialize(Vector position, float scale, Angle angle) {
-        if (!super.initialize(position, angle)) {
-            return false;
-        }
-        if (!setScale(scale)) {
-            return false;
-        }
-        setZoom(0.0f);
-        return true;
-    }
-
-    /**
      * Update the position, scale, and rotation of this camera by their rates of change
      * @param deltaFrames The number of frames which have elapsed since the last call to update
      */
@@ -80,6 +62,24 @@ public class Camera extends Body {
             return false;
         }
         return camera.position.equals(position) && camera.scale == scale && camera.angle.equals(angle);
+    }
+
+    /**
+     * Initialize this camera with a position, scale, and angle
+     * @param position The initial position of the centre of this camera's view
+     * @param scale The initial scale of this camera's view
+     * @param angle The initial angle of this camera's view
+     * @return Whether the given position, scale, and angle were valid
+     */
+    public boolean initialize(Vector position, float scale, Angle angle) {
+        if (!super.initialize(position, angle)) {
+            return false;
+        }
+        if (!setScale(scale)) {
+            return false;
+        }
+        setZoom(0.0f);
+        return true;
     }
 
     /**

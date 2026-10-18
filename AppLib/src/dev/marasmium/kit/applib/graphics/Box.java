@@ -30,6 +30,35 @@ public class Box extends Body {
     protected Vector growth = null;
 
     /**
+     * Update this box's dimensions by its rate of change
+     * @param deltaFrames The number of frames elapsed since the last call to update
+     */
+    @Override
+    public void update(float deltaFrames) {
+        super.update(deltaFrames);
+        if (dimensions != null && growth != null) {
+            dimensions = dimensions.add(growth.scalarMultiply(deltaFrames));
+            if (dimensions.getX() < 0.0f) {
+                dimensions.setX(0.0f);
+            }
+            if (dimensions.getY() < 0.0f) {
+                dimensions.setY(0.0f);
+            }
+        }
+    }
+
+    /**
+     * Free this box's memory
+     */
+    @Override
+    public void destroy() {
+        super.destroy();
+        depth = 0.0f;
+        dimensions = null;
+        growth = null;
+    }
+
+    /**
      * Initialize this box with a position, angle, dimensions, and depth
      * @param position The initial position of this box in world coordinates
      * @param depth The initial depth of this box
@@ -134,35 +163,6 @@ public class Box extends Body {
             }
         }
         return contains(box) || box.contains(this);
-    }
-
-    /**
-     * Update this box's dimensions by its rate of change
-     * @param deltaFrames The number of frames elapsed since the last call to update
-     */
-    @Override
-    public void update(float deltaFrames) {
-        super.update(deltaFrames);
-        if (dimensions != null && growth != null) {
-            dimensions = dimensions.add(growth.scalarMultiply(deltaFrames));
-            if (dimensions.getX() < 0.0f) {
-                dimensions.setX(0.0f);
-            }
-            if (dimensions.getY() < 0.0f) {
-                dimensions.setY(0.0f);
-            }
-        }
-    }
-
-    /**
-     * Free this box's memory
-     */
-    @Override
-    public void destroy() {
-        super.destroy();
-        depth = 0.0f;
-        dimensions = null;
-        growth = null;
     }
 
     /**

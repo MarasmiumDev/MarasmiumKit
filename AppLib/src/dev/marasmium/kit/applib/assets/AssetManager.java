@@ -51,7 +51,6 @@ public class AssetManager {
      * @return Whether the audio track was successfully loaded from the given file path
      */
     public boolean readAudioTrack(String filePath) {
-        // Ensure the file path is accessible
         if (filePath == null) {
             return false;
         }
@@ -62,7 +61,6 @@ public class AssetManager {
         if (!file.canRead()) {
             return false;
         }
-        // Read all file data into memory
         FileInputStream inputStream;
         try {
             inputStream = new FileInputStream(file);
@@ -88,7 +86,6 @@ public class AssetManager {
         if (fileData == null) {
             return null;
         }
-        // Allocate audio track parameters
         int sampleRate;
         int sampleSize;
         int channelCount;
@@ -99,7 +96,6 @@ public class AssetManager {
         if (fileData.length < 4 * Integer.BYTES) {
             return null;
         }
-        // Parse file data
         try {
             System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
             offset += Integer.BYTES;
@@ -128,7 +124,6 @@ public class AssetManager {
         } catch (IndexOutOfBoundsException | ArrayStoreException _) {
             return null;
         }
-        // Generate audio track
         AudioTrack audioTrack = new AudioTrack();
         if (!audioTrack.initialize(sampleRate, sampleSize, channelCount, data)) {
             return null;
@@ -143,7 +138,6 @@ public class AssetManager {
      * @return Whether the audio track was successfully written to the given file path
      */
     public boolean writeAudioTrack(AudioTrack audioTrack, String filePath) {
-        // Ensure the output file is accessible
         if (audioTrack == null) {
             return false;
         }
@@ -166,7 +160,6 @@ public class AssetManager {
         if (!file.canWrite()) {
             return false;
         }
-        // Write audio track contents
         byte[] fileData = serializeAudioTrack(audioTrack);
         if (fileData == null) {
             return false;
@@ -191,7 +184,6 @@ public class AssetManager {
         if (audioTrack == null) {
             return null;
         }
-        // Extract audio track parameters
         int sampleRate = audioTrack.getSampleRate();
         int sampleSize = audioTrack.getSampleSize();
         int channelCount = audioTrack.getChannelCount();
@@ -201,7 +193,6 @@ public class AssetManager {
             return null;
         }
         int fileDataSize = (4 * Integer.BYTES) + data.length;
-        // Create file data buffer
         byte[] fileData;
         ByteBuffer buffer;
         try {
@@ -224,7 +215,6 @@ public class AssetManager {
      * @return Whether the animation was successfully loaded from the given file path
      */
     public boolean readAnimation(String filePath) {
-        // Ensure the file path is accessible
         if (filePath == null) {
             return false;
         }
@@ -235,7 +225,6 @@ public class AssetManager {
         if (!file.canRead()) {
             return false;
         }
-        // Read all file data into memory
         FileInputStream inputStream;
         try {
             inputStream = new FileInputStream(file);
@@ -261,7 +250,6 @@ public class AssetManager {
         if (fileData == null) {
             return null;
         }
-        // Allocate animation parameters
         int targetFPS;
         Vector sheetDimensions = Vector.Zero();
         Vector frameDimensions = Vector.Zero();
@@ -272,7 +260,6 @@ public class AssetManager {
         if (fileData.length < 6 * Integer.BYTES) {
             return null;
         }
-        // Parse file data
         try {
             System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
             offset += Integer.BYTES;
@@ -312,7 +299,6 @@ public class AssetManager {
                 return null;
             }
         }
-        // Initialize animation
         Animation animation = new Animation();
         if (!animation.initialize(targetFPS, sheetDimensions, frameDimensions, frameCount, data)) {
             return null;
@@ -327,7 +313,6 @@ public class AssetManager {
      * @return Whether the animation was successfully written to the given file path
      */
     public boolean writeAnimation(Animation animation, String filePath) {
-        // Ensure output file is accessible
         if (animation == null) {
             return false;
         }
@@ -350,7 +335,6 @@ public class AssetManager {
         if (!file.canWrite()) {
             return false;
         }
-        // Write animation contents
         byte[] fileData = serializeAnimation(animation);
         if (fileData == null) {
             return false;
@@ -375,7 +359,6 @@ public class AssetManager {
         if (animation == null) {
             return null;
         }
-        // Extract animation parameters
         int targetFPS = animation.getTargetFPS();
         Vector sheetDimensions = animation.getSheetDimensions();
         Vector frameDimensions = animation.getFrameDimensions();
@@ -384,7 +367,6 @@ public class AssetManager {
         if (sheetDimensions == null || frameDimensions == null || data == null) {
             return null;
         }
-        // Create file data buffer
         int fileDataSize = (6 * Integer.BYTES) + (data.length * Integer.BYTES);
         byte[] fileData;
         ByteBuffer buffer;
@@ -412,7 +394,6 @@ public class AssetManager {
      * @return Whether the typeface was successfully loaded from the given file path
      */
     public boolean readTypeface(String filePath) {
-        // Ensure the file path is accessible
         if (filePath == null) {
             return false;
         }
@@ -423,7 +404,6 @@ public class AssetManager {
         if (!file.canRead()) {
             return false;
         }
-        // Read all file data into memory
         FileInputStream inputStream;
         try {
             inputStream = new FileInputStream(file);
@@ -449,7 +429,6 @@ public class AssetManager {
         if (fileData == null) {
             return null;
         }
-        // Allocate typeface parameters
         int characterCount;
         StringBuilder characters = new StringBuilder();
         Glyph[] glyphs;
@@ -460,7 +439,6 @@ public class AssetManager {
         if (fileData.length < Integer.BYTES) {
             return null;
         }
-        // Parse file data
         try {
             System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
             offset += Integer.BYTES;
@@ -537,7 +515,6 @@ public class AssetManager {
         } catch (IndexOutOfBoundsException | ArrayStoreException _) {
             return null;
         }
-        // Initialize typeface
         Typeface typeface = new Typeface();
         if (!typeface.initialize(characters.toString(), glyphs, animationData)) {
             return null;
@@ -552,7 +529,6 @@ public class AssetManager {
      * @return Whether the typeface was successfully written to the given file path
      */
     public boolean writeTypeface(Typeface typeface, String filePath) {
-        // Ensure the output file is accessible
         if (typeface == null) {
             return false;
         }
@@ -575,7 +551,6 @@ public class AssetManager {
         if (!file.canWrite()) {
             return false;
         }
-        // Write typeface contents
         byte[] fileData = serializeTypeface(typeface);
         if (fileData == null) {
             return false;
@@ -603,7 +578,6 @@ public class AssetManager {
         if (typeface.getCharacters() == null) {
             return null;
         }
-        // Extract typeface parameters
         int characterCount = typeface.getCharacters().length();
         HashMap<Character, Glyph> glyphs = typeface.getGlyphs();
         if (typeface.getAnimationData() == null) {
@@ -611,7 +585,6 @@ public class AssetManager {
         }
         int animationDataSize = typeface.getAnimationData().length;
         byte[] animationData = typeface.getAnimationData();
-        // Create file data buffer
         int fileDataSize = Integer.BYTES + (characterCount * Character.BYTES) + (characterCount * 7 * Integer.BYTES)
                 + Integer.BYTES + animationDataSize;
         byte[] fileData;
@@ -653,7 +626,6 @@ public class AssetManager {
      * @return Whether the configuration was successfully loaded from the given file path
      */
     public boolean readConfiguration(String filePath) {
-        // Ensure the file path is accessible
         if (filePath == null) {
             return false;
         }
@@ -664,7 +636,6 @@ public class AssetManager {
         if (!file.canRead()) {
             return false;
         }
-        // Read all file data into memory
         FileInputStream inputStream;
         try {
             inputStream = new FileInputStream(file);
@@ -690,7 +661,6 @@ public class AssetManager {
         if (fileData == null) {
             return null;
         }
-        // Allocate configuration parameters
         int valueCount;
         int valueNameSize;
         String[] valueNames;
@@ -701,7 +671,6 @@ public class AssetManager {
         if (fileData.length < Integer.BYTES) {
             return null;
         }
-        // Parse file data
         try {
             System.arraycopy(fileData, offset, buffer, 0, Integer.BYTES);
             offset += Integer.BYTES;
@@ -760,7 +729,6 @@ public class AssetManager {
                 return null;
             }
         }
-        // Initialize configuration
         Configuration configuration = new Configuration();
         if (!configuration.initialize(valueNames, valueData)) {
             return null;
@@ -775,7 +743,6 @@ public class AssetManager {
      * @return Whether the configuration was successfully written to the given file path
      */
     public boolean writeConfiguration(Configuration configuration, String filePath) {
-        // Ensure the output file is accessible
         if (configuration == null) {
             return false;
         }
@@ -798,7 +765,6 @@ public class AssetManager {
         if (!file.canWrite()) {
             return false;
         }
-        // Write configuration contents
         byte[] fileData = serializeConfiguration(configuration);
         if (fileData == null) {
             return false;
@@ -823,13 +789,11 @@ public class AssetManager {
         if (configuration == null) {
             return null;
         }
-        // Extract configuration parameters
         int valueCount = configuration.getValueCount();
         HashMap<String, byte[]> values = configuration.getValues();
         if (values == null) {
             return null;
         }
-        // Compute file data size
         int fileDataSize = Integer.BYTES;
         for (HashMap.Entry<String, byte[]> entry : values.entrySet()) {
             String valueName;
@@ -842,7 +806,6 @@ public class AssetManager {
             }
             fileDataSize += Integer.BYTES + valueName.getBytes().length + Integer.BYTES + valueData.length;
         }
-        // Create file data buffer
         byte[] fileData;
         ByteBuffer buffer;
         try {
@@ -876,7 +839,6 @@ public class AssetManager {
     public boolean destroy() {
         App.Log.write(LogSource.Assets, LogLevel.Info, "Destroying asset management system");
         boolean success = true;
-        // Free audio tracks
         App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing ", audioTracks.size(), " audio tracks");
         for (HashMap.Entry<String, AudioTrack> entry : audioTracks.entrySet()) {
             try {
@@ -888,7 +850,6 @@ public class AssetManager {
             }
         }
         audioTracks.clear();
-        // Free animations
         App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing ", animations.size(), " animations");
         for (HashMap.Entry<String, Animation> entry : animations.entrySet()) {
             try {
@@ -900,7 +861,6 @@ public class AssetManager {
             }
         }
         animations.clear();
-        // Free typefaces
         App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing ", typefaces.size(), " typefaces");
         for (HashMap.Entry<String, Typeface> entry : typefaces.entrySet()) {
             try {
@@ -912,7 +872,6 @@ public class AssetManager {
             }
         }
         typefaces.clear();
-        // Free configurations
         App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing ", configurations.size(), " configurations");
         for (HashMap.Entry<String, Configuration> entry : configurations.entrySet()) {
             try {

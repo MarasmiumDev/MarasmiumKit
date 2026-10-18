@@ -51,62 +51,6 @@ public class Sprite extends Box {
     private boolean flippedVertically = false;
 
     /**
-     * Initialize this sprite with a position, depth, dimensions, angle, and animation file path
-     * @param position The initial position of this sprite
-     * @param depth The initial depth of this sprite in the rendered scene
-     * @param dimensions The initial dimensions of this sprite
-     * @param angle The initial angle of this sprite
-     * @param animationFilePath The initial animation file path for this sprite
-     * @return Whether all parameters were valid and this sprite was initialized successfully
-     */
-    public boolean initialize(Vector position, float depth, Vector dimensions, Angle angle, String animationFilePath) {
-        if (!super.initialize(position, depth, dimensions, angle)) {
-            return false;
-        }
-        if (!setAnimationFilePath(animationFilePath)) {
-            return false;
-        }
-        stopAnimation();
-        setFlippedHorizontally(false);
-        setFlippedVertically(false);
-        return true;
-    }
-
-    /**
-     * Set this sprite's current animation to advance on updates by its target FPS
-     * @param animationRepeatCount The number of times to play this animation before automatically pausing, negative for
-     * infinite loop
-     */
-    public void playAnimation(int animationRepeatCount) {
-        animationPlaying = true;
-        this.animationRepeatCount = animationRepeatCount;
-        animationRepeatCounter = 0;
-    }
-
-    /**
-     * Set this sprite's current animation to advance on updates by its target FPS
-     */
-    public void playAnimation() {
-        playAnimation(-1);
-    }
-
-    /**
-     * Pause this sprite's current animation
-     */
-    public void pauseAnimation() {
-        animationPlaying = false;
-    }
-
-    /**
-     * Pause this sprite's current animation and reset its frame index to the beginning of the animation
-     */
-    public void stopAnimation() {
-        animationPlaying = false;
-        animationFrame = 0;
-        animationTimer = 0.0f;
-    }
-
-    /**
      * Update this sprite's position, dimensions, and angle by their rates of change and update its animation
      * @param deltaFrames The number of frames elapsed since the last call to update
      */
@@ -162,6 +106,62 @@ public class Sprite extends Box {
         }
         return "sprite(position " + position + ", dimensions: " + dimensions + ", animation: " + animationFilePath
                 + ")";
+    }
+
+    /**
+     * Initialize this sprite with a position, depth, dimensions, angle, and animation file path
+     * @param position The initial position of this sprite
+     * @param depth The initial depth of this sprite in the rendered scene
+     * @param dimensions The initial dimensions of this sprite
+     * @param angle The initial angle of this sprite
+     * @param animationFilePath The initial animation file path for this sprite
+     * @return Whether all parameters were valid and this sprite was initialized successfully
+     */
+    public boolean initialize(Vector position, float depth, Vector dimensions, Angle angle, String animationFilePath) {
+        if (!super.initialize(position, depth, dimensions, angle)) {
+            return false;
+        }
+        if (!setAnimationFilePath(animationFilePath)) {
+            return false;
+        }
+        stopAnimation();
+        setFlippedHorizontally(false);
+        setFlippedVertically(false);
+        return true;
+    }
+
+    /**
+     * Set this sprite's current animation to advance on updates by its target FPS
+     * @param animationRepeatCount The number of times to play this animation before automatically pausing, negative for
+     * infinite loop
+     */
+    public void playAnimation(int animationRepeatCount) {
+        animationPlaying = true;
+        this.animationRepeatCount = animationRepeatCount;
+        animationRepeatCounter = 0;
+    }
+
+    /**
+     * Set this sprite's current animation to advance on updates by its target FPS
+     */
+    public void playAnimation() {
+        playAnimation(-1);
+    }
+
+    /**
+     * Pause this sprite's current animation
+     */
+    public void pauseAnimation() {
+        animationPlaying = false;
+    }
+
+    /**
+     * Pause this sprite's current animation and reset its frame index to the beginning of the animation
+     */
+    public void stopAnimation() {
+        animationPlaying = false;
+        animationFrame = 0;
+        animationTimer = 0.0f;
     }
 
     /**

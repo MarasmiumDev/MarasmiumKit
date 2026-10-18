@@ -76,103 +76,6 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
     private final ReentrantLock scrollMovementLock = new ReentrantLock();
 
     /**
-     * Initialize the mouse user-input manager's memory and subscribe to input events from the AWT window panel
-     * @return Whether the mouse user-input manager was initialized successfully
-     */
-    public boolean initialize() {
-        // Register all mouse buttons with their AWT virtual button codes
-        for (MouseButton button : MouseButton.values()) {
-            Field field;
-            try {
-                field = MouseEvent.class.getField(button.toString());
-            } catch (NoSuchFieldException _) {
-                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to map \"", button, "\" mouse button, no AWT ",
-                        "field");
-                return false;
-            }
-            int AWTButtonCode;
-            try {
-                AWTButtonCode = field.getInt(null);
-            } catch (IllegalArgumentException | IllegalAccessException _) {
-                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to map \"", button, "\" mouse button, ",
-                        "inaccessible AWT field");
-                return false;
-            }
-            AWTButtonCodes.put(AWTButtonCode, button);
-        }
-        App.Log.write(LogSource.Input, LogLevel.Info, "Initialized mouse user-input management system");
-        return true;
-    }
-
-    /**
-     * Update the mouse user-input manager's internal state of the mouse
-     */
-    public void update() {
-        // Update button up/down states
-        for (HashMap.Entry<MouseButton, ButtonState> entry : buttonStates.entrySet()) {
-            MouseButton button;
-            try {
-                button = entry.getKey();
-            } catch (IllegalStateException _) {
-                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to retrieve mouse button entry");
-                continue;
-            }
-            ButtonState buttonState;
-            try {
-                buttonState = entry.getValue();
-            } catch (IllegalStateException _) {
-                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to remove mouse button state entry");
-                continue;
-            }
-            if (buttonState.isDown != buttonState.wasDown) {
-                if (buttonState.isDown) {
-                    App.Input.mouseButtonPressed(button);
-                } else {
-                    App.Input.mouseButtonReleased(button);
-                }
-                buttonState.wasDown = buttonState.isDown;
-            }
-        }
-        // Update cursor position
-        cursorPositionLock.lock();
-        if (!cursorPosition.equals(lastCursorPosition)) {
-            App.Input.mouseCursorMoved(cursorPosition, cursorPosition.subtract(lastCursorPosition));
-            lastCursorPosition.setX(cursorPosition.getX());
-            lastCursorPosition.setY(cursorPosition.getY());
-        }
-        try {
-            cursorPositionLock.unlock();
-        } catch (IllegalMonitorStateException _) {
-            App.Log.write(LogSource.Input, LogLevel.Error, "Failed to release cursor position scope lock");
-        }
-        // Update scroll movement
-        scrollMovementLock.lock();
-        if (!scrollMovement.isZero()) {
-            App.Input.mouseScrollMoved(scrollMovement);
-            scrollMovement.setX(0.0f);
-            scrollMovement.setY(0.0f);
-        }
-        try {
-            scrollMovementLock.unlock();
-        } catch (IllegalMonitorStateException _) {
-            App.Log.write(LogSource.Input, LogLevel.Error, "Failed to release scroll movement scope lock");
-        }
-    }
-
-    /**
-     * Free the mouse user-input manager's memory and unsubscribe it from AWT input events
-     * @return Whether the mouse user-input manager was destroyed successfully
-     */
-    public boolean destroy() {
-        App.Log.write(LogSource.Input, LogLevel.Info, "Destroying mouse user-input management system");
-        boolean success = true;
-        // Free memory
-        AWTButtonCodes.clear();
-        buttonStates.clear();
-        return success;
-    }
-
-    /**
      * Callback for Java AWT mouse click events (unused)
      * @param e The event to be processed
      */
@@ -268,14 +171,12 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
         if (e == null) {
             return;
         }
-        // Choose scroll movement direction
         Vector movement = Vector.Zero();
         if (!e.isShiftDown()) {
             movement.setY((float)e.getPreciseWheelRotation());
         } else {
             movement.setX((float)e.getPreciseWheelRotation());
         }
-        // Add movement
         scrollMovementLock.lock();
         scrollMovement.setX(scrollMovement.getX() + movement.getX());
         scrollMovement.setY(scrollMovement.getY() + movement.getY());
@@ -284,6 +185,98 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
         } catch (IllegalMonitorStateException _) {
             App.Log.write(LogSource.Input, LogLevel.Error, "Failed to release scroll movement scope lock");
         }
+    }
+
+    /**
+     * Initialize the mouse user-input manager's memory and subscribe to input events from the AWT window panel
+     * @return Whether the mouse user-input manager was initialized successfully
+     */
+    public boolean initialize() {
+        for (MouseButton button : MouseButton.values()) {
+            Field field;
+            try {
+                field = MouseEvent.class.getField(button.toString());
+            } catch (NoSuchFieldException _) {
+                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to map \"", button, "\" mouse button, no AWT ",
+                        "field");
+                return false;
+            }
+            int AWTButtonCode;
+            try {
+                AWTButtonCode = field.getInt(null);
+            } catch (IllegalArgumentException | IllegalAccessException _) {
+                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to map \"", button, "\" mouse button, ",
+                        "inaccessible AWT field");
+                return false;
+            }
+            AWTButtonCodes.put(AWTButtonCode, button);
+        }
+        App.Log.write(LogSource.Input, LogLevel.Info, "Initialized mouse user-input management system");
+        return true;
+    }
+
+    /**
+     * Update the mouse user-input manager's internal state of the mouse
+     */
+    public void update() {
+        for (HashMap.Entry<MouseButton, ButtonState> entry : buttonStates.entrySet()) {
+            MouseButton button;
+            try {
+                button = entry.getKey();
+            } catch (IllegalStateException _) {
+                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to retrieve mouse button entry");
+                continue;
+            }
+            ButtonState buttonState;
+            try {
+                buttonState = entry.getValue();
+            } catch (IllegalStateException _) {
+                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to remove mouse button state entry");
+                continue;
+            }
+            if (buttonState.isDown != buttonState.wasDown) {
+                if (buttonState.isDown) {
+                    App.Input.mouseButtonPressed(button);
+                } else {
+                    App.Input.mouseButtonReleased(button);
+                }
+                buttonState.wasDown = buttonState.isDown;
+            }
+        }
+        cursorPositionLock.lock();
+        if (!cursorPosition.equals(lastCursorPosition)) {
+            App.Input.mouseCursorMoved(cursorPosition, cursorPosition.subtract(lastCursorPosition));
+            lastCursorPosition.setX(cursorPosition.getX());
+            lastCursorPosition.setY(cursorPosition.getY());
+        }
+        try {
+            cursorPositionLock.unlock();
+        } catch (IllegalMonitorStateException _) {
+            App.Log.write(LogSource.Input, LogLevel.Error, "Failed to release cursor position scope lock");
+        }
+        scrollMovementLock.lock();
+        if (!scrollMovement.isZero()) {
+            App.Input.mouseScrollMoved(scrollMovement);
+            scrollMovement.setX(0.0f);
+            scrollMovement.setY(0.0f);
+        }
+        try {
+            scrollMovementLock.unlock();
+        } catch (IllegalMonitorStateException _) {
+            App.Log.write(LogSource.Input, LogLevel.Error, "Failed to release scroll movement scope lock");
+        }
+    }
+
+    /**
+     * Free the mouse user-input manager's memory and unsubscribe it from AWT input events
+     * @return Whether the mouse user-input manager was destroyed successfully
+     */
+    public boolean destroy() {
+        App.Log.write(LogSource.Input, LogLevel.Info, "Destroying mouse user-input management system");
+        boolean success = true;
+        AWTButtonCodes.clear();
+        buttonStates.clear();
+        return success;
     }
 
     /**
