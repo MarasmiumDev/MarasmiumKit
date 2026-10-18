@@ -13,7 +13,6 @@ import dev.marasmium.kit.applib.data.Angle;
 import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.graphics.Alignment;
 import dev.marasmium.kit.applib.graphics.Camera;
-import dev.marasmium.kit.applib.logging.LogSource;
 import dev.marasmium.kit.apptest.AppTest;
 import dev.marasmium.kit.apptest.sprites.Spark;
 import dev.marasmium.kit.uilib.UIEvent;
@@ -29,10 +28,6 @@ import java.util.ArrayList;
  */
 public class TitleScene extends Scene implements UIListener {
 
-    /**
-     * This scene's log message source flag
-     */
-    private final LogSource logSource = new LogSource("Title Scene");
     /**
      * The main UI group for the title scene
      */
@@ -184,6 +179,9 @@ public class TitleScene extends Scene implements UIListener {
      */
     @Override
     public void componentEvent(int groupID, int componentID, UIEvent event) {
+        if (event == null) {
+            return;
+        }
         if (groupID == startUI.getGroupID()) {
             if (event == UIEvent.Button_Released) {
                 if (componentID == startButton.getComponentID()) {

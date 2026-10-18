@@ -80,10 +80,12 @@ public class NetServer implements NetListener {
             getClient(clientID).setRejected(true);
             return false;
         }
-        if (!parent.netConnected(clientID)) {
-            log.write(logSource, LogLevel.Warning, "Client ", clientID, " rejected by server logic");
-            getClient(clientID).setRejected(true);
-            return false;
+        if (parent != null) {
+            if (!parent.netConnected(clientID)) {
+                log.write(logSource, LogLevel.Warning, "Client ", clientID, " rejected by server logic");
+                getClient(clientID).setRejected(true);
+                return false;
+            }
         }
         return true;
     }
@@ -110,7 +112,9 @@ public class NetServer implements NetListener {
         NetConnection client = getClient(clientID);
         if (client != null) {
             if (!client.isRejected()) {
-                parent.netDisconnected(clientID);
+                if (parent != null) {
+                    parent.netDisconnected(clientID);
+                }
             }
             clients.remove(client);
         }
@@ -234,9 +238,6 @@ public class NetServer implements NetListener {
      * @return Whether the message was dispatched successfully to all clients
      */
     public boolean broadcast(NetMessage message) {
-        if (message == null) {
-            return false;
-        }
         return broadcast(message, -1);
     }
 

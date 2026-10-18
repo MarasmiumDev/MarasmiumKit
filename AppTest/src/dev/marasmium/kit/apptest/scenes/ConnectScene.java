@@ -13,10 +13,7 @@ import dev.marasmium.kit.applib.data.Angle;
 import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.graphics.Alignment;
 import dev.marasmium.kit.applib.graphics.Camera;
-import dev.marasmium.kit.applib.logging.LogLevel;
-import dev.marasmium.kit.applib.logging.LogSource;
 import dev.marasmium.kit.applib.networking.NetListener;
-import dev.marasmium.kit.applib.networking.NetMessage;
 import dev.marasmium.kit.apptest.AppTest;
 import dev.marasmium.kit.apptest.sprites.Spark;
 import dev.marasmium.kit.uilib.UIEvent;
@@ -33,10 +30,6 @@ import java.util.ArrayList;
  */
 public class ConnectScene extends Scene implements UIListener, NetListener {
 
-    /**
-     * Logging system message source flag for the connect scene
-     */
-    private final LogSource logSource = new LogSource("Connect Scene");
     /**
      * UI group for main UI components
      */
@@ -234,6 +227,9 @@ public class ConnectScene extends Scene implements UIListener, NetListener {
      */
     @Override
     public void componentEvent(int groupID, int componentID, UIEvent event) {
+        if (event == null) {
+            return;
+        }
         if (groupID == controlsUI.getGroupID()) {
             if (event == UIEvent.Button_Released) {
                 if (componentID == backButton.getComponentID()) {
@@ -285,7 +281,6 @@ public class ConnectScene extends Scene implements UIListener, NetListener {
      */
     @Override
     public boolean netConnected(int clientID) {
-        App.Log.write(logSource, LogLevel.Info, "Connected to server");
         App.SetCurrentScene(AppTest.Game_Scene);
         return true;
     }
@@ -296,7 +291,6 @@ public class ConnectScene extends Scene implements UIListener, NetListener {
      */
     @Override
     public void netDisconnected(int clientID) {
-        App.Log.write(logSource, LogLevel.Info, "Disconnected from server");
         connecting = false;
         connectUI.setEnabled(true);
         connectUI.setVisible(true);

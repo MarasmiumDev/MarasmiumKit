@@ -97,6 +97,9 @@ public class Vector implements Serializable, Cloneable {
      */
     @Override
     public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
         if (!(o instanceof Vector vector)) {
             return false;
         }

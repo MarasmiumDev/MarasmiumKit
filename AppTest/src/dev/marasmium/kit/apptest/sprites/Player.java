@@ -25,7 +25,7 @@ public class Player extends Sprite {
 
     /**
      * Initialize this player's position and animation
-     * @return
+     * @return Whether this player was initialized successfully
      */
     public boolean initialize() {
         return super.initialize(Vector.Zero(), 0.0f, Vector.Cartesian(50.0f, 50.0f), Angle.Zero(),

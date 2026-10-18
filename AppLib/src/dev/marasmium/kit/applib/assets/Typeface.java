@@ -34,7 +34,7 @@ public class Typeface implements Cloneable {
      */
     @Override
     public String toString() {
-        if (animationData == null) {
+        if (animationData == null || animationFilePath == null) {
             return "typeface(null)";
         }
         return "typeface(" + glyphs.size() + " glyphs, " + animationData.length + "B at \"" + animationFilePath + "\")";

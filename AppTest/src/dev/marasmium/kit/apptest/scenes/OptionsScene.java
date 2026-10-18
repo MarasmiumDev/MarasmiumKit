@@ -16,8 +16,6 @@ import dev.marasmium.kit.applib.data.Angle;
 import dev.marasmium.kit.applib.data.Vector;
 import dev.marasmium.kit.applib.graphics.Alignment;
 import dev.marasmium.kit.applib.graphics.Camera;
-import dev.marasmium.kit.applib.logging.LogLevel;
-import dev.marasmium.kit.applib.logging.LogSource;
 import dev.marasmium.kit.applib.windowing.Monitor;
 import dev.marasmium.kit.apptest.AppTest;
 import dev.marasmium.kit.apptest.sprites.Spark;
@@ -37,10 +35,6 @@ import java.util.NoSuchElementException;
  */
 public class OptionsScene extends Scene implements UIListener {
 
-    /**
-     * Logging system message source flag for this scene
-     */
-    private final LogSource logSource = new LogSource("Options Scene");
     /**
      * UI group for application options components
      */
@@ -176,12 +170,12 @@ public class OptionsScene extends Scene implements UIListener {
     public boolean enter(Scene lastScene) {
         int windowWidth = (int)App.Window.getDimensions().getX();
         int windowHeight = (int)App.Window.getDimensions().getY();
-        resolutionCarousel.setValue(Integer.toString(windowWidth) + "x" + Integer.toString(windowHeight));
+        resolutionCarousel.setValue(windowWidth + "x" + windowHeight);
         fullscreenSwitch.setOn(App.Window.isFullscreen());
         monitorCarousel.clearValues();
         ArrayList<Monitor> monitors = App.Window.getMonitors();
-        for (int i = 0; i < monitors.size(); i++) {
-            monitorCarousel.addValue(monitors.get(i).getIndex() + ": " + monitors.get(i).getDescription());
+        for (Monitor value : monitors) {
+            monitorCarousel.addValue(value.getIndex() + ": " + value.getDescription());
         }
         Monitor monitor = App.Window.getMonitor();
         monitorCarousel.setValue(monitor.getIndex() + ": " + monitor.getDescription());
@@ -189,8 +183,8 @@ public class OptionsScene extends Scene implements UIListener {
         soundEffectsVolumeSlider.setValue(App.Audio.soundEffects.getDefaultVolume());
         speakerCarousel.clearValues();
         ArrayList<AudioDevice> speakers = App.Audio.getSpeakers();
-        for (int i = 0; i < speakers.size(); i++) {
-            speakerCarousel.addValue(speakers.get(i).getIndex() + ": " + speakers.get(i).getName());
+        for (AudioDevice audioDevice : speakers) {
+            speakerCarousel.addValue(audioDevice.getIndex() + ": " + audioDevice.getName());
         }
         AudioDevice speaker = App.Audio.getSpeaker();
         speakerCarousel.setValue(speaker.getIndex() + ": " + speaker.getName());
@@ -279,6 +273,9 @@ public class OptionsScene extends Scene implements UIListener {
      */
     @Override
     public void componentEvent(int groupID, int componentID, UIEvent event) {
+        if (event == null) {
+            return;
+        }
         if (groupID == controlsUI.getGroupID()) {
             if (event == UIEvent.Button_Released) {
                 if (componentID == backButton.getComponentID()) {
@@ -290,22 +287,17 @@ public class OptionsScene extends Scene implements UIListener {
                     try {
                         Monitor defaultMonitor = App.Window.getMonitors().getFirst();
                         monitorCarousel.setValue(defaultMonitor.getIndex() + ": " + defaultMonitor.getDescription());
-                    } catch (NoSuchElementException _) {
-                        App.Log.write(logSource, LogLevel.Error, "No monitors available");
-                    }
+                    } catch (NoSuchElementException _) {}
                     musicVolumeSlider.setValue(AppConfiguration.AudioMusicVolumeDefault);
                     soundEffectsVolumeSlider.setValue(AppConfiguration.AudioSoundEffectsDefaultVolumeDefault);
                     try {
                         AudioDevice defaultSpeaker = App.Audio.getSpeakers().getFirst();
                         speakerCarousel.setValue(defaultSpeaker.getIndex() + ": " + defaultSpeaker.getName());
-                    } catch (NoSuchElementException _) {
-                        App.Log.write(logSource, LogLevel.Error, "No speakers available");
-                    }
+                    } catch (NoSuchElementException _) {}
                 } else if (componentID == saveButton.getComponentID()) {
                     Configuration configuration = App.Assets.getConfiguration(AppTest.Configuration_File_Path);
                     String[] resolutionStrs = resolutionCarousel.getValue().split("x");
                     if (resolutionStrs.length != 2) {
-                        App.Log.write(logSource, LogLevel.Error, "Invalid resolution");
                         return;
                     }
                     int windowWidth;
@@ -314,7 +306,6 @@ public class OptionsScene extends Scene implements UIListener {
                         windowWidth = Integer.parseInt(resolutionStrs[0]);
                         windowHeight = Integer.parseInt(resolutionStrs[1]);
                     } catch (NumberFormatException _) {
-                        App.Log.write(logSource, LogLevel.Error, "Invalid resolution dimensions");
                         return;
                     }
                     configuration.setVectorValue(AppConfiguration.WindowDimensions,
@@ -322,29 +313,26 @@ public class OptionsScene extends Scene implements UIListener {
                     configuration.setBooleanValue(AppConfiguration.WindowFullscreen, fullscreenSwitch.isOn());
                     String[] monitorStrs = monitorCarousel.getValue().split(":");
                     if (monitorStrs.length != 2) {
-                        App.Log.write(logSource, LogLevel.Error, "Invalid monitor");
+                        return;
                     }
                     int monitorIndex;
                     try {
                         monitorIndex = Integer.parseInt(monitorStrs[0]);
                     } catch (NumberFormatException _) {
-                        App.Log.write(logSource, LogLevel.Error, "Invalid monitor index");
                         return;
                     }
                     configuration.setIntegerValue(AppConfiguration.WindowMonitorIndex, monitorIndex);
                     configuration.setFloatValue(AppConfiguration.AudioMusicVolume, musicVolumeSlider.getValue());
                     configuration.setFloatValue(AppConfiguration.AudioSoundEffectsDefaultVolume,
                             soundEffectsVolumeSlider.getValue());
-                    String speakerStrs[] = speakerCarousel.getValue().split(":");
+                    String[] speakerStrs = speakerCarousel.getValue().split(":");
                     if (speakerStrs.length != 2) {
-                        App.Log.write(logSource, LogLevel.Error, "Invalid speaker");
                         return;
                     }
                     int speakerIndex;
                     try {
                         speakerIndex = Integer.parseInt(speakerStrs[0]);
                     } catch (NumberFormatException _) {
-                        App.Log.write(logSource, LogLevel.Error, "Invalid speaker index");
                         return;
                     }
                     configuration.setIntegerValue(AppConfiguration.AudioSpeakerIndex, speakerIndex);

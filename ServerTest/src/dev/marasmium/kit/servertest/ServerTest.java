@@ -89,6 +89,12 @@ public class ServerTest implements NetListener {
      */
     @Override
     public boolean netConnected(int clientID) {
+        if (server == null) {
+            return false;
+        }
+        if (playerMetrics == null) {
+            return false;
+        }
         server.getLog().write(logSource, LogLevel.Info, "Client " + clientID + " connected");
         playerMetrics.put(clientID, new PlayerMetrics());
         playerMetrics.get(clientID).initialize(Vector.Zero(), Vector.Zero());
@@ -102,17 +108,26 @@ public class ServerTest implements NetListener {
      */
     @Override
     public void netMessageReceived(int clientID, NetMessage message) {
+        if (server == null) {
+            return;
+        }
+        if (playerMetrics == null) {
+            return;
+        }
+        if (message == null) {
+            return;
+        }
         server.getLog().write(logSource, LogLevel.Info, "Client " + clientID + " sent message " + message);
         if (message.getType() == NetMessageTypes.Client_Hello) {
             NetMessage helloMessage = new NetMessage();
             helloMessage.initialize(NetMessageTypes.Server_Hello);
             helloMessage.addData(clientID);
             ArrayList<Integer> clientIDs = server.getClientIDs();
-            for (int i = 0; i < clientIDs.size(); i++) {
-                if (clientIDs.get(i) != clientID) {
-                    helloMessage.addData(clientIDs.get(i));
-                    helloMessage.addData(playerMetrics.get(clientIDs.get(i)).getPosition().clone());
-                    helloMessage.addData(playerMetrics.get(clientIDs.get(i)).getVelocity().clone());
+            for (Integer id : clientIDs) {
+                if (id != clientID) {
+                    helloMessage.addData(id);
+                    helloMessage.addData(playerMetrics.get(id).getPosition().clone());
+                    helloMessage.addData(playerMetrics.get(id).getVelocity().clone());
                 }
             }
             server.send(helloMessage, clientID);
@@ -140,6 +155,12 @@ public class ServerTest implements NetListener {
      */
     @Override
     public void netDisconnected(int clientID) {
+        if (server == null) {
+            return;
+        }
+        if (playerMetrics == null) {
+            return;
+        }
         server.getLog().write(logSource, LogLevel.Info, "Client " + clientID + " disconnected");
         NetMessage clientDisconnectedMessage = new NetMessage();
         clientDisconnectedMessage.initialize(NetMessageTypes.Server_Client_Disconnected);
@@ -149,13 +170,16 @@ public class ServerTest implements NetListener {
     }
 
     /**
-     * Intialize the test server's memory and prepare to start the server
+     * Initialize the test server's memory and prepare to start the server
      * @param commandLine The scanner for command line input
      * @param port The port for the server to listen for client connections on
      * @param maximumClients The maximum number of clients which can be connected to the server
      * @return Whether the server was initialized successfully
      */
     public boolean initialize(Scanner commandLine, int port, int maximumClients) {
+        if (commandLine == null) {
+            return false;
+        }
         this.commandLine = commandLine;
         server = new NetServer();
         if (!server.initialize("yyyy.MM.dd@HH:mm:ss.SSS", true, true, "MarasmiumKit-Server.log", this, port,
@@ -163,7 +187,7 @@ public class ServerTest implements NetListener {
             return false;
         }
         server.getLog().write(logSource, LogLevel.Info, "Initialized network server");
-        commandThread = new Thread(() -> takeCommands());
+        commandThread = new Thread(this::takeCommands);
         server.getLog().write(logSource, LogLevel.Info, "Initialized command-accepting thread");
         return true;
     }
@@ -172,6 +196,12 @@ public class ServerTest implements NetListener {
      * Start the test server
      */
     public void run() {
+        if (server == null) {
+            return;
+        }
+        if (commandThread == null) {
+            return;
+        }
         running = true;
         server.getLog().write(logSource, LogLevel.Info, "Starting server");
         server.run();
@@ -197,16 +227,27 @@ public class ServerTest implements NetListener {
             try {
                 commandThread.join();
             } catch (InterruptedException _) {
-                server.getLog().write(logSource, LogLevel.Warning, "Failed to stop command-accepting thread");
+                if (server != null) {
+                    server.getLog().write(logSource, LogLevel.Warning, "Failed to stop command-accepting thread");
+                }
                 success = false;
             }
             commandThread = null;
         }
-        server.getLog().write(logSource, LogLevel.Info, "Destroying network server");
-        if (!server.destroy()) {
-            success = false;
+        if (server != null) {
+            server.getLog().write(logSource, LogLevel.Info, "Destroying network server");
+            if (!server.destroy()) {
+                success = false;
+            }
+            server = null;
         }
-        server = null;
+        for (HashMap.Entry<Integer, PlayerMetrics> entry : playerMetrics.entrySet()) {
+            if (entry.getValue() != null) {
+                entry.getValue().destroy();
+            }
+        }
+        playerMetrics.clear();
+        playerMetrics = null;
         return success;
     }
 
@@ -214,6 +255,12 @@ public class ServerTest implements NetListener {
      * Read commands from the command line until the server is stopped
      */
     private void takeCommands() {
+        if (commandLine == null) {
+            return;
+        }
+        if (server == null) {
+            return;
+        }
         while (true) {
             String command;
             try {

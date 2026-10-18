@@ -55,6 +55,9 @@ public class Camera extends Body {
      */
     @Override
     public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
         if (!(o instanceof Camera camera)) {
             return false;
         }

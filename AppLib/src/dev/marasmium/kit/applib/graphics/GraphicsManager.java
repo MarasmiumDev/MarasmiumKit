@@ -28,8 +28,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ReadOnlyBufferException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -126,6 +124,9 @@ public class GraphicsManager implements GLEventListener {
      */
     @Override
     public void init(GLAutoDrawable drawable) {
+        if (drawable == null) {
+            return;
+        }
         GL3 gl3;
         try {
             gl3 = drawable.getGL().getGL3();
@@ -256,6 +257,9 @@ public class GraphicsManager implements GLEventListener {
      */
     @Override
     public void display(GLAutoDrawable drawable) {
+        if (drawable == null) {
+            return;
+        }
         if (!JOGLInitialized) {
             init(drawable);
         }
@@ -431,6 +435,9 @@ public class GraphicsManager implements GLEventListener {
      */
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
+        if (drawable == null) {
+            return;
+        }
         GL3 gl3;
         try {
             gl3 = drawable.getGL().getGL3();
@@ -452,6 +459,9 @@ public class GraphicsManager implements GLEventListener {
      */
     @Override
     public void dispose(GLAutoDrawable drawable) {
+        if (drawable == null) {
+            return;
+        }
         GL3 gl3;
         try {
             gl3 = drawable.getGL().getGL3();
@@ -574,7 +584,7 @@ public class GraphicsManager implements GLEventListener {
     public boolean submit(Camera camera, String text, String typefaceFilePath, Box boundingBox, float padding,
                           float depth, float size, Vector position, Alignment horizontalAlignment,
                           Alignment verticalAlignment) {
-        if (text == null || typefaceFilePath == null || boundingBox == null
+        if (camera == null || text == null || typefaceFilePath == null || boundingBox == null
                 || (position == null && (horizontalAlignment == null || verticalAlignment == null))) {
             return false;
         }

@@ -75,6 +75,9 @@ public abstract class Scene implements InputListener, NetListener {
      */
     @Override
     public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
         if (!(o instanceof Scene scene)) {
             return false;
         }

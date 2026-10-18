@@ -892,6 +892,9 @@ public class AssetManager {
      * @return The requested audio track either from memory or disk or null if the audio track could not be loaded
      */
     public AudioTrack getAudioTrack(String filePath) {
+        if (filePath == null) {
+            return null;
+        }
         if (!audioTracks.containsKey(filePath)) {
             if (!readAudioTrack(filePath)) {
                 return null;
@@ -907,6 +910,9 @@ public class AssetManager {
      * @return Whether the audio track was not in memory and was added successfully
      */
     public boolean addAudioTrack(String filePath, AudioTrack audioTrack) {
+        if (filePath == null || audioTrack == null) {
+            return false;
+        }
         if (audioTracks.containsKey(filePath)) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to add audio track, already cached");
             return false;
@@ -922,6 +928,9 @@ public class AssetManager {
      * @return Whether the audio track was in memory and was removed successfully
      */
     public boolean removeAudioTrack(String filePath) {
+        if (filePath == null) {
+            return false;
+        }
         if (!audioTracks.containsKey(filePath)) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "File path provided to free audio track not loaded");
             return false;
@@ -939,6 +948,9 @@ public class AssetManager {
      * @return The requested animation from memory or disk or null if the animation could not be loaded
      */
     public Animation getAnimation(String filePath) {
+        if (filePath == null) {
+            return null;
+        }
         if (!animations.containsKey(filePath)) {
             if (!readAnimation(filePath)) {
                 return null;
@@ -954,6 +966,9 @@ public class AssetManager {
      * @return Whether the animation was not in memory and was added successfully
      */
     public boolean addAnimation(String filePath, Animation animation) {
+        if (filePath == null || animation == null) {
+            return false;
+        }
         if (animations.containsKey(filePath)) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to add animation, already cached");
             return false;
@@ -969,6 +984,9 @@ public class AssetManager {
      * @return Whether the animation was in memory and was removed successfully
      */
     public boolean removeAnimation(String filePath) {
+        if (filePath == null) {
+            return false;
+        }
         App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing animation at \"", filePath, "\"");
         if (animations.get(filePath) != null) {
             animations.get(filePath).destroy();
@@ -982,6 +1000,9 @@ public class AssetManager {
      * @return The requested typeface from memory or disk or null if the typeface could not be loaded
      */
     public Typeface getTypeface(String filePath) {
+        if (filePath == null) {
+            return null;
+        }
         if (!typefaces.containsKey(filePath)) {
             if (!readTypeface(filePath)) {
                 return null;
@@ -997,6 +1018,9 @@ public class AssetManager {
      * @return Whether the typeface was not in memory and was added successfully
      */
     public boolean addTypeface(String filePath, Typeface typeface) {
+        if (filePath == null || typeface == null) {
+            return false;
+        }
         if (typefaces.containsKey(filePath)) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to add typeface, already cached");
             return false;
@@ -1022,6 +1046,9 @@ public class AssetManager {
      * @return Whether the typeface was in memory and was removed successfully
      */
     public boolean removeTypeface(String filePath) {
+        if (filePath == null) {
+            return false;
+        }
         if (!typefaces.containsKey(filePath)) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "File path provided to free typeface not loaded");
             return false;
@@ -1043,6 +1070,9 @@ public class AssetManager {
      * @return The requested configuration from memory or disk or null if the configuration could not be loaded
      */
     public Configuration getConfiguration(String filePath) {
+        if (filePath == null) {
+            return null;
+        }
         if (!configurations.containsKey(filePath)) {
             if (!readConfiguration(filePath)) {
                 return null;
@@ -1058,6 +1088,9 @@ public class AssetManager {
      * @return Whether the configuration was not in memory and was added successfully
      */
     public boolean addConfiguration(String filePath, Configuration configuration) {
+        if (filePath == null || configuration == null) {
+            return false;
+        }
         if (configurations.containsKey(filePath)) {
             App.Log.write(LogSource.Assets, LogLevel.Warning, "Failed to add configuration, already cached");
             return false;
@@ -1073,6 +1106,9 @@ public class AssetManager {
      * @return Whether the configuration was in memory and was removed successfully
      */
     public boolean removeConfiguration(String filePath) {
+        if (filePath == null) {
+            return false;
+        }
         App.Log.write(LogSource.Assets, LogLevel.Info, "Freeing configuration at \"", filePath, "\"");
         if (configurations.get(filePath) != null) {
             configurations.get(filePath).destroy();

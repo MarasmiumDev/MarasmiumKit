@@ -15,7 +15,6 @@ import dev.marasmium.kit.applib.graphics.Alignment;
 import dev.marasmium.kit.applib.graphics.Camera;
 import dev.marasmium.kit.applib.graphics.Sprite;
 import dev.marasmium.kit.applib.input.KeyboardKey;
-import dev.marasmium.kit.applib.networking.NetListener;
 import dev.marasmium.kit.applib.networking.NetMessage;
 import dev.marasmium.kit.apptest.AppTest;
 import dev.marasmium.kit.apptest.sprites.Player;
@@ -79,7 +78,6 @@ public class GameScene extends Scene implements UIListener {
         gameCamera.initialize(Vector.Zero(), 1.0f, Angle.Zero());
         player.initialize();
         player.playAnimation();
-        final String labelAnimationFilePath = "Assets/Animations/UI/Label/Label.animation";
         final String[] buttonAnimationFilePaths = new String[] {
                 "Assets/Animations/UI/Button/Button_Unselected.animation",
                 "Assets/Animations/UI/Button/Button_Selected.animation",
@@ -110,10 +108,7 @@ public class GameScene extends Scene implements UIListener {
         paused = false;
         NetMessage helloMessage = new NetMessage();
         helloMessage.initialize(NetMessageTypes.Client_Hello);
-        if (!App.Network.send(helloMessage)) {
-            return false;
-        }
-        return true;
+        return App.Network.send(helloMessage);
     }
 
     /**
@@ -149,7 +144,7 @@ public class GameScene extends Scene implements UIListener {
     @Override
     public void draw() {
         App.Graphics.submit(gameCamera, player);
-        App.Graphics.submit(gameCamera, new ArrayList<Sprite>(partners.values()));
+        App.Graphics.submit(gameCamera, new ArrayList<>(partners.values()));
         pauseUI.draw();
     }
 
@@ -267,6 +262,9 @@ public class GameScene extends Scene implements UIListener {
      */
     @Override
     public void componentEvent(int groupID, int componentID, UIEvent event) {
+        if (event == null) {
+            return;
+        }
         if (groupID == pauseUI.getGroupID()) {
             if (event == UIEvent.Button_Released) {
                 if (componentID == resumeButton.getComponentID()) {
@@ -287,6 +285,9 @@ public class GameScene extends Scene implements UIListener {
      * @param velocity The initial velocity of the other player in game coordinates
      */
     private void addPartner(int partnerID, Vector position, Vector velocity) {
+        if (position == null || velocity == null) {
+            return;
+        }
         partners.put(partnerID, new Sprite());
         partners.get(partnerID).initialize(position.clone(), 0.5f, Vector.Cartesian(50.0f, 50.0f),
                 Angle.Zero(), "Assets/Animations/Partner.animation");

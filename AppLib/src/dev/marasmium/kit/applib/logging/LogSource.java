@@ -48,7 +48,7 @@ public class LogSource {
     /**
      * The name of this log source
      */
-    private String sourceName;
+    private final String sourceName;
 
     /**
      * Construct a blank logging system message source flag with default name "-"

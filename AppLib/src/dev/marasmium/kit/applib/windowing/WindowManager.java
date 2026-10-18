@@ -228,6 +228,9 @@ public class WindowManager {
      * @return Whether the window dimensions could be set
      */
     public boolean setDimensions(Vector dimensions) {
+        if (frame == null || canvas == null) {
+            return false;
+        }
         if (dimensions == null) {
             App.Log.write(LogSource.Window, LogLevel.Warning, "No dimensions provided");
             return false;
@@ -324,6 +327,12 @@ public class WindowManager {
      * @return Whether the window switched modes (if necessary) successfully
      */
     public boolean setFullscreen(boolean fullscreen) {
+        if (frame == null || canvas == null) {
+            return false;
+        }
+        if (monitor == null) {
+            monitor = new Monitor(0);
+        }
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice[] gds;
         try {
@@ -388,6 +397,9 @@ public class WindowManager {
      * @param mouseCursorVisible Whether the mouse cursor should be visible
      */
     public boolean setMouseCursorVisible(boolean mouseCursorVisible) {
+        if (canvas == null) {
+            return false;
+        }
         if (mouseCursorVisible) {
             canvas.setCursor(Cursor.getDefaultCursor());
             App.Log.write(LogSource.Window, LogLevel.Info, "Set mouse cursor visible");

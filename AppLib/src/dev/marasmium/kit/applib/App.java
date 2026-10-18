@@ -78,12 +78,21 @@ public class App {
      * @return Whether the application was initialized successfully
      */
     public static boolean Initialize(String configurationFilePath, Scene initialScene) {
+        if (configurationFilePath == null) {
+            return false;
+        }
+        if (initialScene == null) {
+            return false;
+        }
         try {
             System.setProperty("sun.java2d.uiScale.enabled", "false");
         } catch (IllegalArgumentException _) {
             return false;
         }
         Configuration configuration = ReadConfiguration(configurationFilePath);
+        if (configuration == null) {
+            return false;
+        }
         String logTimestampFormat;
         boolean logConsoleOutputEnabled;
         boolean logOutputFileEnabled;
@@ -324,6 +333,9 @@ public class App {
      * @return The configuration read from disk or the default configuration generated
      */
     private static Configuration ReadConfiguration(String configurationFilePath) {
+        if (configurationFilePath == null) {
+            return null;
+        }
         Configuration configuration = Assets.getConfiguration(configurationFilePath);
         if (configuration != null) {
             return configuration;

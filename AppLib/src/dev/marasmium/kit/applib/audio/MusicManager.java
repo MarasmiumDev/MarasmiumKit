@@ -224,8 +224,10 @@ public class MusicManager {
             try {
                 playThread.join();
             } catch (InterruptedException _) {
-                App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to stop playback thread for music track \"",
-                        filePath, "\"");
+                if (filePath != null) {
+                    App.Log.write(LogSource.Audio, LogLevel.Warning, "Failed to stop playback thread for music ",
+                            "track \"", filePath, "\"");
+                }
                 success = false;
             }
             playThread = null;

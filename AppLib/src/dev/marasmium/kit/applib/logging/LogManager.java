@@ -188,9 +188,6 @@ public class LogManager {
      * @return The current timestamp format
      */
     public String getTimestampFormat() {
-        if (timestampFormat == null) {
-            return "";
-        }
         return timestampFormat;
     }
 
@@ -201,6 +198,9 @@ public class LogManager {
      */
     public boolean setTimestampFormat(String timestampFormat) {
         if (timestampFormat == null) {
+            return false;
+        }
+        if (timestampFormat.isEmpty()) {
             return false;
         }
         try {
@@ -254,9 +254,6 @@ public class LogManager {
      * @return The output file path
      */
     public String getOutputFilePath() {
-        if (outputFilePath == null) {
-            return "";
-        }
         return outputFilePath;
     }
 

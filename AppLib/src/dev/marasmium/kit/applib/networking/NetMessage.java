@@ -77,6 +77,12 @@ public class NetMessage implements Serializable, Cloneable {
      * @return Whether the object was added successfully
      */
     public boolean addData(Object data) {
+        if (this.data == null) {
+            this.data = new byte[0];
+        }
+        if (data == null) {
+            return false;
+        }
         byte[] bytes;
         try {
             ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
@@ -89,11 +95,15 @@ public class NetMessage implements Serializable, Cloneable {
         } catch (IOException | NullPointerException _) {
             return false;
         }
-        byte[] copy = new byte[this.data.length];
-        System.arraycopy(this.data, 0, copy, 0, this.data.length);
-        this.data = new byte[copy.length + bytes.length];
-        System.arraycopy(copy, 0, this.data, 0, copy.length);
-        System.arraycopy(bytes, 0, this.data, copy.length, bytes.length);
+        try {
+            byte[] copy = new byte[this.data.length];
+            System.arraycopy(this.data, 0, copy, 0, this.data.length);
+            this.data = new byte[copy.length + bytes.length];
+            System.arraycopy(copy, 0, this.data, 0, copy.length);
+            System.arraycopy(bytes, 0, this.data, copy.length, bytes.length);
+        } catch (IndexOutOfBoundsException | ArrayStoreException _) {
+            return false;
+        }
         return true;
     }
 
@@ -102,6 +112,9 @@ public class NetMessage implements Serializable, Cloneable {
      * @return The removed object
      */
     public Object removeData() {
+        if (this.data == null) {
+            return null;
+        }
         if (this.data.length == 0) {
             return null;
         }
@@ -117,10 +130,14 @@ public class NetMessage implements Serializable, Cloneable {
         } catch (IOException | IllegalStateException | NullPointerException | ClassNotFoundException _) {
             return null;
         }
-        byte[] copy = new byte[this.data.length];
-        System.arraycopy(this.data, 0, copy, 0, this.data.length);
-        this.data = new byte[copy.length - dataSize];
-        System.arraycopy(copy, dataSize, this.data, 0, copy.length - dataSize);
+        try {
+            byte[] copy = new byte[this.data.length];
+            System.arraycopy(this.data, 0, copy, 0, this.data.length);
+            this.data = new byte[copy.length - dataSize];
+            System.arraycopy(copy, dataSize, this.data, 0, copy.length - dataSize);
+        } catch (IndexOutOfBoundsException | ArrayStoreException _) {
+            return null;
+        }
         return data;
     }
 
@@ -166,7 +183,11 @@ public class NetMessage implements Serializable, Cloneable {
             return false;
         }
         this.data = new byte[data.length];
-        System.arraycopy(data, 0, this.data, 0, data.length);
+        try {
+            System.arraycopy(data, 0, this.data, 0, data.length);
+        } catch (IndexOutOfBoundsException | ArrayStoreException _) {
+            return false;
+        }
         return true;
     }
 

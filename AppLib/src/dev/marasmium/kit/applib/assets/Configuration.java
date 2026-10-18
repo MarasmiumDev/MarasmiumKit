@@ -400,6 +400,9 @@ public class Configuration implements Cloneable {
      * @return Whether the name was found and was removed successfully
      */
     public boolean removeValue(String valueName) {
+        if (values == null) {
+            return false;
+        }
         if (!values.containsKey(valueName)) {
             return false;
         }

@@ -28,7 +28,7 @@ public class LogLevel {
     /**
      * The name of this log level
      */
-    private String levelName;
+    private final String levelName;
 
     /**
      * Construct a blank logging system message level flag with default name "-"
