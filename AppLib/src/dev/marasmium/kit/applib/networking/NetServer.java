@@ -173,6 +173,7 @@ public class NetServer implements NetListener {
                 try {
                     log.write(logSource, LogLevel.Info, "Listening on port ", port);
                     socket = serverSocket.accept();
+                    socket.setTcpNoDelay(true);
                 } catch (IOException | IllegalBlockingModeException e) {
                     log.write(logSource, LogLevel.Warning, "Failed to accept client");
                     continue;

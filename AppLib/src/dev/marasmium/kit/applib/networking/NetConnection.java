@@ -113,6 +113,7 @@ public class NetConnection {
         socket = new Socket();
         try {
             socket.connect(address, timeout * 1000);
+            socket.setTcpNoDelay(true);
         } catch (IOException | IllegalBlockingModeException | IllegalArgumentException e) {
             connectionFailed = true;
             disconnect();
