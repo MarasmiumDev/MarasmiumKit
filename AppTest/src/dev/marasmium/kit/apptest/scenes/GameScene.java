@@ -231,14 +231,9 @@ public class GameScene extends Scene implements UIListener {
             Vector position = (Vector)message.removeData();
             Vector velocity = (Vector)message.removeData();
             int partnerID = (int)message.removeData();
-            if (partnerID == this.clientID) {
-                player.setPosition(position.clone());
-                player.setVelocity(velocity.clone());
-            } else {
-                if (partners.containsKey(partnerID)) {
-                    partners.get(partnerID).setPosition(position.clone());
-                    partners.get(partnerID).setVelocity(velocity.clone());
-                }
+            if (partners.containsKey(partnerID)) {
+                partners.get(partnerID).setPosition(position.clone());
+                partners.get(partnerID).setVelocity(velocity.clone());
             }
         } else if (message.getType() == NetMessageTypes.Server_Client_Disconnected) {
             partners.remove((int)message.removeData());

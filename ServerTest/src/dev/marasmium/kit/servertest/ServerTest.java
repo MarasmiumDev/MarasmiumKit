@@ -145,7 +145,7 @@ public class ServerTest implements NetListener {
             movementMessage.addData(position.clone());
             movementMessage.addData(velocity.clone());
             movementMessage.addData(clientID);
-            server.broadcast(movementMessage);
+            server.broadcast(movementMessage, clientID);
         }
     }
 
