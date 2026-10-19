@@ -117,7 +117,6 @@ public class ServerTest implements NetListener {
         if (message == null) {
             return;
         }
-        server.getLog().write(logSource, LogLevel.Info, "Client " + clientID + " sent message " + message);
         if (message.getType() == NetMessageTypes.Client_Hello) {
             NetMessage helloMessage = new NetMessage();
             helloMessage.initialize(NetMessageTypes.Server_Hello);

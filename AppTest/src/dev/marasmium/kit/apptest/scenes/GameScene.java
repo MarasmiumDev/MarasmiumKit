@@ -45,6 +45,10 @@ public class GameScene extends Scene implements UIListener {
      */
     private final Vector playerVelocity = Vector.Zero();
     /**
+     * Timer for sending continuous updates to the server
+     */
+    private float updateTimer = 0.0f;
+    /**
      * The client ID of the player assigned by the server
      */
     private int clientID = 0;
@@ -155,7 +159,9 @@ public class GameScene extends Scene implements UIListener {
     @Override
     public void update(float deltaFrames) {
         player.update(deltaFrames);
-        if (!player.getVelocity().equals(playerVelocity)) {
+        updateTimer += deltaFrames;
+        if (!player.getVelocity().equals(playerVelocity) || updateTimer > App.Graphics.getTargetFPS() / 20.0f) {
+            updateTimer = 0.0f;
             NetMessage movementMessage = new NetMessage();
             movementMessage.initialize(NetMessageTypes.Client_Movement);
             movementMessage.addData(player.getPosition().clone());
