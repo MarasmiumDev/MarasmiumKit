@@ -139,8 +139,8 @@ public class ConnectScene extends Scene implements UIListener, NetListener {
         connectButton.setEnabled(true);
         connectingUI.setEnabled(false);
         connectingUI.setVisible(false);
-        addressTextBox.setText("127.0.0.1");
-        portTextBox.setText("222");
+        addressTextBox.setText("");
+        portTextBox.setText("");
         return true;
     }
 
