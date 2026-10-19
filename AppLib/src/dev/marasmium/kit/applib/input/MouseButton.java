@@ -15,9 +15,20 @@ public enum MouseButton {
     /**
      * Positioned buttons
      */
-    Left("BUTTON1"),
-    Middle("BUTTON2"),
-    Right("BUTTON3");
+    Left("Left"),
+    Middle("Middle"),
+    Right("Right"),
+    /**
+     * Enumerated buttons
+     */
+    Button_One("BUTTON1"),
+    Button_Two("BUTTON2"),
+    Button_Three("BUTTON3"),
+    Button_Four("BUTTON4"),
+    Button_Five("BUTTON5"),
+    Button_Six("BUTTON6"),
+    Button_Seven("BUTTON7"),
+    Button_Eight("BUTTON8");
 
     /**
      * The field name of the Java AWT virtual mouse button code for this button

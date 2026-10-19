@@ -14,6 +14,7 @@ import dev.marasmium.kit.applib.graphics.Camera;
 import dev.marasmium.kit.applib.logging.LogLevel;
 import dev.marasmium.kit.applib.logging.LogSource;
 
+import javax.swing.SwingUtilities;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -95,6 +96,13 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
         if (button == null) {
             return;
         }
+        if (SwingUtilities.isLeftMouseButton(e)) {
+            button = MouseButton.Left;
+        } else if (SwingUtilities.isMiddleMouseButton(e)) {
+            button = MouseButton.Middle;
+        } else if (SwingUtilities.isRightMouseButton(e)) {
+            button = MouseButton.Right;
+        }
         if (!buttonStates.containsKey(button)) {
             buttonStates.put(button, new ButtonState());
         }
@@ -113,6 +121,13 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
         MouseButton button = AWTButtonCodes.get(e.getButton());
         if (button == null) {
             return;
+        }
+        if (SwingUtilities.isLeftMouseButton(e)) {
+            button = MouseButton.Left;
+        } else if (SwingUtilities.isMiddleMouseButton(e)) {
+            button = MouseButton.Middle;
+        } else if (SwingUtilities.isRightMouseButton(e)) {
+            button = MouseButton.Right;
         }
         if (!buttonStates.containsKey(button)) {
             buttonStates.put(button, new ButtonState());
@@ -197,9 +212,7 @@ public class MouseManager implements MouseListener, MouseMotionListener, MouseWh
             try {
                 field = MouseEvent.class.getField(button.toString());
             } catch (NoSuchFieldException _) {
-                App.Log.write(LogSource.Input, LogLevel.Error, "Failed to map \"", button, "\" mouse button, no AWT ",
-                        "field");
-                return false;
+                continue;
             }
             int AWTButtonCode;
             try {
