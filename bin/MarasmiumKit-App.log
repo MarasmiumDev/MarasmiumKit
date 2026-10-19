@@ -1,0 +1,203 @@
+2026.10.19@00:14:39.274: [Logging System] [Information] Initialized logging system
+2026.10.19@00:14:39.274: [MarasmiumKit App] [Information] Initialized logging system
+2026.10.19@00:14:39.276: [User-Input Management System] [Information] Initialized keyboard user-input management system
+2026.10.19@00:14:39.276: [User-Input Management System] [Information] Initialized mouse user-input management system
+2026.10.19@00:14:39.276: [User-Input Management System] [Information] Initialized user-input management system
+2026.10.19@00:14:39.276: [MarasmiumKit App] [Information] Initialized user-input management system
+2026.10.19@00:14:40.219: [Windowing System] [Information] Generated new window frame
+2026.10.19@00:14:40.220: [Windowing System] [Information] Set window title "MarasmiumKit App"
+2026.10.19@00:14:40.221: [Windowing System] [Information] Set window dimensions vector(0.0, 0.0)
+2026.10.19@00:14:40.222: [Windowing System] [Information] Set fullscreen monitor index monitor(index 0, "Display 1", dimensions vector(1920.0, 1243.0), position vector(0.0, 0.0))
+2026.10.19@00:14:40.223: [Windowing System] [Information] Set window dimensions vector(640.0, 360.0)
+2026.10.19@00:14:40.224: [Windowing System] [Information] Set mouse cursor visible
+2026.10.19@00:14:40.224: [Windowing System] [Information] Initialized windowing system
+2026.10.19@00:14:40.224: [MarasmiumKit App] [Information] Initialized windowing system
+2026.10.19@00:14:40.224: [Network Client] [Information] Set maximum messages to process per update -1
+2026.10.19@00:14:40.224: [Network Client] [Information] Initialized network client
+2026.10.19@00:14:40.224: [MarasmiumKit App] [Information] Initialized network client
+2026.10.19@00:14:40.231: [Audio System] [Information] Setting audio output speaker speaker(5, "MacBook Air Speakers")
+2026.10.19@00:14:40.232: [Audio System] [Information] Stopping all sound effects
+2026.10.19@00:14:40.232: [Audio System] [Information] Set audio output speaker speaker(5, "MacBook Air Speakers")
+2026.10.19@00:14:40.232: [Audio System] [Information] Set default sound effect volume 0%
+2026.10.19@00:14:40.232: [Audio System] [Information] Initialized sound effects audio subsystem
+2026.10.19@00:14:40.232: [Audio System] [Information] Set music volume 0%
+2026.10.19@00:14:40.232: [Audio System] [Information] Initialized music audio subsystem
+2026.10.19@00:14:40.232: [Audio System] [Information] Initialize audio system
+2026.10.19@00:14:40.232: [Graphics System] [Information] Target FPS set to 60 -> FPMS=0.06, MSPF=16
+2026.10.19@00:14:40.232: [Graphics System] [Information] Maximum UPF set to 8
+2026.10.19@00:14:40.233: [Graphics System] [Information] Set clear colour to colour(0, 0, 0, 255)
+2026.10.19@00:14:40.233: [Graphics System] [Information] Initialized graphics system
+2026.10.19@00:14:40.233: [MarasmiumKit App] [Information] Initialized graphics system
+2026.10.19@00:14:40.233: [MarasmiumKit App] [Information] Scene 0 not added
+2026.10.19@00:14:40.233: [MarasmiumKit App] [Information] Adding scene 0
+2026.10.19@00:14:40.233: [MarasmiumKit App] [Information] Scene 0 requires initialization
+2026.10.19@00:14:40.234: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Button/Button_Unselected.animation"
+2026.10.19@00:14:40.234: [MarasmiumKit App] [Information] Entering new scene 1
+2026.10.19@00:14:40.235: [Asset Management System] [Information] Adding audio track at "Assets/Audio/Music.audio"
+2026.10.19@00:14:40.235: [Audio System] [Information] Loaded music track: audio(24000Hz, 2BPS, 1 channels, 1310166B, 27.295124s)
+2026.10.19@00:14:40.245: [Audio System] [Information] Set music volume 0%
+2026.10.19@00:14:40.246: [Audio System] [Information] Playing music track "Assets/Audio/Music.audio"
+2026.10.19@00:14:40.246: [User-Input Management System] [Information] Adding user-input listener
+2026.10.19@00:14:40.246: [Network Client] [Information] Adding network listener
+2026.10.19@00:14:40.246: [MarasmiumKit App] [Information] Set initial scene
+2026.10.19@00:14:40.246: [MarasmiumKit App] [Information] Initialized MarasmiumKit application framework
+2026.10.19@00:14:40.247: [MarasmiumKit App] [Information] Starting main application loop
+2026.10.19@00:14:40.251: [Asset Management System] [Information] Adding typeface at "Assets/Typefaces/Silkscreen.typeface"
+2026.10.19@00:14:40.282: [Graphics System] [Information] Initializing OpenGL parameters
+2026.10.19@00:14:40.284: [Graphics System] [Information] OpenGL version "4.1 Metal - 91.7"
+2026.10.19@00:14:40.290: [Graphics System] [Information] Compiled vertex shader 4
+2026.10.19@00:14:40.290: [Graphics System] [Information] Compiled fragment shader 5
+2026.10.19@00:14:40.291: [Graphics System] [Information] Generated shader program 6
+2026.10.19@00:14:40.293: [Graphics System] [Information] Generated VAO 2, VBO 1, and IBO 2
+2026.10.19@00:14:40.296: [Graphics System] [Information] Resized OpenGL viewport 640x360
+2026.10.19@00:14:40.308: [Graphics System] [Information] Generated texture ID 3 for animation animation(0FPS, 95 frames arranged vector(95.0, 1.0), vector(100.0, 140.0)pixels, 5320000B, texture ID 0)
+2026.10.19@00:14:40.312: [Graphics System] [Information] Resizing OpenGL vertex buffer to 640B
+2026.10.19@00:14:40.315: [Graphics System] [Information] Resizing OpenGL index buffer to 192B
+2026.10.19@00:14:40.316: [Graphics System] [Information] Generated texture ID 4 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(1.0, 1.0)pixels, 8B, texture ID 0)
+2026.10.19@00:14:40.331: [Graphics System] [Information] Resized OpenGL viewport 640x360
+2026.10.19@00:14:40.336: [Asset Management System] [Information] Adding animation at "Assets/Animations/Spark.animation"
+2026.10.19@00:14:40.338: [Graphics System] [Information] Generated texture ID 7 for animation animation(2FPS, 8 frames arranged vector(8.0, 1.0), vector(16.0, 16.0)pixels, 8192B, texture ID 0)
+2026.10.19@00:14:40.775: [Graphics System] [Information] Resizing OpenGL vertex buffer to 1280B
+2026.10.19@00:14:40.776: [Graphics System] [Information] Resizing OpenGL index buffer to 384B
+2026.10.19@00:14:41.409: [Graphics System] [Information] Resizing OpenGL vertex buffer to 2560B
+2026.10.19@00:14:41.409: [Graphics System] [Information] Resizing OpenGL index buffer to 768B
+2026.10.19@00:14:42.622: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Button/Button_Selected.animation"
+2026.10.19@00:14:42.622: [Graphics System] [Information] Generated texture ID 6 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(1.0, 1.0)pixels, 8B, texture ID 0)
+2026.10.19@00:14:42.800: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Button/Button_Pressed.animation"
+2026.10.19@00:14:42.801: [Graphics System] [Information] Generated texture ID 8 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(1.0, 1.0)pixels, 8B, texture ID 0)
+2026.10.19@00:14:42.877: [Asset Management System] [Information] Adding audio track at "Assets/Audio/Click.audio"
+2026.10.19@00:14:42.880: [MarasmiumKit App] [Information] Leaving current scene 1
+2026.10.19@00:14:42.880: [User-Input Management System] [Information] Removing user-input listener
+2026.10.19@00:14:42.880: [Network Client] [Information] Removing network listener
+2026.10.19@00:14:42.880: [MarasmiumKit App] [Information] Scene 0 not added
+2026.10.19@00:14:42.880: [MarasmiumKit App] [Information] Adding scene 0
+2026.10.19@00:14:42.880: [MarasmiumKit App] [Information] Scene 0 requires initialization
+2026.10.19@00:14:42.880: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Text_Box/Text_Box_Unselected.animation"
+2026.10.19@00:14:42.880: [MarasmiumKit App] [Information] Entering new scene 2
+2026.10.19@00:14:42.881: [User-Input Management System] [Information] Adding user-input listener
+2026.10.19@00:14:42.881: [Network Client] [Information] Adding network listener
+2026.10.19@00:14:42.881: [Graphics System] [Information] Generated texture ID 10 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(1.0, 1.0)pixels, 8B, texture ID 0)
+2026.10.19@00:14:42.882: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Text_Box/Text_Box_Cursor.animation"
+2026.10.19@00:14:45.482: [Asset Management System] [Information] Adding animation at "Assets/Animations/UI/Text_Box/Text_Box_Selected.animation"
+2026.10.19@00:14:45.482: [Graphics System] [Information] Generated texture ID 12 for animation animation(12FPS, 2 frames arranged vector(2.0, 1.0), vector(1.0, 1.0)pixels, 8B, texture ID 0)
+2026.10.19@00:14:45.483: [Graphics System] [Information] Generated texture ID 13 for animation animation(2FPS, 2 frames arranged vector(2.0, 1.0), vector(1.0, 1.0)pixels, 8B, texture ID 0)
+2026.10.19@00:14:46.456: [Graphics System] [Information] Resizing OpenGL vertex buffer to 5120B
+2026.10.19@00:14:46.456: [Graphics System] [Information] Resizing OpenGL index buffer to 1536B
+2026.10.19@00:14:55.236: [Network Client] [Information] Attempting connection to 192.168.2.222:12345 within 10s
+2026.10.19@00:14:55.237: [Network Client] [Information] Started connection thread
+2026.10.19@00:14:55.557: [Network Client] [Information] Connected to 192.168.2.222:12345
+2026.10.19@00:14:55.557: [MarasmiumKit App] [Information] Leaving current scene 2
+2026.10.19@00:14:55.557: [User-Input Management System] [Information] Removing user-input listener
+2026.10.19@00:14:55.557: [Network Client] [Information] Removing network listener
+2026.10.19@00:14:55.557: [MarasmiumKit App] [Information] Scene 0 not added
+2026.10.19@00:14:55.557: [MarasmiumKit App] [Information] Adding scene 0
+2026.10.19@00:14:55.557: [MarasmiumKit App] [Information] Scene 0 requires initialization
+2026.10.19@00:14:55.557: [MarasmiumKit App] [Information] Entering new scene 3
+2026.10.19@00:14:55.558: [User-Input Management System] [Information] Adding user-input listener
+2026.10.19@00:14:55.558: [Network Client] [Information] Adding network listener
+2026.10.19@00:14:55.558: [Asset Management System] [Information] Adding animation at "Assets/Animations/Player.animation"
+2026.10.19@00:14:55.559: [Graphics System] [Information] Generated texture ID 11 for animation animation(3FPS, 4 frames arranged vector(4.0, 1.0), vector(50.0, 50.0)pixels, 40000B, texture ID 0)
+2026.10.19@00:14:55.594: [Asset Management System] [Information] Adding animation at "Assets/Animations/Partner.animation"
+2026.10.19@00:14:55.594: [Graphics System] [Information] Generated texture ID 15 for animation animation(3FPS, 4 frames arranged vector(4.0, 1.0), vector(50.0, 50.0)pixels, 40000B, texture ID 0)
+2026.10.19@00:15:34.214: [MarasmiumKit App] [Information] Leaving current scene 3
+2026.10.19@00:15:34.215: [User-Input Management System] [Information] Removing user-input listener
+2026.10.19@00:15:34.215: [Network Client] [Information] Removing network listener
+2026.10.19@00:15:34.215: [MarasmiumKit App] [Information] Entering new scene 2
+2026.10.19@00:15:34.215: [User-Input Management System] [Information] Adding user-input listener
+2026.10.19@00:15:34.215: [Network Client] [Information] Adding network listener
+2026.10.19@00:15:34.215: [Network Client] [Information] Disconnected
+2026.10.19@00:15:46.813: [MarasmiumKit App] [Information] Leaving current scene 2
+2026.10.19@00:15:46.813: [User-Input Management System] [Information] Removing user-input listener
+2026.10.19@00:15:46.813: [Network Client] [Information] Removing network listener
+2026.10.19@00:15:46.813: [MarasmiumKit App] [Information] Entering new scene 1
+2026.10.19@00:15:46.813: [User-Input Management System] [Information] Adding user-input listener
+2026.10.19@00:15:46.813: [Network Client] [Information] Adding network listener
+2026.10.19@00:15:48.009: [MarasmiumKit App] [Information] Finished main application loop
+2026.10.19@00:15:48.010: [MarasmiumKit App] [Information] Destroying MarasmiumKit application framework
+2026.10.19@00:15:48.010: [MarasmiumKit App] [Information] Freeing all scenes
+2026.10.19@00:15:48.010: [MarasmiumKit App] [Information] Destroying graphics system
+2026.10.19@00:15:48.010: [Graphics System] [Information] Destroying graphics system
+2026.10.19@00:15:48.010: [MarasmiumKit App] [Information] Destroying audio system
+2026.10.19@00:15:48.010: [Audio System] [Information] Destroying audio system
+2026.10.19@00:15:48.010: [Audio System] [Information] Destroying sound effects audio subsystem
+2026.10.19@00:15:48.010: [Audio System] [Information] Stopping all sound effects
+2026.10.19@00:15:48.011: [Audio System] [Information] Destroying music audio subsystem
+2026.10.19@00:15:48.011: [Audio System] [Information] Stopping music track "Assets/Audio/Music.audio"
+2026.10.19@00:15:48.063: [MarasmiumKit App] [Information] Destroying network client
+2026.10.19@00:15:48.063: [Network Client] [Information] Destroying network client
+2026.10.19@00:15:48.064: [Network Client] [Warning] Currently connecting or connected to :0
+2026.10.19@00:15:48.064: [Network Client] [Information] Disconnecting network client from :0
+2026.10.19@00:15:48.064: [Network Client] [Information] Stopped connection thread
+2026.10.19@00:15:48.064: [Network Client] [Information] Destroyed network client
+2026.10.19@00:15:48.064: [MarasmiumKit App] [Information] Destroying windowing system
+2026.10.19@00:15:48.064: [Windowing System] [Information] Destroying windowing system
+2026.10.19@00:15:48.067: [Graphics System] [Information] Disposed of 10 OpenGL texture IDs
+2026.10.19@00:15:48.074: [Graphics System] [Information] Disposed of OpenGL utilities
+2026.10.19@00:15:48.085: [MarasmiumKit App] [Information] Destroying user-input management system
+2026.10.19@00:15:48.085: [User-Input Management System] [Information] Destroying user-input management system
+2026.10.19@00:15:48.086: [User-Input Management System] [Information] Destroying mouse user-input management system
+2026.10.19@00:15:48.086: [User-Input Management System] [Information] Destroying keyboard user-input management system
+2026.10.19@00:15:48.086: [MarasmiumKit App] [Information] Destroying asset management system
+2026.10.19@00:15:48.086: [Asset Management System] [Information] Destroying asset management system
+2026.10.19@00:15:48.086: [Asset Management System] [Information] Freeing 2 audio tracks
+2026.10.19@00:15:48.086: [Asset Management System] [Information] Freeing 10 animations
+2026.10.19@00:15:48.086: [Asset Management System] [Information] Freeing 1 typefaces
+2026.10.19@00:15:48.086: [Asset Management System] [Information] Freeing 1 configurations
+2026.10.19@00:15:48.086: [MarasmiumKit App] [Information] Destroying logging system
+2026.10.19@00:15:48.086: [Logging System] [Information] Destroying logging system
+                                                                                                                                                                                                                                                                                                                                                  2026.10.19@00:14:51.118: [Network Client] [Information] Attempting connection to 192.168.2.222:12345 within 10s
+2026.10.19@00:14:51.121: [Network Client] [Information] Started connection thread
+2026.10.19@00:14:51.469: [Network Client] [Information] Connected to 192.168.2.222:12345
+2026.10.19@00:14:51.469: [MarasmiumKit App] [Information] Leaving current scene 3
+2026.10.19@00:14:51.469: [User-Input Management System] [Information] Removing user-input listener
+2026.10.19@00:14:51.469: [Network Client] [Information] Removing network listener
+2026.10.19@00:14:51.469: [MarasmiumKit App] [Information] Scene 0 not added
+2026.10.19@00:14:51.469: [MarasmiumKit App] [Information] Adding scene 0
+2026.10.19@00:14:51.469: [MarasmiumKit App] [Information] Scene 0 requires initialization
+2026.10.19@00:14:51.470: [MarasmiumKit App] [Information] Entering new scene 4
+2026.10.19@00:14:51.471: [User-Input Management System] [Information] Adding user-input listener
+2026.10.19@00:14:51.471: [Network Client] [Information] Adding network listener
+2026.10.19@00:14:51.472: [Asset Management System] [Information] Adding animation at "Assets/Animations/Player.animation"
+2026.10.19@00:14:51.472: [Graphics System] [Information] Generated texture ID 24 for animation animation(3FPS, 4 frames arranged vector(4.0, 1.0), vector(50.0, 50.0)pixels, 40000B, texture ID 0)
+2026.10.19@00:14:53.237: [Asset Management System] [Information] Adding animation at "Assets/Animations/Partner.animation"
+2026.10.19@00:14:53.237: [Graphics System] [Information] Generated texture ID 25 for animation animation(3FPS, 4 frames arranged vector(4.0, 1.0), vector(50.0, 50.0)pixels, 40000B, texture ID 0)
+2026.10.19@00:15:34.204: [MarasmiumKit App] [Information] Leaving current scene 4
+2026.10.19@00:15:34.204: [User-Input Management System] [Information] Removing user-input listener
+2026.10.19@00:15:34.205: [Network Client] [Information] Removing network listener
+2026.10.19@00:15:34.205: [MarasmiumKit App] [Information] Entering new scene 3
+2026.10.19@00:15:34.205: [User-Input Management System] [Information] Adding user-input listener
+2026.10.19@00:15:34.205: [Network Client] [Information] Adding network listener
+2026.10.19@00:15:34.205: [Network Client] [Information] Disconnected
+2026.10.19@00:15:43.069: [MarasmiumKit App] [Information] Finished main application loop
+2026.10.19@00:15:43.069: [MarasmiumKit App] [Information] Destroying MarasmiumKit application framework
+2026.10.19@00:15:43.069: [MarasmiumKit App] [Information] Freeing all scenes
+2026.10.19@00:15:43.069: [MarasmiumKit App] [Information] Destroying graphics system
+2026.10.19@00:15:43.070: [Graphics System] [Information] Destroying graphics system
+2026.10.19@00:15:43.070: [MarasmiumKit App] [Information] Destroying audio system
+2026.10.19@00:15:43.070: [Audio System] [Information] Destroying audio system
+2026.10.19@00:15:43.070: [Audio System] [Information] Destroying sound effects audio subsystem
+2026.10.19@00:15:43.070: [Audio System] [Information] Stopping all sound effects
+2026.10.19@00:15:43.070: [Audio System] [Information] Destroying music audio subsystem
+2026.10.19@00:15:43.070: [Audio System] [Information] Stopping music track "Assets/Audio/Music.audio"
+2026.10.19@00:15:43.074: [MarasmiumKit App] [Information] Destroying network client
+2026.10.19@00:15:43.074: [Network Client] [Information] Destroying network client
+2026.10.19@00:15:43.074: [Network Client] [Warning] Currently connecting or connected to :0
+2026.10.19@00:15:43.074: [Network Client] [Information] Disconnecting network client from :0
+2026.10.19@00:15:43.074: [Network Client] [Information] Stopped connection thread
+2026.10.19@00:15:43.074: [Network Client] [Information] Destroyed network client
+2026.10.19@00:15:43.074: [MarasmiumKit App] [Information] Destroying windowing system
+2026.10.19@00:15:43.074: [Windowing System] [Information] Destroying windowing system
+2026.10.19@00:15:43.075: [Graphics System] [Information] Disposed of 20 OpenGL texture IDs
+2026.10.19@00:15:43.082: [Graphics System] [Information] Disposed of OpenGL utilities
+2026.10.19@00:15:43.088: [MarasmiumKit App] [Information] Destroying user-input management system
+2026.10.19@00:15:43.089: [User-Input Management System] [Information] Destroying user-input management system
+2026.10.19@00:15:43.089: [User-Input Management System] [Information] Destroying mouse user-input management system
+2026.10.19@00:15:43.089: [User-Input Management System] [Information] Destroying keyboard user-input management system
+2026.10.19@00:15:43.089: [MarasmiumKit App] [Information] Destroying asset management system
+2026.10.19@00:15:43.089: [Asset Management System] [Information] Destroying asset management system
+2026.10.19@00:15:43.089: [Asset Management System] [Information] Freeing 2 audio tracks
+2026.10.19@00:15:43.089: [Asset Management System] [Information] Freeing 20 animations
+2026.10.19@00:15:43.089: [Asset Management System] [Information] Freeing 1 typefaces
+2026.10.19@00:15:43.089: [Asset Management System] [Information] Freeing 1 configurations
+2026.10.19@00:15:43.089: [MarasmiumKit App] [Information] Destroying logging system
+2026.10.19@00:15:43.089: [Logging System] [Information] Destroying logging system
