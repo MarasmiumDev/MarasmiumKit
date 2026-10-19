@@ -232,6 +232,7 @@ public class ConnectScene extends Scene implements UIListener, NetListener {
         }
         if (groupID == controlsUI.getGroupID()) {
             if (event == UIEvent.Button_Released) {
+                App.Audio.soundEffects.play("Assets/Audio/Click.audio");
                 if (componentID == backButton.getComponentID()) {
                     if (!connecting) {
                         App.SetCurrentScene(AppTest.Title_Scene);

@@ -250,6 +250,9 @@ public class AssetConverter {
             System.out.println("Failed to read image from input file");
             return false;
         }
+        if (inputImage == null) {
+            return false;
+        }
         System.out.println("Read image file (" + inputFile.length() + "B), format:");
         System.out.println("Input dimensions: " + inputImage.getWidth() + "x" + inputImage.getHeight() + "pixels");
         System.out.println("Input image type: " + inputImage.getType());

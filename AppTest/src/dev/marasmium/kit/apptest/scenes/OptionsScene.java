@@ -278,6 +278,7 @@ public class OptionsScene extends Scene implements UIListener {
         }
         if (groupID == controlsUI.getGroupID()) {
             if (event == UIEvent.Button_Released) {
+                App.Audio.soundEffects.play("Assets/Audio/Click.audio");
                 if (componentID == backButton.getComponentID()) {
                     App.SetCurrentScene(AppTest.Title_Scene);
                 } else if (componentID == defaultsButton.getComponentID()) {

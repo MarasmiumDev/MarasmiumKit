@@ -101,6 +101,9 @@ public class TitleScene extends Scene implements UIListener {
      */
     @Override
     public boolean enter(Scene lastScene) {
+        if (lastScene == null) {
+            App.Audio.music.play("Assets/Audio/Music.audio");
+        }
         return true;
     }
 
@@ -184,6 +187,7 @@ public class TitleScene extends Scene implements UIListener {
         }
         if (groupID == startUI.getGroupID()) {
             if (event == UIEvent.Button_Released) {
+                App.Audio.soundEffects.play("Assets/Audio/Click.audio");
                 if (componentID == startButton.getComponentID()) {
                     App.SetCurrentScene(AppTest.Connect_Scene);
                 } else if (componentID == optionsButton.getComponentID()) {

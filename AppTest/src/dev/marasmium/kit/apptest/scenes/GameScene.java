@@ -267,6 +267,7 @@ public class GameScene extends Scene implements UIListener {
         }
         if (groupID == pauseUI.getGroupID()) {
             if (event == UIEvent.Button_Released) {
+                App.Audio.soundEffects.play("Assets/Audio/Click.audio");
                 if (componentID == resumeButton.getComponentID()) {
                     pauseUI.setEnabled(false);
                     pauseUI.setVisible(false);
