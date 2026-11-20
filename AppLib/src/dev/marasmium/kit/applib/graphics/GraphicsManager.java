@@ -536,6 +536,9 @@ public class GraphicsManager implements GLEventListener {
         if (windowDimensions == null) {
             return false;
         }
+        if (camera.getScale() == 0.0f) {
+            return false;
+        }
         Box windowBox = new Box();
         if (!windowBox.initialize(camera.getPosition().subtract(windowDimensions.scalarDivide(camera.getScale())
                         .scalarMultiply(0.5f)), 0.0f, windowDimensions.scalarDivide(camera.getScale()), Angle.Zero())) {
